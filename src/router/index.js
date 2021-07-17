@@ -1,20 +1,64 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
 const routes = [
+
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: ()=>import('../views/Index.vue')
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    path:'/book',
+    name:'Book',
+    component:()=>import('../views/ScanToBook.vue'),
+    children:[
+      {
+        path:'',component: ()=>import('../components/ScanToBookComponents/Origin.vue')
+      },
+      {
+        path:'destination', component: ()=>import('../components/ScanToBookComponents/Destination.vue')
+      },
+      {
+        path:'date', component: ()=>import('../components/ScanToBookComponents/Date.vue')
+      },
+      {
+        path:'buses', component:()=>import('../components/ScanToBookComponents/Buses.vue')
+      },
+      {
+        path:'seats',component:()=>import('../components/ScanToBookComponents/Seats.vue')
+      },
+      {
+        path:'bookings',component:()=>import('../components/ScanToBookComponents/Bookings.vue')
+      },
+      {
+        path:'eticket',component:()=> import('../components/ScanToBookComponents/ETicket.vue')
+      }
+    ]
+  },
+  {
+    path:'/admin',
+    name:'Admin',
+    component:()=>import('../views/Admin.vue'),
+    children:[
+      {
+        path:'',component: ()=>import('../components/Admin/Index.vue')
+      },
+      {
+        path:'manage-buses',component: ()=>import('../components/Admin/ManageBuses.vue')
+      },
+      {
+        path:'manage-routes',component: ()=>import('../components/Admin/ManageRoutes.vue')
+      },
+      {
+        path:'schedules',component: ()=>import('../components/Admin/Schedule.vue')
+      },
+      {
+        path:'ticket-cancellations',component: ()=>import('../components/Admin/Cancellations.vue')
+      }
+      
+    ]
+  },
+  
 ]
 
 const router = createRouter({
