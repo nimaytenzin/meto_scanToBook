@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
+    class="min-h-screen flex flex-col items-center justify-start sm:ml2 sm:mr2"
   >
     <div>
       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
@@ -10,7 +10,7 @@
         Admin Dashboard
       </h1>
       <h1 class="text-3xl text-gray-500 text-center mt-3">
-        ན་བུ་ག་སྟེ་ལས་བྱོནམ་སྨོ?
+        ༅༅ ། མེ་ཏོག སྐྱེལ་འདྲེན ཞབས་ཏོག།
       </h1>
     </div>
 
@@ -28,40 +28,12 @@
         space-x-4
       "
     >
-      <select
-        v-model="originSelected"
-        class="text-3xl p-5 bg-white text-blue-900"
-      >
-        <option
-          v-for="origin in origins"
-          :value="origin"
-          :key="origin"
-          class="bg-white"
-        >
-          {{ origin.dzo + ' | '+ origin.eng }}
-        </option>
-      </select>
+     <h2>
+       Guide
+     </h2>
     </div>
 
-     <div class="inline-flex mt-8">
-      
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded
-          "
-          @click="addOrigin(originSelected)"
-        >
-          Next
-        </button>
-  
-    </div>
+
     
   </div>
 
