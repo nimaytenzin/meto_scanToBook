@@ -93,7 +93,10 @@
 
 <script>
 import { Calendar, DatePicker } from "v-calendar";
-import { getScheduleByDate } from "../../services/scheduleServices";
+import {
+  getScheduleByDate,
+  getSchedulesBetween,
+} from "../../services/scheduleServices";
 export default {
   components: {
     Calendar,
@@ -104,16 +107,19 @@ export default {
       this.$router.push("/book");
     }
 
-    let date = new Date();
-    let month = date.getMonth();
-    let year = date.getFullYear();
-    let day = date.getDay();
+    // var from = new Date().getTime();
+    // var to = from + 604800000;
 
-    console.log(year, month, day);
-
-    getScheduleByDate(new Date().toLocaleString()).then((res) => {
-      console.log(res);
-    });
+    // getSchedulesBetween(from, to).then((res) => {
+    //   if (res.status === 200) {
+    //     for (let i = 0; i < res.data.length; i++) {
+    //       if(this.attributes[o].dates.indexOf(new Date(new Date(res.data[i].dateId).getFullYear(),new Date(res.data[i].dateId).getMonth(),new Date(res.data[i].dateId).getDay()) === -1)){
+    //           this.attributes[0].dates.push(new Date(new Date(res.data[i].dateId).getFullYear(),new Date(res.data[i].dateId).getMonth(),new Date(res.data[i].dateId).getDay()))
+    //       }
+    //     }
+    //   }
+    //   console.log(this.attributes);
+    // });
   },
   data() {
     return {
@@ -121,11 +127,7 @@ export default {
         {
           bar: true,
           dates: [],
-        },
-        {
-          bar: "red",
-          dates: [],
-        },
+        }
       ],
       date: new Date(),
       schedules: 0,
