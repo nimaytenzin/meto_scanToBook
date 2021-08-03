@@ -19,9 +19,7 @@
       >
         <div class="my-auto">
           <div class="text-lg">Routes</div>
-          <div class="text-4xl text-white font-bold">
-            {{ schedules.length }}
-          </div>
+          <div class="text-4xl text-white font-bold">{{ routes.length }}</div>
         </div>
         <div class="my-auto">
           <div class="text-lg">Stops</div>
@@ -67,7 +65,6 @@
               >
                 Name
               </th>
-
               <th
                 class="
                   px-6
@@ -94,7 +91,7 @@
           >
             <tr
               v-for="stop in stops"
-              :key="stop.id"
+              :key="stop"
               class="hover:bg-gray-200 flex flex-row items-stretch"
             >
               <td class="px-6 py-4 whitespace-nowrap">{{ stop.name }}</td>
@@ -114,10 +111,9 @@
                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     />
                   </svg>
-
                   Edit
                 </button>
-                <button class="flex items-center">
+                <button @click="deleteStop(stop)" class="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
@@ -142,7 +138,10 @@
     </div>
 
     <div>
-      <button class="p-4 flex items-center gap-2" @click="showModal = true">
+      <button
+        class="p-4 flex items-center gap-2"
+        @click="addRoutesModal = true"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6"
@@ -157,7 +156,7 @@
             d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <p>Add BuRoutses</p>
+        <p>Add Bus Routes</p>
       </button>
 
       <table class="min-w-full divide-y divide-gray-200">
@@ -241,7 +240,6 @@
             >
               Departure Time
             </td>
-
             <td
               class="
                 px-6
@@ -258,31 +256,27 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr
-            v-for="schedule in schedules"
-            :key="schedule"
-            class="hover:bg-gray-200"
-          >
+          <tr v-for="route in routes" :key="route.id" class="hover:bg-gray-200">
+            <td class="px-6 py-4 whitespace-nowrap">{{ route.origin.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ schedule.origin.name }}
+              {{ route.destination.name }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ schedule.destination.name }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">Nu.{{ schedule.fare }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ schedule.eta }} Hours
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap">Nu.{{ route.fare }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ getETA(route.ETA) }}</td>
             <td class="flex flex-row justify-center">
-              <p v-for="day in schedule.days" :key="day" class="mr-2 text-center">
-                {{ day }}  
+              <p
+                v-for="day in route.routeDays"
+                :key="day"
+                class="mr-2 text-center"
+              >
+                {{ getWeekDays(day.day) }}
               </p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ schedule.departure_time }}
+              {{ getdepTime(route.departureTime) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap flex gap-4">
-              <button @click="editBus(bus)" class="flex items-center">
+              <button @click="editRoute(route)" class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -300,7 +294,7 @@
                 Edit
               </button>
 
-              <button class="flex items-center">
+              <button @click="deleteRoute(route)" class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -332,11 +326,25 @@
         class="w-max-screen"
       >
         <div class="modal__content text-center mt-1 flex flex-col">
-          <h3 class="text-xl">Add a Stop?</h3>
-
+          <h3 class="text-xl mb-2">Add a Stop?</h3>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Name of the stop</label
+          >
           <input
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
             type="text"
-            placeholder="Name of the Stop"
             v-model="newStop.name"
           />
         </div>
@@ -349,50 +357,14 @@
           </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            @click="showModal = false"
+            @click="addStopsModal = false"
           >
-            cancel
-          </button>
-        </div>
-      </vue-final-modal>
-
-      <!-- Add new Bus Type Modal -->
-      <vue-final-modal
-        v-model="addBusTypeModal"
-        classes="modal-container"
-        content-class="modal-content"
-        class="w-max-screen"
-      >
-        <div class="modal__content text-center mt-1 flex flex-col">
-          <h3 class="text-xl">Add Bus Type?</h3>
-
-          <input type="text" placeholder="Make" v-model="newBusType.make" />
-          <input type="text" placeholder="Model" v-model="newBusType.model" />
-          <input type="text" placeholder="Type" v-model="newBusType.type" />
-          <input
-            type="number"
-            placeholder="Capacity"
-            v-model="newBusType.capacity"
-          />
-        </div>
-        <div class="modal__action">
-          <button
-            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-            @click="addBusType"
-          >
-            Add Bus Type
-          </button>
-          <button
-            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            @click="addBusTypeModal = false"
-          >
-            cancel
+            Cancel
           </button>
         </div>
       </vue-final-modal>
 
       <!-- Edit Stop Modal -->
-
       <vue-final-modal
         v-model="editStopModal"
         classes="modal-container"
@@ -404,75 +376,316 @@
 
           <input
             type="text"
-            placeholder="Name of the Stop"
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
             v-model="selectedStop.name"
           />
         </div>
         <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-            @click="confirmEdit()"
+            @click="confirmStopEdit()"
           >
-            confirm Edit
+            Confirm Edit
           </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="editStopModal = false"
           >
-            cancel
+            Cancel
           </button>
         </div>
       </vue-final-modal>
 
-      <!-- Edit Bus Modal -->
+      <!-- Add Routes Modal -->
       <vue-final-modal
-        v-model="editBusModal"
+        v-model="addRoutesModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen"
+      >
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
+          <h3 class="text-xl mb-5">Add a Bus Route?</h3>
+          <label class="text-sm text-left text-gray-400 italic">Origin</label>
+          <select
+            v-model="newRoute.originId"
+            class="text-xl bg-white text-blue-900 p-2"
+          >
+            <option
+              v-for="stop in stops"
+              :value="stop.id"
+              :key="stop"
+              class="bg-white"
+            >
+              {{ stop.name }}
+            </option>
+          </select>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Destination</label
+          >
+          <select
+            v-model="newRoute.destinationId"
+            class="text-xl bg-white text-blue-900 p-2"
+          >
+            <option
+              v-for="stop in stops"
+              :value="stop.id"
+              :key="stop"
+              class="bg-white"
+            >
+              {{ stop.name }}
+            </option>
+          </select>
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Select Weekdays from the dropdown</label
+          >
+
+          <Multiselect
+            v-model="weekdaysSelected"
+            mode="tags"
+            placeholder="Select active days for the route"
+            :createTag="true"
+            :options="weekDays"
+          />
+
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Departure time</label
+          >
+
+          <div class="flex justify-center">
+            <div class="flex">
+              <select
+                name="hours"
+                v-model="departureTime.hrs"
+                class="bg-transparent text-xl appearance-none outline-none"
+              >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">10</option>
+                <option value="12">12</option>
+              </select>
+              <span class="text-xl mr-3">:</span>
+              <select
+                name="minutes"
+                class="bg-transparent text-xl appearance-none outline-none mr-4"
+                v-model="departureTime.mins"
+              >
+                <option value="0">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="30">45</option>
+              </select>
+              <select
+                name="ampm"
+                v-model="departureTime.ampm"
+                class="bg-transparent text-xl appearance-none outline-none"
+              >
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Fare</label
+          >
+          <div
+            class="
+              flex
+              justify-center
+              items-end
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
+          >
+            <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
+            <input
+              class="w-full py-2 px-3"
+              type="number"
+              placeholder="Fare"
+              v-model="newRoute.fare"
+            />
+          </div>
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Est. Travel Time</label
+          >
+          <div class="flex justify-center">
+            <div class="flex">
+              <div>
+                <select
+                  name="hours"
+                  v-model="eta.hrs"
+                  class="bg-transparent text-xl appearance-none outline-none"
+                >
+                  <option value="01">1</option>
+                  <option value="02">2</option>
+                  <option value="03">3</option>
+                  <option value="04">4</option>
+                  <option value="05">5</option>
+                  <option value="06">6</option>
+                  <option value="07">7</option>
+                  <option value="08">8</option>
+                  <option value="09">9</option>
+                  <option value="10">10</option>
+                  <option value="11">10</option>
+                  <option value="12">12</option>
+                </select>
+                <p>Hours</p>
+              </div>
+              <span class="text-xl mr-3">:</span>
+              <div>
+                <select
+                  name="minutes"
+                  class="
+                    bg-transparent
+                    text-xl
+                    appearance-none
+                    outline-none
+                    mr-4
+                  "
+                  v-model="eta.min"
+                >
+                  <option value="0">00</option>
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                  <option value="30">45</option>
+                </select>
+                <p>Minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal__action">
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="addRoute()"
+          >
+            Add Route
+          </button>
+          <button
+            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+            @click="addRoutesModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </vue-final-modal>
+
+      <!-- Edit Route Modal -->
+      <vue-final-modal
+        v-model="editRouteModal"
         classes="modal-container"
         content-class="modal-content"
         class="w-max-screen"
       >
         <div class="modal__content text-center mt-1 flex flex-col">
-          <h3 class="text-xl">Edit Bus?</h3>
-
-          <input
-            type="text"
-            placeholder="Bus Number"
-            v-model="selectedBus.vehicleNumber"
-          />
-          <label for="cars">Choose Type:</label>
-
+          <h3 class="text-xl mb-5">Edit Bus Route?</h3>
+          <label class="text-xs text-left">Origin</label>
           <select
-            v-model="selectedBus.type"
-            class="text-3xl p-5 bg-white text-blue-900"
+            v-model="selectedRoute.origin"
+            class="text-md bg-white text-gray-400"
           >
             <option
-              v-for="type in busTypes"
-              :value="type"
-              :key="type"
+              v-for="stop in stops"
+              :value="stop"
+              :key="stop"
               class="bg-white"
             >
-              {{ type.make }} {{ type.model }}({{ type.type }})
+              {{ stop.name }}
             </option>
           </select>
+          <hr class="border-2" />
+          <label class="text-xs text-left">Destination</label>
+          <select
+            v-model="selectedRoute.destination"
+            class="text-md bg-white text-gray-400"
+          >
+            <option
+              v-for="stop in stops"
+              :value="stop"
+              :key="stop"
+              class="bg-white"
+            >
+              {{ stop.name }}
+            </option>
+          </select>
+          <hr class="border-2" />
+          <label class="text-xs text-left">Fare</label>
+          <input
+            class="text-md text-gray-400 mb-3"
+            type="number"
+            placeholder="Fare"
+            v-model="selectedRoute.fare"
+          />
+          <label class="text-xs text-left">Est. Duration</label>
+          <input
+            class="text-md text-gray-400 mb-3"
+            type="text"
+            placeholder="Est. Duration"
+            v-model="selectedRoute.eta"
+          />
+          <label class="text-xs text-left">Days</label>
+          <input
+            class="text-md text-gray-400 mb-3"
+            type="text"
+            placeholder="Days"
+            v-model="selectedRoute.days"
+          />
+          <label class="text-xs text-left">Departure time</label>
+          <input
+            class="text-md text-gray-400 mb-3"
+            type="text"
+            placeholder="Departure time"
+            v-model="selectedRoute.departureTime"
+          />
         </div>
         <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-            @click="confirmEdit()"
+            @click="confirmRouteEdit()"
           >
-            confirm Edit
+            Confirm Edit
           </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            @click="editBusTypeModal = false"
+            @click="editRouteModal = false"
           >
-            cancel
+            Cancel
           </button>
         </div>
       </vue-final-modal>
     </div>
   </div>
 </template>
+<style src="@vueform/multiselect/themes/default.css"></style>
 
 <style scoped>
 ::v-deep .modal-container {
@@ -523,114 +736,305 @@
 </style>
 
 <script>
+import Multiselect from "@vueform/multiselect";
+import {
+  getAllStops,
+  addNewStop,
+  deleteStop,
+  editStop,
+} from "../../services/stopServices";
+
+import {
+  addNewRoute,
+  getAllRoutes,
+  deleteRoute,
+} from "../../services/routeServices";
+
+import {
+  addNewSchedule,
+  deleteScheduleByRouteId,
+} from "../../services/scheduleServices";
+
 export default {
+  components: {
+    Multiselect,
+  },
   data() {
     return {
-      showModal: false,
-      editBusModal: false,
-      editStopModal: false,
-
-      //
+      //Modal toggle
       addStopsModal: false,
+      editStopModal: false,
+      addRoutesModal: false,
+      editRouteModal: false,
+      timezone: "",
+      weekDays: [
+        { value: 0, label: "Monday" },
+        { value: 1, label: "Tuesday" },
+        { value: 2, label: "Wednesday" },
+        { value: 3, label: "Thrusday" },
+        { value: 4, label: "Friday" },
+        { value: 5, label: "Saturday" },
+        { value: 6, label: "Sunday" },
+      ],
       week: ["Mon", "Tues", "Wed", "Thrus", "Fri", "Sat", "Sun"],
-      stops: [
-        { id: 1, name: "Thimphu" },
-        { id: 2, name: "Bumthang" },
-        { id: 3, name: "Mongar" },
-        { id: 4, name: "Chukha" },
-        { id: 5, name: "Dagapela" },
-        { id: 6, name: "Dagana" },
-      ],
-
-      schedules: [
-        {
-          id: 1,
-          origin: { id: 1, name: "Thimphu" },
-          destination: { id: 2, name: "Bumthang" },
-          fare: 250,
-          eta: 6,
-          bus_id: null,
-          days: ['Mon', 'Tues', 'Wed'],
-          departure_time: "9:30 AM",
-        },
-        {
-          id: 1,
-          origin: { id: 2, name: "Bumthang" },
-          destination: { id: 1, name: "Thimphu" },
-          fare: 250,
-          eta: 6,
-          bus_id: null,
-          days: ["Mon"],
-          departure_time: "9:00 AM",
-        },
-      ],
-
-      selectedBusType: {
-        id: 0,
-        type: "ok",
-        make: "ok",
-        model: "ok",
-        capacity: 0,
-      },
-      selectedBus: {
-        id: 0,
-        type: {
-          id: 0,
-          type: "",
-          make: "",
-          model: "",
-          capacity: 0,
-        },
-        vehicleNumber: "",
-      },
-      selectedStop: {},
-      newBus: {},
-      newBusType: {},
+      weekdaysSelected: [],
+      eta: {},
+      departureTime: {},
+      //Validation checking parameters
+      stops: [],
+      routes: [],
 
       newStop: {},
+      selectedStop: {},
+      newRoute: {},
+      selectedRoute: {},
     };
   },
+  created() {
+    getAllRoutes().then((res) => {
+      this.routes = res;
+      console.log(this.routes);
+    });
+
+    getAllStops()
+      .then((res) => {
+        this.stops = res;
+      })
+      .catch((err) => console.log(err));
+  },
+
   methods: {
-    addOrigin(val) {
-      this.$store.commit("addOrigin", val);
-      this.$router.push("/book/destination");
+    getdepTime: function (time) {
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
+
+      return `${hrs}:${min} ${ampm}`;
     },
-    editBusType(e) {
-      this.editBusTypeModal = true;
-      this.selectedBusType = e;
-      console.log(e);
+    getWeekDays(dayNo) {
+      switch (dayNo) {
+        case 6:
+          return "Sun";
+          break;
+        case 0:
+          return "Mon";
+          break;
+        case 1:
+          return "Tues";
+          break;
+        case 2:
+          return "Wed";
+          break;
+        case 3:
+          return "Thurs";
+          break;
+        case 4:
+          return "Fri";
+          break;
+        case 5:
+          return "Sat";
+      }
     },
-    addBus() {
-      console.log("mimicing posting into buses", this.newBus);
-      this.buses.push(this.newBus);
-      this.newBus = {};
-      this.showModal = false;
+
+    getETA(e) {
+      let ok = e.split(":");
+      let hrs = ok[0];
+      let min = ok[1];
+
+      return `${hrs} Hrs ${min} Mins`;
     },
-    editBus(e) {
-      this.selectedBus = e;
-      this.editBusModal = true;
-      console.log(e);
+    addStop() {
+      if (this.newStop.name) {
+        addNewStop(this.newStop).then((res) => {
+          if (res.status === 201) {
+            this.reloadData();
+            this.addStopsModal = false;
+            this.$toast.show("New Stop Added", {
+              position: "top",
+              type: "success",
+            });
+            this.newStop = {};
+          } else {
+            this.addStopsModal = false;
+            this.$toast.show("Error Adding..try again", {
+              position: "top",
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.$toast.show("Please enter a stop", {
+          position: "top",
+          type: "error",
+        });
+      }
     },
-    confirmEdit() {
-      console.log("Updaing the edits", this.selectedBusType);
-      this.editBusTypeModal = false;
-    },
-    addBusType() {
-      console.log("Posting into busTypes", this.newBusType);
-      this.busTypes.push(this.newBusType);
-      this.newBusType = {};
-    },
+
     editStop(e) {
       this.selectedStop = e;
       console.log("selected stop", e);
       this.editStopModal = true;
     },
-    addStop() {
-      this.newStop.id = this.stops.length + 1;
-      this.stops.push(this.newStop);
-      this.addStopsModal = false;
-      this.newStop = {};
-      console.log(this.stops);
+
+    confirmStopEdit() {
+      if (this.selectedStop.name === "") {
+        this.$toast.show("Please enter a stop", {
+          position: "top",
+          type: "error",
+        });
+      } else {
+        editStop(this.selectedStop.id, this.selectedStop).then((res) => {
+          if (res.status === 200) {
+            this.reloadData();
+            this.editStopModal = false;
+            this.$toast.show("Stop updated", {
+              position: "top",
+              type: "success",
+            });
+          } else {
+            this.editStopModal = false;
+            this.$toast.show("Error Updating..try again", {
+              position: "top",
+              type: "error",
+            });
+          }
+        });
+
+        console.log("Updaing the edits", this.selectedStop);
+      }
+    },
+
+    deleteStop(e) {
+      console.log("Stop for deleting", e);
+      deleteStop(e.id).then((res) => {
+        if (res.status === 200) {
+          this.reloadData();
+          this.$toast.show("Stop Deleted", {
+            position: "top",
+            type: "success",
+          });
+        } else {
+          this.$toast.show("Delete Failed..try again", {
+            position: "top",
+            type: "error",
+          });
+        }
+      });
+    },
+
+    parseDepartureTime(time) {
+      if (time.ampm === "am") {
+        return `${time.hrs}:${time.mins}:00`;
+      } else {
+        let hr = parseInt(time.hrs);
+        hr += 12;
+        time.hrs = hr;
+        return `${time.hrs}:${time.mins}:00`;
+      }
+    },
+
+    parseDate(e) {
+      let fromDate = new Date(Date.parse(e));
+      let toDate = new Date(Date.parse(e) + 86400000 * 6 * 30);
+
+      return {
+        fromDate: fromDate,
+        toDate: toDate,
+      };
+    },
+    addRoute() {
+      this.newRoute.days = this.weekdaysSelected;
+      let eta = `${this.eta.hrs}:${this.eta.min}:00`;
+      let departureTime = this.parseDepartureTime(this.departureTime);
+      this.newRoute.departureTime = departureTime;
+      this.newRoute.ETA = eta;
+
+      addNewRoute(this.newRoute)
+        .then((res) => {
+          let routeId = res.data[0].routeId;
+          if (res.status === 201) {
+            let date = this.parseDate(res.data[0].createdAt);
+
+            let reqBody = {
+              routeId: routeId,
+              onDays: this.newRoute.days,
+              fromDate: date.fromDate,
+              toDate: date.toDate,
+            };
+            addNewSchedule(reqBody).then((res) => {
+              if (res.status === 201) {
+                this.reloadData();
+                this.addRoutesModal = false;
+              }
+            });
+            console.log("Create Schedule body", reqBody);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    editRoute(e) {
+      this.selectedRoute = e;
+      console.log("selected Route", e);
+      this.editRouteModal = true;
+    },
+
+    confirmRouteEdit() {
+      if (
+        this.selectedRoute.origin === "" ||
+        this.selectedRoute.destination === "" ||
+        this.selectedRoute.fare === "" ||
+        this.selectedRoute.eta === "" ||
+        this.selectedRoute.days === "" ||
+        this.selectedRoute.departureTime === "" ||
+        0
+      ) {
+        this.$toast.show("No empty field is permitted", {
+          position: "top",
+          type: "error",
+        });
+      } else {
+        console.log("Updating the edits", this.selectedRoute);
+        this.editRouteModal = false;
+        this.$toast.show("Route updated", {
+          position: "top",
+          type: "success",
+        });
+      }
+    },
+
+    deleteRoute(e) {
+      console.log(e, "ok this is the selected route");
+      deleteRoute(e.id).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          this.reloadData();
+          //delete on cascade
+        }
+      });
+    },
+
+    reloadData() {
+      getAllStops()
+        .then((res) => {
+          this.stops = res;
+        })
+        .catch((err) => console.log(err));
+
+      getAllRoutes().then((res) => {
+        this.routes = res;
+        console.log(this.routes);
+      });
     },
   },
 };

@@ -120,11 +120,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr
-              v-for="type in busTypes"
-              :key="type.id"
-              class="hover:bg-gray-200"
-            >
+            <tr v-for="type in busTypes" :key="type" class="hover:bg-gray-200">
               <td class="px-6 py-4 whitespace-nowrap">{{ type.type }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ type.make }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ type.model }}</td>
@@ -151,9 +147,7 @@
 
                   Edit
                 </button>
-                <button class="flex items-center"
-                @click="deleteBusType(type)"
-                >
+                <button class="flex items-center" @click="deleteBusType(type)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
@@ -171,6 +165,9 @@
                   Delete
                 </button>
               </td>
+            </tr>
+            <tr>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -223,7 +220,20 @@
                 tracking-wider
               "
             >
-              Driver
+              Bus Model
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Class Type
             </td>
             <td
               class="
@@ -243,10 +253,14 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="bus in buses" :key="bus" class="hover:bg-gray-200">
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ bus.vehicleNumber }}
+              {{ bus.vechileNumber }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ bus.type.make }} {{ bus.type.model }} ({{ bus.type.type }})
+              {{ bus.busType?.make ? bus.busType.make : "-" }}
+              {{ bus.busType?.model ? bus.busType.model : "-" }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ bus.busType?.type ? bus.busType.type : "" }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap flex gap-4">
               <button @click="showEditBusDialog(bus)" class="flex items-center">
@@ -328,7 +342,7 @@
           >
           <select
             v-model="newBus.type"
-            class="text-3xl bg-white text-blue-900"
+            class="text-xl bg-white text-blue-900"
             placeholder="Select Bus Types"
           >
             <option
@@ -372,7 +386,7 @@
           <input
             type="text"
             placeholder="Bus Number"
-            v-model="selectedBus.vehicleNumber"
+            v-model="selectedBus.vechileNumber"
             class="
               shadow
               appearance-none
@@ -391,9 +405,10 @@
             >2)Select Bus Type Defined in the bus types</label
           >
           <hr />
+
           <select
-            v-model="selectedBus.type"
-            class="text-3xl bg-white text-blue-900"
+            v-model="selectedBus.busType"
+            class="text-xl bg-white text-blue-900"
           >
             <option
               v-for="type in busTypes"
@@ -699,6 +714,19 @@
 </style>
 
 <script>
+import {
+  getAllBusTypes,
+  addNewBusType,
+  deleteBusType,
+  editBusType,
+} from "../../services/busTypesServices";
+
+import {
+  getAllBuses,
+  addNewBus,
+  editBus,
+  deleteBus,
+} from "../../services/busServices";
 export default {
   data() {
     return {
@@ -710,44 +738,22 @@ export default {
 
       //Validation checkers for the form
 
-      busTypes: [
-        {
-          id: 1,
-          type: "Regular",
-          make: "Toyota",
-          model: "Coaster",
-          capacity: 19,
-        },
-      ],
-      buses: [
-        {
-          id: 1,
-          type: {
-            id: 1,
-            type: "Regular",
-            make: "Toyota",
-            model: "Coaster",
-            capacity: 19,
-          },
-          vehicleNumber: "BP-2A-2334",
-        },
-        {
-          id: 2,
-          type: {
-            id: 2,
-            type: "Premium",
-            make: "Toyota",
-            model: "Coaster",
-            capacity: 19,
-          },
-          vehicleNumber: "BP-3C-2334",
-        },
-      ],
+      busTypes: [],
+      buses: [],
       selectedBusType: {},
       selectedBus: {},
       newBus: {},
       newBusType: {},
     };
+  },
+  created() {
+    getAllBuses().then((res) => {
+      this.buses = res;
+    });
+    getAllBusTypes().then((res) => {
+      this.busTypes = res;
+      console.log(res);
+    });
   },
   computed: {
     addBusBtn() {
@@ -766,27 +772,37 @@ export default {
       console.log(e);
     },
     addBusType() {
-      console.log("Posting into busTypes", this.newBusType);
-      console.log(this.newBusType.make);
       if (
         this.newBusType.make &&
         this.newBusType.type &&
         this.newBusType.model &&
         this.newBusType.capacity
       ) {
-        this.busTypes.push(this.newBusType);
-       
-        this.addBusTypeModal = false;
-        this.$toast.show(`${this.newBusType.make} ${ this.newBusType.model } added`, {
-          position: "top",
-          type: "success",
-        });
-         this.newBusType = {};
+        addNewBusType(this.newBusType)
+          .then((res) => {
+            if (res.status === 201) {
+              this.refreshData();
+              this.addBusTypeModal = false;
+              this.showToast(
+                `${this.newBusType.make} ${this.newBusType.model} added`,
+                "top",
+                "success"
+              );
+
+              this.newBusType = {};
+            } else {
+              this.addBusTypeModal = false;
+
+              this.showToast(
+                "Error Deleting..\n please try again",
+                "top",
+                "error"
+              );
+            }
+          })
+          .catch((err) => console.log(err));
       } else {
-        this.$toast.show(`All the fields are required`, {
-          position: "top",
-          type: "error",
-        });
+        this.showToast("All the Fields are required", "top", "error");
       }
     },
     editBusType() {
@@ -794,17 +810,19 @@ export default {
         this.selectedBusType.make !== "" &&
         this.selectedBusType.type !== "" &&
         this.selectedBusType.model !== "" &&
-        this.selectedBusType.capacity !== "" &&
-        0
+        this.selectedBusType.capacity !== ""
       ) {
-       
-        this.editBusTypeModal = false;
-        this.$toast.show(`Bus Type updated`, {
-          position: "top",
-          type: "success",
-        });
+        editBusType(this.selectedBusType.id, this.selectedBusType)
+          .then((res) => {
+            if (res.status === 200) {
+              this.refreshData();
+              this.editBusTypeModal = false;
+              this.showToast("Bus Type Updated", "top", "success");
+            } else {
+            }
+          })
+          .catch((err) => console.log(err));
       } else {
-      
         this.$toast.show(`Fields cannot be empty`, {
           position: "top",
           type: "error",
@@ -812,62 +830,98 @@ export default {
       }
     },
     deleteBusType(e) {
-      this.selectedBusType = e;
-      this.$toast.show("Bus Type Removed", {
-        position: "top",
-        type: "info",
-      });
+      deleteBusType(e.id)
+        .then((res) => {
+          if (res.status === 200) {
+            this.showToast("Bus Type Removed", "top", "success");
+            this.refreshData();
+          } else {
+            this.showToast(
+              "Error Deleting..\n please try again",
+              "top",
+              "error"
+            );
+          }
+        })
+        .catch((err) => console.log(err));
     },
 
     //methods for Bus CRUD
     addBus() {
-      console.log("mimiking posting into buses", this.newBus);
-      this.buses.push(this.newBus);
-      this.$toast.show(
-        `${this.newBus.vehicleNumber}, ${this.newBus.type.make},${this.newBus.type.model} added Sucesfully`,
-        {
-          type: "success",
-          position: "top-right",
-        }
-      );
-      this.newBus = {};
-      this.showModal = false;
+      
+      if (this.newBus.vehicleNumber && this.newBus.type) {
+        let data = {
+          vechileNumber: this.newBus.vehicleNumber,
+          typeId: this.newBus.type.id,
+        };
+
+        addNewBus(data).then((res) => {
+          if (res.status === 201) {
+            this.showToast("Bus Addedd Successfully", "top", "success");
+            this.refreshData();
+            this.showModal = false;
+            this.newBus = {};
+          } else {
+            this.showModal = false;
+            this.showToast("Error Adding..\n please try again", "top", "error");
+          }
+        });
+      }else{
+        this.showToast("All the fields are required", "top","error")
+      }
     },
     showEditBusDialog(e) {
       this.selectedBus = e;
       this.editBusModal = true;
-      console.log(e);
+      console.log(e, "selected Bus");
     },
     editBus() {
-      console.log("bus n");
-      if (
-        this.selectedBus.vehicleNumber === "" ||
-        this.selectedBus.type === {}
-      ) {
-        this.$toast.show(
-          `Please Enter vehicle Number and Select the bus type`,
-          {
-            position: "top",
-            type: "error",
-          }
-        );
+      if (this.selectedBus.vechileNumber !== "") {
+        let data = {
+          vechileNumber: this.selectedBus.vechileNumber,
+          typeId: this.selectedBus.busType.id,
+        };
+        console.log(this.selectedBus.id, data);
+        editBus(this.selectedBus.id, data)
+          .then((res) => {
+            if (res.status === 200) {
+              this.showToast("Bus Edited Successfully", "top", "success");
+              this.refreshData();
+              this.editBusModal = false;
+            } else {
+            }
+          })
+          .catch((err) => console.log(err));
       } else {
-        this.$toast.show(`Edits saved..`, {
-          position: "top",
-          type: "success",
-        });
-        this.editBusModal = false;
+        this.showToast("Enter Vehicle Number", "top", "error");
       }
     },
     deleteBus(e) {
-      this.selectedBus = e;
-      this.$toast.show(
-        `${this.selectedBus.vehicleNumber}, ${this.selectedBus.type.make},${this.selectedBus.type.model} deleted Sucesfully`,
-        {
-          position: "top",
-          type: "info",
+      console.log("Delete bus", e);
+      deleteBus(e.id).then((res) => {
+        if (res.status === 200) {
+          this.refreshData();
+          this.showToast("Bus Deleted Successfully", "top", "info");
+        } else {
+          this.showToast("Error Deleting..try again", "top", "error");
         }
-      );
+      });
+    },
+
+    showToast(msg, position, type) {
+      this.$toast.show(msg, {
+        position: position,
+        type: type,
+      });
+    },
+
+    refreshData() {
+      getAllBusTypes().then((res) => {
+        this.busTypes = res;
+      });
+      getAllBuses().then((res) => {
+        this.buses = res;
+      });
     },
   },
 };

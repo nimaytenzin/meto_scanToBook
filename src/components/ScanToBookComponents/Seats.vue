@@ -224,12 +224,12 @@ export default {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+
   },
 
   data() {
     return {
-      // bindImage:require("../../assets/seatAvailable.png"),
-      fare: 250,
+      fare: this.$store.state.selectedBus.route.fare,
       total: 0,
       showModal: false,
       seats: [

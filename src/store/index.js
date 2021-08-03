@@ -8,7 +8,8 @@ export default createStore({
     selectedBus:'',
     selectedSeats:[],
     total:0,
-    bookedBy:{}
+    bookedBy:{},
+    authToken:''
   },
   mutations: {
     addOrigin(state,origin){
@@ -31,6 +32,9 @@ export default createStore({
     },
     addBookedBy(state, data){
       state.bookedBy = data
+    },
+    addAuthorizationToken(state, authToken){
+      state.authToken = authToken
     }
   },
   actions: {

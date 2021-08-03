@@ -167,7 +167,7 @@
             Cancellations
           </p>
         </router-link>
-        <router-link to="/admin/ticket-cancellations">
+        <div>
           <p
             class="
               py-2.5
@@ -181,6 +181,7 @@
               items-center
               gap-2
             "
+            @click="logout()"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -198,11 +199,12 @@
             </svg>
             Log Out
           </p>
-        </router-link>
+        </div>
       </nav>
     </div>
 
     <!---- COntent -->
+
     <div class="flex-1">
       <router-view> </router-view>
     </div>
@@ -216,6 +218,10 @@ export default {
       const sidebar = document.querySelector(".side-bar");
       sidebar.classList.toggle("-translate-x-full");
     },
+    logout(){
+      sessionStorage.removeItem('token')
+      this.$router.push("/login")
+    }
   },
 };
 </script>

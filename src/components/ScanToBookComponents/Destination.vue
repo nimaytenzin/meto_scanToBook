@@ -34,7 +34,7 @@
           :key="destination"
           :disabled="disableOption(destination)"
           >
-          {{ destination.dzo + " | " + destination.eng }}
+          {{ destination.name }}
         </option>
       </select>
     </div>
@@ -50,7 +50,7 @@
           px-4
           rounded-l
         "
-        @click="this.$router.push('/')"
+        @click="this.$router.push('/book')"
       >
         Prev
       </button>
@@ -80,28 +80,27 @@
 </template>
 
 <script>
+import {
+  getAllStops
+} from '../../services/stopServices'
 export default {
   data() {
     return {
-     destinations: [
-        {
-          dzo:"ཐིམ་ཕུ",
-          eng:'Thimphu'
-        },
-        {
-          dzo:'སྤ་རོ',
-          eng:'Paro'
-        }],
-      destinationSelected:{
-          dzo:'སྤ་རོ',
-          eng:'Paro'
-        }
+     destinations: [],
+      destinationSelected:{}
     };
   },
+  
   created() {
+
+
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+    getAllStops().then(res => {
+      this.destinations = res
+      this.destinationSelected = res[0]
+    })
   },
   methods: {
     addDestination(val) {

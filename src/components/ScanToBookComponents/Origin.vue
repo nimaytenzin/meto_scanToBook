@@ -14,7 +14,6 @@
       </h1>
     </div>
 
-   
     <div
       class="
         p-3
@@ -38,61 +37,55 @@
           :key="origin"
           class="bg-white"
         >
-          {{ origin.dzo + ' | '+ origin.eng }}
+          {{ origin.name }}
         </option>
       </select>
     </div>
 
-     <div class="inline-flex mt-8">
-      
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded
-          "
-          @click="addOrigin(originSelected)"
-        >
-          Next
-        </button>
-  
+    <div class="inline-flex mt-8">
+      <button
+        class="
+          bg-gray-100
+          hover:bg-gray-400
+          text-gray-500
+          hover:text-white
+          font-bold
+          py-2
+          px-4
+          rounded
+        "
+        @click="addOrigin(originSelected)"
+      >
+        Next
+      </button>
     </div>
-    
   </div>
-
- 
 </template>
 
 <script>
+import {
+  getAllStops
+} from '../../services/stopServices'
+
 export default {
   data() {
     return {
-      origins: [
-        {
-          dzo:"ཐིམ་ཕུ",
-          eng:'Thimphu'
-        },
-        {
-          dzo:'སྤ་རོ',
-          eng:'Paro'
-        }],
-      originSelected: {
-          dzo:"ཐིམ་ཕུ",
-          eng:'Thimphu'
-        },
+      origins: [],
+      originSelected:{}
     };
+  },
+  created() {
+    getAllStops().then((res) => {
+      this.origins = res;
+      this.originSelected = res[0]
+    });
+   
   },
   methods: {
     addOrigin(val) {
-
       this.$store.commit("addOrigin", val);
-      this.$router.push('/book/destination')
-    }
+      this.$router.push("/book/destination");
+    },
   },
 };
 </script>

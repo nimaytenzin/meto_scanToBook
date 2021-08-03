@@ -27,11 +27,11 @@
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(origin)</p>
             <h1 class="text-center text-3xl text-blue-300">
-              {{ this.$store.state.origin.eng }}
+              {{ this.$store.state.origin.name }}
             </h1>
-            <p class="text-md text-center">
+            <!-- <p class="text-md text-center">
               ({{ this.$store.state.origin.dzo }})
-            </p>
+            </p> -->
           </div>
           <div class="flex flex-col justify-center">
             <h2>--</h2>
@@ -39,11 +39,11 @@
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(destination)</p>
             <h1 class="text-center text-3xl text-blue-300">
-              {{ this.$store.state.destination.eng }}
+              {{ this.$store.state.destination.name }}
             </h1>
-            <p class="text-md text-center">
+            <!-- <p class="text-md text-center">
               ({{ this.$store.state.destination.dzo }})
-            </p>
+            </p> -->
           </div>
         </div>
 
@@ -56,16 +56,16 @@
         <table class="table min-w-full">
           <thead class="bg-blue-200 p-3 text-gray rounded h-14">
             <tr class="rounded-xl text-left">
-              <th class="pl-3">Departure</th>
-              <th>Bus</th>
-              <th>Type</th>
+              <th class="pl-3">Departure Time</th>
+
               <th class="pr-3">Fare</th>
+              <th class="pr-3">ETA</th>
             </tr>
           </thead>
           <tbody
-            v-for="bus in buses"
-            :value="bus.id"
-            :key="bus.id"
+            v-for="schedule in schedules"
+            :value="schedule"
+            :key="schedule"
             class="text-left mt-4"
           >
             <tr
@@ -76,35 +76,16 @@
                 h-14
                 text-gray-700
               "
-              @click="alertSelection({ bus })"
-              :class="busColor(bus)"
+              @click="commitToStore({ schedule })"
+              :class="tableRowColor(schedule)"
             >
-              <td class="pl-3">{{ bus.dep_time }}</td>
-              <td>{{ bus.number }}({{ bus.type }})</td>
-              <td>{{ bus.type }}</td>
-              <td class="pr-3">Nu.{{ bus.fare }}</td>
+              <td class="pl-3">{{ schedule.route.departureTime }}</td>
+              <td>Nu. {{ schedule.route.fare }}</td>
+
+              <td class="pr-3">{{ schedule.route.ETA }}</td>
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div
-        class="
-          flex flex-col
-          justify-center
-          items-center
-          mt-10
-          font-nunito
-          text-xl
-          font-semibold
-          text-blue-400
-        "
-      >
-        {{
-          selectedBus.number
-            ? "You Selected " + selectedBus.number
-            : "Please select a Bus"
-        }}
       </div>
     </div>
 
@@ -136,7 +117,7 @@
           px-4
           rounded-r
         "
-        @click="selectBus(bus)"
+        @click="seatSelection()"
       >
         Seat Selection >
       </button>
@@ -147,39 +128,22 @@
 </template>
 
 <script>
+import { getScheduleByDate } from "../../services/scheduleServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+    console.log(this.$store.state);
+
+    let formattedDate = this.$store.state.departureDate + " 00:00:00";
+    getScheduleByDate(formattedDate).then((res) => (this.schedules = res));
   },
   data() {
     return {
-      buses: [
-        {
-          id: 1,
-          number: "BP-1-C3344",
-          dep_time: "9:00 AM",
-          type: "Coaster",
-          fare: 250,
-        },
-        {
-          id: 2,
-          number: "BP-1-D3344",
-          dep_time: "4:00 PM",
-          type: "Coaster/AC",
-          fare: 300,
-        },
-        {
-          id: 3,
-          number: "BP-1-EC3344",
-          dep_time: "6:00 PM",
-          type: "Coaster",
-          fare: 250,
-        },
-      ],
+      schedules: [],
       date: new Date(),
-      selectedBus: {},
+      selectedSchedule: {},
     };
   },
   computed: {
@@ -190,22 +154,26 @@ export default {
   },
 
   methods: {
-    busColor(e) {
-      console.log(e, "cycling throuhh the table data");
-      if (e.id === this.selectedBus.id) {
-        return "bg-blue-200";
+    tableRowColor(e) {
+      
+      if (e.id === this.selectedSchedule.id) {
+        return "bg-green-100";
       }
       return "bg-white";
     },
-    selectBus(e) {
-      this.$store.commit("addBus", e);
-      this.$router.push("/book/seats");
+    seatSelection() {
+      if (Object.keys(this.selectedSchedule).length !== 0) {
+        this.$router.push('/book/seats')
+      } else {
+        this.$toast.show("Select a route", {
+          position: "top",
+          type: "error",
+        });
+      }
     },
-    alertSelection(e) {
-      console.log(e.bus.id);
-      // alert(`You Selected ${e.bus.number} departing at ${e.bus.dep_time}`);
-      this.selectedBus = e.bus;
-      this.$store.commit("addBus", e.bus.id);
+    commitToStore(e) {
+      this.selectedSchedule = e.schedule;
+      this.$store.commit("addBus", e.schedule);
     },
   },
 };
