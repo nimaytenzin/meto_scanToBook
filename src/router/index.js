@@ -4,7 +4,6 @@ const routes = [
 
   {
     path: '/',
-    name: 'Home',
     component: ()=>import('../views/Index.vue')
   },
   {
@@ -75,6 +74,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const publicPages = [
+    '/',
     '/login',
     '/book',
     '/book/destination',
