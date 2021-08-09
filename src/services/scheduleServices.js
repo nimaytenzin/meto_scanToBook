@@ -26,6 +26,6 @@ export async function getSchedulesBetween(from,to){
 export async function deleteScheduleByRouteId(id){
    return await axios.delete(`${devUrl}/schedules/route/${id}`)
 }
-export async function editBus(id,data){
-    return await axios.put(`${devUrl}/buses/${id}`,data)
+export async function assignBus(id,data){
+    return await axios.put(`${devUrl}/schedules/${id}`,data)
 }

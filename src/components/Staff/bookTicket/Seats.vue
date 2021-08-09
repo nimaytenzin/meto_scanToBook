@@ -9,28 +9,24 @@
   <div
     class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
   >
-    <div>
-      <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
-    </div>
+   
     <div class="flex flex-col justify-center items-center">
       <h1 class="text-3xl text-gray-500 text-center">Select Seats</h1>
-      <h1 class="text-3xl text-gray-500 text-center mt-3">
-        སྡོད་ཁྲི་གདམ་ཁ་རྐྱབ་གནང་།
-      </h1>
+    
     </div>
 
     <div class="flex mt-5 justify-evenly">
       <div class="text-center flex flex-col justify-center items-center m-2">
-        <img src="../../assets/seatAvailable.png" width="25" alt="" />
+        <img src="../../../assets/seatAvailable.png" width="25" alt="" />
         <p class="text-sm text-gray-600">Available</p>
       </div>
       <div class="text-center flex flex-col justify-center items-center m-2">
-        <img src="../../assets/seatUnavailable.png" width="25" alt="" />
+        <img src="../../../assets/seatUnavailable.png" width="25" alt="" />
         <p class="text-sm text-gray-600">Booked</p>
       </div>
 
       <div class="text-center flex flex-col justify-center items-center m-2">
-        <img src="../../assets/seatSelected.png" width="25" alt="" />
+        <img src="../../../assets/seatSelected.png" width="25" alt="" />
         <p class="text-sm text-gray-600">Being Booked</p>
       </div>
     </div>
@@ -91,7 +87,7 @@
             :key="item"
             class="m-1 p-1 rounded relative"
           >
-            <img src="../../assets/seatUnavailable.png" width="50" alt="" />
+            <img src="../../../assets/seatUnavailable.png" width="50" alt="" />
             <p
               class="
                 absolute
@@ -196,7 +192,7 @@
         "
         @click="finalizeBooking()"
       >
-        Next
+        Customer Details
       </button>
     </div>
   </div>
@@ -254,16 +250,19 @@
 <script>
 export default {
   created() {
-    if (this.$store.state.origin === "") {
-      this.$router.push("/book");
+    if(!Object.keys(this.$store.state.customerBooking.schedule).length){
+      console.log('ok')
+      this.$router.push("/staff/")
     }
+
     this.changeSeatStatus();
-    this.fare = this.$store.state.selectedBus?.route?.fare
-      ? this.$store.state.selectedBus.route.fare
+    this.fare = this.$store.state.customerBooking?.schedule?.route?.fare
+      ? this.$store.state.customerBooking.schedule.route.fare
       : 0;
 
+    this.roomId = this.$store.state.customerBooking.schedule.id
     this.conn = new WebSocket(
-      "ws://" + "localhost:8080" + "/ws/" + this.$store.state.selectedBus.id
+      "ws://" + "localhost:8080" + "/ws/" + this.roomId
     );
 
     this.conn.onopen = (event) => {
@@ -296,7 +295,7 @@ export default {
       //schedule id = room id for the websocket
       msg: {},
       lockedSeats: [],
-      roomId: this.$store.state.selectedBus.id,
+      roomId:0,
       conn: null,
 
       showModal: false,
@@ -340,7 +339,7 @@ export default {
   },
   computed: {
     bookedSeats() {
-      return this.$store.state.selectedSeats;
+      return this.$store.state.customerBooking.seats;
     },
   },
   methods: {
@@ -366,7 +365,7 @@ export default {
       return null;
     },
     previous() {
-      this.$router.push("/book/buses");
+      this.$router.push("/staff/");
     },
 
     changeSeatStatus() {
@@ -403,30 +402,30 @@ export default {
       if (seat !== null) {
         switch (seat.status) {
           case "available":
-            return require("../../assets/seatAvailable.png");
+            return require("../../../assets/seatAvailable.png");
             break;
           case "booked":
-            return require("../../assets/seatUnavailable.png");
+            return require("../../../assets/seatUnavailable.png");
             break;
           case "driver":
-            return require("../../assets/steeringwheel.png");
+            return require("../../../assets/steeringwheel.png");
             break;
           case "locked":
-            return require("../../assets/seatSelected.png");
+            return require("../../../assets/seatSelected.png");
             break;
           default:
-            return require("../../assets/seatAvailable.png");
+            return require("../../../assets/seatAvailable.png");
             break;
         }
       } else {
-        return require("../../assets/seatAvailable.png");
+        return require("../../../assets/seatAvailable.png");
       }
     },
 
     finalizeBooking() {
       if (this.bookedSeats.length !== 0) {
-        this.$store.commit("addTotal", this.total);
-        this.$router.push("/book/bookings");
+        this.$store.commit("commitCustomerTotal", this.total);
+        this.$router.push("/staff/passenger");
       } else {
         this.$toast.show("Please select a seat", {
           position: "top",
@@ -447,7 +446,7 @@ export default {
         })
       );
       this.activeSeat = null;
-      this.$store.commit("addSeats", [this.selectedSeat]);
+      this.$store.commit("commitCustomerSeats", [this.selectedSeat]);
       this.total += this.fare;
       this.selectedSeat = {};
     },
@@ -472,7 +471,7 @@ export default {
         })
       );
       this.selectedSeat.status = "available";
-      this.$store.commit("removeSeat", this.selectedSeat);
+      this.$store.commit("commitRemoveCustomerSeat", this.selectedSeat);
       this.total -= this.fare;
       this.selectedSeat = {};
       this.reverSeatModal = false;

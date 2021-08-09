@@ -12,6 +12,8 @@
 
     <div
       class="
+      flex 
+      flex-col
         p-6
         mx-auto
         bg-white
@@ -23,16 +25,21 @@
         space-x-4
       "
     >
-      <DatePicker
+    <div>
+      Time Table
+    </div>
+     <div>
+        <DatePicker
         v-model="date"
         :min-date="new Date()"
         @dayclick="onDayClick($event)"
         :attributes="attributes"
       />
+     </div>
 
       <div class="flex flex-col justify-center mt-2">
-        <h3 class="text-gray-700 font-medium">Bus Status</h3>
-        <h2 class="flex gap-2 text-sm font-light items-center">
+        <!-- <h3 class="text-gray-700 font-medium">Bus Status</h3> -->
+        <!-- <h2 class="flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-1 w-3 bg-red-500"> </span>
           No Buses
         </h2>
@@ -40,16 +47,16 @@
         <h2 class="flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-1 w-3 bg-blue-500"> </span>
           Available
-        </h2>
+        </h2> -->
 
         <h2 class="flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-3 w-3 bg-blue-400"> </span>
           Selected date
         </h2>
-
+        <!-- 
         <p class="text-gray-600 italic font-light text-sm break-word">
           showing schedule status for next seven days.
-        </p>
+        </p> -->
       </div>
     </div>
 
@@ -65,7 +72,7 @@
           px-4
           rounded-l
         "
-        @click="this.$router.push('/book/destination')"
+        @click="previous()"
       >
         Prev
       </button>
@@ -97,6 +104,8 @@ import {
   getScheduleByDate,
   getSchedulesBetween,
 } from "../../services/scheduleServices";
+
+import { getRoutesByOriginDestination } from "../../services/routeServices";
 export default {
   components: {
     Calendar,
@@ -106,20 +115,16 @@ export default {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-
-    // var from = new Date().getTime();
-    // var to = from + 604800000;
-
-    // getSchedulesBetween(from, to).then((res) => {
-    //   if (res.status === 200) {
-    //     for (let i = 0; i < res.data.length; i++) {
-    //       if(this.attributes[o].dates.indexOf(new Date(new Date(res.data[i].dateId).getFullYear(),new Date(res.data[i].dateId).getMonth(),new Date(res.data[i].dateId).getDay()) === -1)){
-    //           this.attributes[0].dates.push(new Date(new Date(res.data[i].dateId).getFullYear(),new Date(res.data[i].dateId).getMonth(),new Date(res.data[i].dateId).getDay()))
-    //       }
-    //     }
-    //   }
-    //   console.log(this.attributes);
-    // });
+    getRoutesByOriginDestination(
+      this.$store.state.origin.id,
+      this.$store.state.destination.id
+    )
+      .then((res) => {
+        res.data.forEach((element) => {
+          this.matchedRoutes.push(element);
+        });
+      })
+      .catch((err) => console.log(err));
   },
   data() {
     return {
@@ -127,17 +132,20 @@ export default {
         {
           bar: true,
           dates: [],
-        }
+        },
       ],
-      date: new Date(),
+      date: "",
       schedules: 0,
+      matchedRoutes: [],
     };
   },
 
   methods: {
+    previous() {
+      this.$router.push("/book/destination");
+    },
     onDayClick(e) {
       let formattedDate = e.id + " 00:00:00";
-      console.log(formattedDate);
       getScheduleByDate(formattedDate).then((res) => {
         if (res.length === 0) {
           this.schedules = 0;
@@ -147,7 +155,17 @@ export default {
           });
         } else {
           this.schedules = res.length;
-          this.$toast.show(`${res.length} Bus avialable on  ${e.ariaLabel}`, {
+          let matchedSchedule = [];
+          res.forEach((element) => {
+            this.matchedRoutes.forEach((route) => {
+              if (element.routeId === route.id) {
+                matchedSchedule.push(element);
+              }
+            });
+          });
+          this.schedules = matchedSchedule.length
+          this.$store.commit("addSchedules",matchedSchedule)
+          this.$toast.show(`${matchedSchedule.length} Bus avialable on  ${e.ariaLabel}`, {
             position: "top",
             type: "success",
           });
@@ -163,13 +181,10 @@ export default {
         if (this.schedules) {
           this.$router.push("/book/buses");
         } else {
-          this.$toast.show(
-            `No Buses available on the selected date ..\n please select another date`,
-            {
-              position: "top",
-              type: "error",
-            }
-          );
+          this.$toast.show(`Select a Date by clciking on a date`, {
+            position: "top",
+            type: "error",
+          });
         }
       }
     },

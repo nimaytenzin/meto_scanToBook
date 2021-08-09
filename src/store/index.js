@@ -1,3 +1,4 @@
+import { integer } from '@vuelidate/validators';
 import { createStore } from 'vuex'
 
 export default createStore({
@@ -9,7 +10,18 @@ export default createStore({
     selectedSeats:[],
     total:0,
     bookedBy:{},
-    authToken:''
+    authToken:'',
+    schedules:[],
+    customerBooking:{
+      schedule:{},
+      total:0,
+      seats:[],
+      customer:{
+        customerName:'',
+        cutomerContact:0,
+        customerCid:''
+      }
+    }
   },
   mutations: {
     addOrigin(state,origin){
@@ -27,6 +39,16 @@ export default createStore({
     addSeats(state,seats){
       state.selectedSeats = state.selectedSeats.concat(seats);
     },
+    removeSeat(state,selectedSeat){
+      state.selectedSeats.forEach((seat,index) =>{
+        if(selectedSeat.id === seat.id){
+            state.selectedSeats.splice(index,1)
+        }
+      })
+    },
+    resetSeats(state){
+      state.selectedSeats =[]
+    },
     addTotal(state,total){
       state.total = total
     },
@@ -35,7 +57,32 @@ export default createStore({
     },
     addAuthorizationToken(state, authToken){
       state.authToken = authToken
-    }
+    },
+    addSchedules(state, schedules){
+      state.schedules = schedules
+    },
+
+    //book from the frontend
+    commitSchedule(state,schedule){
+      state.customerBooking.schedule = schedule
+    },
+    commitCustomerTotal(state,total){
+      state.customerBooking.total = total
+    },
+    commitCustomerSeats(state,seats){
+      state.customerBooking.seats = state.customerBooking.seats.concat(seats);
+    },
+    commitCustomerDetails(state, details){
+      state.customerBooking.customer = details
+    },
+    
+    commitRemoveCustomerSeat(state,selectedSeat){
+      state.customerBooking.seats.forEach((seat,index) =>{
+        if(selectedSeat.id === seat.id){
+            state.customerBooking.seats.splice(index,1)
+        }
+      })
+    },
   },
   actions: {
   },

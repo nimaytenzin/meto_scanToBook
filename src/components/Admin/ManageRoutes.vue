@@ -65,6 +65,19 @@
               >
                 Name
               </th>
+               <th
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Contact
+              </th>
               <th
                 class="
                   px-6
@@ -95,6 +108,7 @@
               class="hover:bg-gray-200 flex flex-row items-stretch"
             >
               <td class="px-6 py-4 whitespace-nowrap">{{ stop.name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ stop.contact }}</td>
               <td class="px-6 py-4 whitespace-nowrap flex gap-4">
                 <button @click="editStop(stop)" class="flex items-center">
                   <svg
@@ -347,6 +361,27 @@
             type="text"
             v-model="newStop.name"
           />
+
+          <label class="text-sm text-left text-gray-400 italic"
+            >Focal Contact Number</label
+          >
+          <input
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
+            type="number"
+            v-model="newStop.contact"
+          />
         </div>
         <div class="modal__action">
           <button
@@ -390,6 +425,27 @@
               focus:shadow-outline
             "
             v-model="selectedStop.name"
+          />
+
+          <label class="text-sm text-left text-gray-400 italic"
+            >Focal Contact Number</label
+          >
+          <input
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
+            type="number"
+            v-model="selectedStop.contact"
           />
         </div>
         <div class="modal__action">
@@ -752,7 +808,6 @@ import {
 
 import {
   addNewSchedule,
-  deleteScheduleByRouteId,
 } from "../../services/scheduleServices";
 
 export default {
@@ -793,7 +848,7 @@ export default {
   created() {
     getAllRoutes().then((res) => {
       this.routes = res;
-      console.log(this.routes);
+      console.log(this.routes, "all routes");
     });
 
     getAllStops()

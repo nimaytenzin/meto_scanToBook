@@ -23,7 +23,7 @@
       "
     >
       <div class="flex flex-col">
-        <div class="flex flex-row justify-around">
+        <div class="flex flex-row justify-around items-center">
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(origin)</p>
             <h1 class="text-center text-3xl text-blue-300">
@@ -33,8 +33,18 @@
               ({{ this.$store.state.origin.dzo }})
             </p> -->
           </div>
-          <div class="flex flex-col justify-center">
-            <h2>--</h2>
+          <div
+            class="
+              flex flex-col
+              mt-3
+              mr-7
+              ml-7
+              justify-center
+              items-center
+              justify-items-center
+            "
+          >
+            <p class="text-center mt-4 text-gray-500 italic">to</p>
           </div>
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(destination)</p>
@@ -46,20 +56,21 @@
             </p> -->
           </div>
         </div>
-
-        <h2 class="text-center text-2xl mt-5 text-gray-500">
+        <p class="text-center mt-4 text-gray-500 italic">on</p>
+        <h2 class="text-center text-2xl text-gray-500">
           {{ departureDate }}
         </h2>
       </div>
 
       <div class="mt-4">
-        <table class="table min-w-full">
-          <thead class="bg-blue-200 p-3 text-gray rounded h-14">
-            <tr class="rounded-xl text-left">
-              <th class="pl-3">Departure Time</th>
+        <table class="table min-w-full rounded">
+          <thead class="bg-blue-100 p-3 rounded h-10">
+            <tr class="text-left font-light text-sm">
+              <th class="pl-3 ml-2 mr-4">Departure Time</th>
 
-              <th class="pr-3">Fare</th>
-              <th class="pr-3">ETA</th>
+              <th class="pl-3 ml-5 mr-5">Fare</th>
+              <th class="pr-3 ml-4 mr-4">Journey Time</th>
+              <th></th>
             </tr>
           </thead>
           <tbody
@@ -79,10 +90,30 @@
               @click="commitToStore({ schedule })"
               :class="tableRowColor(schedule)"
             >
-              <td class="pl-3">{{ schedule.route.departureTime }}</td>
-              <td>Nu. {{ schedule.route.fare }}</td>
+              <td class="pl-3  mr-2 border-r border-gray-100 ">
+                {{ getdepTime(schedule.route.departureTime) }}
+              </td>
+              <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route.fare }}</td>
 
-              <td class="pr-3">{{ schedule.route.ETA }}</td>
+              <td class="pr-3 ml-5 mr-2 border-l border-gray-100">{{ getETA(schedule.route.ETA) }}</td>
+              <td>
+                <div v-if="displayIcon(schedule)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -128,21 +159,19 @@
 </template>
 
 <script>
-import { getScheduleByDate } from "../../services/scheduleServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-    console.log(this.$store.state);
 
-    let formattedDate = this.$store.state.departureDate + " 00:00:00";
-    getScheduleByDate(formattedDate).then((res) => (this.schedules = res));
-  },
+    this.schedules = this.$store.state.schedules  
+},
   data() {
     return {
       schedules: [],
       date: new Date(),
+      ok: false,
       selectedSchedule: {},
     };
   },
@@ -154,25 +183,55 @@ export default {
   },
 
   methods: {
-    tableRowColor(e) {
-      
+    displayIcon(e) {
       if (e.id === this.selectedSchedule.id) {
-        return "bg-green-100";
+        return true;
+      }
+      return false;
+    },
+    tableRowColor(e) {
+      if (e.id === this.selectedSchedule.id) {
+        return "bg-gray-100";
       }
       return "bg-white";
     },
     seatSelection() {
       if (Object.keys(this.selectedSchedule).length !== 0) {
-        this.$router.push('/book/seats')
+        this.$router.push("/book/seats");
       } else {
-        this.$toast.show("Select a route", {
+        this.$toast.show("Select a departure time", {
           position: "top",
           type: "error",
         });
       }
     },
+
+    getETA(e) {
+      let ok = e.split(":");
+      let hrs = ok[0];
+      let min = ok[1];
+
+      return `${hrs}Hrs : ${min}Mins`;
+    },
+    getdepTime: function (time) {
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
+
+      return `${hrs}:${min} ${ampm}`;
+    },
     commitToStore(e) {
+      this.ok = true;
       this.selectedSchedule = e.schedule;
+      console.log(e)
       this.$store.commit("addBus", e.schedule);
     },
   },

@@ -12,6 +12,8 @@
       <h1 class="text-3xl text-gray-500 text-center mt-3">
         ན་བུ་ག་སྟེ་ལས་བྱོནམ་སྨོ?
       </h1>
+        
+  
     </div>
 
     <div
@@ -63,24 +65,23 @@
 </template>
 
 <script>
-import {
-  getAllStops
-} from '../../services/stopServices'
+import { getAllStops } from "../../services/stopServices";
 
 export default {
   data() {
     return {
       origins: [],
-      originSelected:{}
+      originSelected: {},
     };
   },
   created() {
     getAllStops().then((res) => {
       this.origins = res;
-      this.originSelected = res[0]
+      this.originSelected = res[0];
     });
-   
+    this.$store.commit('resetSeats')
   },
+ 
   methods: {
     addOrigin(val) {
       this.$store.commit("addOrigin", val);

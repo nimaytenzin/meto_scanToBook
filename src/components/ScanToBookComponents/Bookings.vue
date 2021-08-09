@@ -20,30 +20,44 @@
       "
     >
       <div class="flex flex-col">
-        
-
-        <div class="flex flex-row justify-around">
-          <div class="flex flex-col">
-            <p class="text-sm text-center text-gray-600">(origin)</p>
-            <h1 class="text-center text-3xl text-blue-300">
-              {{ this.$store.state.origin.eng }}
-            </h1>
-            <p class="text-md text-center">
+        <div class="flex flex-col">
+          <div class="flex flex-row justify-around items-center">
+            <div class="flex flex-col">
+              <p class="text-sm text-center text-gray-600">(origin)</p>
+              <h1 class="text-center text-3xl text-blue-300">
+                {{ this.$store.state.origin.name }}
+              </h1>
+              <!-- <p class="text-md text-center">
               ({{ this.$store.state.origin.dzo }})
-            </p>
-          </div>
-          <div class="flex flex-col justify-center">
-            <h2>--</h2>
-          </div>
-          <div class="flex flex-col">
-            <p class="text-sm text-center text-gray-600">(destination)</p>
-            <h1 class="text-center text-3xl text-blue-300">
-              {{ this.$store.state.destination.eng }}
-            </h1>
-            <p class="text-md text-center">
+            </p> -->
+            </div>
+            <div
+              class="
+                flex flex-col
+                mt-3
+                mr-7
+                ml-7
+                justify-center
+                items-center
+                justify-items-center
+              "
+            >
+              <p class="text-center mt-4 text-gray-500 italic">to</p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm text-center text-gray-600">(destination)</p>
+              <h1 class="text-center text-3xl text-blue-300">
+                {{ this.$store.state.destination.name }}
+              </h1>
+              <!-- <p class="text-md text-center">
               ({{ this.$store.state.destination.dzo }})
-            </p>
+            </p> -->
+            </div>
           </div>
+          <p class="text-center mt-4 text-gray-500 italic">on</p>
+          <h2 class="text-center text-2xl text-gray-500">
+            {{ departureDate }}
+          </h2>
         </div>
 
         <div class="flex-1 text-center">
@@ -65,31 +79,101 @@
                   -translate-x-1/2 -translate-y-1/2
                 "
               >
-                {{ item }}
+                {{ item.number }}
               </p>
             </div>
           </div>
         </div>
 
-        <div class="font-nunito text-gray-800 text-left">
-          <p class="text-xl">Base Fare: Nu 250</p>
+        <div
+          class="
+            font-nunito
+            text-white text-center
+            bg-gray-400
+            rounded
+            shadow-md
+            mt-4
+          "
+        >
+          <p class="text-md">
+            Base Fare: Nu
+            {{
+              this.$store.state.selectedBus?.route?.fare
+                ? this.$store.state.selectedBus.route.fare
+                : ""
+            }}
+          </p>
 
-          <h2 class="text-xl">Total = Nu. {{ this.$store.state.total }}</h2>
+          <h2 class="text-md">Total = Nu. {{ this.$store.state.total }}</h2>
         </div>
       </div>
-       <div class="flex flex-col ">
-
-      <p>To be prompted</p>
- 
-      <input v-model="name" placeholder="Name" class="m-3 p-2" />
-      <input v-model="contact" placeholder="Contact" class="m-3 p-2" />
-      <input v-model="cid" placeholder="CID/EID" class="m-3 p-2" />
- 
-
-      
+      <div class="flex flex-col mt-4">
+        <h2 class="text-xl text-gray-500 italic">Enter your details</h2>
+        <label class="block text-gray-700 text-sm font-bold mb-2"> Name </label>
+        <input
+          v-model="name"
+          placeholder="Name"
+          class="
+            shadow
+            appearance-none
+            border
+            rounded
+            w-full
+            py-2
+            px-3
+            text-gray-700
+            leading-tight
+            focus:outline-none
+            focus:shadow-outline
+          "
+        />
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+          Phone Number
+        </label>
+        <input
+          v-model="contact"
+          type="number"
+          placeholder="Contact"
+          class="
+            shadow
+            appearance-none
+            border
+            rounded
+            w-full
+            py-2
+            px-3
+            text-gray-700
+            leading-tight
+            focus:outline-none
+            focus:shadow-outline
+          "
+        />
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="username"
+        >
+          CID/EID
+        </label>
+        <input
+          v-model="cid"
+          placeholder="CID/EID"
+          class="
+            shadow
+            appearance-none
+            border
+            rounded
+            w-full
+            py-2
+            px-3
+            text-gray-700
+            leading-tight
+            focus:outline-none
+            focus:shadow-outline
+          "
+        />
+      </div>
     </div>
-    </div>
-   
+
     <div class="inline-flex mt-8">
       <button
         class="
@@ -102,7 +186,7 @@
           px-4
           rounded-l
         "
-        @click="this.$router.push('/destination')"
+        @click="previous()"
       >
         Prev
       </button>
@@ -137,20 +221,40 @@ export default {
     return {
       name: "",
       contact: "",
-      cid:''
+      cid: "",
     };
+  },
+  computed: {
+    departureDate() {
+      let d = new Date(this.$store.state.departureDate);
+      return d.toDateString();
+    },
   },
 
   methods: {
+    previous(){
+      this.$router.push("/book/seats")
+    },
     pay() {
-      this.addDetail();
-      this.$router.push("/book/eticket");
+      if (this.name && this.contact && this.cid) {
+        this.addDetail();
+        this.$toast.show("loading RMA payment gateway", {
+          position:"top",
+          type:"info"
+        })
+        this.$router.push("/book/mockPayment");
+      }else{
+        this.$toast.show("Enter your details", {
+          position:"top",
+          type:"error"
+        })
+      }
     },
     addDetail() {
       let user = {
         name: this.name,
         contact: this.contact,
-        cid:this.cid
+        cid: this.cid,
       };
       this.$store.commit("addBookedBy", user);
     },

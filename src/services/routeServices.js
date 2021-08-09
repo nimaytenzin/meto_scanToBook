@@ -25,3 +25,7 @@ export async function deleteRoute(id){
 export async function editBus(id,data){
     return await axios.put(`${devUrl}/buses/${id}`,data)
 }
+
+export async function getRoutesByOriginDestination(originId, destinationId){
+    return await axios.get(`${devUrl}/routes/${originId}/${destinationId}`)
+}

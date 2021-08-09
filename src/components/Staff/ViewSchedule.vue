@@ -1,8 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col p-4 justify-center items-center">
-    <h1>Schedule Bus</h1>
-
-    <h2 class="text-xl m-2">Click on a date to view Schedule for that date</h2>
+    <h2 class="text-2xl m-2 font-medium text-indigo-700 ">Click on a date to view Schedule </h2>
 
     <Calendar
       :min-date="new Date()"
@@ -46,7 +44,13 @@
           </button>
         </div>
         <div v-if="schedules.length !== 0">
-          <table class="min-w-full divide-y divide-gray-200 table-auto">
+          <div class="mb-1">
+            <h3 class="text-md italic font-nunito text-indigo-500">---- Filter by ----</h3>
+            <input type="text" placeholder="Origin" class="border p-1 m-1" v-model="filter"/>
+            
+          </div>
+
+          <table class="min-w-full divide-y divide-gray-200 table-auto" id="myTable">
             <thead class="bg-gray-50">
               <tr>
                 <td
@@ -114,27 +118,11 @@
                 >
                   Estimated Arrival Time
                 </td>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Add Bus
-                </td>
-                <td>
-                  Actions
-                </td>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr
-                v-for="schedule in schedules"
+                v-for="schedule in filteredData"
                 :key="schedule"
                 class="hover:bg-gray-200"
               >
@@ -158,41 +146,6 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
                   {{ getETA(schedule.route.ETA) }}
-                </td>
-                <td>
-                  <select
-                    class="text-3xl p-5 bg-white text-blue-900"
-                    v-model="schedule.busId"
-                  >
-                    <option
-                      v-for="bus in buses"
-                      :value="bus.id"
-                      :key="bus"
-                      class="bg-white"
-                    >
-                      {{ bus.vechileNumber }}
-                    </option>
-                  </select>
-                </td>
-                <td v-if="schedule.busId" class="bg-green-400">
-                 <p >
-                    {{ statusOk }}
-                 </p>
-                 
-                  <button 
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="updateBus(schedule)"
-                  > Update Bus </button>
-                </td>
-                <td v-else class="bg-red-400">
-                 <p >
-                    {{ statusNotOk }}
-                 </p>
-                 
-                  <button 
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="updateBus(schedule)"
-                  > Assign Bus Bus </button>
                 </td>
               </tr>
             </tbody>
@@ -260,29 +213,32 @@
 
 <script>
 import { getScheduleByDate } from "../../services/scheduleServices";
-import { getAllBuses} from '../../services/busServices'
-import {assignBus} from "../../services/scheduleServices"
 export default {
   data() {
     return {
-      status:"bus Set",
       date: new Date(),
       selectedDate: "",
       showScheduleByDayModal: false,
       schedules: [],
-      buses:[],
-      selectedBus:{},
-      statusOk: "Bus Assigned",
-      statusNotOk:"Bus Not Assigned"
+      filter:'',
+      originSearch:'',
+
     };
   },
-  computed: {},
-  created() {
-    getAllBuses().then((res) => {
-      this.buses = res;
-    });
+  computed: {
+    filteredData(){
+        return this.schedules.filter(c => {
+        if(this.filter == '') return true;
+        return c.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0;
+      })
+    },
+
   },
-  
+ watch: {
+    filter() {
+      console.log('reset to p1 due to filter');
+    }
+  },
   methods: {
     getdepTime: function (time) {
       let tissme = time.split(":");
@@ -310,20 +266,7 @@ export default {
 
       return `${hrs} Hrs ${min} Mins`;
     },
-    updateBus(e){
-      let updateData = {
-        busId: e.busId
-      }
-      console.log(updateData, e)
-      assignBus(e.id, updateData).then(res =>{
-          if(res.status === 200){
-            this.$toast.show("Bus Assigned",{
-              type:"success",
-              position:"top"
-            })
-          }   
-      })
-    },
+
     onDayClick(e) {
       this.selectedDate = e.ariaLabel;
       let formattedDate = e.id + " 00:00:00";
