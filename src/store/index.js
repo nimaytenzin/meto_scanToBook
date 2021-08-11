@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     origin:"",
+    scanBookingId:null,
     destination:"",
     departureDate:'',
     selectedBus:'',
@@ -60,6 +61,9 @@ export default createStore({
     },
     addSchedules(state, schedules){
       state.schedules = schedules
+    },
+    addScanBookingId(state, id){
+      state.scanBookingId = id
     },
 
     //book from the frontend

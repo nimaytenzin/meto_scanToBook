@@ -137,7 +137,9 @@ export default {
     },
     next() {
       addNewBooking(this.bookingsWithSeats).then((res) => {
+        console.log(res)
         if (res.status === 201) {
+          this.$store.commit('addScanBookingId',res.data.id)
           this.$router.push("/book/eticket");
         } else {
           this.$toast.show("Newtork Error..try again", {

@@ -19,6 +19,10 @@ export async function addNewSchedule(data){
 
 }
 
+export async function getPassengerData(scheduleId){
+    return await axios.get(`${devUrl}/schedules/${scheduleId}`)
+}
+
 export async function getSchedulesBetween(from,to){
     return await axios.get(`${devUrl}/schedules/between/${from}/${to}`)
 }
@@ -28,4 +32,12 @@ export async function deleteScheduleByRouteId(id){
 }
 export async function assignBus(id,data){
     return await axios.put(`${devUrl}/schedules/${id}`,data)
+}
+
+export async function getBusNumber(bookingId){
+    return await axios.get(`${devUrl}/schedules/busdetails/${bookingId}`)        
+} 
+
+export async function updateSchedule(scheduleId,data){
+    return await axios.put(`${devUrl}/schedules/${scheduleId}`,data)
 }

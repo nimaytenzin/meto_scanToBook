@@ -24,7 +24,6 @@
             <span class="text-sm text-gray-500">Schedule for</span>
             {{ selectedDate }}
           </h3>
-
           <button
             @click="showScheduleByDayModal = false"
             class="cursor-pointer text-red-600 font-bold"
@@ -114,6 +113,9 @@
                 >
                   Estimated Arrival Time
                 </td>
+                <td>
+                  Passengers
+                </td>
                 <td
                   class="
                     px-6
@@ -127,6 +129,7 @@
                 >
                   Add Bus
                 </td>
+                
                 <td>
                   Actions
                 </td>
@@ -159,6 +162,9 @@
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
                   {{ getETA(schedule.route.ETA) }}
                 </td>
+                  <td>
+                  <button @click="viewPassengers(schedule)">View Passengers</button>
+                </td>
                 <td>
                   <select
                     class="text-3xl p-5 bg-white text-blue-900"
@@ -173,7 +179,9 @@
                       {{ bus.vechileNumber }}
                     </option>
                   </select>
+
                 </td>
+              
                 <td v-if="schedule.busId" class="bg-green-400">
                  <p >
                     {{ statusOk }}
@@ -339,6 +347,11 @@ export default {
       });
       console.log(e);
     },
+
+    viewPassengers(schedule){
+      
+      this.$router.push(`/admin/view-passengers/${schedule.id}`)
+    }
   },
 };
 </script>

@@ -12,6 +12,16 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/busDetails/:id',
+    name:'viewBusDetails',
+    component: () => import('../components/ScanToBookComponents/ViewBus.vue')
+  },
+  {
+    path: '/cancel-ticket/:bookingId',
+    name:'cancelTicket',
+    component: () => import('../components/ScanToBookComponents/CancelTicket.vue')
+  },
+  {
     path: '/book',
     name: 'Book',
     component: () => import('../views/ScanToBook.vue'),
@@ -48,19 +58,25 @@ const routes = [
     component: () => import('../views/Admin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/Admin/Index.vue')
+        path: '', component: () => import('../components/Admin/Index.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue')
+        path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue')
+        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'schedules', component: () => import('../components/Admin/Schedule.vue')
+        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue')
+        path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true }
+      },
+      {
+        path: 'view-passengers/:scheduleId', component: () => import('../components/Admin/ViewPassengers.vue'), meta: { requiresAuth: true }
+      },
+      {
+        path: 'transfer-passengers/:scheduleId', component: () => import('../components/Admin/TransferPassenger.vue'), meta: { requiresAuth: true }
       }
 
     ]
@@ -72,20 +88,21 @@ const routes = [
     children: [
       {
         path: '', component: () => import('../components/Staff/BookTicket.vue'),
+       meta: { requiresAuth: true },
         children: [
-          { path: '', component: () => import('../components/Staff/bookTicket/Route.vue')},
-          { path: 'seats', component: () => import('../components/Staff/bookTicket/Seats.vue')},
-          { path: 'passenger', component: () => import('../components/Staff/bookTicket/Passenger.vue')}
+          { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true } },
+          { path: 'seats', component: () => import('../components/Staff/bookTicket/Seats.vue'), meta: { requiresAuth: true } },
+          { path: 'passenger', component: () => import('../components/Staff/bookTicket/Passenger.vue'), meta: { requiresAuth: true } }
         ]
       },
       {
-        path: 'view-cancellations', component: () => import('../components/Staff/Cancellations.vue')
+        path: 'view-cancellations', component: () => import('../components/Staff/Cancellations.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'view-schedule', component: () => import('../components/Staff/ViewSchedule.vue')
+        path: 'view-schedule', component: () => import('../components/Staff/ViewSchedule.vue'), meta: { requiresAuth: true }
       }
     ]
-  },
+  }
 
 ]
 
@@ -97,25 +114,17 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  const publicPages = [
-    '/',
-    '/login',
-    '/book',
-    '/book/destination',
-    '/book/date',
-    '/book/buses',
-    '/book/seats',
-    '/book/bookings',
-    '/book/mockPayment',
-    '/book/eticket'
-  ];
-  const authRequired = !publicPages.includes(to.path);
+
   const loggedIn = sessionStorage.getItem('token');
-  if (authRequired && !loggedIn) {
-    next('/login');
-  } else {
-    next();
+
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    if (loggedIn) {
+      next();
+    } else {
+      next({ path: '/login' });
+    }
   }
+  next();
 });
 
 export default router

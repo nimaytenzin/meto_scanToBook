@@ -150,9 +150,7 @@
             <QRCodeVue3
               :width="300"
               :height="300"
-
               v-bind:value="qrDataString"
-
               :qrOptions="{
                 typeNumber: 0,
                 mode: 'Byte',
@@ -185,7 +183,7 @@
               fileExt="png"
               :download="false"
               myclass="my-qur"
-              image = '/meto.png'
+              image="/meto.png"
               imgclass="img-qr"
               downloadButton="my-button"
               :downloadOptions="{ name: 'vqr', extension: 'png' }"
@@ -220,6 +218,11 @@
             </h2>
           </div>
         </div>
+
+        <p>Your Bus Details will be uploaded 2 hours before departure <br /></p>
+        <button @click="openBusDetails">Click here to check Details</button>
+
+        <button @click="cancelTicket()">Cancel Ticket</button>
 
         <hr class="border-dashed" />
         <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -275,8 +278,8 @@ export default {
     }
     console.log(this.$store.state);
     this.$store.state.selectedSeats.forEach((element) => {
-      this.seatNumbers += element.number
-      this.seatNumbers += " | "
+      this.seatNumbers += element.number;
+      this.seatNumbers += " | ";
     });
     this.qrData = {
       origin: this.$store.state.origin.name,
@@ -287,7 +290,7 @@ export default {
       departureDate: this.$store.state.departureDate,
       customerName: this.$store.state.bookedBy.name,
       customerContact: this.$store.state.bookedBy.contact,
-      cusomerCid:this.$store.state.bookedBy.cid,
+      cusomerCid: this.$store.state.bookedBy.cid,
       seats: this.seatNumbers,
     };
     this.qrDataString = JSON.stringify(this.qrData);
@@ -338,6 +341,26 @@ export default {
         link.href = dataUrl;
         link.click();
       });
+    },
+    openBusDetails() {
+      let routeData = this.$router.resolve({
+        name: "viewBusDetails",
+        params: { id: this.$store.state.scanBookingId },
+      });
+
+      console.log(routeData);
+      window.open(routeData.href, "_blank");
+      // this.$router.push(`/busDetails/${this.$store.state.scanBookingId}`);
+    },
+    cancelTicket() {
+      console.log("OK");
+      let routeData = this.$router.resolve({
+        name: "cancelTicket",
+        params: { bookingId: this.$store.state.scanBookingId },
+      });
+
+      console.log(routeData)
+      window.open(routeData.href, "_blank");
     },
     bookAgain() {
       this.$store.state.origin = "";

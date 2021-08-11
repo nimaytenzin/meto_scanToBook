@@ -31,6 +31,19 @@
      <h2>
        Guide
      </h2>
+
+     <p>
+       isFinished Code <br>
+        0 - No <br>
+        1 - Yes <br>
+        2 - Cancelled
+     </p>
+
+     <p>
+       checkInStatus <br>
+       CANCEL -- means Cancelled
+       REFUND --- means refunded
+     </p>
     </div>
 
 

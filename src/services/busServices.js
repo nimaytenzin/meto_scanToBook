@@ -25,3 +25,5 @@ export async function deleteBus(id){
 export async function editBus(id,data){
     return await axios.put(`${devUrl}/buses/${id}`,data)
 }
+
+          
