@@ -105,61 +105,15 @@
             Cancel Bus
           </button>
         </div>
-
-        <div class="flex flex-col items-center">
-          <div class="flex mb-2">
-            <button
-              class="
-                h-10
-                px-5
-                text-indigo-100
-                transition-colors
-                duration-100
-                bg-indigo-800
-                rounded-l-lg
-                focus:shadow-outline
-                cursor-default
-              "
-            >
-              Actions
-            </button>
-            <button
-              class="
-                h-10
-                px-5
-                text-indigo-100
-                transition-colors
-                duration-100
-                bg-indigo-700
-                rounded-r-lg
-                focus:shadow-outline
-                hover:bg-indigo-800
-              "
-              @click="selectAllBookings()"
-            >
-              Cancel All Ticket
-            </button>
-          </div>
-          <div class="flex gap-4">
-            <p
-              class="mb-2 text-xl"
-              v-for="seat in selectedPassengerBookings"
-              :key="seat"
-            >
-              {{ seat.seatNumber }}
-            </p>
-          </div>
-        </div>
       </div>
 
-      <!-- v-if="scheduleData.bookings.length" -->
+      <!--  -->
 
-      <div class="mt-4" >
+      <div class="mt-4" v-if="scheduleData.bookings.length">
         <h2 class="text-center text-xl font-semibold">Passenger Details</h2>
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              
               <td
                 class="
                   px-6
@@ -212,9 +166,8 @@
                 "
               >
                 Seat Number
-            
               </td>
-              <!-- <td
+              <td
                 class="
                   px-6
                   py-3
@@ -224,9 +177,7 @@
                   uppercase
                   tracking-wider
                 "
-              >
-                Select
-              </td> -->
+              ></td>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -235,7 +186,6 @@
               :key="booking"
               class="hover:bg-gray-200"
             >
-              
               <td class="px-2 py-4 whitespace-nowrap">
                 {{ booking.customerName }}
               </td>
@@ -249,75 +199,44 @@
               <td>
                 <tr v-for="bookedSeat in booking.bookedSeats" :key="bookedSeat">
                   <td class="px-2 py-4 whitespace-nowrap font-bold">
-                      {{ bookedSeat.seatNumber}}
+                    {{ bookedSeat.seatNumber }}
                   </td>
                   <td class="px-2 py-4 whitespace-nowrap">
                     <div class="inline-flex">
-                  <button
-                    class="
-                      bg-gray-300
-                      hover:bg-gray-400
-                      text-gray-800
-                      font-bold
-                      py-2
-                      px-4
-                      rounded-l
-                    "
-                    @click="transferSelectedPassenger(booking,bookedSeat)"
-                  >
-                    Transfer
-                  </button>
-                  <button
-                    class="
-                      bg-gray-300
-                      hover:bg-gray-400
-                      text-gray-800
-                      font-bold
-                      py-2
-                      px-4
-                      rounded-r
-                    "
-                    @click="openCancelSelectedTicketModa(bookedSeat)"
-                  >
-                    Cancel
-                  </button>
-                </div>
-
+                      <button
+                        class="
+                          bg-gray-300
+                          hover:bg-gray-400
+                          text-gray-800
+                          font-bold
+                          py-2
+                          px-4
+                          rounded-l
+                        "
+                        @click="transferSelectedPassenger(booking, bookedSeat)"
+                      >
+                        Transfer
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </td>
-              <!-- <td class="px-2 py-4 whitespace-nowrap">
-                <div class="inline-flex">
-                  <button
-                    class="
-                      bg-gray-300
-                      hover:bg-gray-400
-                      text-gray-800
-                      font-bold
-                      py-2
-                      px-4
-                      rounded-l
-                    "
-                    @click="transferSelectedPassenger(bookedSeat)"
-                  >
-                    Transfer
-                  </button>
-                  <button
-                    class="
-                      bg-gray-300
-                      hover:bg-gray-400
-                      text-gray-800
-                      font-bold
-                      py-2
-                      px-4
-                      rounded-r
-                    "
-                    @click="openCancelSelectedTicketModa(bookedSeat)"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </td> -->
+              <td class="px-2 py-4 whitespace-nowrap">
+                <button
+                  class="
+                    bg-gray-300
+                    hover:bg-gray-400
+                    text-gray-800
+                    font-bold
+                    py-2
+                    px-4
+                    rounded-r
+                  "
+                  @click="openBookingsModal(booking)"
+                >
+                  Cancel Booking
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -644,23 +563,40 @@
     </vue-final-modal>
 
     <vue-final-modal
-      v-model="cancelSelectedTicketModal"
+      v-model="cancelBookingModal"
       classes="modal-container"
       content-class="modal-content"
       class="w-max-screen"
     >
       <div class="modal__content text-center mt-1 flex flex-col gap-3">
-        <h3 class="text-xl">Cancel Selected Ticket?</h3>
+        <h3 class="text-xl">Cancel Booking?</h3>
 
         <div>
-          <h1>Seat Number : {{ selectedBookedSeat.seatNumber }}</h1>
-          <h1>Passenger Name : {{ selectedBookedSeat.bookingDetails.customerName }}</h1>
+          <h1>
+            Passenger Name :
+            {{ selectedBooking.customerName }}
+          </h1>
+
+          <div>
+            Seats: <br>
+            <div class="flex flex-row justify-around text-xl font-semibold">
+
+              <p v-for="seat in selectedBooking.bookedSeats" :key="seat">
+                  {{ seat.seatNumber }}
+
+              </p>
+                
+                
+
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="modal__action">
         <button
           class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-          @click="cancelSelectedTickets()"
+          @click="cancelBooking()"
         >
           Ok
         </button>
@@ -731,7 +667,10 @@ import {
   updateSchedule,
 } from "../../services/scheduleServices";
 import { cancelBooking, updateBooking } from "../../services/bookingServices";
-import { updateBookedSeat } from "../../services/bookedseatsService";
+import {
+  updateBookedSeat,
+  getBookedSeatsByScheduleBookingId,
+} from "../../services/bookedseatsService";
 import { getAllStops } from "../../services/stopServices";
 import { getScheduleByDate } from "../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
@@ -739,11 +678,11 @@ export default {
   data() {
     return {
       scheduleId: null,
-      cancelSelectedTicketModal: false,
+      cancelBookingModal: false,
 
-
-      selectedBookedSeat:{
-        bookingDetails:{}
+      selectedBooking: {},
+      selectedBookedSeat: {
+        bookingDetails: {},
       },
       scheduleStatus: 0,
       transferOrigin: {},
@@ -794,7 +733,7 @@ export default {
           Calendar_Day: 0,
           Calendar_Year: 0,
         },
-        bookings: []
+        bookings: [],
       },
       transferSelectedModal: false,
       stops: [],
@@ -853,7 +792,7 @@ export default {
         isFinished: 2,
       }).then((res) => {
         if (res.status === 200) {
-          this.scheduleData.bookedSeats.forEach((booking) => {
+          this.scheduleData.bookings.forEach((booking) => {
             cancelBooking(booking.bookingId, {
               checkInStatus: "CANCELLED",
             })
@@ -878,17 +817,19 @@ export default {
       this.selectedTransferSchedule = schedule;
       this.showSeats = true;
     },
-    openCancelSelectedTicketModa(booking) {
-      this.selectedBooking = booking;
-      this.cancelSelectedTicketModal = true;
+    openBookingsModal(booking, bookedSeat){
+      this.selectedBooking = booking
+      this.cancelBookingModal = true
     },
-    cancelSelectedTickets() {
+
+    cancelBooking() {
       let status = {
         checkInStatus: "CANCELLED",
       };
       cancelBooking(this.selectedBooking.id, status).then((res) => {
         if (res.status === 200) {
           this.refreshData();
+          this.cancelBookingModal = false
         }
       });
     },
@@ -902,10 +843,11 @@ export default {
     transferPassenger() {
       this.$router.push(`/admin/transfer-passengers/${this.scheduleId}`);
     },
-    transferSelectedPassenger(booking,bookedSeat) {
-      this.selectedBookedSeat=bookedSeat;
-      this.selectedBookedSeat.bookingDetails = booking
-      console.log(this.selectedBookedSeat)
+    transferSelectedPassenger(booking, bookedSeat) {
+      this.selectedBookedSeat = bookedSeat;
+      this.selectedBooking = booking;
+      this.selectedBookedSeat.bookingDetails = booking;
+      console.log(this.selectedBookedSeat);
       this.transferSelectedModal = true;
     },
     confirmTransferSelected() {
@@ -913,7 +855,24 @@ export default {
         scheduleId: this.selectedTransferSchedule.id,
       }).then((res) => {
         console.log(res);
-        this.refreshData();
+        getBookedSeatsByScheduleBookingId(
+          this.selectedBooking.id,
+          this.scheduleId
+        ).then((res) => {
+          if (res.data.length === 0) {
+            updateBooking(this.selectedBooking.id, {
+              scheduleId: this.selectedTransferSchedule.id,
+            }).then((res) => {
+              if (res.status === 200) {
+                this.refreshData();
+                this.$toast.show("Success", {
+                  type: "success",
+                  position: "top",
+                });
+              }
+            });
+          }
+        });
       });
 
       this.transferSelectedModal = false;
@@ -923,6 +882,7 @@ export default {
         position: "top",
       });
     },
+    checkBookedSeatsByScheduleAndBooking() {},
     cancelSelectedPassenger() {
       this.selectedPassengerBookings.forEach((ele) => {
         cancelBooking(ele.id).then((res) => {
@@ -967,11 +927,13 @@ export default {
       getPassengerData(this.scheduleId).then((res) => {
         this.scheduleStatus = res.data.isFinished;
         this.scheduleData = res.data;
-        res.data.bookedSeats.forEach((bookedSeat, i) => {
-          this.seatsAvailable.forEach((seat, j) => {
-            if (res.data.bookedSeats[i].seatNumber === this.seatsAvailable[j]) {
-              this.seatsAvailable.splice(j, 1);
-            }
+        res.data.bookings.forEach((booking, i) => {
+          booking.bookedSeats.forEach((bookedSeat, i) => {
+            this.seatsAvailable.forEach((seat, j) => {
+              if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
+                this.seatsAvailable.splice(j, 1);
+              }
+            });
           });
         });
         this.selectedPassengerBookings = [];
@@ -987,7 +949,7 @@ export default {
   },
   created() {
     this.scheduleId = this.$route.params.scheduleId;
-    console.log(this.scheduleId)
+    console.log(this.scheduleId);
     this.seatsAvailable = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ];
@@ -997,10 +959,10 @@ export default {
     getPassengerData(this.scheduleId).then((res) => {
       this.scheduleStatus = res.data.isFinished;
       this.scheduleData = res.data;
-      console.log(res.data)
+      console.log(res.data);
       this.transferOrigin = res.data.route.origin;
       this.transferDestination = res.data.route.destination;
-      
+
       res.data.bookings.forEach((booking, i) => {
         booking.bookedSeats.forEach((bookedSeat, i) => {
           this.seatsAvailable.forEach((seat, j) => {
