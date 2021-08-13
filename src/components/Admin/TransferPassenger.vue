@@ -233,7 +233,7 @@ import {
   getPassengerData,
   updateSchedule,
 } from "../../services/scheduleServices";
-import { cancelBooking } from "../../services/bookingServices";
+import { updateBooking,cancelBooking } from "../../services/bookingServices";
 export default {
   data() {
     return {

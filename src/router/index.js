@@ -118,10 +118,12 @@ router.beforeEach((to, from, next) => {
   const loggedIn = sessionStorage.getItem('token');
 
   if (to.matched.some(route => route.meta.requiresAuth)) {
-    if (loggedIn) {
-      next();
-    } else {
+    if (!loggedIn) {
       next({ path: '/login' });
+      return
+    } else {
+      next();
+      return
     }
   }
   next();

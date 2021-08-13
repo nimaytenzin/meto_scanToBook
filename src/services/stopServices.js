@@ -4,7 +4,7 @@ const devUrl = "http://localhost:3000"
 
 export async function getAllStops() {
     let stops = [];
-    await axios.get(`${devUrl}/stops`)
+    await axios.get(`${devUrl}/stops`,{headers:authHeader()})
         .then(res => {
             stops = res.data
         })

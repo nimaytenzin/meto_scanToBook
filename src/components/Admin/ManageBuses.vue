@@ -753,7 +753,7 @@ export default {
     });
     getAllBusTypes().then((res) => {
       this.busTypes = res;
-      console.log(res);
+
     });
   },
   computed: {
@@ -770,7 +770,7 @@ export default {
     showEditBusTypeModal(e) {
       this.editBusTypeModal = true;
       this.selectedBusType = e;
-      console.log(e);
+
     },
     addBusType() {
       if (
@@ -874,7 +874,7 @@ export default {
     showEditBusDialog(e) {
       this.selectedBus = e;
       this.editBusModal = true;
-      console.log(e, "selected Bus");
+
     },
     editBus() {
       if (this.selectedBus.vechileNumber !== "") {
@@ -882,7 +882,7 @@ export default {
           vechileNumber: this.selectedBus.vechileNumber,
           typeId: this.selectedBus.busType.id,
         };
-        console.log(this.selectedBus.id, data);
+
         editBus(this.selectedBus.id, data)
           .then((res) => {
             if (res.status === 200) {
@@ -898,7 +898,7 @@ export default {
       }
     },
     deleteBus(e) {
-      console.log("Delete bus", e);
+      
       deleteBus(e.id).then((res) => {
         if (res.status === 200) {
           this.refreshData();

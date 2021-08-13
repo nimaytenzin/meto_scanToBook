@@ -848,7 +848,6 @@ export default {
   created() {
     getAllRoutes().then((res) => {
       this.routes = res;
-      console.log(this.routes, "all routes");
     });
 
     getAllStops()
@@ -935,7 +934,6 @@ export default {
 
     editStop(e) {
       this.selectedStop = e;
-      console.log("selected stop", e);
       this.editStopModal = true;
     },
 
@@ -963,12 +961,11 @@ export default {
           }
         });
 
-        console.log("Updaing the edits", this.selectedStop);
+
       }
     },
 
     deleteStop(e) {
-      console.log("Stop for deleting", e);
       deleteStop(e.id).then((res) => {
         if (res.status === 200) {
           this.reloadData();
@@ -1030,7 +1027,6 @@ export default {
                 this.addRoutesModal = false;
               }
             });
-            console.log("Create Schedule body", reqBody);
           }
         })
         .catch((err) => {
@@ -1040,7 +1036,8 @@ export default {
 
     editRoute(e) {
       this.selectedRoute = e;
-      console.log("selected Route", e);
+
+
       this.editRouteModal = true;
     },
 
@@ -1059,7 +1056,6 @@ export default {
           type: "error",
         });
       } else {
-        console.log("Updating the edits", this.selectedRoute);
         this.editRouteModal = false;
         this.$toast.show("Route updated", {
           position: "top",
@@ -1069,7 +1065,6 @@ export default {
     },
 
     deleteRoute(e) {
-      console.log(e, "ok this is the selected route");
       deleteRoute(e.id).then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -1088,7 +1083,6 @@ export default {
 
       getAllRoutes().then((res) => {
         this.routes = res;
-        console.log(this.routes);
       });
     },
   },

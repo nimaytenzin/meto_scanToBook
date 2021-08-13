@@ -13,8 +13,13 @@ export async function getBookingDetail(id){
 }
 
 export async function cancelBooking(id,data){
+    return await axios.put(`${devUrl}/bookings/cancel/${id}`,data)
+}
+
+export async function updateBooking(id,data){
     return await axios.put(`${devUrl}/bookings/${id}`,data)
 }
+
 
 export async function getAllCanelled(){
     return await axios.get(`${devUrl}/bookings/cancelled`)

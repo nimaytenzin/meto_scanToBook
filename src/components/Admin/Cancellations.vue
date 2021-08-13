@@ -150,7 +150,7 @@
 
             <td>
               <button
-                @click="confirmRefund(booking)"
+                @click="openConfirmModal(booking)"
                 class="
                   h-10
                   px-5
@@ -169,10 +169,92 @@
           </tr>
         </tbody>
       </table>
+
+
+     
     </div>
 
+
+    
+
   </div>
+    <vue-final-modal
+        v-model="confirmModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen"
+      >
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
+          <h3 class="text-xl mb-5">Are you sure?</h3>
+
+        </div>
+          
+        <div class="modal__action">
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="confirmRefund()"
+          >
+            Confirm Refund          </button>
+          <button
+            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+            @click="confirmModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </vue-final-modal>
 </template>
+
+<style scoped>
+::v-deep .modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+::v-deep .modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 90%;
+  min-width: max-content;
+  margin: 0 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+.modal__title {
+  margin: 0 2rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.modal__content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.modal__action {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 1rem 0 0;
+}
+.modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+</style>
+
+<style scoped>
+.dark-mode div::v-deep .modal-content {
+  border-color: #2d3748;
+  background-color: #1a202c;
+}
+</style>
+
 
 <script>
 import { getAllCanelled } from "../../services/bookingServices";
@@ -187,20 +269,28 @@ export default {
   data() {
     return {
       cancelledBookings: [],
+      bookingSelected: {},
+      confirmModal: false,
     };
   },
   methods: {
-    confirmRefund(booking) {
+    openConfirmModal(booking) {
+      this.bookingSelected = booking;
+      this.confirmModal = true
+    },
+
+    confirmRefund() {
       let data = {
         checkInStatus: "REFUNDED",
       };
-      cancelBooking(booking.id, data).then((res) => {
+      cancelBooking(this.bookingSelected.id, data).then((res) => {
         if (res.status === 200) {
           this.$toast.show("Amound Succefully Refunded", {
             type: "success",
             position: "top",
           });
           this.refreshData();
+          this.confirmModal = false 
         }
       });
     },
