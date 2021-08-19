@@ -12,6 +12,10 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/policy/privacy',
+    component: () => import('../views/PrivacyPolicy.vue')
+  },
+  {
     path: '/busDetails/:id',
     name:'viewBusDetails',
     component: () => import('../components/ScanToBookComponents/ViewBus.vue')
@@ -77,6 +81,9 @@ const routes = [
       },
       {
         path: 'transfer-passengers/:scheduleId', component: () => import('../components/Admin/TransferPassenger.vue'), meta: { requiresAuth: true }
+      },
+      {
+        path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true }
       }
 
     ]

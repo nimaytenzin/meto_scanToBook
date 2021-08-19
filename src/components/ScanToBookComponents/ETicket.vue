@@ -81,10 +81,10 @@
             </div>
             <p class="text-center mt-4 text-gray-500 italic">on</p>
             <h2 class="text-center text-2xl text-gray-500">
-              {{ departureDate }}
+              {{ this.$store.state.departureDate }}
             </h2>
           </div>
-          <h2 class="text-center text-gray-500">July 12, 2021</h2>
+          
         </div>
 
         <div class="flex flex-row pt-3">
@@ -102,6 +102,10 @@
                     absolute
                     top-1/2
                     left-1/2
+                    bg-white bg-opacity-60
+                    rounded-sm
+                    pl-1
+                    pr-1
                     transform
                     -translate-x-1/2 -translate-y-1/2
                   "
@@ -120,7 +124,11 @@
             <h2 class="text-blue-900">
               {{ this.$store.state.origin.name }}
             </h2>
-            <h3 class="text-gray-500">{{ departureTime }}</h3>
+            <h3 class="text-gray-500">
+              {{
+                getdepTime(this.$store.state.schedules[0].route.departureTime)
+              }}
+            </h3>
             <p class="text-gray-500 text-sm">
               {{ this.$store.state.origin.contact }}(focal)
             </p>
@@ -130,7 +138,9 @@
             <h2 class="text-blue-900">
               {{ this.$store.state.destination.name }}
             </h2>
-            <h3 class="text-gray-500">ETA {{ eta }}</h3>
+            <h3 class="text-gray-500">
+              ETA {{ getETA(this.$store.state.schedules[0].route.ETA) }}
+            </h3>
             <p class="text-gray-500 text-sm">
               {{ this.$store.state.destination.contact }} (focal)
             </p>
@@ -220,9 +230,21 @@
         </div>
 
         <p>Your Bus Details will be uploaded 2 hours before departure <br /></p>
-        <button @click="openBusDetails">Click here to check Details</button>
+        <button
+          @click="openBusDetails"
+          class="text-black font-bold py-2 px-4 rounded"
+        >
+          Click here to check Details : <br />
+          {{ url }}{{ checkBusRouteData.href }}
+        </button>
 
-        <button @click="cancelTicket()">Cancel Ticket</button>
+        <button
+          @click="cancelTicket()"
+          class="text-black font-bold py-2 px-4 rounded"
+        >
+          Cancel Ticket: <br />
+          {{ url }}{{ cancelTicketRouteData.href }}
+        </button>
 
         <hr class="border-dashed" />
         <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -276,7 +298,6 @@ export default {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-    console.log(this.$store.state);
     this.$store.state.selectedSeats.forEach((element) => {
       this.seatNumbers += element.number;
       this.seatNumbers += " | ";
@@ -294,6 +315,16 @@ export default {
       seats: this.seatNumbers,
     };
     this.qrDataString = JSON.stringify(this.qrData);
+
+    this.checkBusRouteData = this.$router.resolve({
+      name: "viewBusDetails",
+      params: { id: this.$store.state.scanBookingId },
+    });
+
+    this.cancelTicketRouteData = this.$router.resolve({
+      name: "cancelTicket",
+      params: { bookingId: this.$store.state.scanBookingId },
+    });
   },
   data() {
     return {
@@ -302,6 +333,9 @@ export default {
       qrData: {},
       qrDataString: "",
       seatNumbers: "",
+      cancelTicketRouteData: "",
+      checkBusRouteData: "",
+      url: "localhost:8081",
     };
   },
   components: {
@@ -342,25 +376,33 @@ export default {
         link.click();
       });
     },
-    openBusDetails() {
-      let routeData = this.$router.resolve({
-        name: "viewBusDetails",
-        params: { id: this.$store.state.scanBookingId },
+    getdepTime: function (time) {
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
       });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
 
-      console.log(routeData);
-      window.open(routeData.href, "_blank");
-      // this.$router.push(`/busDetails/${this.$store.state.scanBookingId}`);
+      return `${hrs}:${min} ${ampm}`;
+    },
+    getETA(e) {
+      let ok = e.split(":");
+      let hrs = ok[0];
+      let min = ok[1];
+
+      return `${hrs} Hrs ${min} Mins`;
+    },
+    openBusDetails() {
+      window.open(this.checkBusRouteData.href, "_blank");
     },
     cancelTicket() {
-      console.log("OK");
-      let routeData = this.$router.resolve({
-        name: "cancelTicket",
-        params: { bookingId: this.$store.state.scanBookingId },
-      });
-
-      console.log(routeData)
-      window.open(routeData.href, "_blank");
+      window.open(this.cancelTicketRouteData.href, "_blank");
     },
     bookAgain() {
       this.$store.state.origin = "";

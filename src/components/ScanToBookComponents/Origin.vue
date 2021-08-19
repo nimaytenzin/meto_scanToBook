@@ -80,6 +80,10 @@ export default {
       this.originSelected = res[0];
     });
     this.$store.commit('resetSeats')
+    console.log(this.$store.origin)
+    if(this.$store.state.origin){
+      this.originSelected = this.$store.state.origin
+    }
   },
  
   methods: {

@@ -113,9 +113,7 @@
                 >
                   Estimated Arrival Time
                 </td>
-                <td>
-                  Passengers
-                </td>
+                <td>Passengers</td>
                 <td
                   class="
                     px-6
@@ -129,10 +127,8 @@
                 >
                   Add Bus
                 </td>
-                
-                <td>
-                  Actions
-                </td>
+
+                <td>Actions</td>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -142,28 +138,24 @@
                 class="hover:bg-gray-200"
               >
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ getdepTime(schedule.route.departureTime) }}
+                  {{ getdepTime(schedule?.route?.departureTime) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{
-                    schedule.route.destination.name
-                      ? schedule.route.destination.name
-                      : ""
-                  }}
+                  {{ schedule?.route?.destination?.name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{
-                    schedule.route.origin.name ? schedule.route.origin.name : ""
-                  }}
+                  {{ schedule.route?.origin?.name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  Nu.{{ schedule.route.fare }}
+                  Nu.{{ schedule?.route?.fare }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ getETA(schedule.route.ETA) }}
+                  {{ getETA(schedule?.route?.ETA) }}
                 </td>
-                  <td>
-                  <button @click="viewPassengers(schedule)">View Passengers</button>
+                <td>
+                  <button @click="viewPassengers(schedule)">
+                    View Passengers
+                  </button>
                 </td>
                 <td>
                   <select
@@ -179,28 +171,47 @@
                       {{ bus.vechileNumber }}
                     </option>
                   </select>
-
                 </td>
-              
+
                 <td v-if="schedule.busId" class="bg-green-400">
-                 <p >
+                  <p>
                     {{ statusOk }}
-                 </p>
-                 
-                  <button 
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  </p>
+
+                  <button
+                    class="
+                      bg-blue-500
+                      hover:bg-blue-700
+                      text-white
+                      font-bold
+                      py-2
+                      px-4
+                      rounded
+                    "
                     @click="updateBus(schedule)"
-                  > Update Bus </button>
+                  >
+                    Update Bus
+                  </button>
                 </td>
                 <td v-else class="bg-red-400">
-                 <p >
+                  <p>
                     {{ statusNotOk }}
-                 </p>
-                 
-                  <button 
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  </p>
+
+                  <button
+                    class="
+                      bg-blue-500
+                      hover:bg-blue-700
+                      text-white
+                      font-bold
+                      py-2
+                      px-4
+                      rounded
+                    "
                     @click="updateBus(schedule)"
-                  > Assign Bus Bus </button>
+                  >
+                    Assign Bus Bus
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -268,20 +279,20 @@
 
 <script>
 import { getScheduleByDate } from "../../services/scheduleServices";
-import { getAllBuses} from '../../services/busServices'
-import {assignBus} from "../../services/scheduleServices"
+import { getAllBuses } from "../../services/busServices";
+import { assignBus } from "../../services/scheduleServices";
 export default {
   data() {
     return {
-      status:"bus Set",
+      status: "bus Set",
       date: new Date(),
       selectedDate: "",
       showScheduleByDayModal: false,
       schedules: [],
-      buses:[],
-      selectedBus:{},
+      buses: [],
+      selectedBus: {},
       statusOk: "Bus Assigned",
-      statusNotOk:"Bus Not Assigned"
+      statusNotOk: "Bus Not Assigned",
     };
   },
   computed: {},
@@ -290,10 +301,11 @@ export default {
       this.buses = res;
     });
   },
-  
+
   methods: {
     getdepTime: function (time) {
-      let tissme = time.split(":");
+      if(time){
+        let tissme = time.split(":");
       let hrs = parseInt(tissme[0]);
       let min = parseInt(tissme[1]).toLocaleString("en-US", {
         minimumIntegerDigits: 2,
@@ -306,31 +318,34 @@ export default {
       }
 
       return `${hrs}:${min} ${ampm}`;
+      }
     },
     p(e) {
       console.log(e);
     },
 
     getETA(e) {
-      let ok = e.split(":");
-      let hrs = ok[0];
-      let min = ok[1];
+      if (e) {
+        let ok = e.split(":");
+        let hrs = ok[0];
+        let min = ok[1];
 
-      return `${hrs} Hrs ${min} Mins`;
+        return `${hrs} Hrs ${min} Mins`;
+      }return ""
     },
-    updateBus(e){
+    updateBus(e) {
       let updateData = {
-        busId: e.busId
-      }
-      console.log(updateData, e)
-      assignBus(e.id, updateData).then(res =>{
-          if(res.status === 200){
-            this.$toast.show("Bus Assigned",{
-              type:"success",
-              position:"top"
-            })
-          }   
-      })
+        busId: e.busId,
+      };
+      console.log(updateData, e);
+      assignBus(e.id, updateData).then((res) => {
+        if (res.status === 200) {
+          this.$toast.show("Bus Assigned", {
+            type: "success",
+            position: "top",
+          });
+        }
+      });
     },
     onDayClick(e) {
       this.selectedDate = e.ariaLabel;
@@ -348,10 +363,9 @@ export default {
       console.log(e);
     },
 
-    viewPassengers(schedule){
-      
-      this.$router.push(`/admin/view-passengers/${schedule.id}`)
-    }
+    viewPassengers(schedule) {
+      this.$router.push(`/admin/view-passengers/${schedule.id}`);
+    },
   },
 };
 </script>

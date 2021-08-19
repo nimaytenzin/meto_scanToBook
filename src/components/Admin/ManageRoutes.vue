@@ -4,6 +4,10 @@
       Routes and Stop Management
     </h2>
 
+    <p>
+      {{  }}
+    </p>
+
     <div class="flex flex-row gap-7">
       <div
         class="
@@ -528,7 +532,8 @@
                 v-model="departureTime.hrs"
                 class="bg-transparent text-xl appearance-none outline-none"
               >
-                <option value="1">1</option>
+                <option value="0" >0</option>
+                <option value="1" >1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -557,7 +562,7 @@
                 v-model="departureTime.ampm"
                 class="bg-transparent text-xl appearance-none outline-none"
               >
-                <option value="am">AM</option>
+                <option value="am" selected>AM</option>
                 <option value="pm">PM</option>
               </select>
             </div>
@@ -601,6 +606,7 @@
                   v-model="eta.hrs"
                   class="bg-transparent text-xl appearance-none outline-none"
                 >
+                  <option value="0">0</option>
                   <option value="01">1</option>
                   <option value="02">2</option>
                   <option value="03">3</option>
@@ -662,66 +668,173 @@
         content-class="modal-content"
         class="w-max-screen"
       >
-        <div class="modal__content text-center mt-1 flex flex-col">
-          <h3 class="text-xl mb-5">Edit Bus Route?</h3>
-          <label class="text-xs text-left">Origin</label>
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
+          <h3 class="text-xl mb-5">Edit Route?</h3>
+          <label class="text-sm text-left text-gray-400 italic">Origin</label>
           <select
-            v-model="selectedRoute.origin"
-            class="text-md bg-white text-gray-400"
+            v-model="selectedRoute.originId"
+            class="text-xl bg-white text-blue-900 p-2"
           >
             <option
               v-for="stop in stops"
-              :value="stop"
+              :value="stop.id"
               :key="stop"
               class="bg-white"
             >
               {{ stop.name }}
             </option>
           </select>
-          <hr class="border-2" />
-          <label class="text-xs text-left">Destination</label>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Destination</label
+          >
           <select
-            v-model="selectedRoute.destination"
-            class="text-md bg-white text-gray-400"
+            v-model="selectedRoute.destinationId"
+            class="text-xl bg-white text-blue-900 p-2"
           >
             <option
               v-for="stop in stops"
-              :value="stop"
+              :value="stop.id"
               :key="stop"
               class="bg-white"
             >
               {{ stop.name }}
             </option>
           </select>
-          <hr class="border-2" />
-          <label class="text-xs text-left">Fare</label>
-          <input
-            class="text-md text-gray-400 mb-3"
-            type="number"
-            placeholder="Fare"
-            v-model="selectedRoute.fare"
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Select Weekdays from the dropdown</label
+          >
+
+          <Multiselect
+            v-model="weekdaysSelected"
+            mode="tags"
+            placeholder="Select active days for the route"
+            :createTag="true"
+            :options="weekDays"
           />
-          <label class="text-xs text-left">Est. Duration</label>
-          <input
-            class="text-md text-gray-400 mb-3"
-            type="text"
-            placeholder="Est. Duration"
-            v-model="selectedRoute.eta"
-          />
-          <label class="text-xs text-left">Days</label>
-          <input
-            class="text-md text-gray-400 mb-3"
-            type="text"
-            placeholder="Days"
-            v-model="selectedRoute.days"
-          />
-          <label class="text-xs text-left">Departure time</label>
-          <input
-            class="text-md text-gray-400 mb-3"
-            type="text"
-            placeholder="Departure time"
-            v-model="selectedRoute.departureTime"
-          />
+
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Departure time</label
+          >
+
+          <div class="flex justify-center">
+            <div class="flex">
+              <select
+                name="hours"
+                v-model="selectedRoute.departureTime"
+                class="bg-transparent text-xl appearance-none outline-none"
+              >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">10</option>
+                <option value="12">12</option>
+              </select>
+              <span class="text-xl mr-3">:</span>
+              <select
+                name="minutes"
+                class="bg-transparent text-xl appearance-none outline-none mr-4"
+                v-model="departureTime.mins"
+              >
+                <option value="0">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="30">45</option>
+              </select>
+              <select
+                name="ampm"
+                v-model="departureTime.ampm"
+                class="bg-transparent text-xl appearance-none outline-none"
+              >
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Fare</label
+          >
+          <div
+            class="
+              flex
+              justify-center
+              items-end
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              text-gray-700
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+            "
+          >
+            <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
+            <input
+              class="w-full py-2 px-3"
+              type="number"
+              placeholder="Fare"
+              v-model="selectedRoute.fare"
+            />
+          </div>
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Est. Travel Time</label
+          >
+          <div class="flex justify-center">
+            <div class="flex">
+              <div>
+                <select
+                  name="hours"
+                  v-model="eta.hrs"
+                  class="bg-transparent text-xl appearance-none outline-none"
+                >
+                  <option value="01">1</option>
+                  <option value="02">2</option>
+                  <option value="03">3</option>
+                  <option value="04">4</option>
+                  <option value="05">5</option>
+                  <option value="06">6</option>
+                  <option value="07">7</option>
+                  <option value="08">8</option>
+                  <option value="09">9</option>
+                  <option value="10">10</option>
+                  <option value="11">10</option>
+                  <option value="12">12</option>
+                </select>
+                <p>Hours</p>
+              </div>
+              <span class="text-xl mr-3">:</span>
+              <div>
+                <select
+                  name="minutes"
+                  class="
+                    bg-transparent
+                    text-xl
+                    appearance-none
+                    outline-none
+                    mr-4
+                  "
+                  v-model="eta.min"
+                >
+                  <option value="0">00</option>
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                  <option value="30">45</option>
+                </select>
+                <p>Minutes</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal__action">
           <button
@@ -833,8 +946,15 @@ export default {
       ],
       week: ["Mon", "Tues", "Wed", "Thrus", "Fri", "Sat", "Sun"],
       weekdaysSelected: [],
-      eta: {},
-      departureTime: {},
+      eta: {
+        hrs:"0",
+        min:'0'
+      },
+      departureTime: {
+        hrs:"0",
+        mins:"0",
+        ampm:"am"
+      },
       //Validation checking parameters
       stops: [],
       routes: [],
@@ -853,6 +973,9 @@ export default {
     getAllStops()
       .then((res) => {
         this.stops = res;
+        this.newRoute.originId = res[0].id
+        this.newRoute.destinationId = res[1].id
+
       })
       .catch((err) => console.log(err));
   },
@@ -873,6 +996,8 @@ export default {
 
       return `${hrs}:${min} ${ampm}`;
     },
+
+
     getWeekDays(dayNo) {
       switch (dayNo) {
         case 6:
@@ -1036,9 +1161,8 @@ export default {
 
     editRoute(e) {
       this.selectedRoute = e;
-
-
       this.editRouteModal = true;
+      console.log(this.selectedRoute)
     },
 
     confirmRouteEdit() {
@@ -1085,6 +1209,11 @@ export default {
         this.routes = res;
       });
     },
+
+    decomposeDepTime(timeString){
+
+    }
   },
+
 };
 </script>

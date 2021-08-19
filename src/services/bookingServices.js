@@ -8,6 +8,10 @@ export async function addNewBooking(booking){
 
 }
 
+export async function getAllBookings(){
+    return await axios.get(`${devUrl}/bookings`)
+}
+
 export async function getBookingDetail(id){
     return await axios.get(`${devUrl}/bookings/${id}`)
 }

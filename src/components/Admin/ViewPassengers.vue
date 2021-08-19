@@ -110,7 +110,7 @@
       <!--  -->
 
       <div class="mt-4" v-if="scheduleData.bookings.length">
-        <h2 class="text-center text-xl font-semibold">Passenger Details</h2>
+        <h2 class="text-center text-xl font-semibold">Booking Details</h2>
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
@@ -125,7 +125,7 @@
                   tracking-wider
                 "
               >
-                Passenger Name
+                Booking ID
               </td>
               <td
                 class="
@@ -138,7 +138,7 @@
                   tracking-wider
                 "
               >
-                Passenger CID
+                Passenger Details
               </td>
               <td
                 class="
@@ -151,9 +151,8 @@
                   tracking-wider
                 "
               >
-                Passenger Contact
+                Booked Seats
               </td>
-
               <td
                 class="
                   px-6
@@ -165,19 +164,8 @@
                   tracking-wider
                 "
               >
-                Seat Number
+                Actions
               </td>
-              <td
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              ></td>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -187,39 +175,56 @@
               class="hover:bg-gray-200"
             >
               <td class="px-2 py-4 whitespace-nowrap">
-                {{ booking.customerName }}
+                {{ booking.id }}
               </td>
               <td class="px-2 py-4 whitespace-nowrap">
-                {{ booking.customerCid }}
-              </td>
-              <td class="px-2 py-4 whitespace-nowrap">
-                {{ booking.customerContact }}
+                <tr>
+                  <td>Name</td>
+                  <td>{{ booking.customerName }}</td>
+                </tr>
+                <tr>
+                  <td>CID</td>
+                  <td>
+                    {{ booking.customerCid }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Contact:</td>
+                  <td>
+                    {{ booking.customerContact }}
+                  </td>
+                </tr>
               </td>
 
               <td>
-                <tr v-for="bookedSeat in booking.bookedSeats" :key="bookedSeat">
-                  <td class="px-2 py-4 whitespace-nowrap font-bold">
-                    {{ bookedSeat.seatNumber }}
-                  </td>
-                  <td class="px-2 py-4 whitespace-nowrap">
-                    <div class="inline-flex">
-                      <button
-                        class="
-                          bg-gray-300
-                          hover:bg-gray-400
-                          text-gray-800
-                          font-bold
-                          py-2
-                          px-4
-                          rounded-l
-                        "
-                        @click="transferSelectedPassenger(booking, bookedSeat)"
-                      >
-                        Transfer
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                <div class="flex flex-row justify-around">
+                  <div
+                    v-for="bookedSeat in booking.bookedSeats"
+                    :key="bookedSeat"
+                    class="m-1 p-1 rounded relative"
+                  >
+                    <img
+                      src="../../assets/seatUnavailable.png"
+                      width="50"
+                      alt=""
+                    />
+                    <p
+                      class="
+                        absolute
+                        top-1/2
+                        left-1/2
+                        bg-white bg-opacity-60
+                        rounded-sm
+                        pl-1
+                        pr-1
+                        transform
+                        -translate-x-1/2 -translate-y-1/2
+                      "
+                    >
+                      {{ bookedSeat.seatNumber }}
+                    </p>
+                  </div>
+                </div>
               </td>
               <td class="px-2 py-4 whitespace-nowrap">
                 <button
@@ -230,9 +235,23 @@
                     font-bold
                     py-2
                     px-4
+                    rounded-l
+                  "
+                  @click="openTransferBookingModal(booking)"
+                >
+                  Transfer
+                </button>
+                <button
+                  class="
+                    bg-gray-300
+                    hover:bg-gray-400
+                    text-gray-800
+                    font-bold
+                    py-2
+                    px-4
                     rounded-r
                   "
-                  @click="openBookingsModal(booking)"
+                  @click="openCancelBookingModal(booking)"
                 >
                   Cancel Booking
                 </button>
@@ -319,19 +338,41 @@
       class="w-max-screen"
     >
       <div class="modal__content text-center mt-1 flex flex-col gap-3">
-        <h3 class="text-xl">Transfer Passenger</h3>
-        <p>
-          Seat :
-          <span class="font-bold text-xl"
-            >{{ selectedBookedSeat.seatNumber }}
-          </span>
-        </p>
+        <h3 class="text-xl">Transfer Booking</h3>
         <p>
           Passenger Name:
           <span class="font-bold text-xl"
-            >{{ selectedBookedSeat.bookingDetails.customerName }}
+            >{{ selectedBooking.customerName }}
           </span>
         </p>
+
+        <p class="text-center">Booked Seats</p>
+        <div class="flex flex-row justify-center">
+          <div
+            v-for="bookedSeat in selectedBooking.bookedSeats"
+            :key="bookedSeat"
+            class="m-1 p-1 rounded relative"
+          >
+            <img src="../../assets/seatUnavailable.png" width="50" alt="" />
+            <p
+              class="
+                absolute
+                top-1/2
+                left-1/2
+                bg-white bg-opacity-60
+                rounded-sm
+                pl-1
+                pr-1
+                transform
+                -translate-x-1/2 -translate-y-1/2
+              "
+            >
+              {{ bookedSeat.seatNumber }}
+            </p>
+          </div>
+        </div>
+
+        <hr class="border mt-2 mb-2" />
 
         <div class="flex">
           <label class="text-sm text-left text-gray-400 italic"> Origin</label>
@@ -366,37 +407,62 @@
             </option>
           </select>
         </div>
-
         <div class="flex justify-center">
+          <button
+            type="button"
+            class="
+              btn-outline-primary
+              transition
+              duration-300
+              ease-in-out
+              focus:outline-none
+              focus:shadow-outline
+              border border-purple-700
+              hover:bg-purple-700
+              text-purple-700
+              hover:text-white
+              font-normal
+              py-2
+              px-4
+              rounded
+            "
+            @click="populateRouteDays()"
+          >
+            Search Buses
+          </button>
+        </div>
+
+        <div class="flex flex-col items-center gap-3 justify-center">
           <DatePicker
             v-model="transferDate"
             :min-date="new Date()"
             @dayclick="onDayClick($event)"
+            :attributes="attributes"
           />
-        </div>
 
-        <button
-          type="button"
-          class="
-            btn-outline-primary
-            transition
-            duration-300
-            ease-in-out
-            focus:outline-none
-            focus:shadow-outline
-            border border-purple-700
-            hover:bg-purple-700
-            text-purple-700
-            hover:text-white
-            font-normal
-            py-2
-            px-4
-            rounded
-          "
-          @click="searchTransferSchedules()"
-        >
-          Search Schedules
-        </button>
+          <button
+            type="button"
+            class="
+              btn-outline-primary
+              transition
+              duration-300
+              ease-in-out
+              focus:outline-none
+              focus:shadow-outline
+              border border-purple-700
+              hover:bg-purple-700
+              text-purple-700
+              hover:text-white
+              font-normal
+              py-2
+              px-4
+              rounded
+            "
+            @click="searchTransferSchedules()"
+          >
+            View Schedule
+          </button>
+        </div>
 
         <hr />
 
@@ -492,7 +558,7 @@
           </table>
           <hr class="border mt-3 mb-3" />
 
-          <div class="text-left ml-6">
+          <div class="text-left ml-6" v-if="selectedTransferSchedule.id">
             <h2>
               New Schedule Time :
               <span class="text-xl font-semibold">
@@ -510,19 +576,76 @@
                 {{ selectedDate }}
               </span>
             </h2>
+
+            <div class="inline-flex mt-2">
+              <button
+                v-if="seatsToTransfer - transferSeats.length"
+                class="
+                  py-2
+                  px-4
+                  rounded
+                  cursor-default
+                  text-red-400
+                  font-light
+                  text-center
+                "
+              >
+                Select {{ seatsToTransfer - transferSeats.length }} seats
+              </button>
+              <button
+                class="
+                  bg-gray-200
+                  hover:bg-gray-400
+                  text-gray-500
+                  hover:text-white
+                  font-bold
+                  py-2
+                  px-4
+                  rounded-l
+                "
+                @click="showSelectSeats()"
+              >
+                Select Seats
+              </button>
+            </div>
+            <h2 class=""></h2>
+
+            <div
+              v-if="transferSeats.length"
+              class="flex flex-row justify-center items-center"
+            >
+              <div
+                v-for="item in transferSeats"
+                :key="item"
+                class="m-1 p-1 rounded relative"
+              >
+                <img src="../../assets/seatUnavailable.png" width="50" alt="" />
+                <p
+                  class="
+                    absolute
+                    top-1/2
+                    left-1/2
+                    transform
+                    -translate-x-1/2 -translate-y-1/2
+                  "
+                >
+                  {{ item.number }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-center" v-if="showSeats" id="seatsLayout">
+        <div class="flex justify-center" v-if="showSeats">
           <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3 rounded border">
             <div
               v-for="item in seats"
               :key="item"
               class="rounded relative"
-              @click="addSeat(item.id)"
+              @click="addSeat(item)"
             >
               <img
-                :src="bindImage(item.id)"
+                :src="bindImage(item)"
                 alt="Seat "
                 class="object-contain w-12 z-0 cursor-pointer"
                 rel="preload"
@@ -533,9 +656,12 @@
                   absolute
                   top-1/2
                   left-1/2
+                  bg-white bg-opacity-60
+                  rounded-sm
+                  pl-1
+                  pr-1
                   transform
                   -translate-x-1/2 -translate-y-1/2
-                  text-sm
                   cursor-pointer
                 "
               >
@@ -549,13 +675,67 @@
       <div class="modal__action">
         <button
           class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-          @click="confirmTransferSelected()"
+          @click="transferPassenger()"
         >
           Transfer Passenger to selected schedule
         </button>
         <button
           class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
           @click="transferSelectedModal = false"
+        >
+          cancel
+        </button>
+      </div>
+    </vue-final-modal>
+
+    <vue-final-modal
+      v-model="addSeatModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="modal__content text-center mt-5">
+        <h3 class="text-xl">Book?</h3>
+
+        <h3 class="text-2xl">Seat No {{ selectedTransferSeat.number }}</h3>
+      </div>
+      <div class="modal__action">
+        <button
+          class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+          @click="confirmSeat()"
+        >
+          confirm
+        </button>
+        <button
+          class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+          @click="cancelSeat()"
+        >
+          cancel
+        </button>
+      </div>
+    </vue-final-modal>
+
+    <vue-final-modal
+      v-model="confirmTransferModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="modal__content text-center mt-5">
+        <h3 class="text-xl">Transfer?</h3>
+      </div>
+      <div class="modal__action">
+        <button
+          class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+          @click="confirmPassengerTransfer()"
+        >
+          confirm
+        </button>
+        <button
+          class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+          @click="cancelPassengerTransfer()"
         >
           cancel
         </button>
@@ -577,20 +757,32 @@
             {{ selectedBooking.customerName }}
           </h1>
 
-          <div>
-            Seats: <br>
-            <div class="flex flex-row justify-around text-xl font-semibold">
-
-              <p v-for="seat in selectedBooking.bookedSeats" :key="seat">
-                  {{ seat.seatNumber }}
-
+          <div class="flex flex-row justify-center items-center">
+            <div
+              v-for="item in selectedBooking.bookedSeats"
+              :key="item"
+              class="m-1 p-1 rounded relative"
+            >
+              <img src="../../assets/seatUnavailable.png" width="50" alt="" />
+              <p
+                class="
+                  absolute
+                  top-1/2
+                  left-1/2
+                  bg-white bg-opacity-60
+                  rounded-sm
+                  pl-1
+                  pr-1
+                  transform
+                  -translate-x-1/2 -translate-y-1/2
+                "
+              >
+                {{ item.seatNumber }}
               </p>
-                
-                
-
             </div>
           </div>
 
+          <div></div>
         </div>
       </div>
       <div class="modal__action">
@@ -602,7 +794,7 @@
         </button>
         <button
           class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-          @click="cancelSelectedTicketModal = false"
+          @click="cancelBookingModal = false"
         >
           cancel
         </button>
@@ -667,55 +859,66 @@ import {
   updateSchedule,
 } from "../../services/scheduleServices";
 import { cancelBooking, updateBooking } from "../../services/bookingServices";
-import {
-  updateBookedSeat,
-  getBookedSeatsByScheduleBookingId,
-} from "../../services/bookedseatsService";
+import { updateBookedSeat } from "../../services/bookedseatsService";
 import { getAllStops } from "../../services/stopServices";
 import { getScheduleByDate } from "../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
+import { useLoading } from "vue3-loading-overlay";
+import moment from "moment";
 export default {
   data() {
     return {
       scheduleId: null,
+      //check if schedule is cancelled or not
+      scheduleStatus: 0,
+      socketConnection: null,
+      //modal
       cancelBookingModal: false,
+      transferSelectedModal: false,
+      confirmTransferModal: false,
+      //transfer booking logic vars
 
       selectedBooking: {},
-      selectedBookedSeat: {
-        bookingDetails: {},
-      },
-      scheduleStatus: 0,
+      seatsToTransfer: 0,
+
+      //transfer schedule vars
+      matchedRoutes: [],
       transferOrigin: {},
       transferDestination: {},
       transferDate: null,
+      selectedTransferSchedule: {},
       transferSchedules: [],
       matchedTransferSchedules: [],
-      selectedTransferSchedule: {},
+      transferSeats: [],
+      selectedTransferSeat: {},
+      //Seat state
+      lockedSeats: [],
+      addSeatModal: false,
       showSeats: false,
       showSchedulesTable: false,
       seats: [
         { id: 1, number: 1, type: "seat", status: "available" },
-        { id: 2, type: "notSeat", status: "available" },
-        { id: 3, type: "notSeat", status: "available" },
-        { id: 4, type: "notseat", status: "available" },
+        { id: 2, number: 0, type: "notSeat", status: "available" },
+        { id: 3, number: 0, type: "notSeat", status: "available" },
+        { id: 4, number: 0, type: "notseat", status: "available" },
         { id: 5, number: 2, type: "seat", status: "available" },
-        { id: 6, type: "notSeat", status: "available" },
+        { id: 6, number: 0, type: "notSeat", status: "available" },
         { id: 7, number: 3, type: "seat", status: "available" },
         { id: 8, number: 4, type: "seat", status: "available" },
-        { id: 9, type: "notSeat", status: "available" },
-        { id: 10, type: "notSeat", status: "available" },
+        { id: 9, number: 0, type: "notSeat", status: "available" },
+        { id: 10, number: 0, type: "notSeat", status: "available" },
         { id: 11, number: 5, type: "seat", status: "available" },
         { id: 12, number: 6, type: "seat", status: "available" },
         { id: 13, number: 7, type: "seat", status: "available" },
-        { id: 14, type: "notSeat", status: "available" },
+        { id: 14, number: 0, type: "notSeat", status: "available" },
         { id: 15, number: 8, type: "seat", status: "available" },
         { id: 16, number: 9, type: "seat", status: "available" },
         { id: 17, number: 10, type: "seat", status: "available" },
-        { id: 18, type: "notSeat", status: "available" },
+        { id: 18, number: 0, type: "notSeat", status: "available" },
         { id: 19, number: 11, type: "seat", status: "available" },
         { id: 20, number: 12, type: "seat", status: "available" },
         { id: 21, number: 13, type: "seat", status: "available" },
-        { id: 22, type: "notseat", status: "available" },
+        { id: 22, number: 0, type: "notseat", status: "available" },
         { id: 23, number: 14, type: "seat", status: "available" },
         { id: 24, number: 15, type: "seat", status: "available" },
         { id: 25, number: 16, type: "seat", status: "available" },
@@ -735,8 +938,9 @@ export default {
         },
         bookings: [],
       },
-      transferSelectedModal: false,
+
       stops: [],
+      routeDays: [],
     };
   },
   methods: {
@@ -755,17 +959,26 @@ export default {
 
       return `${hrs}:${min} ${ampm}`;
     },
-    getSeats(id) {
+    getSeats(number) {
       for (let i = 0; i < this.seats.length; i++) {
-        if (this.seats[i].id === id) {
+        if (this.seats[i].number === number) {
           return this.seats[i];
         }
       }
       return null;
     },
-    bindImage(e) {
-      let seat = this.getSeats(e);
-      if (seat !== null) {
+    matchBookedSeat(id) {
+      // let bookedSeats = this.$store.state.selectedSeats;
+      // console.log(bookedSeats);
+      // for (let i = 0; i < bookedSeats.length; i++) {
+      //   if (bookedSeats[i].number === id) {
+      //     return bookedSeats[i];
+      //   }
+      // }
+      // return null;
+    },
+    bindImage(seat) {
+      if (seat.type === "seat") {
         switch (seat.status) {
           case "available":
             return require("../../assets/seatAvailable.png");
@@ -787,6 +1000,30 @@ export default {
         return require("../../assets/seatAvailable.png");
       }
     },
+    changeSeatStatus() {
+      this.lockedSeats.forEach((seatNum) => {
+        let matchedSeat = this.getSeats(seatNum);
+        if (matchedSeat.status !== "booked") {
+          matchedSeat.status = "locked";
+        }
+      });
+
+      // if (this.transferSeats.length) {
+      //   this.lockedSeats.forEach((seatNumber) => {
+      //     this.transferSeats.forEach((seat) => {
+      //       if (seatNumber === seat.number) {
+      //         this.getSeats(seatNumber).status = "booked";
+      //       } else {
+      //         this.getSeats(seatNumber).status = "locked";
+      //       }
+      //     });
+      //   });
+      // } else {
+      //   this.lockedSeats.forEach((seatNumber) => {
+      //     this.getSeats(seatNumber).status = "locked";
+      //   });
+      // }
+    },
     cancelBus() {
       updateSchedule(this.scheduleId, {
         isFinished: 2,
@@ -798,7 +1035,6 @@ export default {
             })
               .then((res) => {
                 if (res.status === 200) {
-                  console.log(12);
                 }
               })
               .catch((err) => {
@@ -813,13 +1049,33 @@ export default {
       });
     },
 
-    selectTransferSchedule(schedule) {
-      this.selectedTransferSchedule = schedule;
-      this.showSeats = true;
+    openBookingsModal(booking, bookedSeat) {
+      this.selectedBooking = booking;
+      this.cancelBookingModal = true;
     },
-    openBookingsModal(booking, bookedSeat){
-      this.selectedBooking = booking
-      this.cancelBookingModal = true
+
+    reverSeatStatus(arr) {
+      arr.forEach((element) => {
+        let matchedSeat = this.getSeats(parseInt(element));
+        // let matchedBookedSeat = this.matchBookedSeat(parseInt(element));
+        matchedSeat.status = "available";
+      });
+    },
+
+    openCancelBookingModal(e) {
+      this.selectedBooking = e;
+      this.cancelBookingModal = true;
+      this.socketConnection = new WebSocket(
+        "ws://" + "localhost:8081" + "/ws/" + this.selectedBooking.scheduleId
+      );
+      this.socketConnection.onopen = (event) => {
+        console.log("Successfully connected to the echo websocket server");
+      };
+      this.socketConnection.onclose = (evt) => {
+        console.log("WSS CONNECTION closed");
+        console.log("RECONNECTING");
+        this.conn = new WebSocket("ws://" + "localhost:8081" + "/ws/" + roomId);
+      };
     },
 
     cancelBooking() {
@@ -829,92 +1085,289 @@ export default {
       cancelBooking(this.selectedBooking.id, status).then((res) => {
         if (res.status === 200) {
           this.refreshData();
-          this.cancelBookingModal = false
+
+          this.selectedBooking.bookedSeats.forEach((seat) => {
+            this.socketConnection.send(
+              JSON.stringify({
+                roomId: this.selectedBooking.scheduleId.toString(),
+                messageType: "LOCK_LEAVE",
+                seatId: seat.seatNumber.toString(),
+              })
+            );
+          });
+
+          this.cancelBookingModal = false;
         }
       });
     },
+
+    populateRouteDays() {
+      this.routeDays = [];
+      let loader = useLoading();
+      loader.show();
+
+      getRoutesByOriginDestination(
+        this.transferOrigin.id,
+        this.transferDestination.id
+      )
+        .then((res) => {
+          res.data.forEach((element) => {
+            this.matchedRoutes.push(element);
+          });
+        })
+        .catch((err) => console.log(err));
+
+      let days = [];
+      let daysRequired = 14;
+
+      for (let i = 1; i <= daysRequired; i++) {
+        days.push(moment().add(i, "days").format("YYYY-MM-DD"));
+      }
+
+      days.forEach((day) => {
+        let formattedDate = day + " 00:00:00";
+        getScheduleByDate(formattedDate).then((res) => {
+          let dattt = new Date(formattedDate);
+          if (res.length) {
+            res.forEach((ok) => {
+              this.matchedRoutes.forEach((route) => {
+                if (route.id === ok.routeId) {
+                  let routeDay = {
+                    dates: new Date(
+                      dattt.getFullYear(),
+                      dattt.getMonth(),
+                      dattt.getDate()
+                    ),
+                    highlight: {
+                      color: "green",
+                      fillMode: "light",
+                    },
+                  };
+                  this.routeDays.push(routeDay);
+                }
+              });
+            });
+          } else {
+          }
+        });
+      });
+      loader.hide();
+      //finda all matched routes
+    },
+
+    // transferPassenger() {
+    //   this.$router.push(`/admin/transfer-passengers/${this.scheduleId}`);
+    // },
+    transferSelectedPassenger(booking, bookedSeat) {
+      this.selectedBookedSeat = bookedSeat;
+      this.selectedBooking = booking;
+      this.selectedBookedSeat.bookingDetails = booking;
+
+      this.transferSelectedModal = true;
+    },
+
+    openTransferBookingModal(booking) {
+      this.selectedBooking = booking;
+      this.seatsToTransfer = this.selectedBooking.bookedSeats.length;
+
+      this.transferSelectedModal = true;
+    },
+    transferPassenger() {
+      this.confirmTransferModal = true;
+      /***
+       * get old booked seats id
+       * update ->seat Number and schedule id to the newly selected one
+       * get also the old seatId and schedule
+       * {
+       *  oldScehdule:{
+       *      id: Oldid,
+       *      booking:{
+       *        id:id,
+       *        scheduleId:oldScheduleId,
+       *        bookedSears:[{
+       *           id:same,
+       *           seatNumber:OldSeatNumber
+       *           scheduleId:OldScheduleId,
+       *           bookingId:remainsSame
+       *        }]
+       *     }
+       *  }
+       * }
+       */
+    },
+
+    cancelPassengerTransfer() {
+      this.confirmTransferModal = false;
+    },
+    confirmPassengerTransfer() {
+      let newScheduleId = this.selectedTransferSchedule.id;
+      this.selectedBooking.bookedSeats.forEach((bookedSeat, index) => {
+        updateBookedSeat(bookedSeat.id, {
+          scheduleId: newScheduleId,
+          seatNumber: this.transferSeats[index].number,
+        });
+      });
+      updateBooking(this.selectedBooking.id, {
+        scheduleId: newScheduleId,
+      }).then((res) => {
+        if (res.status === 200) {
+          this.refreshData();
+        }
+      });
+
+      this.confirmTransferModal = false;
+      this.addSeatModal = false;
+      this.transferSelectedModal = false;
+
+      // console.log(this.selectedTransferSchedule)
+    },
+
+    checkBookedSeatsByScheduleAndBooking() {},
+    cancelSelectedPassenger() {
+      this.selectedPassengerBookings.forEach((ele) => {
+        cancelBooking(ele.id).then((res) => {});
+      });
+    },
+
+    //User clicks on a date and it triggers schedule search
     onDayClick(e) {
+      this.transferSchedules = [];
       this.selectedDate = e.ariaLabel;
       let formattedDate = e.id + " 00:00:00";
       getScheduleByDate(formattedDate).then((res) => {
         this.transferSchedules = res;
       });
     },
-    transferPassenger() {
-      this.$router.push(`/admin/transfer-passengers/${this.scheduleId}`);
-    },
-    transferSelectedPassenger(booking, bookedSeat) {
-      this.selectedBookedSeat = bookedSeat;
-      this.selectedBooking = booking;
-      this.selectedBookedSeat.bookingDetails = booking;
-      console.log(this.selectedBookedSeat);
-      this.transferSelectedModal = true;
-    },
-    confirmTransferSelected() {
-      updateBookedSeat(this.selectedBookedSeat.id, {
-        scheduleId: this.selectedTransferSchedule.id,
-      }).then((res) => {
-        console.log(res);
-        getBookedSeatsByScheduleBookingId(
-          this.selectedBooking.id,
-          this.scheduleId
-        ).then((res) => {
-          if (res.data.length === 0) {
-            updateBooking(this.selectedBooking.id, {
-              scheduleId: this.selectedTransferSchedule.id,
-            }).then((res) => {
-              if (res.status === 200) {
-                this.refreshData();
-                this.$toast.show("Success", {
-                  type: "success",
-                  position: "top",
-                });
-              }
-            });
-          }
-        });
-      });
+    //but all the schedules dont match the route ID
+    //so when we click seatch button we get the route
+    // id of that origin and destination
 
-      this.transferSelectedModal = false;
-      this.refreshData();
-      this.$toast.show("Transferred Selected Passenger", {
-        type: "success",
-        position: "top",
-      });
-    },
-    checkBookedSeatsByScheduleAndBooking() {},
-    cancelSelectedPassenger() {
-      this.selectedPassengerBookings.forEach((ele) => {
-        cancelBooking(ele.id).then((res) => {
-          console.log(res);
-        });
-      });
-    },
-    selectPassenger(e) {
-      console.log(e);
-      this.selectedPassengerBookings.push(e);
-      console.log(this.selectedPassengerBookings);
-    },
     searchTransferSchedules() {
-      let matchedRoutes = [];
-      this.matchedTransferSchedules = [];
-      getRoutesByOriginDestination(
-        this.transferOrigin.id,
-        this.transferDestination.id
-      ).then((res) => {
-        res.data.forEach((ele) => {
-          matchedRoutes.push(ele.id);
+      if (
+        this.transferOrigin.id &&
+        this.transferDestination.id &&
+        this.selectedDate
+      ) {
+        this.matchedTransferSchedules = [];
+        this.matchedRoutes = [];
+        getRoutesByOriginDestination(
+          this.transferOrigin.id,
+          this.transferDestination.id
+        ).then((res) => {
+          res.data.forEach((data) => {
+            this.matchedRoutes.push(data);
+          });
           this.transferSchedules.forEach((schedule) => {
-            matchedRoutes.forEach((routeId) => {
-              if (routeId === schedule.routeId) {
+            this.matchedRoutes.forEach((route) => {
+              console.log(route, "MAtch route ID");
+              if (route.id === schedule.route.id) {
                 this.matchedTransferSchedules.push(schedule);
               }
             });
           });
         });
+        this.showSchedulesTable = true;
+      } else {
+        this.$toast.show("Please select a departure Date", {
+          position: "top",
+          type: "error",
+        });
+      }
+    },
+
+    selectTransferSchedule(schedule) {
+      this.selectedTransferSchedule = schedule;
+      this.$toast.show("Schedule Selected", {
+        position: "top",
+        type: "success",
       });
-      this.showSchedulesTable = true;
-      console.log(this.matchedTransferSchedules);
+    },
+
+    //now click on select seats to trigger a wss connection
+    showSelectSeats() {
+      if (this.selectedTransferSchedule.id) {
+        this.showSeats = true;
+        //handle socket connection
+
+        this.conn = new WebSocket(
+          "ws://" + "localhost:8081" + "/ws/" + this.selectedTransferSchedule.id
+        );
+        this.conn.onopen = (event) => {
+          console.log("Successfully connected to the echo websocket server");
+        };
+        this.conn.onclose = (evt) => {
+          console.log("WSS CONNECTION closed");
+          console.log("RECONNECTING");
+          this.conn = new WebSocket(
+            "ws://" +
+              "localhost:8081" +
+              "/ws/" +
+              this.$store.state.selectedBus.id
+          );
+        };
+        this.conn.onmessage = (evt) => {
+          let messageJson = JSON.parse(evt.data);
+          if (messageJson.messageType === "LOCK") {
+            console.log("LOCK MESSAGE RECIEVED");
+            this.lockedSeats = messageJson.lockedList;
+            this.changeSeatStatus();
+            console.log(messageJson);
+          } else if (messageJson.messageType === "LOCK_LEAVE") {
+            // console.log("LOCK LEAVE RECIEVED");
+            console.log(messageJson);
+            this.reverSeatStatus(messageJson.leaveList);
+          } else if (messageJson.messageType === "LOCK_CONFIRM") {
+          }
+        };
+      } else {
+        this.$toast.show("Please select a schedule to transfer", {
+          position: "top",
+          type: "error",
+        });
+      }
+    },
+    addSeat(seat) {
+      if (this.transferSeats.length < this.seatsToTransfer) {
+        if (seat.type === "seat") {
+          if (seat.status === "locked") {
+            this.$toast.show("The seat is being booked", {
+              position: "top",
+              type: "error",
+            });
+          } else if (seat.status === "booked") {
+            this.reverSeatModal = true;
+          } else {
+            this.conn.send(
+              JSON.stringify({
+                roomId: this.selectedTransferSchedule.id.toString(),
+                messageType: "LOCK",
+                seatId: seat.number.toString(),
+              })
+            );
+            this.addSeatModal = true;
+            this.selectedTransferSeat = seat;
+          }
+        }
+      } else {
+        this.$toast.show("Selection completed", {
+          position: "top",
+          type: "info",
+        });
+      }
+    },
+    confirmSeat() {
+      this.transferSeats.push(this.selectedTransferSeat);
+      this.addSeatModal = false;
+    },
+    cancelSeat() {
+      this.conn.send(
+        JSON.stringify({
+          roomId: this.selectedTransferSchedule.id.toString(),
+          messageType: "LOCK_LEAVE",
+          seatId: this.selectedTransferSeat.number.toString(),
+        })
+      );
+      this.addSeatModal = false;
     },
     computeTableSelect(schedule) {
       if (this.selectedTransferSchedule.id === schedule.id) {
@@ -946,10 +1399,19 @@ export default {
     },
 
     depTime: () => {},
+    attributes() {
+      return [
+        ...this.routeDays.map((routeDay) => ({
+          dates: routeDay.dates,
+          highlight: routeDay.highlight,
+        })),
+      ];
+    },
   },
+
   created() {
     this.scheduleId = this.$route.params.scheduleId;
-    console.log(this.scheduleId);
+
     this.seatsAvailable = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ];
@@ -959,7 +1421,7 @@ export default {
     getPassengerData(this.scheduleId).then((res) => {
       this.scheduleStatus = res.data.isFinished;
       this.scheduleData = res.data;
-      console.log(res.data);
+
       this.transferOrigin = res.data.route.origin;
       this.transferDestination = res.data.route.destination;
 

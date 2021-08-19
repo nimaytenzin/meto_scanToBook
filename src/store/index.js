@@ -38,7 +38,7 @@ export default createStore({
       state.selectedBus = bus
     },
     addSeats(state,seats){
-      state.selectedSeats = state.selectedSeats.concat(seats);
+     state.selectedSeats.push(seats);
     },
     removeSeat(state,selectedSeat){
       state.selectedSeats.forEach((seat,index) =>{
@@ -91,5 +91,10 @@ export default createStore({
   actions: {
   },
   modules: {
+  },
+  getters: {
+    origin: state => {
+      return state.origin
+    }
   }
 })

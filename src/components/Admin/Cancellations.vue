@@ -117,8 +117,8 @@
               <p>ID: {{ booking.customerCid }}</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>Origin: {{ booking.schedule.route.origin.name }}</p>
-              <p>Destination: {{ booking.schedule.route.destination.name }}</p>
+              <p>Origin: {{ booking.schedule.route?.origin?.name }}</p>
+              <p>Destination: {{ booking.schedule.route?.destination?.name }}</p>
               <p>
                 Departure Date:
                 {{
@@ -130,7 +130,7 @@
                 }}
               </p>
 
-              <p>Departure Time : {{ booking.schedule.route.departureTime }}</p>
+              <p>Departure Time : {{ booking.schedule.route?.departureTime }}</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
               Nu {{ booking.amount }}
@@ -263,6 +263,7 @@ export default {
   created() {
     getAllCanelled().then((res) => {
       this.cancelledBookings = res.data;
+      console.log(this.cancelledBookings)
       console.log(res.data);
     });
   },

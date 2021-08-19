@@ -29,11 +29,11 @@
         class="text-3xl p-5 bg-white text-blue-900"
       >
         <option
-         v-for="destination in destinations"
-          :value="destination" 
+          v-for="destination in destinations"
+          :value="destination"
           :key="destination"
           :disabled="disableOption(destination)"
-          >
+        >
           {{ destination.name }}
         </option>
       </select>
@@ -71,48 +71,48 @@
         @click="addDestination(destinationSelected)"
       >
         <span class="mr-2">Next</span>
-       
       </button>
     </div>
-
-  
   </div>
 </template>
 
 <script>
-import {
-  getAllStops
-} from '../../services/stopServices'
+import { getAllStops } from "../../services/stopServices";
 export default {
   data() {
     return {
-     destinations: [],
-      destinationSelected:{}
+      destinations: [],
+      destinationSelected: {},
     };
   },
-  
+
   created() {
-
-
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
+    }else{
+      this.destinationSelected = this.$store.state.destination
     }
-    getAllStops().then(res => {
-      this.destinations = res
-      this.destinationSelected = res[0]
-    })
+    getAllStops().then((res) => {
+      
+      res.forEach((element) => {
+        if (element.id !== this.$store.state.origin.id) {
+
+          this.destinations.push(element);
+        }else{
+        }
+      });
+      this.destinationSelected = this.destinations[0];
+    });
   },
   methods: {
     addDestination(val) {
-   
-        this.$store.commit("addDestination", val);
-        this.$router.push("/book/date");
-      
+      this.$store.commit("addDestination", val);
+      this.$router.push("/book/date");
     },
     disableOption(opt) {
       let origin = this.$store.state.origin;
-      if(opt === origin){
-        return true
+      if (opt === origin) {
+        return true;
       }
       return false;
     },

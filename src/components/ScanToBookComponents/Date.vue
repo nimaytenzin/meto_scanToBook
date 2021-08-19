@@ -12,8 +12,7 @@
 
     <div
       class="
-      flex 
-      flex-col
+        flex flex-col
         p-6
         mx-auto
         bg-white
@@ -25,17 +24,17 @@
         space-x-4
       "
     >
-    <div>
-      Time Table
-    </div>
-     <div>
+      <div class="text-md italic text-gray-500 mb-2">
+        Showing bus schedules for the next 14 days
+      </div>
+      <div>
         <DatePicker
-        v-model="date"
-        :min-date="new Date()"
-        @dayclick="onDayClick($event)"
-        :attributes="attributes"
-      />
-     </div>
+          v-model="date"
+          :min-date="new Date()"
+          @dayclick="onDayClick($event)"
+          :attributes="attributes"
+        />
+      </div>
 
       <div class="flex flex-col justify-center mt-2">
         <!-- <h3 class="text-gray-700 font-medium">Bus Status</h3> -->
@@ -50,8 +49,8 @@
         </h2> -->
 
         <h2 class="flex gap-2 text-sm font-light items-center">
-          <span class="block rounded-full h-3 w-3 bg-blue-400"> </span>
-          Selected date
+          <span class="block rounded-full h-3 w-3 bg-green-400"> </span>
+          Bus available
         </h2>
         <!-- 
         <p class="text-gray-600 italic font-light text-sm break-word">
@@ -100,11 +99,16 @@
 
 <script>
 import { Calendar, DatePicker } from "v-calendar";
+import moment from "moment";
+
 import {
   getScheduleByDate,
   getSchedulesBetween,
 } from "../../services/scheduleServices";
 
+import { useLoading } from "vue3-loading-overlay";
+// Import stylesheet
+import "vue3-loading-overlay/dist/vue3-loading-overlay.css";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
 export default {
   components: {
@@ -115,6 +119,10 @@ export default {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+
+    let loader = useLoading();
+    loader.show();
+
     getRoutesByOriginDestination(
       this.$store.state.origin.id,
       this.$store.state.destination.id
@@ -125,19 +133,61 @@ export default {
         });
       })
       .catch((err) => console.log(err));
+
+    let days = [];
+    let daysRequired = 14;
+
+    for (let i = 1; i <= daysRequired; i++) {
+      days.push(moment().add(i, "days").format("YYYY-MM-DD"));
+    }
+
+    days.forEach((day) => {
+      let formattedDate = day + " 00:00:00";
+
+      getScheduleByDate(formattedDate).then((res) => {
+        let dattt = new Date(formattedDate);
+        if (res.length) {
+          res.forEach((ok) => {
+            this.matchedRoutes.forEach((route) => {
+              if (route.id === ok.routeId) {
+                let routeDay = {
+                  dates: new Date(
+                    dattt.getFullYear(),
+                    dattt.getMonth(),
+                    dattt.getDate()
+                  ),
+                  highlight: {
+                    color: "green",
+                    fillMode: "light",
+                  },
+                };
+                this.routeDays.push(routeDay);
+              }
+            });
+          });
+        }
+        loader.hide();
+      });
+    });
   },
   data() {
     return {
-      attributes: [
-        {
-          bar: true,
-          dates: [],
-        },
-      ],
       date: "",
       schedules: 0,
       matchedRoutes: [],
+      routeDays: [],
     };
+  },
+  computed: {
+    attributes() {
+      return [
+        // Attributes for todos
+        ...this.routeDays.map((routeDay) => ({
+          dates: routeDay.dates,
+          highlight: routeDay.highlight,
+        })),
+      ];
+    },
   },
 
   methods: {
@@ -147,28 +197,33 @@ export default {
     onDayClick(e) {
       let formattedDate = e.id + " 00:00:00";
       getScheduleByDate(formattedDate).then((res) => {
-        if (res.length === 0) {
-          this.schedules = 0;
-          this.$toast.show(`No Buses on ${e.ariaLabel}`, {
-            position: "top",
-            type: "error",
+        this.schedules = res.length;
+        let matchedSchedule = [];
+        res.forEach((element) => {
+          this.matchedRoutes.forEach((route) => {
+            if (element.routeId === route.id) {
+              matchedSchedule.push(element);
+            }
           });
-        } else {
-          this.schedules = res.length;
-          let matchedSchedule = [];
-          res.forEach((element) => {
-            this.matchedRoutes.forEach((route) => {
-              if (element.routeId === route.id) {
-                matchedSchedule.push(element);
-              }
-            });
-          });
-          this.schedules = matchedSchedule.length
-          this.$store.commit("addSchedules",matchedSchedule)
-          this.$toast.show(`${matchedSchedule.length} Bus avialable on  ${e.ariaLabel}`, {
-            position: "top",
-            type: "success",
-          });
+        });
+        this.schedules = matchedSchedule.length;
+        this.$store.commit("addSchedules", matchedSchedule);
+        if (this.schedules) {
+          this.$toast.show(
+            `${matchedSchedule.length} Bus avialable on  ${e.ariaLabel}`,
+            {
+              position: "top",
+              type: "success",
+            }
+          );
+        }else{
+          this.$toast.show(
+            `No Buses on that day`,
+            {
+              position: "top",
+              type: "error",
+            }
+          );
         }
       });
 
