@@ -24,43 +24,57 @@
         Service.
       </p>
 
-      <ul class="">
+      <ul>
         <li class="m-1">
-          Collecting and Using Your Personal Data
+          <span class="text-gray-800 font-semibold text-md">Collecting and Using Your Personal Data </span>:
+
+          We collect following data:
+            <ol class="ml-6">
+              <li>Name</li>
+              <li>Contact</li>
+              <li>CID/EID/Kasho Number</li>
+              <li>Bank Account Number</li>
+              <li>Bank Account Name</li>
+            </ol>
         </li>
         <li class="m-1">
-          Cookies and Tracking
-          We donot store any cookies and track your usage of the servies. 
+          <span class="text-gray-800 font-semibold text-md">Cookies and Tracking</span> : 
+          We donot store any cookies and track the usage of our servies. 
         </li> 
         <li class="m-1">
-          Use of Your Personal Data
+         <span class="text-gray-800 font-semibold text-md"> Use of Your Personal Data </span>:
+         We use the data collected above only for providing the booking and refund services and not for 
+         any other purpose than the above two.
         </li>
         <li class="m-1">
-         Retention of Your Personal Data
+         <span class="text-gray-800 font-semibold text-md">Retention of Your Personal Data </span> :
+          Following data are retained in our server:
           <ul class="ml-5">
-            <li>a.Bank Account Number</li>
-            <li>b.Bank Name</li>
-            <li>c.Bank Account Name</li>
+            <li>a.Customer Number</li>
+            <li>b.Customer Contact Number</li>
+            <li>c.Customer CID</li>
+            <li>d.Bank Account Number</li>
+            <li>e.Bank Name</li>
+            <li>f.Bank Account Name</li>
           </ul>
         </li>
         <li class="m-1">
-          Disclosure of Your Personal Data
+           <span class="text-gray-800 font-semibold text-md">Disclosure of Your Personal Data</span>:
+           We wont disclose any personal data without the consent of the customers to any external agency be it 
+           government or private.
         </li>
         <li class="m-1">
-          Enquiry About Privacy policy and personal data
-          <span class="text-gray-800 font-semibold text-xl">
-            information correctly
-          </span>
-          on the cancellation page.
+           <span class="text-gray-800 font-semibold text-md">Enquiry About Privacy policy and personal data</span>:
+           Any enquiry and request for deletion of the data retained above can be channeled via emailing to
+           kamari2010@hotmail.com
+      
         </li>
 
         
       </ul>
 
       <p class="text-md italic mt-4">
-        We would like ensure that our services are smooth and you dont face any
-        issues with our system. Our refund policy has been made in mind keeping
-        the needs of the customers. If you wish to recommend or give us
+        If you wish to recommend or give us
         feedbacks please go to the main page and scroll down to the feedbacks
         section. We value your feedbacks.
       </p>
@@ -98,6 +112,18 @@
         Thank you for choosing Meto Transport Service. Ensuring Safety,
         Reliability and Comfort till your destination
       </p>
+
+      <div class="flex bg-gray-800 text-white rounded-md p-2 gap-2" >
+         <p class="text-center  font-thin  cursor-pointer hover:text-blue-400" @click="this.$router.push('/')">
+        Home Page
+      </p>
+        <p class="text-center   font-thin  text-white  cursor-pointer hover:text-blue-400" @click="this.$router.push('/book')">
+        Book Now
+      </p>
+     
+        
+        </div> 
+      
     </main>
   </div>
 </template>

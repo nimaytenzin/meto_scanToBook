@@ -8,7 +8,7 @@
         p-4
         m-4
         md:mr-16
-        md:ml-16
+        md:ml-16a
         md:pr-10
         md:pl-10
         font-nunito
@@ -58,7 +58,7 @@
         <li class="m-1">
           5) The company ensures full privacy of the data collected and will use
           it only for the purpose of facilitating the refund. You can read more
-          about our data and privacy in our privacy policy page.
+          about our data and privacy in our <span class="underline text-blue-400 cursor-pointer" @click="this.$router.push('/policy/privacy')">privacy policy page</span>.
         </li>
         <li class="m-1">
           6) As such you are required to enter the above
@@ -126,6 +126,17 @@
         Thank you for choosing Meto Transport Service. Ensuring Safety,
         Reliability and Comfort till your destination
       </p>
+      <div class="flex bg-gray-800 text-white rounded-md p-2 gap-2" >
+         <p class="text-center  font-thin  cursor-pointer hover:text-blue-400" @click="this.$router.push('/')">
+        Home Page
+      </p>
+        <p class="text-center   font-thin  text-white  cursor-pointer hover:text-blue-400" @click="this.$router.push('/book')">
+        Book Now
+      </p>
+     
+        
+        </div> 
+
     </main>
   </div>
 </template>
