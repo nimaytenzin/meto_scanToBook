@@ -1,6 +1,5 @@
 import axios from 'axios'
-const devUrl = process.env.VUE_APP_DEV_API
-
+const devUrl = "http://www.meto-transport.com/bpi"
 
 export async function sendFeedback(data) {
    return await axios.post(`${devUrl}/feedbacks`,data)

@@ -321,7 +321,7 @@ export default {
           }
 
           this.socketConn = new WebSocket(
-            "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
+            "ws://" + "www.meto-tranport.com" + "/ws/" + res.data.scheduleId
           );
           this.socketConn.onopen = (event) => {
             console.log("Successfully connected to the echo websocket server");
@@ -330,7 +330,7 @@ export default {
             console.log("WSS CONNECTION closed");
             console.log("RECONNECTING");
             this.conn = new WebSocket(
-              "ws://" + "localhost:8081" + "/ws/" + roomId
+              "ws://" + "www.meto-tranport.com" + "/ws/" + roomId
             );
           };
         } else {

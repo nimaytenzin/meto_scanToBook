@@ -1,7 +1,6 @@
 import axios from 'axios'
 import authHeader from './auth-HeaderServices';
-const devUrl = process.env.VUE_APP_DEV_API
-
+const devUrl = "http://www.meto-transport.com/bpi"
 
 export async function getAllStops() {
     let stops = [];
