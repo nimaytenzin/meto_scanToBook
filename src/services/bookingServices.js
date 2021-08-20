@@ -8,6 +8,10 @@ export async function addNewBooking(booking){
 
 }
 
+export async function getChecksum(bookingId){
+    return await axios.get(`${devUrl}/bookings/checksum/${bookingId}`)
+}
+
 export async function getAllBookings(){
     return await axios.get(`${devUrl}/bookings`)
 }

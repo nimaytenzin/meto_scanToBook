@@ -1,516 +1,104 @@
 <template>
   <div>
+    <main
+      class="
+        flex flex-col
+        justify-center
+        items-center
+        p-4
+        m-4
+        md:mr-16
+        md:ml-16a
+        md:pr-10
+        md:pl-10
+        font-nunito
+        text-justify
+        gap-1
+      "
+    >
+      <h1 class="text-3xl font-bold text-gray-800">Privacy Policy</h1>
 
+      <p>
+        This Privacy Policy describes Our policies and procedures on the
+        collection, use and disclosure of Your information when You use the
+        Service.
+      </p>
 
-    
-    <div>
-      <section>
-        <div class="flex justify-center items-center text-justify ml-10 mr-10">
-          <div >
-            <h1 class="text-2xl font-bold text-center mt-10">Privacy Policy</h1>
+      <ul class="">
+        <li class="m-1">
+          Collecting and Using Your Personal Data
+        </li>
+        <li class="m-1">
+          Cookies and Tracking
+          We donot store any cookies and track your usage of the servies. 
+        </li> 
+        <li class="m-1">
+          Use of Your Personal Data
+        </li>
+        <li class="m-1">
+         Retention of Your Personal Data
+          <ul class="ml-5">
+            <li>a.Bank Account Number</li>
+            <li>b.Bank Name</li>
+            <li>c.Bank Account Name</li>
+          </ul>
+        </li>
+        <li class="m-1">
+          Disclosure of Your Personal Data
+        </li>
+        <li class="m-1">
+          Enquiry About Privacy policy and personal data
+          <span class="text-gray-800 font-semibold text-xl">
+            information correctly
+          </span>
+          on the cancellation page.
+        </li>
 
-            <p>
-              This Privacy Policy describes Our policies and procedures on the
-              collection, use and disclosure of Your information when You use
-              the Service and tells You about Your privacy rights and how the
-              law protects You.
-            </p>
-            <p>
-              We use Your Personal data to provide and improve the Service.
-            </p>
-            <h1 class="text-2xl font-semibold mt-2">Interpretation and Definitions</h1>
-            <h2>Interpretation</h2>
-            <p>
-              The words of which the initial letter is capitalized have meanings
-              defined under the following conditions. The following definitions
-              shall have the same meaning regardless of whether they appear in
-              singular or in plural.
-            </p>
-            <h2>Definitions</h2>
-            <p>For the purposes of this Privacy Policy:</p>
-            <ul>
-              <li>
-                <p>
-                  <strong>Account</strong> means a unique account created for
-                  You to access our Service or parts of our Service.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Company</strong> (referred to as either "the Company",
-                  "We", "Us" or "Our" in this Agreement) refers to Meto
-                  Transport Service, Thimphu Bhutan.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Cookies</strong> are small files that are placed on
-                  Your computer, mobile device or any other device by a website,
-                  containing the details of Your browsing history on that
-                  website among its many uses.
-                </p>
-              </li>
-              <li>
-                <p><strong>Country</strong> refers to: Bhutan</p>
-              </li>
-              <li>
-                <p>
-                  <strong>Device</strong> means any device that can access the
-                  Service such as a computer, a cellphone or a digital tablet.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Personal Data</strong> is any information that relates
-                  to an identified or identifiable individual.
-                </p>
-              </li>
-              <li>
-                <p><strong>Service</strong> refers to the Website.</p>
-              </li>
-              <li>
-                <p>
-                  <strong>Service Provider</strong> means any natural or legal
-                  person who processes the data on behalf of the Company. It
-                  refers to third-party companies or individuals employed by the
-                  Company to facilitate the Service, to provide the Service on
-                  behalf of the Company, to perform services related to the
-                  Service or to assist the Company in analyzing how the Service
-                  is used.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Usage Data</strong> refers to data collected
-                  automatically, either generated by the use of the Service or
-                  from the Service infrastructure itself (for example, the
-                  duration of a page visit).
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Website</strong> refers to Meto Transport, accessible
-                  from
-                  <a
-                    href="www.meto-transport.com"
-                    rel="external nofollow noopener"
-                    target="_blank"
-                    >www.meto-transport.com</a
-                  >
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>You</strong> means the individual accessing or using
-                  the Service, or the company, or other legal entity on behalf
-                  of which such individual is accessing or using the Service, as
-                  applicable.
-                </p>
-              </li>
-            </ul>
-            <h1 class="text-3xl font-semibold mt-2">Collecting and Using Your Personal Data</h1>
-            <h2 class="text-3xl font-semibold mt-2">Types of Data Collected</h2>
-            <h3 >Personal Data</h3>
-            <p>
-              While using Our Service, We may ask You to provide Us with certain
-              personally identifiable information that can be used to contact or
-              identify You. Personally identifiable information may include, but
-              is not limited to:
-            </p>
-            <ul>
-              <li>
-                <p>First name and last name</p>
-              </li>
-              <li>
-                <p>Phone number</p>
-              </li>
-              <li>
-                <p>Usage Data</p>
-              </li>
-            </ul>
-            <h3 class="text-2xl font-bold text-center mt-10">Usage Data</h3>
-            <p>Usage Data is collected automatically when using the Service.</p>
-            <p>
-              Usage Data may include information such as Your Device's Internet
-              Protocol address (e.g. IP address), browser type, browser version,
-              the pages of our Service that You visit, the time and date of Your
-              visit, the time spent on those pages, unique device identifiers
-              and other diagnostic data.
-            </p>
-            <p>
-              When You access the Service by or through a mobile device, We may
-              collect certain information automatically, including, but not
-              limited to, the type of mobile device You use, Your mobile device
-              unique ID, the IP address of Your mobile device, Your mobile
-              operating system, the type of mobile Internet browser You use,
-              unique device identifiers and other diagnostic data.
-            </p>
-            <p>
-              We may also collect information that Your browser sends whenever
-              You visit our Service or when You access the Service by or through
-              a mobile device.
-            </p>
-            <h3>Tracking Technologies and Cookies</h3>
-            <p>
-              We use Cookies and similar tracking technologies to track the
-              activity on Our Service and store certain information. Tracking
-              technologies used are beacons, tags, and scripts to collect and
-              track information and to improve and analyze Our Service. The
-              technologies We use may include:
-            </p>
-            <ul>
-              <li>
-                <strong>Cookies or Browser Cookies.</strong> A cookie is a small
-                file placed on Your Device. You can instruct Your browser to
-                refuse all Cookies or to indicate when a Cookie is being sent.
-                However, if You do not accept Cookies, You may not be able to
-                use some parts of our Service. Unless you have adjusted Your
-                browser setting so that it will refuse Cookies, our Service may
-                use Cookies.
-              </li>
-              <li>
-                <strong>Flash Cookies.</strong> Certain features of our Service
-                may use local stored objects (or Flash Cookies) to collect and
-                store information about Your preferences or Your activity on our
-                Service. Flash Cookies are not managed by the same browser
-                settings as those used for Browser Cookies. For more information
-                on how You can delete Flash Cookies, please read "Where can I
-                change the settings for disabling, or deleting local shared
-                objects?" available at
-                <a
-                  href="https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_"
-                  rel="external nofollow noopener"
-                  target="_blank"
-                  >https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_</a
-                >
-              </li>
-              <li>
-                <strong>Web Beacons.</strong> Certain sections of our Service
-                and our emails may contain small electronic files known as web
-                beacons (also referred to as clear gifs, pixel tags, and
-                single-pixel gifs) that permit the Company, for example, to
-                count users who have visited those pages or opened an email and
-                for other related website statistics (for example, recording the
-                popularity of a certain section and verifying system and server
-                integrity).
-              </li>
-            </ul>
-            <p>
-              Cookies can be "Persistent" or "Session" Cookies. Persistent
-              Cookies remain on Your personal computer or mobile device when You
-              go offline, while Session Cookies are deleted as soon as You close
-              Your web browser. You can learn more about cookies here:
-              <a href="https://www.termsfeed.com/blog/cookies/" target="_blank"
-                >All About Cookies by TermsFeed</a
-              >.
-            </p>
-            <p>
-              We use both Session and Persistent Cookies for the purposes set
-              out below:
-            </p>
-            <ul>
-              <li>
-                <p><strong>Necessary / Essential Cookies</strong></p>
-                <p>Type: Session Cookies</p>
-                <p>Administered by: Us</p>
-                <p>
-                  Purpose: These Cookies are essential to provide You with
-                  services available through the Website and to enable You to
-                  use some of its features. They help to authenticate users and
-                  prevent fraudulent use of user accounts. Without these
-                  Cookies, the services that You have asked for cannot be
-                  provided, and We only use these Cookies to provide You with
-                  those services.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>Cookies Policy / Notice Acceptance Cookies</strong>
-                </p>
-                <p>Type: Persistent Cookies</p>
-                <p>Administered by: Us</p>
-                <p>
-                  Purpose: These Cookies identify if users have accepted the use
-                  of cookies on the Website.
-                </p>
-              </li>
-              <li>
-                <p><strong>Functionality Cookies</strong></p>
-                <p>Type: Persistent Cookies</p>
-                <p>Administered by: Us</p>
-                <p>
-                  Purpose: These Cookies allow us to remember choices You make
-                  when You use the Website, such as remembering your login
-                  details or language preference. The purpose of these Cookies
-                  is to provide You with a more personal experience and to avoid
-                  You having to re-enter your preferences every time You use the
-                  Website.
-                </p>
-              </li>
-            </ul>
-            <p>
-              For more information about the cookies we use and your choices
-              regarding cookies, please visit our Cookies Policy or the Cookies
-              section of our Privacy Policy.
-            </p>
-            <h2 class="text-2xl font-bold text-center mt-10">Use of Your Personal Data</h2>
-            <p>The Company may use Personal Data for the following purposes:</p>
-            <ul>
-              <li>
-                <p>
-                  <strong>To provide and maintain our Service</strong>,
-                  including to monitor the usage of our Service.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>To manage Your Account:</strong> to manage Your
-                  registration as a user of the Service. The Personal Data You
-                  provide can give You access to different functionalities of
-                  the Service that are available to You as a registered user.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>For the performance of a contract:</strong> the
-                  development, compliance and undertaking of the purchase
-                  contract for the products, items or services You have
-                  purchased or of any other contract with Us through the
-                  Service.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>To contact You:</strong> To contact You by email,
-                  telephone calls, SMS, or other equivalent forms of electronic
-                  communication, such as a mobile application's push
-                  notifications regarding updates or informative communications
-                  related to the functionalities, products or contracted
-                  services, including the security updates, when necessary or
-                  reasonable for their implementation.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>To provide You</strong> with news, special offers and
-                  general information about other goods, services and events
-                  which we offer that are similar to those that you have already
-                  purchased or enquired about unless You have opted not to
-                  receive such information.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>To manage Your requests:</strong> To attend and manage
-                  Your requests to Us.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>For business transfers:</strong> We may use Your
-                  information to evaluate or conduct a merger, divestiture,
-                  restructuring, reorganization, dissolution, or other sale or
-                  transfer of some or all of Our assets, whether as a going
-                  concern or as part of bankruptcy, liquidation, or similar
-                  proceeding, in which Personal Data held by Us about our
-                  Service users is among the assets transferred.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <strong>For other purposes</strong>: We may use Your
-                  information for other purposes, such as data analysis,
-                  identifying usage trends, determining the effectiveness of our
-                  promotional campaigns and to evaluate and improve our Service,
-                  products, services, marketing and your experience.
-                </p>
-              </li>
-            </ul>
-            <p>
-              We may share Your personal information in the following
-              situations:
-            </p>
-            <ul>
-              <li>
-                <strong>With Service Providers:</strong> We may share Your
-                personal information with Service Providers to monitor and
-                analyze the use of our Service, to contact You.
-              </li>
-              <li>
-                <strong>For business transfers:</strong> We may share or
-                transfer Your personal information in connection with, or during
-                negotiations of, any merger, sale of Company assets, financing,
-                or acquisition of all or a portion of Our business to another
-                company.
-              </li>
-              <li>
-                <strong>With Affiliates:</strong> We may share Your information
-                with Our affiliates, in which case we will require those
-                affiliates to honor this Privacy Policy. Affiliates include Our
-                parent company and any other subsidiaries, joint venture
-                partners or other companies that We control or that are under
-                common control with Us.
-              </li>
-              <li>
-                <strong>With business partners:</strong> We may share Your
-                information with Our business partners to offer You certain
-                products, services or promotions.
-              </li>
-              <li>
-                <strong>With other users:</strong> when You share personal
-                information or otherwise interact in the public areas with other
-                users, such information may be viewed by all users and may be
-                publicly distributed outside.
-              </li>
-              <li>
-                <strong>With Your consent</strong>: We may disclose Your
-                personal information for any other purpose with Your consent.
-              </li>
-            </ul>
-            <h2 class="text-2xl font-bold text-center mt-10">Retention of Your Personal Data</h2>
-            <p>
-              The Company will retain Your Personal Data only for as long as is
-              necessary for the purposes set out in this Privacy Policy. We will
-              retain and use Your Personal Data to the extent necessary to
-              comply with our legal obligations (for example, if we are required
-              to retain your data to comply with applicable laws), resolve
-              disputes, and enforce our legal agreements and policies.
-            </p>
-            <p>
-              The Company will also retain Usage Data for internal analysis
-              purposes. Usage Data is generally retained for a shorter period of
-              time, except when this data is used to strengthen the security or
-              to improve the functionality of Our Service, or We are legally
-              obligated to retain this data for longer time periods.
-            </p>
-            <h2 class="text-2xl font-bold text-center mt-10">Transfer of Your Personal Data</h2>
-            <p>
-              Your information, including Personal Data, is processed at the
-              Company's operating offices and in any other places where the
-              parties involved in the processing are located. It means that this
-              information may be transferred to — and maintained on — computers
-              located outside of Your state, province, country or other
-              governmental jurisdiction where the data protection laws may
-              differ than those from Your jurisdiction.
-            </p>
-            <p>
-              Your consent to this Privacy Policy followed by Your submission of
-              such information represents Your agreement to that transfer.
-            </p>
-            <p>
-              The Company will take all steps reasonably necessary to ensure
-              that Your data is treated securely and in accordance with this
-              Privacy Policy and no transfer of Your Personal Data will take
-              place to an organization or a country unless there are adequate
-              controls in place including the security of Your data and other
-              personal information.
-            </p>
-            <h2>Disclosure of Your Personal Data</h2>
-            <h3>Business Transactions</h3>
-            <p>
-              If the Company is involved in a merger, acquisition or asset sale,
-              Your Personal Data may be transferred. We will provide notice
-              before Your Personal Data is transferred and becomes subject to a
-              different Privacy Policy.
-            </p>
-            <h3>Law enforcement</h3>
-            <p>
-              Under certain circumstances, the Company may be required to
-              disclose Your Personal Data if required to do so by law or in
-              response to valid requests by public authorities (e.g. a court or
-              a government agency).
-            </p>
-            <h3>Other legal requirements</h3>
-            <p>
-              The Company may disclose Your Personal Data in the good faith
-              belief that such action is necessary to:
-            </p>
-            <ul>
-              <li>Comply with a legal obligation</li>
-              <li>Protect and defend the rights or property of the Company</li>
-              <li>
-                Prevent or investigate possible wrongdoing in connection with
-                the Service
-              </li>
-              <li>
-                Protect the personal safety of Users of the Service or the
-                public
-              </li>
-              <li>Protect against legal liability</li>
-            </ul>
-            <h2>Security of Your Personal Data</h2>
-            <p>
-              The security of Your Personal Data is important to Us, but
-              remember that no method of transmission over the Internet, or
-              method of electronic storage is 100% secure. While We strive to
-              use commercially acceptable means to protect Your Personal Data,
-              We cannot guarantee its absolute security.
-            </p>
-            <h1>Children's Privacy</h1>
-            <p>
-              Our Service does not address anyone under the age of 13. We do not
-              knowingly collect personally identifiable information from anyone
-              under the age of 13. If You are a parent or guardian and You are
-              aware that Your child has provided Us with Personal Data, please
-              contact Us. If We become aware that We have collected Personal
-              Data from anyone under the age of 13 without verification of
-              parental consent, We take steps to remove that information from
-              Our servers.
-            </p>
-            <p>
-              If We need to rely on consent as a legal basis for processing Your
-              information and Your country requires consent from a parent, We
-              may require Your parent's consent before We collect and use that
-              information.
-            </p>
-            <h1>Links to Other Websites</h1>
-            <p>
-              Our Service may contain links to other websites that are not
-              operated by Us. If You click on a third party link, You will be
-              directed to that third party's site. We strongly advise You to
-              review the Privacy Policy of every site You visit.
-            </p>
-            <p>
-              We have no control over and assume no responsibility for the
-              content, privacy policies or practices of any third party sites or
-              services.
-            </p>
-            <h1>Changes to this Privacy Policy</h1>
-            <p>
-              We may update Our Privacy Policy from time to time. We will notify
-              You of any changes by posting the new Privacy Policy on this page.
-            </p>
-            <p>
-              We will let You know via email and/or a prominent notice on Our
-              Service, prior to the change becoming effective and update the
-              "Last updated" date at the top of this Privacy Policy.
-            </p>
-            <p>
-              You are advised to review this Privacy Policy periodically for any
-              changes. Changes to this Privacy Policy are effective when they
-              are posted on this page.
-            </p>
-            <h1>Contact Us</h1>
-            <p>
-              If you have any questions about this Privacy Policy, You can
-              contact us:
-            </p>
-            <ul>
-              <li>
-                By visiting this page on our website:
-                <a
-                  href="www.meto-transport.com/policies/privacy"
-                  rel="external nofollow noopener"
-                  target="_blank"
-                  >www.meto-transport.com/policies/privacy</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div id="out_en" class="agreement_output"></div>
-        </div>
-      </section>
-    </div>
+        
+      </ul>
+
+      <p class="text-md italic mt-4">
+        We would like ensure that our services are smooth and you dont face any
+        issues with our system. Our refund policy has been made in mind keeping
+        the needs of the customers. If you wish to recommend or give us
+        feedbacks please go to the main page and scroll down to the feedbacks
+        section. We value your feedbacks.
+      </p>
+
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.0"
+          class="w-20"
+          viewBox="0 0 1280.000000 590.000000"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <g
+            transform="translate(0.000000,590.000000) scale(0.100000,-0.100000)"
+            fill="#000000"
+            stroke="none"
+          >
+            <path
+              d="M5597 5828 c-59 -120 -90 -284 -132 -702 -17 -165 -19 -492 -5 -603 24 -183 98 -389 204 -563 145 -238 341 -483 576 -719 86 -86 142 -150 130 -146 -13 4 -235 97 -494 207 -599 255 -732 307 -1051 411 -422 138 -660 193 -1005 233 -181 21 -497 21 -660 0 -124 -16 -463 -74 -593 -102 -380 -79 -713 -120 -887 -109 -101 7 -240 27 -304 46 -32 9 -36 13 -25 24 8 7 37 20 65 29 144 47 305 211 335 343 11 46 10 57 -9 102 -12 27 -22 57 -22 65 0 20 -66 23 -73 4 -2 -7 -8 -10 -12 -5 -5 4 -3 13 3 19 17 17 15 35 -8 58 -11 11 -34 42 -51 69 -16 27 -36 52 -44 55 -11 4 -13 14 -8 36 4 24 0 36 -17 55 -13 14 -29 25 -36 25 -16 0 -64 57 -64 76 0 22 -20 16 -49 -15 -17 -19 -37 -28 -56 -28 -37 0 -69 -37 -55 -63 15 -27 13 -36 -15 -66 -14 -15 -25 -35 -25 -45 0 -12 -7 -19 -19 -19 -10 0 -41 -24 -68 -53 -93 -98 -105 -200 -40 -338 41 -88 78 -138 174 -236 39 -40 68 -73 63 -73 -19 0 -154 63 -237 111 -146 83 -308 223 -476 412 l-69 76 40 48 c52 62 107 173 122 247 22 109 -10 205 -104 304 -84 90 -266 197 -382 225 -33 8 -67 18 -76 22 -13 5 -19 -2 -29 -35 -7 -23 -23 -49 -36 -57 -35 -23 -30 -72 13 -149 l36 -65 -40 -35 c-22 -19 -50 -55 -62 -80 -22 -45 -22 -47 -6 -108 30 -108 123 -193 282 -256 129 -52 207 -97 255 -147 81 -85 225 -267 204 -259 -61 26 -130 39 -215 40 -114 1 -143 -12 -201 -91 -38 -51 -38 -52 -20 -74 18 -23 18 -24 -4 -54 -13 -16 -37 -60 -53 -97 -23 -51 -40 -73 -66 -89 -37 -21 -41 -28 -52 -94 -4 -22 -13 -53 -21 -69 -17 -33 -7 -46 37 -46 16 0 34 -11 51 -31 l26 -32 69 13 c80 15 104 25 104 45 0 7 5 17 11 21 8 5 10 -1 5 -19 -8 -35 12 -53 74 -66 123 -27 214 1 291 87 60 66 122 187 149 288 12 43 23 85 25 92 3 8 23 0 61 -24 130 -84 386 -174 565 -201 l109 -17 -117 -32 c-416 -114 -663 -297 -819 -605 -43 -86 -129 -303 -138 -347 -3 -19 -3 -45 0 -58 8 -32 21 -24 130 77 96 89 99 91 398 210 223 90 277 115 356 169 65 45 168 149 200 203 31 52 60 153 60 208 0 51 18 161 28 171 4 3 70 14 147 23 77 9 291 38 475 65 764 113 969 125 1430 89 137 -11 450 -55 459 -65 3 -3 -25 -4 -64 0 -341 28 -607 5 -908 -80 -333 -93 -664 -300 -874 -546 -251 -294 -388 -637 -410 -1023 -33 -602 334 -1006 987 -1085 299 -36 664 36 925 183 93 52 128 80 226 177 100 99 122 127 162 206 69 135 91 238 84 389 -7 132 -30 242 -75 350 -47 113 -95 206 -101 197 -3 -5 -16 6 -28 24 -12 19 -18 34 -12 34 6 0 7 5 4 10 -9 15 -35 12 -35 -4 0 -8 10 -22 22 -30 12 -9 22 -26 23 -38 0 -13 17 -66 37 -118 60 -152 81 -273 75 -410 -17 -354 -199 -609 -562 -786 -153 -75 -278 -110 -445 -126 -462 -43 -806 129 -1009 503 -253 466 -175 994 215 1459 108 128 323 301 469 377 177 91 401 159 628 189 164 22 534 14 722 -15 374 -57 815 -182 1325 -374 442 -168 834 -323 837 -333 2 -6 -44 -27 -106 -47 -379 -126 -767 -356 -882 -524 -42 -61 -173 -327 -226 -458 -56 -140 -102 -294 -109 -365 -5 -58 5 -111 23 -117 6 -2 40 36 75 84 36 49 82 103 102 121 84 74 236 163 486 286 296 145 333 165 441 247 122 92 200 203 247 349 26 80 46 253 39 332 -3 40 -2 58 6 58 7 0 66 -21 132 -46 210 -80 543 -199 780 -280 127 -42 232 -79 234 -81 9 -7 -33 -123 -91 -248 -61 -133 -98 -250 -98 -314 0 -49 48 -147 96 -196 76 -78 175 -115 341 -130 190 -18 546 72 902 227 146 63 463 222 566 282 42 25 79 46 81 46 17 0 -39 -65 -171 -200 -142 -146 -197 -214 -226 -285 -9 -21 -13 -92 -13 -225 l-1 -195 -47 -100 c-58 -124 -62 -150 -45 -251 18 -100 52 -167 111 -222 60 -56 85 -64 181 -64 91 1 138 14 390 113 189 73 254 82 300 39 40 -37 54 -80 71 -219 34 -283 63 -325 262 -387 63 -20 146 -50 185 -67 135 -57 277 -35 335 53 28 42 27 63 -12 205 -30 109 -30 145 1 268 19 77 13 156 -33 407 -52 291 -56 338 -55 661 2 355 -1 375 -85 590 -29 75 -58 168 -65 205 -7 42 -19 78 -32 91 -47 52 -241 87 -447 81 -138 -4 -149 -6 -213 -35 -74 -35 -168 -117 -198 -173 -16 -30 -18 -32 -19 -12 0 41 -40 103 -121 187 -96 100 -100 119 -39 196 69 87 45 148 -67 178 -46 13 -47 14 -57 54 l-7 29 88 -4 87 -3 21 40 c12 22 29 41 38 43 10 2 15 7 12 11 -2 5 18 6 45 3 27 -2 70 -1 95 2 62 10 85 46 85 134 0 118 32 156 168 198 165 50 249 110 272 194 39 139 -42 745 -151 1130 -41 145 -89 244 -131 270 -43 26 -46 26 -135 -10 -105 -42 -143 -40 -251 14 -252 126 -526 140 -598 31 -9 -14 -23 -56 -31 -93 -17 -83 -51 -137 -101 -158 -33 -14 -50 -15 -144 -4 -147 17 -209 -1 -252 -73 -42 -72 -95 -101 -253 -136 -99 -22 -134 -42 -185 -102 -52 -61 -80 -144 -86 -251 -5 -106 10 -162 73 -259 32 -50 59 -77 111 -111 89 -59 149 -76 309 -88 279 -21 378 -52 531 -168 105 -79 159 -141 199 -228 37 -78 77 -118 188 -187 102 -63 93 -66 -61 -21 -79 24 -185 77 -407 204 -217 125 -391 200 -460 200 -66 0 -136 -26 -231 -86 -158 -101 -172 -107 -233 -108 -36 0 -84 10 -134 27 -150 53 -246 37 -314 -52 -49 -64 -46 -111 10 -165 23 -22 68 -60 99 -83 74 -55 80 -80 38 -161 -38 -71 -34 -85 35 -132 77 -53 79 -70 30 -180 -19 -43 -35 -89 -35 -103 l0 -26 -82 38 c-46 21 -135 55 -198 76 -181 60 -975 370 -998 390 -1 1 29 67 67 146 69 145 123 302 141 414 16 99 12 270 -9 365 -57 253 -133 385 -502 872 -302 399 -410 561 -447 678 -12 36 -35 133 -53 215 -28 138 -43 175 -70 175 -4 0 -23 -33 -42 -72z m-4247 -1164 c0 -8 -5 -12 -10 -9 -6 4 -8 11 -5 16 9 14 15 11 15 -7z m-104 -191 c-7 -7 -26 7 -26 19 0 6 6 6 15 -2 9 -7 13 -15 11 -17z m3410 -783 c150 -28 234 -49 269 -66 17 -8 22 -12 13 -10 -10 3 -104 24 -210 47 -176 37 -221 49 -191 49 6 0 60 -9 119 -20z m454 -95 c19 -7 28 -13 20 -13 -8 0 -31 6 -50 13 -19 7 -28 13 -20 13 8 0 31 -6 50 -13z m4560 -465 c13 -9 13 -10 0 -10 -8 0 -22 5 -30 10 -13 9 -13 10 0 10 8 0 22 -5 30 -10z m-5403 -659 c1 -24 1 -25 -13 -6 -17 23 -18 32 -1 32 6 0 13 -12 14 -26z m5353 -320 c-6 -12 -15 -21 -21 -21 -10 0 -5 13 14 38 15 19 20 7 7 -17z"
+            />
+            <path
+              d="M10902 5349 c-164 -27 -242 -114 -262 -290 -8 -66 -5 -112 11 -233 40 -304 44 -371 26 -477 -32 -191 -117 -439 -217 -640 -57 -111 -71 -172 -68 -275 3 -76 5 -89 20 -88 10 1 14 -4 11 -12 -2 -7 0 -46 6 -86 15 -96 38 -120 110 -111 45 5 50 3 66 -21 10 -14 23 -63 29 -108 15 -104 28 -114 94 -75 146 86 260 119 567 162 166 23 174 26 275 119 129 119 150 127 318 126 76 -1 152 3 170 9 57 17 127 69 200 145 59 62 72 82 81 125 14 64 14 227 1 341 -5 47 -14 157 -20 244 -6 88 -18 180 -27 205 -30 90 -110 206 -228 329 -154 161 -204 182 -278 121 l-38 -32 6 -62 c7 -58 5 -64 -13 -69 -34 -11 -92 27 -162 105 -106 117 -125 150 -169 288 -46 143 -78 191 -153 228 -76 38 -234 52 -356 32z"
+            />
+            <path
+              d="M12460 3471 c-193 -36 -567 -227 -750 -385 -98 -84 -181 -135 -252 -153 -58 -15 -77 -16 -150 -5 -78 11 -275 15 -235 5 18 -5 18 -5 0 -19 -10 -7 -25 -14 -34 -14 -24 0 -170 -158 -231 -248 -70 -104 -108 -179 -101 -200 11 -32 57 -73 127 -114 108 -63 173 -136 241 -268 67 -132 124 -196 200 -224 28 -10 122 -54 210 -97 172 -85 226 -100 345 -99 279 4 456 54 548 154 l42 46 0 104 c0 57 3 118 6 135 9 43 78 117 187 202 107 82 131 115 148 196 11 53 10 76 -10 194 -23 145 -23 157 20 314 15 58 21 113 22 200 2 114 1 123 -26 170 -41 74 -98 107 -191 111 -39 2 -91 -1 -116 -5z"
+            />
+            <path
+              d="M4090 2750 c6 -11 13 -20 16 -20 2 0 0 9 -6 20 -6 11 -13 20 -16 20 -2 0 0 -9 6 -20z"
+            />
+          </g>
+        </svg>
+      </div>
+
+      <p class="text-center mt-4 text-xl font-thin">
+        Thank you for choosing Meto Transport Service. Ensuring Safety,
+        Reliability and Comfort till your destination
+      </p>
+    </main>
   </div>
 </template>
 <script>

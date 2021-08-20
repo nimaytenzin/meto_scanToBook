@@ -10,10 +10,17 @@ const routes = [
     path: '/login',
     name: 'Home',
     component: () => import('../views/Login.vue')
+  },{
+    path:'/service-down',
+    component:()=>import('../views/ServiceDown.vue')
   },
   {
     path: '/policy/privacy',
     component: () => import('../views/PrivacyPolicy.vue')
+  },
+  {
+    path: '/policy/refund',
+    component: () => import('../views/RefundPolicy.vue')
   },
   {
     path: '/busDetails/:id',
@@ -49,7 +56,7 @@ const routes = [
         path: 'bookings', component: () => import('../components/ScanToBookComponents/Bookings.vue')
       },
       {
-        path: 'mockPayment', component: () => import('../components/ScanToBookComponents/MockPayment.vue')
+        path: 'loadPayment', component: () => import('../components/ScanToBookComponents/LoadPayment.vue')
       },
       {
         path: 'eticket', component: () => import('../components/ScanToBookComponents/ETicket.vue')

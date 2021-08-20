@@ -215,17 +215,25 @@
 </template>
 
 <script>
+import { addNewBooking } from "../../services/bookingServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+    this.$store.state.selectedSeats.forEach((seat) => {
+      this.seats.push(seat.number);
+    });
   },
   data() {
     return {
       name: "",
       contact: "",
       cid: "",
+      bookings: {},
+      booking: {},
+      bookingsWithSeats: {},
+      seats: [],
     };
   },
   computed: {
@@ -241,12 +249,36 @@ export default {
     },
     pay() {
       if (this.name && this.contact && this.cid) {
-        this.addDetail();
-        this.$toast.show("loading RMA payment gateway", {
-          position: "top",
-          type: "info",
+        this.bookings = {
+          scheduleId: this.$store.state.selectedBus.id,
+          bookingTime: new Date(),
+          customerName: this.name,
+          customerContact: this.contact,
+          customerCid: this.cid,
+          amount: this.$store.state.total,
+        };
+
+        this.bookingsWithSeats = {
+          booking: this.bookings,
+          seats: this.seats,
+        };
+
+        addNewBooking(this.bookingsWithSeats).then((res) => {
+          if (res.status === 201) {
+            this.$store.commit("addScanBookingId", res.data.id);
+            this.addDetail();
+            this.$toast.show("loading RMA payment gateway", {
+              position: "top",
+              type: "info",
+            });
+            this.$router.push(`/book/loadPayment`);
+          } else {
+            this.$toast.show("Newtork Error..try again", {
+              position: "top",
+              type: "error",
+            });
+          }
         });
-        this.$router.push("/book/mockPayment");
       } else {
         this.$toast.show("Enter your details", {
           position: "top",
