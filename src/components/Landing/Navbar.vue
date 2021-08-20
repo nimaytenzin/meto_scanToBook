@@ -38,6 +38,7 @@
             whitespace-nowrap
             uppercase
             text-white
+            
           "
           href="#"
           >Meto Transport</a

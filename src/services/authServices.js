@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const devUrl = "http://localhost:3000"
+const devUrl = process.env.VUE_APP_DEV_API
+
 
 
 

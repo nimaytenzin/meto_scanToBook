@@ -1237,6 +1237,7 @@ export default {
   },
 
   created() {
+    console.log("PROCESS ENV", process.env)
     getAllBuses().then((res) => {
       this.buses = res.length;
     });
