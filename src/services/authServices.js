@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const devUrl = "http://localhost:3000"
+const devUrl = "http://www.meto-transport.com/bpi"
 
 
 

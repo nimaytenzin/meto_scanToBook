@@ -639,7 +639,7 @@ export default {
 
       console.log();
       this.conn = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + schedule.id
+        "ws://" + "www.meto-tranport.com" + "/ws/" + schedule.id
       );
       this.conn.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -648,7 +648,7 @@ export default {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + schedule.id
+          "ws://" + "www.meto-tranport.com" + "/ws/" + schedule.id
         );
       };
       this.conn.onmessage = (evt) => {

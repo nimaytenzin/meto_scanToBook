@@ -1,7 +1,7 @@
 import axios from 'axios'
 import authHeader from './auth-HeaderServices'
 
-const devUrl = "http://localhost:3000"
+const devUrl = "http://www.meto-transport.com/bpi"
 
 export async function getAllBusTypes() {
     let busTypes = [];

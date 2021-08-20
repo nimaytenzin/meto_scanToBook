@@ -273,7 +273,7 @@ export default {
       : 0;
     if (this.$store.state.selectedBus.id) {
       this.conn = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + this.$store.state.selectedBus.id
+        "ws://" + "www.meto-tranport.com" + "/ws/" + this.$store.state.selectedBus.id
       );
       this.conn.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -282,7 +282,7 @@ export default {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + this.$store.state.selectedBus.id
+          "ws://" + "www.meto-tranport.com" + "/ws/" + this.$store.state.selectedBus.id
         );
       };
       this.conn.onmessage = (evt) => {
