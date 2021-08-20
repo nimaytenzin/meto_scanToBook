@@ -262,7 +262,7 @@ export default {
 
     this.roomId = this.$store.state.customerBooking.schedule.id
     this.conn = new WebSocket(
-      "ws://" + "localhost:8080" + "/ws/" + this.roomId
+      "ws://" + "www.meto-tranport.com" + "/ws/" + this.roomId
     );
 
     this.conn.onopen = (event) => {

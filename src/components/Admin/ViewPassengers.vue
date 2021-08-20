@@ -1067,7 +1067,7 @@ export default {
       this.selectedBooking = e;
       this.cancelBookingModal = true;
       this.socketConnection = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + this.selectedBooking.scheduleId
+        "ws://" + "www.meto-tranport.com" + "/ws/" + this.selectedBooking.scheduleId
       );
       this.socketConnection.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -1075,7 +1075,7 @@ export default {
       this.socketConnection.onclose = (evt) => {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
-        this.conn = new WebSocket("ws://" + "localhost:8081" + "/ws/" + this.selectedBooking.scheduleId);
+        this.conn = new WebSocket("ws://" + "www.meto-tranport.com" + "/ws/" + roomId);
       };
     },
 
@@ -1302,7 +1302,7 @@ export default {
         //handle socket connection
 
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + this.selectedTransferSchedule.id
+          "ws://" + "www.meto-tranport.com" + "/ws/" + this.selectedTransferSchedule.id
         );
         this.conn.onopen = (event) => {
           console.log("Successfully connected to the echo websocket server");
@@ -1312,7 +1312,7 @@ export default {
           console.log("RECONNECTING");
           this.conn = new WebSocket(
             "ws://" +
-              "localhost:8081" +
+              "www.meto-tranport.com" +
               "/ws/" +
               this.$store.state.selectedBus.id
           );
