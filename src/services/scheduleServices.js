@@ -15,6 +15,18 @@ export async function getScheduleByDate(date) {
     return schedules
 }
 
+export async function getDetailsByDate(date) {
+    let schedules = [];
+    const response = await axios.get(`${devUrl}/schedules/details/${date}`,{
+        headers: authHeader()
+      })
+        .then(res => {
+            schedules = res.data
+        })
+        .catch(err => console.log(err))
+    return schedules
+}
+
 export async function addNewSchedule(data){
     return await axios.post(`${devUrl}/schedules`,data)
 

@@ -278,7 +278,7 @@
 
 
 <script>
-import { getScheduleByDate } from "../../services/scheduleServices";
+import { getDetailsByDate } from "../../services/scheduleServices";
 import { getAllBuses } from "../../services/busServices";
 import { assignBus } from "../../services/scheduleServices";
 export default {
@@ -350,7 +350,7 @@ export default {
     onDayClick(e) {
       this.selectedDate = e.ariaLabel;
       let formattedDate = e.id + " 00:00:00";
-      getScheduleByDate(formattedDate).then((res) => {
+      getDetailsByDate(formattedDate).then((res) => {
         this.schedules = res;
         console.log(this.schedules);
       });

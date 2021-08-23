@@ -1,11 +1,12 @@
 <template>
   <div>
-    <main
+    <div
       class="
         flex flex-col
         justify-center
         items-center
-        p-4
+        pl-4
+        pr-4
         m-4
         md:mr-16
         md:ml-16a
@@ -124,7 +125,7 @@
         
         </div> 
       
-    </main>
+    </div>
   </div>
 </template>
 <script>

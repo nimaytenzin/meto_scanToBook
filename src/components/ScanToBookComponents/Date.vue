@@ -123,6 +123,7 @@ export default {
     let loader = useLoading();
     loader.show();
 
+  
     getRoutesByOriginDestination(
       this.$store.state.origin.id,
       this.$store.state.destination.id
@@ -135,7 +136,7 @@ export default {
       .catch((err) => console.log(err));
 
     let days = [];
-    let daysRequired = 14;
+    let daysRequired = 7;
 
     for (let i = 1; i <= daysRequired; i++) {
       days.push(moment().add(i, "days").format("YYYY-MM-DD"));

@@ -568,6 +568,7 @@ export default {
       });
     },
     searchBus() {
+      
       this.routeDays = [];
       let loader = useLoading();
       loader.show();
