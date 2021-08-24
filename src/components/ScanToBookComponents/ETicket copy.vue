@@ -29,7 +29,7 @@
         space-x-4
       "
     >
-      <!-- <div class="flex flex-col max-w-full p-3 m-3 bg-white" id="eTicket">
+      <div class="flex flex-col max-w-full p-3 m-3 bg-white" id="eTicket">
         <div class="flex flex-row justify-between p-3">
           <div>
             <h1 class="text-left text-sm text-gray-500">Meto Transport</h1>
@@ -52,9 +52,7 @@
                 <h1 class="text-center text-3xl text-black font-bold">
                   {{ this.$store.state.origin.name }}
                 </h1>
-                <!-- <p class="text-md text-center">
-              ({{ this.$store.state.origin.dzo }})
-            </p> -->
+  
               </div>
               <div
                 class="
@@ -250,7 +248,7 @@
         <p class="text-center text-gray-500 text-sm mt-4 mb-4">
           Ensuring Safety, Reliability,Comfort till your destination.
         </p>
-      </div> -->
+      </div>
     </div>
 
     <div class="inline-flex mt-8 mb-5">
