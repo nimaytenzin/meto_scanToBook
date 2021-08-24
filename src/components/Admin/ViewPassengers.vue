@@ -861,7 +861,7 @@ import {
 import { cancelBooking, updateBooking } from "../../services/bookingServices";
 import { updateBookedSeat } from "../../services/bookedseatsService";
 import { getAllStops } from "../../services/stopServices";
-import { getScheduleByDate } from "../../services/scheduleServices";
+import { getScheduleByDate, getDetailsByDate } from "../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
 import { useLoading } from "vue3-loading-overlay";
 import moment from "moment";
@@ -1035,6 +1035,7 @@ export default {
             })
               .then((res) => {
                 if (res.status === 200) {
+
                 }
               })
               .catch((err) => {
@@ -1074,7 +1075,7 @@ export default {
       this.socketConnection.onclose = (evt) => {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
-        this.conn = new WebSocket("ws://" + "localhost:8081" + "/ws/" + roomId);
+        this.conn = new WebSocket("ws://" + "localhost:8081" + "/ws/" + this.selectedBooking.scheduleId);
       };
     },
 
@@ -1085,6 +1086,14 @@ export default {
       cancelBooking(this.selectedBooking.id, status).then((res) => {
         if (res.status === 200) {
           this.refreshData();
+            this.$toast.show(`SMS FOR CANCEL LINK ${window.location.host}/cancel-ticket/${this.selectedBooking.id}`,{
+              type:"info",
+              position:"top"
+            })
+
+            console.log(window.location)
+
+            console.log(`${window.location.host}/cancel-ticket/${this.selectedBooking.id}`)
 
           this.selectedBooking.bookedSeats.forEach((seat) => {
             this.socketConnection.send(
@@ -1234,7 +1243,7 @@ export default {
       this.transferSchedules = [];
       this.selectedDate = e.ariaLabel;
       let formattedDate = e.id + " 00:00:00";
-      getScheduleByDate(formattedDate).then((res) => {
+      getDetailsByDate(formattedDate).then((res) => {
         this.transferSchedules = res;
       });
     },
@@ -1248,6 +1257,8 @@ export default {
         this.transferDestination.id &&
         this.selectedDate
       ) {
+
+
         this.matchedTransferSchedules = [];
         this.matchedRoutes = [];
         getRoutesByOriginDestination(
@@ -1257,6 +1268,7 @@ export default {
           res.data.forEach((data) => {
             this.matchedRoutes.push(data);
           });
+
           this.transferSchedules.forEach((schedule) => {
             this.matchedRoutes.forEach((route) => {
               console.log(route, "MAtch route ID");

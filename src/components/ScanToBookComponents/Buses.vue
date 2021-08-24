@@ -90,12 +90,14 @@
               @click="commitToStore({ schedule })"
               :class="tableRowColor(schedule)"
             >
-              <td class="pl-3  mr-2 border-r border-gray-100 ">
-                {{ getdepTime(schedule.route.departureTime) }}
+              <td class="pl-3 mr-2 border-r border-gray-100">
+                {{ getdepTime(schedule.route?.departureTime) }}
               </td>
-              <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route.fare }}</td>
+              <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route?.fare }}</td>
 
-              <td class="pr-3 ml-5 mr-2 border-l border-gray-100">{{ getETA(schedule.route.ETA) }}</td>
+              <td class="pr-3 ml-5 mr-2 border-l border-gray-100">
+                {{ getETA(schedule.route?.ETA) }}
+              </td>
               <td>
                 <div v-if="displayIcon(schedule)">
                   <svg
@@ -159,14 +161,16 @@
 </template>
 
 <script>
+import { getDetailsByDate } from "../../services/scheduleServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-
-    this.schedules = this.$store.state.schedules  
-},
+   getDetailsByDate(this.$store.state.selectedDate).then(res =>{
+     this.schedules = res
+   })
+  },
   data() {
     return {
       schedules: [],
@@ -231,7 +235,7 @@ export default {
     commitToStore(e) {
       this.ok = true;
       this.selectedSchedule = e.schedule;
-      console.log(e)
+      console.log(e);
       this.$store.commit("addBus", e.schedule);
     },
   },

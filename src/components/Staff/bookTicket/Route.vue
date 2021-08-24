@@ -477,7 +477,10 @@
 <script>
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
-import { getScheduleByDate } from "../../../services/scheduleServices";
+import {
+  getScheduleByDate,
+  getDetailsByDate,
+} from "../../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../../services/routeServices";
 import { useLoading } from "vue3-loading-overlay";
 import moment from "moment";
@@ -568,7 +571,6 @@ export default {
       });
     },
     searchBus() {
-      
       this.routeDays = [];
       let loader = useLoading();
       loader.show();
@@ -585,7 +587,7 @@ export default {
         .catch((err) => console.log(err));
 
       let days = [];
-      let daysRequired = 14;
+      let daysRequired = 7;
 
       for (let i = 1; i <= daysRequired; i++) {
         days.push(moment().add(i, "days").format("YYYY-MM-DD"));
@@ -593,40 +595,31 @@ export default {
 
       days.forEach((day) => {
         let formattedDate = day + " 00:00:00";
-        getScheduleByDate(formattedDate)
-          .then((res) => {
-            let dattt = new Date(formattedDate);
-            if (res.length) {
-              res.forEach((ok) => {
-                this.matchedRoutes.forEach((route) => {
-                  if (route.id === ok.routeId) {
-                    let routeDay = {
-                      dates: new Date(
-                        dattt.getFullYear(),
-                        dattt.getMonth(),
-                        dattt.getDate()
-                      ),
-                      highlight: {
-                        color: "green",
-                        fillMode: "light",
-                      },
-                    };
-                    this.routeDays.push(routeDay);
-                  }
-                });
+        getScheduleByDate(formattedDate).then((res) => {
+          let dattt = new Date(formattedDate);
+          if (res.length) {
+            res.forEach((ok) => {
+              this.matchedRoutes.forEach((route) => {
+                if (route.id === ok.routeId) {
+                  let routeDay = {
+                    dates: new Date(
+                      dattt.getFullYear(),
+                      dattt.getMonth(),
+                      dattt.getDate()
+                    ),
+                    highlight: {
+                      color: "green",
+                      fillMode: "light",
+                    },
+                  };
+                  this.routeDays.push(routeDay);
+                }
               });
-            } else {
-            }
-          })
-          .finally(() => {
-            if (!this.routeDays.length) {
-              this.$toast.show("No Buses for the selected stops", {
-                position: "top",
-                type: "error",
-              });
-            }
-            loader.hide();
-          });
+            });
+          } else {
+          }
+        });
+        loader.hide();
       });
       //finda all matched routes
 
@@ -634,13 +627,13 @@ export default {
     },
 
     openSeatSelect(schedule) {
-      console.log(schedule, "SELECTD SCHEDUEL");
       this.scheduleId = schedule.id;
       this.fare = schedule.route.fare;
 
-      console.log();
+      console.log(this.scheduleId, "0okokokok");
+
       this.conn = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + schedule.id
+        "ws://" + "localhost:8081" + "/ws/" + this.scheduleId
       );
       this.conn.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -648,8 +641,12 @@ export default {
       this.conn.onclose = (evt) => {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
+        this.$toast.show("Error Connecting to Socket", {
+          type: "error",
+          position: "top",
+        });
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + schedule.id
+          "ws://" + "localhost:8081" + "/ws/" + this.scheduleId
         );
       };
       this.conn.onmessage = (evt) => {
@@ -771,36 +768,49 @@ export default {
     },
 
     addPassengerDetails() {
-      this.addPassengerDetailsModal = true;
+      if (this.bookedSeats.length) {
+        this.addPassengerDetailsModal = true;
+      } else {
+        this.$toast.show("Please select Seat", {
+          type: "error",
+          position: "top",
+        });
+      }
     },
 
     confirmBooking() {
-      let bookingDto = {
-        booking: {
-          scheduleId: this.scheduleId,
-          bookingTime: new Date(),
-          customerName: this.customerName,
-          customerContact: this.customerContact,
-          customerCid: this.customerCid,
-          amount: this.total,
-        },
-        seats: [],
-      };
-      this.bookedSeats.forEach((seat) => {
-        bookingDto.seats.push(seat.number);
-      });
-      console.log(bookingDto);
-      addNewBooking(bookingDto).then((res) => {
-        if (res.status === 201) {
-          this.$toast.show("Successful", {
-            position: "top",
-            type: "success",
-          });
-          this.seatSelectModal = false;
-          this.confirmSeatModal = false;
-          this.addPassengerDetailsModal = false;
-        }
-      });
+      if (this.customerName && this.customerContact && this.customerCid) {
+        let bookingDto = {
+          booking: {
+            scheduleId: this.scheduleId,
+            bookingTime: new Date(),
+            customerName: this.customerName,
+            customerContact: this.customerContact,
+            customerCid: this.customerCid,
+            amount: this.total,
+          },
+          seats: [],
+        };
+        this.bookedSeats.forEach((seat) => {
+          bookingDto.seats.push(seat.number);
+        });
+        addNewBooking(bookingDto).then((res) => {
+          if (res.status === 201) {
+            this.$toast.show("Successful", {
+              position: "top",
+              type: "success",
+            });
+            this.seatSelectModal = false;
+            this.confirmSeatModal = false;
+            this.addPassengerDetailsModal = false;
+          }
+        });
+      }else{
+        this.$toast.show("All fields are mandatory",{
+          position:"top",
+          type:"error"
+        })
+      }
     },
     cancelBooking() {
       this.addPassengerDetailsModal = false;
@@ -824,7 +834,7 @@ export default {
             matchedRouteIds.push(element.id);
           });
         });
-        getScheduleByDate(formattedDate).then((res) => {
+        getDetailsByDate(formattedDate).then((res) => {
           let matchRouteSchedule = [];
           if (res.length) {
             res.forEach((element) => {

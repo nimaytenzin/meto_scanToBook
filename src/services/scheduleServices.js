@@ -54,3 +54,7 @@ export async function getBusNumber(bookingId){
 export async function updateSchedule(scheduleId,data){
     return await axios.put(`${devUrl}/schedules/${scheduleId}`,data)
 }
+
+export async function getScheduleDetailsById(scheduleId){
+    return await axios.get(`${devUrl}/schedules/${scheduleId}`)
+}

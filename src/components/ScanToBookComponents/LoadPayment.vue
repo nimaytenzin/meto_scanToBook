@@ -187,12 +187,13 @@ export default {
 
   methods: {
     previous() {
-      this.$router.push("/book/Bookings");
+      this.$router.push(`/book/Bookings`);
     },
     next() {},
 
     sendForm() {
       setTimeout(() => {
+        this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
         // document.getElementById("submitBtn").click();
       }, 1000);
     },

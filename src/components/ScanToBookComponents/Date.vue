@@ -197,6 +197,7 @@ export default {
     },
     onDayClick(e) {
       let formattedDate = e.id + " 00:00:00";
+      this.$store.commit("commitSelectedDate", formattedDate)
       getScheduleByDate(formattedDate).then((res) => {
         this.schedules = res.length;
         let matchedSchedule = [];
@@ -227,8 +228,6 @@ export default {
           );
         }
       });
-
-      this.$store.commit("addDepartureDate", e.id);
     },
     addDepartureDate(val) {
       if (this.$store.state.departureDate === null) {

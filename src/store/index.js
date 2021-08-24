@@ -9,6 +9,7 @@ export default createStore({
     departureDate:'',
     selectedBus:'',
     selectedSeats:[],
+    selectedDate:"",
     total:0,
     bookedBy:{},
     authToken:'',
@@ -78,6 +79,10 @@ export default createStore({
     },
     commitCustomerDetails(state, details){
       state.customerBooking.customer = details
+    },
+
+    commitSelectedDate(state,data){
+      state.selectedDate = data
     },
     
     commitRemoveCustomerSeat(state,selectedSeat){

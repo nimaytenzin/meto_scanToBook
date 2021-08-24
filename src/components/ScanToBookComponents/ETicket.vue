@@ -44,212 +44,20 @@
         </div>
         <hr class="border-dashed" />
 
-        <div class="mt-6">
-          <div class="flex flex-col">
-            <div class="flex flex-row justify-around items-center">
-              <div class="flex flex-col">
-                <p class="text-sm text-center text-gray-600">(origin)</p>
-                <h1 class="text-center text-3xl text-black font-bold">
-                  {{ this.$store.state.origin.name }}
-                </h1>
-                <!-- <p class="text-md text-center">
-              ({{ this.$store.state.origin.dzo }})
-            </p> -->
-              </div>
-              <div
-                class="
-                  flex flex-col
-                  mt-3
-                  mr-7
-                  ml-7
-                  justify-center
-                  items-center
-                  justify-items-center
-                "
-              >
-                <p class="text-center mt-4 text-gray-500 italic">to</p>
-              </div>
-              <div class="flex flex-col">
-                <p class="text-sm text-center text-gray-600">(destination)</p>
-                <h1 class="text-center text-3xl text-black font-bold">
-                  {{ this.$store.state.destination.name }}
-                </h1>
-                <!-- <p class="text-md text-center">
-              ({{ this.$store.state.destination.dzo }})
-            </p> -->
-              </div>
-            </div>
-            <p class="text-center mt-4 text-gray-500 italic">on</p>
-            <h2 class="text-center text-2xl text-gray-500">
-              {{ this.$store.state.departureDate }}
-            </h2>
-          </div>
-          
-        </div>
+    
 
-        <div class="flex flex-row pt-3">
-          <div class="flex-1 p-3 text-center">
-            <p>Booked Seats</p>
-            <div class="flex flex-row justify-center items-center">
-              <div
-                v-for="item in this.$store.state.selectedSeats"
-                :key="item"
-                class="m-1 p-1 rounded relative"
-              >
-                <img src="../../assets/seatUnavailable.png" width="50" alt="" />
-                <p
-                  class="
-                    absolute
-                    top-1/2
-                    left-1/2
-                    bg-white bg-opacity-60
-                    rounded-sm
-                    pl-1
-                    pr-1
-                    transform
-                    -translate-x-1/2 -translate-y-1/2
-                  "
-                >
-                  {{ item.number }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+    
         <hr class="border-dashed" />
 
-        <div class="flex flex-row pt-3">
-          <div class="flex-1 p-3">
-            <p>Boarding</p>
-            <h2 class="text-blue-900">
-              {{ this.$store.state.origin.name }}
-            </h2>
-            <h3 class="text-gray-500">
-              {{
-                getdepTime(this.$store.state.schedules[0].route.departureTime)
-              }}
-            </h3>
-            <p class="text-gray-500 text-sm">
-              {{ this.$store.state.origin.contact }}(focal)
-            </p>
-          </div>
-          <div class="flex-1 p-3">
-            <p>Drop</p>
-            <h2 class="text-blue-900">
-              {{ this.$store.state.destination.name }}
-            </h2>
-            <h3 class="text-gray-500">
-              ETA {{ getETA(this.$store.state.schedules[0].route.ETA) }}
-            </h3>
-            <p class="text-gray-500 text-sm">
-              {{ this.$store.state.destination.contact }} (focal)
-            </p>
-          </div>
-        </div>
+      
 
         <hr class="border-dashed" />
 
-        <div
-          class="pt-3 mt-0 rounded-b-3xl flex flex-col"
-          style="
-            box-shadow: 0 6px 6px -6px #333;
-            background-image: url(../../assets/meto.png);
-          "
-        >
-          <div class="flex justify-center items-center">
-            <QRCodeVue3
-              :width="300"
-              :height="300"
-              v-bind:value="qrDataString"
-              :qrOptions="{
-                typeNumber: 0,
-                mode: 'Byte',
-                errorCorrectionLevel: 'H',
-              }"
-              :imageOptions="{
-                crossOrigin: 'anonymous',
-                hideBackgroundDots: true,
-                imageSize: 0.4,
-                margin: 0,
-              }"
-              :dotsOptions="{
-                type: 'square',
-                color: '#6a1a4c',
+      
 
-                gradient: {
-                  type: 'radial',
-                  rotation: 0,
-                  colorStops: [
-                    { offset: 0, color: '#e27a93' },
-                    { offset: 1, color: '#1d1b1c' },
-                  ],
-                },
-              }"
-              :backgroundOptions="{
-                color: '#ffffff',
-              }"
-              :cornersSquareOptions="{ type: 'square', color: '#000000' }"
-              :cornersDotOptions="{ type: undefined, color: '#000000' }"
-              fileExt="png"
-              :download="false"
-              myclass="my-qur"
-              image="/meto.png"
-              imgclass="img-qr"
-              downloadButton="my-button"
-              :downloadOptions="{ name: 'vqr', extension: 'png' }"
-            />
-          </div>
-          <p class="text-gray-500 text-center break-words p-3 text-sm">
-            Please Show the QR Code while boarding
-          </p>
-        </div>
 
-        <div class="pt-4 pb-4 flex flex-row justify-between">
-          <div>
-            <p>Booked By</p>
-            <h2 class="text-blue-900 break-words">
-              {{ this.$store.state.bookedBy.name }}
-            </h2>
-            <p class="text-gray-500 mt-1 text-sm">
-              {{ this.$store.state.bookedBy.contact }}
-            </p>
-            <p class="text-gray-500 mt-1 text-sm">
-              {{ this.$store.state.bookedBy.cid }}
-            </p>
-          </div>
-          <div>
-            <p>Fare Details</p>
-            <h2 class="text-blue-900">Fare: Nu.250</h2>
-            <h2 class="text-blue-900">
-              Seats Booked: {{ this.$store.state.selectedSeats.length }}
-            </h2>
-            <h2 class="text-blue-900">
-              Total: Nu. {{ this.$store.state.total }}
-            </h2>
-          </div>
-        </div>
 
-        <p>Your Bus Details will be uploaded 2 hours before departure <br /></p>
-        <button
-          @click="openBusDetails"
-          class="text-black font-bold py-2 px-4 rounded"
-        >
-          Click here to check Details : <br />
-          {{ url }}{{ checkBusRouteData.href }}
-        </button>
-
-        <button
-          @click="cancelTicket()"
-          class="text-black font-bold py-2 px-4 rounded"
-        >
-          Cancel Ticket: <br />
-          {{ url }}{{ cancelTicketRouteData.href }}
-        </button>
-
-        <hr class="border-dashed" />
-        <p class="text-center text-gray-500 text-sm mt-4 mb-4">
-          Ensuring Safety, Reliability,Comfort till your destination.
-        </p>
+  
       </div>
     </div>
 
@@ -293,27 +101,16 @@
 import domtoimage from "dom-to-image";
 import QRCodeVue3 from "qrcode-vue3";
 
+import { getBookingDetail} from '../../services/bookingServices'
+
+
 export default {
   created() {
-    if (this.$store.state.origin === "") {
-      this.$router.push("/book");
-    }
-    this.$store.state.selectedSeats.forEach((element) => {
-      this.seatNumbers += element.number;
-      this.seatNumbers += " | ";
-    });
-    this.qrData = {
-      origin: this.$store.state.origin.name,
-      destination: this.$store.state.destination.name,
-      departureTime: this.$store.state.selectedBus.route.departureTime
-        ? this.$store.state.selectedBus.route.departureTime
-        : "",
-      departureDate: this.$store.state.departureDate,
-      customerName: this.$store.state.bookedBy.name,
-      customerContact: this.$store.state.bookedBy.contact,
-      cusomerCid: this.$store.state.bookedBy.cid,
-      seats: this.seatNumbers,
-    };
+    
+      console.log('route', this.$router);
+
+  
+  
     this.qrDataString = JSON.stringify(this.qrData);
 
     this.checkBusRouteData = this.$router.resolve({

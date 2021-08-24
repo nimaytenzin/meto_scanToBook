@@ -86,22 +86,6 @@
             Book Tickets
           </p>
         </router-link>
-         <router-link to="/staff/view-schedule">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            View Schedule
-          </p>
-        </router-link>
   
         <router-link to="/staff/view-cancellations">
           <p
