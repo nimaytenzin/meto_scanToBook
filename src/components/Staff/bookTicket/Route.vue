@@ -803,6 +803,7 @@ export default {
             this.seatSelectModal = false;
             this.confirmSeatModal = false;
             this.addPassengerDetailsModal = false;
+            this.$router.push(`/staff/ticket/${res.data.id}`)
           }
         });
       }else{

@@ -362,19 +362,19 @@ export default {
     QRCodeVue3,
   },
   mounted: function () {
-    if (this.$store.state.origin !== "") {
+   
       setTimeout(function () {
         const elem = document.getElementById("saveBtn");
         elem.click();
       }, 100);
-    }
   },
-
   computed: {
     depDate() {
       return `${this.bookingData.schedule.calendarDate.Day_Name} ${this.bookingData.schedule.calendarDate.Calendar_Day} ${this.bookingData.schedule.calendarDate.Month_Name} ${this.bookingData.schedule.calendarDate.Calendar_Year} `;
     },
   },
+ 
+
 
   methods: {
     saveImage() {

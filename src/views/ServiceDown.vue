@@ -1,33 +1,48 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-White">
     <div class="max-w-md w-full space-y-8">
-      <div class="flex flex-col items-center">
-       
-      </div>
       <div class="mt-8 space-y-6">
-        <input type="hidden" name="remember" value="true" />
-        <div class="rounded-md  -space-y-px flex justify-center flex-col items-center">
-          <img
-            style="
-              -webkit-user-select: none;
-              margin: auto;
-              background-color: hsl(0, 0%, 90%);
-              transition: background-color 300ms;
-            "
-            src="https://cdn.dribbble.com/users/485324/screenshots/2514828/service_down_page.gif"
-            width="762"
-            height="571"
-            rel="preload"
-          />
+        <div
+          class="
+            rounded-md
+            -space-y-px
+            flex
+            justify-center
+            flex-col
+            items-center
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10 text-gray-700"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z"
+              clip-rule="evenodd"
+            />
+          </svg>
 
-           <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-800">
-          Serivce Down
-        </h2>
-        <p class="text-gray-500 text-center">
-          Our Developers are fixing the issues. <br>
-          Thank you for your patience
-        </p>
+          <h2 class="mt-6 text-center text-4xl font-extrabold text-gray-800">
+            Service Down
+          </h2>
+          <hr class="border-gray-300 w-2/3 mt-12 mb-12 border-dashed" />
+          <p class="text-gray-500 text-center">
+            Our Developers are fixing the issues. <br />
+            Thank you for your patience
+          </p>
         </div>
+        
+        <div class="flex flex-col items-center">
+          <h1 class="text-left text-sm text-gray-500">Meto Transport</h1>
+          <h1 class="text-left text-sm text-gray-500">
+            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
+          </h1>
+        </div>
+
+        <div></div>
       </div>
     </div>
   </div>

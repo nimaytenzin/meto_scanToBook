@@ -120,8 +120,8 @@ export default {
       this.$router.push("/book");
     }
 
-    let loader = useLoading();
-    loader.show();
+    // let loader = useLoading();
+    // loader.show();
 
   
     getRoutesByOriginDestination(
@@ -167,7 +167,7 @@ export default {
             });
           });
         }
-        loader.hide();
+        // loader.hide();
       });
     });
   },

@@ -106,7 +106,7 @@ const routes = [
        meta: { requiresAuth: true },
         children: [
           { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true } },
-          { path: 'ticket', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true } }
+          { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true } }
         ]
       },
       {
