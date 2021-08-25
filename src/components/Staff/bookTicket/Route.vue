@@ -633,7 +633,7 @@ export default {
       console.log(this.scheduleId, "0okokokok");
 
       this.conn = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + this.scheduleId
+       `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
       );
       this.conn.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -646,7 +646,7 @@ export default {
           position: "top",
         });
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + this.scheduleId
+        `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
         );
       };
       this.conn.onmessage = (evt) => {

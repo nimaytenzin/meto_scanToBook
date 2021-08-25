@@ -141,11 +141,12 @@
                   {{ getdepTime(schedule?.route?.departureTime) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ schedule?.route?.destination?.name }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
                   {{ schedule.route?.origin?.name }}
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
+                  {{ schedule?.route?.destination?.name }}
+                </td>
+                
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
                   Nu.{{ schedule?.route?.fare }}
                 </td>

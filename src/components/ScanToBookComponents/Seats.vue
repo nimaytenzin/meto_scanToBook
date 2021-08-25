@@ -272,8 +272,12 @@ export default {
       ? this.$store.state.selectedBus.route.fare
       : 0;
     if (this.$store.state.selectedBus.id) {
+      console.log(
+        `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
+
+      )
       this.conn = new WebSocket(
-        "ws://" + "localhost:8081" + "/ws/" + this.$store.state.selectedBus.id
+        `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
       );
       this.conn.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -282,7 +286,7 @@ export default {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
         this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + this.$store.state.selectedBus.id
+          `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
         );
       };
       this.conn.onmessage = (evt) => {
