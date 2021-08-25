@@ -46,16 +46,15 @@
             <img src="../../assets/seatUnavailable.png" width="50" alt="" />
             <p
               class="
-                 absolute
-                        top-1/2
-                        left-1/2
-                        bg-white
-                        bg-opacity-60
-                        rounded-sm
-                        pl-1
-                        pr-1
-                        transform
-                        -translate-x-1/2 -translate-y-1/2
+                absolute
+                top-1/2
+                left-1/2
+                bg-white bg-opacity-60
+                rounded-sm
+                pl-1
+                pr-1
+                transform
+                -translate-x-1/2 -translate-y-1/2
               "
             >
               {{ item.number }}
@@ -99,16 +98,15 @@
           <p
             class="
               absolute
-                        top-1/2
-                        left-1/2
-                        bg-white
-                        bg-opacity-60
-                        rounded-sm
-                        pl-1
-                        pr-1
-                        transform
-                        -translate-x-1/2 -translate-y-1/2
-                        cursor-pointer
+              top-1/2
+              left-1/2
+              bg-white bg-opacity-60
+              rounded-sm
+              pl-1
+              pr-1
+              transform
+              -translate-x-1/2 -translate-y-1/2
+              cursor-pointer
             "
           >
             {{ item.number ? item.number : "" }}
@@ -116,7 +114,6 @@
         </div>
       </div>
     </div>
-    
 
     <div>
       <vue-final-modal
@@ -262,50 +259,20 @@
 }
 </style>
 <script>
+import { useLoading } from "vue3-loading-overlay";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-   
+
     this.fare = this.$store.state.selectedBus?.route?.fare
       ? this.$store.state.selectedBus.route.fare
       : 0;
     if (this.$store.state.selectedBus.id) {
-      console.log(
-        `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
-
-      )
-      this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
-      );
-      this.conn.onopen = (event) => {
-        console.log("Successfully connected to the echo websocket server");
-      };
-      this.conn.onclose = (evt) => {
-        console.log("WSS CONNECTION closed");
-        console.log("RECONNECTING");
-        this.conn = new WebSocket(
-          `${process.env.VUE_APP_WSS}/${ this.$store.state.selectedBus.id}`
-        );
-      };
-      this.conn.onmessage = (evt) => {
-        let messageJson = JSON.parse(evt.data);
-        if (messageJson.messageType === "LOCK") {
-          console.log("LOCK MESSAGE RECIEVED");
-          this.lockedSeats = messageJson.lockedList;
-
-          this.changeSeatStatus();
-          console.log(messageJson);
-        } else if (messageJson.messageType === "LOCK_LEAVE") {
-          console.log("LOCK LEAVE RECIEVED");
-          console.log(messageJson);
-          this.reverSeatStatus(messageJson.leaveList);
-        } else if (messageJson.messageType === "LOCK_CONFIRM") {
-
-
-        }
-      };
+      this.loader.show();
+      this.isLoader = true;
+      this.connectWs();
     } else {
       this.$router.push("/book");
     }
@@ -314,6 +281,10 @@ export default {
     return {
       fare: 0,
       total: 0,
+      isConnected: false,
+      isLoader: false,
+      loader: useLoading(),
+      connectionAttempt: 0,
       //schedule id = room id for the websocket
       msg: {},
       lockedSeats: [],
@@ -364,6 +335,58 @@ export default {
     },
   },
   methods: {
+    connectWs() {
+      this.conn = new WebSocket(
+        `${process.env.VUE_APP_WSS}/${this.$store.state.selectedBus.id}`
+      );
+      this.conn.onopen = (event) => {
+        this.isConnected = true;
+        this.connectionAttempt = 0;
+        this.loader.hide();
+        this.isLoader = false;
+        console.log("Successfully connected to the echo websocket server");
+      };
+
+      this.conn.onclose = (evt) => {
+        if(!this.isLoader){
+          this.loader.show()
+          this.isLoader = true
+        }
+        
+        this.connectionAttempt++;
+        console.log("WSS CONNECTION closed");
+        console.log("RECONNECTING");
+        this.isConnected = false;
+        if (!this.isConnected) {
+          setTimeout(() => {
+            console.log(this.connectionAttempt);
+            if (this.connectionAttempt === 7) {
+              this.loader.hide()
+              this.isLoader = false
+              this.$router.push("/service-down");
+            } else {
+
+              this.connectWs();
+            }
+          }, 1000);
+        }
+      };
+      this.conn.onmessage = (evt) => {
+        let messageJson = JSON.parse(evt.data);
+        if (messageJson.messageType === "LOCK") {
+          console.log("LOCK MESSAGE RECIEVED");
+          this.lockedSeats = messageJson.lockedList;
+
+          this.changeSeatStatus();
+          console.log(messageJson);
+        } else if (messageJson.messageType === "LOCK_LEAVE") {
+          console.log("LOCK LEAVE RECIEVED");
+          console.log(messageJson);
+          this.reverSeatStatus(messageJson.leaveList);
+        } else if (messageJson.messageType === "LOCK_CONFIRM") {
+        }
+      };
+    },
     show() {
       this.$modal.show("my-first-modal");
     },
@@ -389,20 +412,20 @@ export default {
       this.$router.push("/book/buses");
     },
     changeSeatStatus() {
-      this.lockedSeats.forEach(seatNum =>{
-          let matchedSeat = this.getSeats(seatNum)
-          if(matchedSeat.status !== "booked"){
-              matchedSeat.status = "locked"
-          }
-      })
+      this.lockedSeats.forEach((seatNum) => {
+        let matchedSeat = this.getSeats(seatNum);
+        if (matchedSeat.status !== "booked") {
+          matchedSeat.status = "locked";
+        }
+      });
       // if(this.$store.state.selectedSeats.length > 0){
-      //     console.log(this.lockedSeats)  
+      //     console.log(this.lockedSeats)
       //     var stateSeat = this.$store.state.selectedSeats
       //     this.lockedSeats.forEach(seatNumber =>{
       //       // this.$store.state.selectedSeats.forEach(seat=>{
       //         stateSeat.forEach(seat=>{
       //         if(Number(seatNumber) === Number(seat.number)){
- 
+
       //           this.getSeats(seatNumber).status = "booked"
 
       //         }else{
@@ -451,16 +474,16 @@ export default {
     finalizeBooking() {
       if (this.$store.state.selectedSeats) {
         this.$store.commit("addTotal", this.total);
-        
-        this.$store.state.selectedSeats.forEach(seat =>{
-             this.conn.send(
-              JSON.stringify({
-                roomId: this.roomId.toString(),
-                messageType: "LOCK_CONFIRM",
-                seatId: seat.number.toString(),
-              })
-            );
-        })
+
+        this.$store.state.selectedSeats.forEach((seat) => {
+          this.conn.send(
+            JSON.stringify({
+              roomId: this.roomId.toString(),
+              messageType: "LOCK_CONFIRM",
+              seatId: seat.number.toString(),
+            })
+          );
+        });
 
         this.$router.push("/book/bookings");
       } else {
@@ -473,7 +496,7 @@ export default {
     confirmSeat() {
       this.showModal = false;
       this.selectedSeat.status = "booked";
-     
+
       this.activeSeat = null;
       this.$store.commit("addSeats", this.selectedSeat);
       this.total += this.fare;
@@ -489,7 +512,6 @@ export default {
       this.showModal = false;
     },
     confirmRevert() {
-
       this.conn.send(
         JSON.stringify({
           roomId: this.roomId.toString(),
@@ -522,7 +544,7 @@ export default {
               roomId: this.roomId.toString(),
               messageType: "LOCK",
               seatId: this.selectedSeat.number.toString(),
-            }) 
+            })
           );
           this.selectedSeat.status = "locked";
           this.showModal = true;
