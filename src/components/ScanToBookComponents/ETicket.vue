@@ -361,11 +361,14 @@ export default {
     QRCodeVue3,
   },
   mounted: function () {
-   
+      this.$toast.show("Please wait while we generate your QR Data", {
+        type:"info",
+        position:"top"
+      })
       setTimeout(function () {
         const elem = document.getElementById("saveBtn");
         elem.click();
-      }, 2300)
+      }, 10000)
   },
   computed: {
     depDate() {
