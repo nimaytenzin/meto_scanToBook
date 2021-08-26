@@ -102,8 +102,7 @@ import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
 
 import {
-  getScheduleByDate,
-  getSchedulesBetween,
+  getScheduleByDate
 } from "../../services/scheduleServices";
 
 import { useLoading } from "vue3-loading-overlay";

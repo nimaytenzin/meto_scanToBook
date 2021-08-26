@@ -538,6 +538,9 @@ export default {
       reverSeatModal: false,
       matchedRoutes: [],
       routeDays: [],
+      connectionAttempt:0,
+      isLoader: false,
+      loader: useLoading()
     };
   },
   created() {
@@ -626,41 +629,66 @@ export default {
       //populate days
     },
 
-    openSeatSelect(schedule) {
-      this.scheduleId = schedule.id;
-      this.fare = schedule.route.fare;
-
-      console.log(this.scheduleId, "0okokokok");
-
+    connectWs() {
       this.conn = new WebSocket(
-       `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
+        `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
       );
       this.conn.onopen = (event) => {
+        this.isConnected = true;
+        this.connectionAttempt = 0;
+        this.loader.hide();
+        this.isLoader = false;
         console.log("Successfully connected to the echo websocket server");
       };
+
       this.conn.onclose = (evt) => {
+        if(!this.isLoader){
+          this.loader.show()
+          this.isLoader = true
+        }
+        
+        this.connectionAttempt++;
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
-        this.$toast.show("Error Connecting to Socket", {
-          type: "error",
-          position: "top",
-        });
-        this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
-        );
+        this.isConnected = false;
+        if (!this.isConnected) {
+          setTimeout(() => {
+            console.log(this.connectionAttempt);
+            if (this.connectionAttempt === 7) {
+              this.loader.hide()
+              this.isLoader = false
+              this.$router.push("/service-down");
+            } else {
+
+              this.connectWs();
+            }
+          }, 1000);
+        }
       };
       this.conn.onmessage = (evt) => {
         let messageJson = JSON.parse(evt.data);
         if (messageJson.messageType === "LOCK") {
           console.log("LOCK MESSAGE RECIEVED");
           this.lockedSeats = messageJson.lockedList;
+
           this.changeSeatStatus();
+          console.log(messageJson);
         } else if (messageJson.messageType === "LOCK_LEAVE") {
           console.log("LOCK LEAVE RECIEVED");
+          console.log(messageJson);
           this.reverSeatStatus(messageJson.leaveList);
         } else if (messageJson.messageType === "LOCK_CONFIRM") {
         }
       };
+    },
+
+    openSeatSelect(schedule) {
+      this.scheduleId = schedule.id;
+      this.fare = schedule.route.fare;
+      this.loader.show();
+      this.isLoader = true;
+      this.connectWs();
+
       this.seatSelectModal = true;
     },
     bindImage(seat) {
@@ -756,14 +784,14 @@ export default {
       this.confirmSeatModal = false;
     },
     cancelSeat() {
+      console.log(this.seatSelected)
       this.conn.send(
         JSON.stringify({
-          roomId: this.selectedTransferSchedule.id.toString(),
+          roomId: this.scheduleId.toString(),
           messageType: "LOCK_LEAVE",
-          seatId: this.selectedTransferSeat.number.toString(),
+          seatId: this.seatSelected.number.toString(),
         })
       );
-      this.total -= this.fare;
       this.confirmSeatModal = false;
     },
 

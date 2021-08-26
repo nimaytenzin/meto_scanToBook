@@ -336,6 +336,7 @@
       classes="modal-container"
       content-class="modal-content"
       class="w-max-screen"
+      ref="formContainer"
     >
       <div class="modal__content text-center mt-1 flex flex-col gap-3">
         <h3 class="text-xl">Transfer Booking</h3>
@@ -861,10 +862,15 @@ import {
 import { cancelBooking, updateBooking } from "../../services/bookingServices";
 import { updateBookedSeat } from "../../services/bookedseatsService";
 import { getAllStops } from "../../services/stopServices";
-import { getScheduleByDate, getDetailsByDate } from "../../services/scheduleServices";
+import {
+  getScheduleByDate,
+  getDetailsByDate,
+} from "../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
 import { useLoading } from "vue3-loading-overlay";
 import moment from "moment";
+    import { ref } from 'vue';
+
 export default {
   data() {
     return {
@@ -941,6 +947,11 @@ export default {
 
       stops: [],
       routeDays: [],
+      connectionAttempt: 0,
+      isLoader: false,
+      loader: useLoading(),
+      formContainer: ref(true)
+
     };
   },
   methods: {
@@ -1035,7 +1046,6 @@ export default {
             })
               .then((res) => {
                 if (res.status === 200) {
-
                 }
               })
               .catch((err) => {
@@ -1067,7 +1077,7 @@ export default {
       this.selectedBooking = e;
       this.cancelBookingModal = true;
       this.socketConnection = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${ this.selectedBooking.scheduleId}`
+        `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
       );
       this.socketConnection.onopen = (event) => {
         console.log("Successfully connected to the echo websocket server");
@@ -1075,7 +1085,9 @@ export default {
       this.socketConnection.onclose = (evt) => {
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
-        this.conn = new WebSocket( `${process.env.VUE_APP_WSS}/${ this.selectedBooking.scheduleId}`);
+        this.conn = new WebSocket(
+          `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
+        );
       };
     },
 
@@ -1086,14 +1098,17 @@ export default {
       cancelBooking(this.selectedBooking.id, status).then((res) => {
         if (res.status === 200) {
           this.refreshData();
-            this.$toast.show(`SMS FOR CANCEL LINK ${window.location.host}/cancel-ticket/${this.selectedBooking.id}`,{
-              type:"info",
-              position:"top"
-            })
+          this.$toast.show(
+            `SMS FOR CANCEL LINK ${window.location.host}/cancel-ticket/${this.selectedBooking.id}`,
+            {
+              type: "info",
+              position: "top",
+            }
+          );
 
-            console.log(window.location)
-
-            console.log(`${window.location.host}/cancel-ticket/${this.selectedBooking.id}`)
+          console.log(
+            `${window.location.host}/cancel-ticket/${this.selectedBooking.id}`
+          );
 
           this.selectedBooking.bookedSeats.forEach((seat) => {
             this.socketConnection.send(
@@ -1112,8 +1127,7 @@ export default {
 
     populateRouteDays() {
       this.routeDays = [];
-      let loader = useLoading();
-      loader.show();
+
 
       getRoutesByOriginDestination(
         this.transferOrigin.id,
@@ -1160,7 +1174,6 @@ export default {
           }
         });
       });
-      loader.hide();
       //finda all matched routes
     },
 
@@ -1257,8 +1270,6 @@ export default {
         this.transferDestination.id &&
         this.selectedDate
       ) {
-
-
         this.matchedTransferSchedules = [];
         this.matchedRoutes = [];
         getRoutesByOriginDestination(
@@ -1301,42 +1312,68 @@ export default {
         this.showSeats = true;
         //handle socket connection
 
-        this.conn = new WebSocket(
-          "ws://" + "localhost:8081" + "/ws/" + this.selectedTransferSchedule.id
-        );
-        this.conn.onopen = (event) => {
-          console.log("Successfully connected to the echo websocket server");
-        };
-        this.conn.onclose = (evt) => {
-          console.log("WSS CONNECTION closed");
-          console.log("RECONNECTING");
-          this.conn = new WebSocket(
-            "ws://" +
-              "localhost:8081" +
-              "/ws/" +
-              this.$store.state.selectedBus.id
-          );
-        };
-        this.conn.onmessage = (evt) => {
-          let messageJson = JSON.parse(evt.data);
-          if (messageJson.messageType === "LOCK") {
-            console.log("LOCK MESSAGE RECIEVED");
-            this.lockedSeats = messageJson.lockedList;
-            this.changeSeatStatus();
-            console.log(messageJson);
-          } else if (messageJson.messageType === "LOCK_LEAVE") {
-            // console.log("LOCK LEAVE RECIEVED");
-            console.log(messageJson);
-            this.reverSeatStatus(messageJson.leaveList);
-          } else if (messageJson.messageType === "LOCK_CONFIRM") {
-          }
-        };
+        this.loader.show({
+          container:this.formContainer.value
+        });
+        this.isLoader = true;
+        this.connectWs();
       } else {
         this.$toast.show("Please select a schedule to transfer", {
           position: "top",
           type: "error",
         });
       }
+    },
+    connectWs() {
+      this.conn = new WebSocket(
+        `${process.env.VUE_APP_WSS}/${this.selectedTransferSchedule.id}`
+      );
+      this.conn.onopen = (event) => {
+        this.isConnected = true;
+        this.connectionAttempt = 0;
+        this.loader.hide();
+        this.isLoader = false;
+        console.log("Successfully connected to the echo websocket server");
+      };
+
+      this.conn.onclose = (evt) => {
+        if (!this.isLoader) {
+          this.loader.show();
+          this.isLoader = true;
+        }
+
+        this.connectionAttempt++;
+        console.log("WSS CONNECTION closed");
+        console.log("RECONNECTING");
+        this.isConnected = false;
+        if (!this.isConnected) {
+          setTimeout(() => {
+            console.log(this.connectionAttempt);
+            if (this.connectionAttempt === 7) {
+              this.loader.hide();
+              this.isLoader = false;
+              this.$router.push("/service-down");
+            } else {
+              this.connectWs();
+            }
+          }, 1000);
+        }
+      };
+      this.conn.onmessage = (evt) => {
+        let messageJson = JSON.parse(evt.data);
+        if (messageJson.messageType === "LOCK") {
+          console.log("LOCK MESSAGE RECIEVED");
+          this.lockedSeats = messageJson.lockedList;
+
+          this.changeSeatStatus();
+          console.log(messageJson);
+        } else if (messageJson.messageType === "LOCK_LEAVE") {
+          console.log("LOCK LEAVE RECIEVED");
+          console.log(messageJson);
+          this.reverSeatStatus(messageJson.leaveList);
+        } else if (messageJson.messageType === "LOCK_CONFIRM") {
+        }
+      };
     },
     addSeat(seat) {
       if (this.transferSeats.length < this.seatsToTransfer) {
@@ -1422,6 +1459,7 @@ export default {
   },
 
   created() {
+
     this.scheduleId = this.$route.params.scheduleId;
 
     this.seatsAvailable = [

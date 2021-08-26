@@ -315,7 +315,6 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       this.qrDataString = res.data.checkSum;
-      console.log(res);
       if(res.data.schedule.isFinished === 0){
         this.busStatus = true
       }else{
@@ -366,7 +365,7 @@ export default {
       setTimeout(function () {
         const elem = document.getElementById("saveBtn");
         elem.click();
-      }, 100);
+      }, 2300)
   },
   computed: {
     depDate() {

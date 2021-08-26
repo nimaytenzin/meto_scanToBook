@@ -40,6 +40,10 @@ export async function getSchedulesBetween(from,to){
     return await axios.get(`${devUrl}/schedules/between/${from}/${to}`)
 }
 
+export async function getMiniDetailsById(scheduleId){
+    return await axios.get(`${devUrl}/schedules/mini/${scheduleId}`)
+}
+
 export async function deleteScheduleByRouteId(id){
    return await axios.delete(`${devUrl}/schedules/route/${id}`)
 }

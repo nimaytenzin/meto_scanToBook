@@ -63,13 +63,12 @@
       </div>
 
       <div class="mt-4">
+        <p class="text-red-300">Please select a schedule by clicking on it</p>
         <table class="table min-w-full rounded">
           <thead class="bg-blue-100 p-3 rounded h-10">
             <tr class="text-left font-light text-sm">
               <th class="pl-3 ml-2 mr-4">Departure Time</th>
-
               <th class="pl-3 ml-5 mr-5">Fare</th>
-              <th class="pr-3 ml-4 mr-4">Journey Time</th>
               <th></th>
             </tr>
           </thead>
@@ -95,9 +94,6 @@
               </td>
               <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route?.fare }}</td>
 
-              <td class="pr-3 ml-5 mr-2 border-l border-gray-100">
-                {{ getETA(schedule.route?.ETA) }}
-              </td>
               <td>
                 <div v-if="displayIcon(schedule)">
                   <svg
@@ -112,6 +108,22 @@
                       stroke-linejoin="round"
                       stroke-width="2"
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div v-else>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
                     />
                   </svg>
                 </div>
@@ -134,7 +146,7 @@
           px-4
           rounded-l
         "
-        @click="this.$router.push('/destination')"
+        @click="prev()"
       >
         Prev
       </button>
@@ -161,15 +173,17 @@
 </template>
 
 <script>
-import { getDetailsByDate } from "../../services/scheduleServices";
+import { getMiniDetailsById } from "../../services/scheduleServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
-   getDetailsByDate(this.$store.state.selectedDate).then(res =>{
-     this.schedules = res
-   })
+    this.$store.state.schedules.forEach((element) => {
+      getMiniDetailsById(element.id).then((res) => {
+        this.schedules.push(res.data);
+      });
+    });
   },
   data() {
     return {
@@ -181,7 +195,8 @@ export default {
   },
   computed: {
     departureDate() {
-      let d = new Date(this.$store.state.departureDate);
+      console.log(this.$store.state.schedules, "MATCHED SCHEDULES");
+      let d = new Date(this.$store.state.selectedDate);
       return d.toDateString();
     },
   },
@@ -195,7 +210,7 @@ export default {
     },
     tableRowColor(e) {
       if (e.id === this.selectedSchedule.id) {
-        return "bg-gray-100";
+        return "bg-gray-300 text-white";
       }
       return "bg-white";
     },
@@ -237,6 +252,9 @@ export default {
       this.selectedSchedule = e.schedule;
       console.log(e);
       this.$store.commit("addBus", e.schedule);
+    },
+    prev() {
+      this.$router.push("/book/destination");
     },
   },
 };

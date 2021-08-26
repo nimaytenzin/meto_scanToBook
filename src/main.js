@@ -8,7 +8,6 @@ import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import Toaster from "@meforma/vue-toaster";
 import VueNumber from 'vue-number-animation'
 import VueTilt from 'vue-tilt.js'
-
 import VCalendar from 'v-calendar';
 
 
