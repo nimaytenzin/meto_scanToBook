@@ -144,6 +144,22 @@
         </div>
       </vue-final-modal>
 
+    <vue-final-modal
+        v-model="errorModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen"
+        :click-to-close="false"
+      >
+        <div class="text-center mt-5">
+        
+
+          <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
+        </div>
+
+      </vue-final-modal>
+
+
       <vue-final-modal
         v-model="reverSeatModal"
         classes="modal-container"
@@ -259,7 +275,7 @@
 }
 </style>
 <script>
-import { useLoading } from "vue3-loading-overlay";
+
 export default {
   created() {
     if (this.$store.state.origin === "") {
@@ -270,7 +286,7 @@ export default {
       ? this.$store.state.selectedBus.route.fare
       : 0;
     if (this.$store.state.selectedBus.id) {
-      this.loader.show();
+      this.errorModal = true
       this.isLoader = true;
       this.connectWs();
     } else {
@@ -283,7 +299,7 @@ export default {
       total: 0,
       isConnected: false,
       isLoader: false,
-      loader: useLoading(),
+      errorModal:false,
       connectionAttempt: 0,
       //schedule id = room id for the websocket
       msg: {},
@@ -342,14 +358,14 @@ export default {
       this.conn.onopen = (event) => {
         this.isConnected = true;
         this.connectionAttempt = 0;
-        this.loader.hide();
+        this.errorModal = false;
         this.isLoader = false;
         console.log("Successfully connected to the echo websocket server");
       };
 
       this.conn.onclose = (evt) => {
         if(!this.isLoader){
-          this.loader.show()
+          this.errorModal = true
           this.isLoader = true
         }
         
@@ -361,8 +377,8 @@ export default {
           setTimeout(() => {
             console.log(this.connectionAttempt);
             if (this.connectionAttempt === 7) {
-              this.loader.hide()
-              this.isLoader = false
+              
+              this.errorModal =false
               this.$router.push("/service-down");
             } else {
 

@@ -423,6 +423,17 @@
         </button>
       </div>
     </vue-final-modal>
+    <vue-final-modal
+      v-model="errorModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="text-center mt-5">
+        <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 <style scoped>
@@ -538,9 +549,9 @@ export default {
       reverSeatModal: false,
       matchedRoutes: [],
       routeDays: [],
-      connectionAttempt:0,
+      connectionAttempt: 0,
+      errorModal: false,
       isLoader: false,
-      loader: useLoading()
     };
   },
   created() {
@@ -575,8 +586,6 @@ export default {
     },
     searchBus() {
       this.routeDays = [];
-      let loader = useLoading();
-      loader.show();
 
       getRoutesByOriginDestination(
         this.originSelected.id,
@@ -618,31 +627,27 @@ export default {
           } else {
           }
         });
-        loader.hide();
       });
-      //finda all matched routes
-
-      //populate days
     },
 
     connectWs() {
       this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${ this.scheduleId}`
+        `${process.env.VUE_APP_WSS}/${this.scheduleId}`
       );
       this.conn.onopen = (event) => {
         this.isConnected = true;
         this.connectionAttempt = 0;
-        this.loader.hide();
+        this.errorModal = false;
         this.isLoader = false;
         console.log("Successfully connected to the echo websocket server");
       };
 
       this.conn.onclose = (evt) => {
-        if(!this.isLoader){
-          this.loader.show()
-          this.isLoader = true
+        if (!this.isLoader) {
+          this.errorModal = true;
+          this.isLoader = true;
         }
-        
+
         this.connectionAttempt++;
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
@@ -651,11 +656,10 @@ export default {
           setTimeout(() => {
             console.log(this.connectionAttempt);
             if (this.connectionAttempt === 7) {
-              this.loader.hide()
-              this.isLoader = false
+              this.errorModal = false;
+              this.isLoader = false;
               this.$router.push("/service-down");
             } else {
-
               this.connectWs();
             }
           }, 1000);
@@ -681,7 +685,7 @@ export default {
     openSeatSelect(schedule) {
       this.scheduleId = schedule.id;
       this.fare = schedule.route.fare;
-      this.loader.show();
+      this.errorModal = true;
       this.isLoader = true;
       this.connectWs();
 
@@ -780,7 +784,7 @@ export default {
       this.confirmSeatModal = false;
     },
     cancelSeat() {
-      console.log(this.seatSelected)
+      console.log(this.seatSelected);
       this.conn.send(
         JSON.stringify({
           roomId: this.scheduleId.toString(),
@@ -827,14 +831,14 @@ export default {
             this.seatSelectModal = false;
             this.confirmSeatModal = false;
             this.addPassengerDetailsModal = false;
-            this.$router.push(`/staff/ticket/${res.data.id}`)
+            this.$router.push(`/staff/ticket/${res.data.id}`);
           }
         });
-      }else{
-        this.$toast.show("All fields are mandatory",{
-          position:"top",
-          type:"error"
-        })
+      } else {
+        this.$toast.show("All fields are mandatory", {
+          position: "top",
+          type: "error",
+        });
       }
     },
     cancelBooking() {
@@ -842,6 +846,19 @@ export default {
     },
     closeSeatSelectModal() {
       this.schedules = [];
+      console.log(this.bookedSeats, "OK");
+
+      this.bookedSeats.forEach((seat) => {
+        this.getSeats(seat.number).status = "available";
+        this.conn.send(
+          JSON.stringify({
+            roomId: this.scheduleId.toString(),
+            messageType: "LOCK_LEAVE",
+            seatId: seat.number.toString(),
+          })
+        );
+      });
+      this.total = 0;
       this.seatSelected = {};
       this.bookedSeats = [];
       this.seatSelectModal = false;

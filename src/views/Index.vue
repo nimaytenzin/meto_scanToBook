@@ -65,7 +65,7 @@
                           :from="0"
                           :to="buses"
                           :format="theFormat"
-                          :duration="4"
+                          :duration="2"
                           :delay="1"
                           easing="Power1.easeOut"
                         />
@@ -95,7 +95,7 @@
                           :from="0"
                           :to="stops"
                           :format="theFormat"
-                          :duration="4"
+                          :duration="2"
                           :delay="1"
                           easing="Power1.easeOut"
                         />
@@ -150,7 +150,7 @@
                           :from="0"
                           :to="routes"
                           :format="theFormat"
-                          :duration="4"
+                          :duration="2"
                           :delay="1"
                           easing="Power1.easeOut"
                         />
@@ -194,7 +194,7 @@
                           :from="0"
                           :to="bookings"
                           :format="theFormat"
-                          :duration="4"
+                          :duration="2"
                           :delay="1"
                           easing="Power1.easeOut"
                         />

@@ -10,11 +10,13 @@ import VueNumber from 'vue-number-animation'
 import VueTilt from 'vue-tilt.js'
 import VCalendar from 'v-calendar';
 
+import VueLoading from 'vue-loading-overlay';
 
 createApp(App)
     .use(store)
     .use(router)
     .use(Toaster)
+    .use(VueLoading)
     .use(VCalendar, {})
     .use(VueFinalModal())
     .use(SetupCalendar, {})

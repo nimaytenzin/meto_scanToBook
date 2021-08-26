@@ -130,7 +130,7 @@
                 {{ bookingData.schedule?.route?.origin.name }}
               </h2>
               <h3 class="text-gray-500">
-                {{ bookingData.schedule?.route?.departureTime }}
+                {{ getdepTime(bookingData.schedule?.route?.departureTime)   }}
               </h3>
               <p class="text-gray-500 text-sm">
                 {{ bookingData.schedule?.route?.origin.contact }}
@@ -142,7 +142,7 @@
                 {{ bookingData.schedule?.route?.destination.name }}
               </h2>
               <h3 class="text-gray-500">
-                {{ bookingData.schedule?.route?.ETA }}
+                {{ getETA(bookingData.schedule?.route?.ETA) }}
               </h3>
               <p class="text-gray-500 text-sm">
                 {{ bookingData.schedule?.route?.destination.contact }}

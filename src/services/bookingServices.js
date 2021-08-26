@@ -34,5 +34,9 @@ export async function getAllCanelled(){
     return await axios.get(`${devUrl}/bookings/cancelled`)
 }
 
+export async function getBookingsByScheduleId(id){
+    return await axios.get(`${devUrl}/bookings/scheduleId/${id}`)
+}
+
 
 

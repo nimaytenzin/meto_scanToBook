@@ -109,7 +109,7 @@
 
       <!--  -->
 
-      <div class="mt-4" v-if="scheduleData.bookings.length">
+      <div class="mt-4" v-if="scheduleBookings.length">
         <h2 class="text-center text-xl font-semibold">Booking Details</h2>
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -170,7 +170,7 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr
-              v-for="booking in scheduleData.bookings"
+              v-for="booking in scheduleBookings"
               :key="booking"
               class="hover:bg-gray-200"
             >
@@ -801,6 +801,43 @@
         </button>
       </div>
     </vue-final-modal>
+    <vue-final-modal
+      v-model="errorModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="text-center mt-5">
+        <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
+      </div>
+    </vue-final-modal>
+
+    <vue-final-modal
+      v-model="reverSeatModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="modal__content text-center mt-5">
+        <h3 class="text-xl">Cancel Seat Booking?</h3>
+      </div>
+      <div class="modal__action">
+        <button
+          class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+          @click="confirmRevert()"
+        >
+          Remove Seats from booking
+        </button>
+        <button
+          class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+          @click="cancelRevert()"
+        >
+          cancel
+        </button>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 
@@ -859,7 +896,11 @@ import {
   getPassengerData,
   updateSchedule,
 } from "../../services/scheduleServices";
-import { cancelBooking, updateBooking } from "../../services/bookingServices";
+import {
+  cancelBooking,
+  updateBooking,
+  getBookingsByScheduleId,
+} from "../../services/bookingServices";
 import { updateBookedSeat } from "../../services/bookedseatsService";
 import { getAllStops } from "../../services/stopServices";
 import {
@@ -867,9 +908,7 @@ import {
   getDetailsByDate,
 } from "../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
-import { useLoading } from "vue3-loading-overlay";
 import moment from "moment";
-    import { ref } from 'vue';
 
 export default {
   data() {
@@ -878,6 +917,8 @@ export default {
       //check if schedule is cancelled or not
       scheduleStatus: 0,
       socketConnection: null,
+      conn2: null,
+      conn: null,
       //modal
       cancelBookingModal: false,
       transferSelectedModal: false,
@@ -886,6 +927,8 @@ export default {
 
       selectedBooking: {},
       seatsToTransfer: 0,
+
+      reverSeatModal: false,
 
       //transfer schedule vars
       matchedRoutes: [],
@@ -942,16 +985,15 @@ export default {
           Calendar_Day: 0,
           Calendar_Year: 0,
         },
-        bookings: [],
       },
+
+      scheduleBookings: [],
 
       stops: [],
       routeDays: [],
       connectionAttempt: 0,
       isLoader: false,
-      loader: useLoading(),
-      formContainer: ref(true)
-
+      errorModal: false,
     };
   },
   methods: {
@@ -1040,8 +1082,10 @@ export default {
         isFinished: 2,
       }).then((res) => {
         if (res.status === 200) {
-          this.scheduleData.bookings.forEach((booking) => {
-            cancelBooking(booking.bookingId, {
+          console.log(this.scheduleData);
+          console.log(this.scheduleData.bookings, "Bookings to cancel");
+          this.scheduleBookings.forEach((booking) => {
+            updateBooking(booking.bookingId, {
               checkInStatus: "CANCELLED",
             })
               .then((res) => {
@@ -1075,20 +1119,9 @@ export default {
 
     openCancelBookingModal(e) {
       this.selectedBooking = e;
+      console.log(this.selectedBooking, "SELECTED BOOKING ");
+
       this.cancelBookingModal = true;
-      this.socketConnection = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
-      );
-      this.socketConnection.onopen = (event) => {
-        console.log("Successfully connected to the echo websocket server");
-      };
-      this.socketConnection.onclose = (evt) => {
-        console.log("WSS CONNECTION closed");
-        console.log("RECONNECTING");
-        this.conn = new WebSocket(
-          `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
-        );
-      };
     },
 
     cancelBooking() {
@@ -1106,18 +1139,18 @@ export default {
             }
           );
 
-          console.log(
-            `${window.location.host}/cancel-ticket/${this.selectedBooking.id}`
-          );
+          this.connectWs2();
 
           this.selectedBooking.bookedSeats.forEach((seat) => {
-            this.socketConnection.send(
-              JSON.stringify({
-                roomId: this.selectedBooking.scheduleId.toString(),
-                messageType: "LOCK_LEAVE",
-                seatId: seat.seatNumber.toString(),
-              })
-            );
+            this.conn2.onopen = (event) => {
+              this.conn2.send(
+                JSON.stringify({
+                  roomId: this.selectedBooking.scheduleId.toString(),
+                  messageType: "LOCK_LEAVE",
+                  seatId: seat.seatNumber.toString(),
+                })
+              );
+            };
           });
 
           this.cancelBookingModal = false;
@@ -1127,7 +1160,6 @@ export default {
 
     populateRouteDays() {
       this.routeDays = [];
-
 
       getRoutesByOriginDestination(
         this.transferOrigin.id,
@@ -1156,7 +1188,7 @@ export default {
               this.matchedRoutes.forEach((route) => {
                 if (route.id === ok.routeId) {
                   let routeDay = {
-                     dates: new Date(ok.dateId),
+                    dates: new Date(ok.dateId),
                     highlight: {
                       color: "green",
                       fillMode: "light",
@@ -1182,6 +1214,30 @@ export default {
       this.selectedBookedSeat.bookingDetails = booking;
 
       this.transferSelectedModal = true;
+    },
+
+    cancelRevert() {
+      this.reverSeatModal = false;
+    },
+    confirmRevert() {
+      this.conn.send(
+        JSON.stringify({
+          roomId: this.selectedTransferSchedule.toString(),
+          messageType: "LOCK_LEAVE",
+          seatId: this.selectedTransferSeat.number.toString(),
+        })
+      );
+      this.selectedTransferSeat.status = "available";
+
+      this.transferSeats.forEach((seat, index) => {
+        if (this.selectedTransferSeat.id === seat.id) {
+          this.transferSeats.splice(index, 1);
+        }
+      });
+
+      this.total -= this.fare;
+      this.selectedTransferSeat = {};
+      this.reverSeatModal = false;
     },
 
     openTransferBookingModal(booking) {
@@ -1308,9 +1364,7 @@ export default {
         this.showSeats = true;
         //handle socket connection
 
-        this.loader.show({
-          container:this.formContainer.value
-        });
+        this.errorModal = true;
         this.isLoader = true;
         this.connectWs();
       } else {
@@ -1327,14 +1381,14 @@ export default {
       this.conn.onopen = (event) => {
         this.isConnected = true;
         this.connectionAttempt = 0;
-        this.loader.hide();
+        this.errorModal = false;
         this.isLoader = false;
         console.log("Successfully connected to the echo websocket server");
       };
 
       this.conn.onclose = (evt) => {
         if (!this.isLoader) {
-          this.loader.show();
+          this.errorModal = true;
           this.isLoader = true;
         }
 
@@ -1346,7 +1400,7 @@ export default {
           setTimeout(() => {
             console.log(this.connectionAttempt);
             if (this.connectionAttempt === 7) {
-              this.loader.hide();
+              this.errorModal = false;
               this.isLoader = false;
               this.$router.push("/service-down");
             } else {
@@ -1371,7 +1425,60 @@ export default {
         }
       };
     },
+
+    connectWs2() {
+      this.conn2 = new WebSocket(
+        `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
+      );
+      this.conn2.onopen = (event) => {
+        this.isConnected = true;
+        this.connectionAttempt = 0;
+        this.errorModal = false;
+        this.isLoader = false;
+        console.log("Successfully connected to the echo websocket server");
+      };
+
+      this.conn2.onclose = (evt) => {
+        if (!this.isLoader) {
+          this.errorModal = true;
+          this.isLoader = true;
+        }
+
+        this.connectionAttempt++;
+        console.log("WSS CONNECTION closed");
+        console.log("RECONNECTING");
+        this.isConnected = false;
+        if (!this.isConnected) {
+          setTimeout(() => {
+            console.log(this.connectionAttempt);
+            if (this.connectionAttempt === 7) {
+              this.errorModal = false;
+              this.isLoader = false;
+              this.$router.push("/service-down");
+            } else {
+              this.connectWs2();
+            }
+          }, 1000);
+        }
+      };
+      this.conn2.onmessage = (evt) => {
+        let messageJson = JSON.parse(evt.data);
+        if (messageJson.messageType === "LOCK") {
+          console.log("LOCK MESSAGE RECIEVED");
+          this.lockedSeats = messageJson.lockedList;
+
+          this.changeSeatStatus();
+          console.log(messageJson);
+        } else if (messageJson.messageType === "LOCK_LEAVE") {
+          console.log("LOCK LEAVE RECIEVED");
+          console.log(messageJson);
+          this.reverSeatStatus(messageJson.leaveList);
+        } else if (messageJson.messageType === "LOCK_CONFIRM") {
+        }
+      };
+    },
     addSeat(seat) {
+      console.log(seat);
       if (this.transferSeats.length < this.seatsToTransfer) {
         if (seat.type === "seat") {
           if (seat.status === "locked") {
@@ -1402,6 +1509,7 @@ export default {
     },
     confirmSeat() {
       this.transferSeats.push(this.selectedTransferSeat);
+      this.selectedTransferSeat.status = "booked";
       this.addSeatModal = false;
     },
     cancelSeat() {
@@ -1455,7 +1563,6 @@ export default {
   },
 
   created() {
-
     this.scheduleId = this.$route.params.scheduleId;
 
     this.seatsAvailable = [
@@ -1467,16 +1574,21 @@ export default {
     getPassengerData(this.scheduleId).then((res) => {
       this.scheduleStatus = res.data.isFinished;
       this.scheduleData = res.data;
+      console.log(res.data);
 
       this.transferOrigin = res.data.route.origin;
       this.transferDestination = res.data.route.destination;
 
-      res.data.bookings.forEach((booking, i) => {
-        booking.bookedSeats.forEach((bookedSeat, i) => {
-          this.seatsAvailable.forEach((seat, j) => {
-            if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
-              this.seatsAvailable.splice(j, 1);
-            }
+      getBookingsByScheduleId(this.scheduleId).then((resp) => {
+        this.scheduleBookings = resp.data;
+        console.log(this.scheduleBookings, "FDSFDS");
+        resp.data.forEach((booking, i) => {
+          booking.bookedSeats.forEach((bookedSeat, i) => {
+            this.seatsAvailable.forEach((seat, j) => {
+              if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
+                this.seatsAvailable.splice(j, 1);
+              }
+            });
           });
         });
       });
