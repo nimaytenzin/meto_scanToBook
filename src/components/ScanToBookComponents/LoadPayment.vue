@@ -132,6 +132,7 @@
 
 <script>
 import { getChecksum } from "../../services/bookingServices";
+import { confirmPayment } from "../../services/paymentServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
@@ -141,6 +142,7 @@ export default {
       if (res.status === 200) {
         this.booking = res.data.booking;
         this.hiddenFormVal.bfs_msgType = "AR";
+        this.hiddenFormVal.bfs_debitAuthCode = "00";
         this.hiddenFormVal.bfs_benfTxnTime = res.data.bfsTxnTime;
         this.hiddenFormVal.bfs_orderNo = res.data.booking.id;
         this.hiddenFormVal.bfs_benfId = res.data.benBankDetails.bfs_benfId;
@@ -153,7 +155,6 @@ export default {
         this.hiddenFormVal.bfs_paymentDesc = "SeatBooking";
         this.hiddenFormVal.bfs_version = "1.0";
         this.hiddenFormVal.bfs_checkSum = res.data.checksum;
-        this.sendForm();
       } else {
         this.$toast.show("Network Error", {
           position: "top",
@@ -189,13 +190,24 @@ export default {
     previous() {
       this.$router.push(`/book/Bookings`);
     },
-    next() {},
+    next() {
+      confirmPayment(this.hiddenFormVal).then((res) => {
+        if (res.status === 200) {
+          this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
+        } else {
+          this.$toast.show("Network error try again", {
+            position: "top",
+            type: "error",
+          });
+        }
+      });
+    },
 
     sendForm() {
-      setTimeout(() => {
-        this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-        // document.getElementById("submitBtn").click();
-      }, 1000);
+      // setTimeout(() => {
+      //   // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+      //   // document.getElementById("submitBtn").click();
+      // }, 1000);
     },
   },
 };
