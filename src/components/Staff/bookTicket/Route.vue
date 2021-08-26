@@ -605,11 +605,7 @@ export default {
               this.matchedRoutes.forEach((route) => {
                 if (route.id === ok.routeId) {
                   let routeDay = {
-                    dates: new Date(
-                      dattt.getFullYear(),
-                      dattt.getMonth(),
-                      dattt.getDate()
-                    ),
+                    dates: new Date(ok.dateId),
                     highlight: {
                       color: "green",
                       fillMode: "light",

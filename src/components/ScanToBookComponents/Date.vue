@@ -101,9 +101,7 @@
 import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
 
-import {
-  getScheduleByDate
-} from "../../services/scheduleServices";
+import { getScheduleByDate } from "../../services/scheduleServices";
 
 import { useLoading } from "vue3-loading-overlay";
 // Import stylesheet
@@ -122,7 +120,6 @@ export default {
     // let loader = useLoading();
     // loader.show();
 
-  
     getRoutesByOriginDestination(
       this.$store.state.origin.id,
       this.$store.state.destination.id
@@ -143,7 +140,6 @@ export default {
 
     days.forEach((day) => {
       let formattedDate = day + " 00:00:00";
-
       getScheduleByDate(formattedDate).then((res) => {
         let dattt = new Date(formattedDate);
         if (res.length) {
@@ -151,11 +147,7 @@ export default {
             this.matchedRoutes.forEach((route) => {
               if (route.id === ok.routeId) {
                 let routeDay = {
-                  dates: new Date(
-                    dattt.getFullYear(),
-                    dattt.getMonth(),
-                    dattt.getDate()
-                  ),
+                  dates: new Date(ok.dateId),
                   highlight: {
                     color: "green",
                     fillMode: "light",
@@ -196,7 +188,7 @@ export default {
     },
     onDayClick(e) {
       let formattedDate = e.id + " 00:00:00";
-      this.$store.commit("commitSelectedDate", formattedDate)
+      this.$store.commit("commitSelectedDate", formattedDate);
       getScheduleByDate(formattedDate).then((res) => {
         this.schedules = res.length;
         let matchedSchedule = [];
@@ -217,14 +209,11 @@ export default {
               type: "success",
             }
           );
-        }else{
-          this.$toast.show(
-            `No Buses on that day`,
-            {
-              position: "top",
-              type: "error",
-            }
-          );
+        } else {
+          this.$toast.show(`No Buses on that day`, {
+            position: "top",
+            type: "error",
+          });
         }
       });
     },
