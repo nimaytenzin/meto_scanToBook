@@ -63,12 +63,13 @@
       </div>
 
       <div class="mt-4">
-        <p class="text-red-300">Please select a schedule by clicking on it</p>
         <table class="table min-w-full rounded">
           <thead class="bg-blue-100 p-3 rounded h-10">
             <tr class="text-left font-light text-sm">
               <th class="pl-3 ml-2 mr-4">Departure Time</th>
               <th class="pl-3 ml-5 mr-5">Fare</th>
+              <th class="pl-3 ml-5 mr-5">Select</th>
+
               <th></th>
             </tr>
           </thead>
@@ -94,7 +95,34 @@
               </td>
               <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route?.fare }}</td>
 
-              <td>
+              <td class="pl-3 ml-5 mr-5">
+           
+                  <button
+                    v-if="!displayIcon(schedule)"
+                    class="
+                      p-2
+                      rounded
+                      text-sm
+                      font-medium
+                      text-gray-800
+                      bg-blue-200
+                      hover:bg-blue-400
+                      active:bg-grey-900
+                      transition-all
+                    "
+                  >
+                    Select Bus
+                  </button>
+
+                  <p
+                    v-else
+                  >
+                   Bus Selected
+                  </p>
+               
+              </td>
+
+              <td class="pl-3 ml-5 mr-5">
                 <div v-if="displayIcon(schedule)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -176,6 +204,7 @@
 import { getMiniDetailsById } from "../../services/scheduleServices";
 export default {
   created() {
+    
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }

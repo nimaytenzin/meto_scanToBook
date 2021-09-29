@@ -154,7 +154,7 @@
         <div class="text-center mt-5">
         
 
-          <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
+          <h3 class="text-xl font-nunito font-thin">Connecting to Meto Web Services</h3>
         </div>
 
       </vue-final-modal>

@@ -33,6 +33,13 @@
             Our Developers are fixing the issues. <br />
             Thank you for your patience
           </p>
+
+          <hr class="border-gray-300 w-2/3 mt-8 border-dashed" />
+          <p class="text-gray-500 text-center ">
+            Please Contact 17263758/7738475 for manual booking.
+          </p>
+
+
         </div>
         
         <div class="flex flex-col items-center">

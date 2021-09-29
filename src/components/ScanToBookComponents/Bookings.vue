@@ -267,10 +267,10 @@ export default {
           if (res.status === 201) {
             this.$store.commit("addScanBookingId", res.data.id);
             this.addDetail();
-            this.$toast.show("loading RMA payment gateway", {
-              position: "top",
-              type: "info",
-            });
+            // this.$toast.show("loading RMA payment gateway", {
+            //   position: "top",
+            //   type: "info",
+            // });
             this.$router.push(`/book/loadPayment`);
           } else {
             this.$toast.show("Newtork Error..try again", {

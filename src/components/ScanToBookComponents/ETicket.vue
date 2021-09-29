@@ -17,6 +17,40 @@
       <h1 class="text-2xl text-gray-500 text-center mt-3">ཤོག་འཟིན།</h1>
     </div>
 
+      <div class="inline-flex mt-8 mb-5">
+        <button
+          class="
+            bg-gray-100
+            hover:bg-gray-400
+            text-gray-500
+            hover:text-white
+            font-bold
+            py-2
+            px-4
+            rounded-l
+          "
+          @click="bookAgain()"
+        >
+          Book Again
+        </button>
+        <button
+          class="
+            bg-red-500
+            hover:bg-gray-400
+            text-white
+            hover:text-white
+            font-bold
+            py-2
+            px-4
+            rounded-r
+          "
+          id="saveBtn"
+          @click="saveImage()"
+        >
+          Save Ticket Manually
+        </button>
+      </div>
+
     <div v-if="busStatus">
       <div
         class="
@@ -161,6 +195,8 @@
           >
             <div class="flex justify-center items-center">
               <QRCodeVue3
+              
+                id="qrcode"
                 :width="300"
                 :height="300"
                 v-bind:value="qrDataString"
@@ -230,22 +266,36 @@
             </div>
           </div>
 
-          <p>
-            Your Bus Details will be uploaded 2 hours before departure <br />
+          
+
+          <p class="text-center text-sm">
+             Click/visit the link below to check Bus Details : <br />
+             Your Bus Details will be uploaded 2 hours before departure <br />
           </p>
+          
           <button
             @click="openBusDetails"
-            class="text-black font-bold py-2 px-4 rounded"
+            class="text-black font-bold  px-4 rounded"
           >
-            Click here to check Details : <br />
+           
             {{ url }}{{ checkBusRouteData.href }}
           </button>
+
+
+
+          <hr class="mt-4 mb-4">
+
+
+           <p class="text-center text-sm">
+             Click/visit the link below to cancel your ticket <br>
+             Cancellation will be allowed only before 2 hours from the departure time.
+          </p>
 
           <button
             @click="cancelTicket()"
             class="text-black font-bold py-2 px-4 rounded"
           >
-            Cancel Ticket: <br />
+           Click/visit this link  Cancel Ticket: <br />
             {{ url }}{{ cancelTicketRouteData.href }}
           </button>
 
@@ -256,48 +306,26 @@
         </div>
       </div>
 
-      <div class="inline-flex mt-8 mb-5">
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded-l
-          "
-          @click="bookAgain()"
-        >
-          Book Again
-        </button>
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded-l
-          "
-          id="saveBtn"
-          @click="saveImage()"
-        >
-          Save Ticket
-        </button>
-      </div>
+    
     </div>
 
     <div v-else>
-
-      <h2 class="text-3xl font-nunito font-light text-red-500 p-10 rounded-md shadow-lg text-center" >
-        Schedule Completed ! <br> Ticket Expired
+      <h2
+        class="
+          text-3xl
+          font-nunito font-light
+          text-red-500
+          p-10
+          rounded-md
+          shadow-lg
+          text-center
+        "
+      >
+        Schedule Completed ! <br />
+        Ticket Expired
       </h2>
-
     </div>
+
   </div>
 </template>
 
@@ -311,14 +339,15 @@ import { getBookingDetail } from "../../services/bookingServices";
 export default {
   created() {
     const route = useRoute();
+    console.log(this.url)
     const bookingId = route.params.bookingId;
 
     getBookingDetail(bookingId).then((res) => {
       this.qrDataString = res.data.checkSum;
-      if(res.data.schedule.isFinished === 0){
-        this.busStatus = true
-      }else{
-        this.busStatus = false
+      if (res.data.schedule.isFinished === 0) {
+        this.busStatus = true;
+      } else {
+        this.busStatus = false;
       }
 
       this.bookingData = res.data;
@@ -339,7 +368,7 @@ export default {
       eta: "7Hrs 30 mins",
       departureTime: "7:00 AM",
       qrData: {},
-      busStatus:null,
+      busStatus: null,
       bookingData: {
         bookedSeats: [],
         calendarDate: {},
@@ -354,31 +383,46 @@ export default {
       seatNumbers: "",
       cancelTicketRouteData: "",
       checkBusRouteData: "",
-      url: "localhost:8081",
+      url: process.env.VUE_APP_DEV_API,
     };
   },
   components: {
     QRCodeVue3,
   },
   mounted: function () {
-      this.$toast.show("Please wait while we generate your QR Data", {
-        type:"info",
-        position:"top"
-      })
-      setTimeout(function () {
-        const elem = document.getElementById("saveBtn");
-        elem.click();
-      }, 10000)
+    this.$toast.show("Please wait while we generate your QR Data", {
+      type: "info",
+      position: "bottom",
+    });
+
+      this.$toast.show("Thank you for choosing Meto Transport Service!", {
+      type: "success",
+      duration:5500,
+      position: "top",
+    });
+
+    this.$toast.show("Please Download the ticket manually if it doesnot download", {
+      type: "info",
+      duration:6500,
+      position: "top",})
+
+    setTimeout(function () {
+      const elem = document.getElementById("saveBtn");
+      elem.click();
+    }, 10000);
+
+    
   },
   computed: {
     depDate() {
       return `${this.bookingData.schedule.calendarDate.Day_Name} ${this.bookingData.schedule.calendarDate.Calendar_Day} ${this.bookingData.schedule.calendarDate.Month_Name} ${this.bookingData.schedule.calendarDate.Calendar_Year} `;
     },
   },
- 
-
 
   methods: {
+    qrLoad() {
+      alert("QR CODE LOADED");
+    },
     saveImage() {
       const scale = 3;
       const node = document.getElementById("eTicket");
@@ -416,7 +460,6 @@ export default {
         hrs = hrs - 12;
         ampm = "pm";
       }
-
       return `${hrs}:${min} ${ampm}`;
     },
     getETA(e) {
@@ -440,7 +483,6 @@ export default {
       this.$store.state.selectedSeats = [];
       this.$store.state.total = 0;
       this.$store.state.bookedBy = {};
-
       this.$router.push("/book");
     },
   },
