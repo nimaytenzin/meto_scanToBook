@@ -144,7 +144,7 @@
         </div>
       </vue-final-modal>
 
-    <vue-final-modal
+      <vue-final-modal
         v-model="errorModal"
         classes="modal-container"
         content-class="modal-content"
@@ -152,13 +152,11 @@
         :click-to-close="false"
       >
         <div class="text-center mt-5">
-        
-
-          <h3 class="text-xl font-nunito font-thin">Connecting to Meto Web Services</h3>
+          <h3 class="text-xl font-nunito font-thin">
+            Connecting to Meto Web Services
+          </h3>
         </div>
-
       </vue-final-modal>
-
 
       <vue-final-modal
         v-model="reverSeatModal"
@@ -275,7 +273,6 @@
 }
 </style>
 <script>
-
 export default {
   created() {
     if (this.$store.state.origin === "") {
@@ -286,7 +283,7 @@ export default {
       ? this.$store.state.selectedBus.route.fare
       : 0;
     if (this.$store.state.selectedBus.id) {
-      this.errorModal = true
+      this.errorModal = true;
       this.isLoader = true;
       this.connectWs();
     } else {
@@ -299,7 +296,7 @@ export default {
       total: 0,
       isConnected: false,
       isLoader: false,
-      errorModal:false,
+      errorModal: false,
       connectionAttempt: 0,
       //schedule id = room id for the websocket
       msg: {},
@@ -364,11 +361,11 @@ export default {
       };
 
       this.conn.onclose = (evt) => {
-        if(!this.isLoader){
-          this.errorModal = true
-          this.isLoader = true
+        if (!this.isLoader) {
+          this.errorModal = true;
+          this.isLoader = true;
         }
-        
+
         this.connectionAttempt++;
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
@@ -377,11 +374,9 @@ export default {
           setTimeout(() => {
             console.log(this.connectionAttempt);
             if (this.connectionAttempt === 7) {
-              
-              this.errorModal =false
+              this.errorModal = false;
               this.$router.push("/service-down");
             } else {
-
               this.connectWs();
             }
           }, 1000);
@@ -389,6 +384,7 @@ export default {
       };
       this.conn.onmessage = (evt) => {
         let messageJson = JSON.parse(evt.data);
+        console.log(messageJson);
         if (messageJson.messageType === "LOCK") {
           console.log("LOCK MESSAGE RECIEVED");
           this.lockedSeats = messageJson.lockedList;
@@ -399,7 +395,17 @@ export default {
           console.log("LOCK LEAVE RECIEVED");
           console.log(messageJson);
           this.reverSeatStatus(messageJson.leaveList);
-        } else if (messageJson.messageType === "LOCK_CONFIRM") {
+        } else if (messageJson.messageType === "LOCK_ACK") {
+          console.log("Lock Acknowledged by the server");
+          this.selectedSeat.status = "locked";
+          this.showModal = true;
+        } else if (messageJson.messageType === "LOCK_FAIL") {
+          console.log("Lock Acknowledged by the server");
+          this.showModal = false;
+          this.$toast.show("Some one else is booking the seat! please select another seat", {
+            position: "top",
+            type: "error",
+          });
         }
       };
     },
@@ -562,8 +568,6 @@ export default {
               seatId: this.selectedSeat.number.toString(),
             })
           );
-          this.selectedSeat.status = "locked";
-          this.showModal = true;
         }
       }
     },
