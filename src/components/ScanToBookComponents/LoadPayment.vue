@@ -36,7 +36,7 @@
 
       <form
         method="post"
-        action="https://bfssecure.rma.org.bt/BFSSecure/makePayment"
+        action=" http://uatbfssecure.rma.org.bt/BFSSecure/makePayment"
       >
         <input type="hidden" name="bfs_msgType" value="AR" />
         <input
@@ -144,17 +144,21 @@ export default {
         this.hiddenFormVal.bfs_msgType = "AR";
         this.hiddenFormVal.bfs_debitAuthCode = "00";
         this.hiddenFormVal.bfs_benfTxnTime = res.data.bfsTxnTime;
-        this.hiddenFormVal.bfs_orderNo = res.data.booking.id;
+        this.hiddenFormVal.bfs_orderNo = res.data.booking.id.toString();
         this.hiddenFormVal.bfs_benfId = res.data.benBankDetails.bfs_benfId;
-        this.hiddenFormVal.bfs_benfBankCode =
-          res.data.benBankDetails.bfs_benfBankCode;
-        this.hiddenFormVal.bfs_txnCurrency =
-          res.data.benBankDetails.bfs_txnCurrency;
-        this.hiddenFormVal.bfs_txnAmount = res.data.booking.amount;
+        this.hiddenFormVal.bfs_benfBankCode =res.data.benBankDetails.bfs_benfBankCode;
+        this.hiddenFormVal.bfs_txnCurrency = res.data.benBankDetails.bfs_txnCurrency;
+        this.hiddenFormVal.bfs_txnAmount = res.data.booking.amount.toFixed(2).toString();
         this.hiddenFormVal.bfs_remitterEmail = "customer@gmail.com";
         this.hiddenFormVal.bfs_paymentDesc = "SeatBooking";
         this.hiddenFormVal.bfs_version = "1.0";
         this.hiddenFormVal.bfs_checkSum = res.data.checksum;
+        console.log(this.hiddenFormVal, "form data");
+
+          setTimeout(() => {
+          // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+          document.getElementById("submitBtn").click();
+        }, 1000);
       } else {
         this.$toast.show("Network Error", {
           position: "top",
@@ -182,32 +186,33 @@ export default {
     };
   },
 
-  mounted() {
-    console.log(this.hiddenFormVal, "TO BE SENT TO PG");
-  },
+  // mounted() {
+  //   console.log(this.hiddenFormVal, "TO BE SENT TO PG");
+  //   this.sendForm()
+  // },
 
   methods: {
     previous() {
       this.$router.push(`/book/Bookings`);
     },
     next() {
-      confirmPayment(this.hiddenFormVal).then((res) => {
-        if (res.status === 200) {
-          this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
-        } else {
-          this.$toast.show("Network error try again", {
-            position: "top",
-            type: "error",
-          });
-        }
-      });
+      // confirmPayment(this.hiddenFormVal).then((res) => {
+      //   if (res.status === 200) {
+      //     this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
+      //   } else {
+      //     this.$toast.show("Network error try again", {
+      //       position: "top",
+      //       type: "error",
+      //     });
+      //   }
+      // });
     },
 
     sendForm() {
-      // setTimeout(() => {
-      //   // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-      //   // document.getElementById("submitBtn").click();
-      // }, 1000);
+      setTimeout(() => {
+        // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+        document.getElementById("submitBtn").click();
+      }, 1000);
     },
   },
 };
