@@ -111,8 +111,7 @@ export default {
         .then((res) => {
           sessionStorage.setItem("token", res.data.token);
           let role = VueJwtDecode.decode(res.data.token).role;
-
-          if (role !== 0) {
+          if (role === 1) {
             this.$router.push("/admin");
           } else {
             this.$router.push("/book");

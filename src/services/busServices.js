@@ -15,6 +15,10 @@ export async function getAllBuses() {
     return buses
 }
 
+export async function getAllBusPaginated(pageNo) {
+    return await axios.get(`${devUrl}/buses/get-all-paginated/${pageNo}`)
+}
+
 export async function addNewBus(data){
     return await axios.post(`${devUrl}/buses`,data)
 

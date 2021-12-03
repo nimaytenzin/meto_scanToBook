@@ -156,8 +156,8 @@ export default {
         console.log(this.hiddenFormVal, "form data");
 
           setTimeout(() => {
-          // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-          document.getElementById("submitBtn").click();
+          this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+          // document.getElementById("submitBtn").click();
         }, 1000);
       } else {
         this.$toast.show("Network Error", {
@@ -196,6 +196,8 @@ export default {
       this.$router.push(`/book/Bookings`);
     },
     next() {
+      this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
+      
       // confirmPayment(this.hiddenFormVal).then((res) => {
       //   if (res.status === 200) {
       //     this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);

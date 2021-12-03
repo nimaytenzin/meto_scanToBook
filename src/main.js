@@ -9,6 +9,9 @@ import Toaster from "@meforma/vue-toaster";
 import VueNumber from 'vue-number-animation'
 import VueTilt from 'vue-tilt.js'
 import VCalendar from 'v-calendar';
+import VueChartkick from 'vue-chartkick'
+import 'chartkick/chart.js'
+
 
 import VueLoading from 'vue-loading-overlay';
 
@@ -22,6 +25,7 @@ createApp(App)
     .use(SetupCalendar, {})
     .use(VueTilt)
     .use(VueNumber)
+    .use(VueChartkick)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)
     .mount('#app')

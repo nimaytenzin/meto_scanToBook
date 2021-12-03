@@ -19,7 +19,7 @@
       >
         <div class="my-auto">
           <div class="text-lg">Buses</div>
-          <div class="text-4xl text-white font-bold">{{ buses.length }}</div>
+          <div class="text-4xl text-white font-bold">{{ buses.count }}</div>
         </div>
         <div class="my-auto">
           <div class="text-lg">Bus Types</div>
@@ -193,6 +193,81 @@
         <p>Add Buses</p>
       </button>
 
+ <div
+        class="
+          bg-white
+          border-t
+          flex 
+          items-end
+          justify-center
+          gap-6
+          w-full
+        "
+      >
+        <span class="text-xs xs:text-sm text-gray-900">
+          Showing  {{ buses.limit  }} entries|  Page {{ buses.currentPage +1 }} of {{ buses.lastPage +1 }} 
+        </span>
+        <div class="inline-flex mt-2 xs:mt-0">
+           <button
+            class="
+              text-sm
+              bg-gray-300
+              hover:bg-gray-400
+              text-gray-800
+              font-semibold
+              py-2
+              px-4
+              rounded-l
+            "
+             @click="getBusData(buses.firstPage)"
+           
+          >
+            First
+          </button>
+          <button
+            class="
+              text-sm
+              text-gray-800
+              font-semibold
+              py-2
+              px-4
+            "
+            :class="buses.previousPage === null  ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed': 'bg-gray-300 hover:bg-gray-400 cursor-pointer' "
+             @click="getBusData(buses.previousPage)"
+           
+          >
+            Prev
+          </button>
+          <button
+            class="
+              text-sm
+              text-gray-800
+              font-semibold
+              py-2
+              px-4
+            "
+            :class="buses.nextPage === null  ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed': 'bg-gray-300 hover:bg-gray-400 cursor-pointer' "
+             @click="getBusData(buses.nextPage)"
+          >
+            Next
+          </button>
+           <button
+            class="
+              text-sm
+              bg-gray-300
+              hover:bg-gray-400
+              text-gray-800
+              font-semibold
+              py-2
+              px-4
+              rounded-r
+            "
+             @click="getBusData(buses.lastPage)"
+          >
+            Last
+          </button>
+        </div>
+      </div>
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -251,7 +326,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="bus in buses" :key="bus" class="hover:bg-gray-200">
+          <tr v-for="bus in buses.data" :key="bus" class="hover:bg-gray-200">
             <td class="px-6 py-4 whitespace-nowrap">
               {{ bus.vechileNumber }}
             </td>
@@ -302,6 +377,8 @@
           </tr>
         </tbody>
       </table>
+
+     
     </div>
 
     <div>
@@ -328,8 +405,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Bus Number"
@@ -397,8 +473,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
           />
           <label class="text-sm text-left text-gray-400 italic"
@@ -459,8 +534,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Make"
@@ -481,8 +555,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Model"
@@ -503,8 +576,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Type"
@@ -525,8 +597,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="number"
             placeholder="Capacity"
@@ -572,8 +643,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Make"
@@ -594,8 +664,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Model"
@@ -616,8 +685,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             placeholder="Type"
@@ -638,8 +706,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="number"
             placeholder="Capacity"
@@ -726,19 +793,16 @@ import {
   addNewBus,
   editBus,
   deleteBus,
+  getAllBusPaginated,
 } from "../../services/busServices";
 
 export default {
   data() {
     return {
-      //modal data
       showModal: false,
       editBusModal: false,
       addBusTypeModal: false,
       editBusTypeModal: false,
-
-      //Validation checkers for the form
-
       busTypes: [],
       buses: [],
       selectedBusType: {},
@@ -748,12 +812,12 @@ export default {
     };
   },
   created() {
-    getAllBuses().then((res) => {
-      this.buses = res;
+    getAllBusPaginated(0).then((res) => {
+      console.log("Sfsafsdfdsfdsf", res);
+      this.buses = res.data;
     });
     getAllBusTypes().then((res) => {
       this.busTypes = res;
-
     });
   },
   computed: {
@@ -770,7 +834,6 @@ export default {
     showEditBusTypeModal(e) {
       this.editBusTypeModal = true;
       this.selectedBusType = e;
-
     },
     addBusType() {
       if (
@@ -805,6 +868,11 @@ export default {
       } else {
         this.showToast("All the Fields are required", "top", "error");
       }
+    },
+    getBusData(pageNo){
+      getAllBusPaginated(pageNo).then(res =>{
+        this.buses = res.data
+      })
     },
     editBusType() {
       if (
@@ -849,7 +917,6 @@ export default {
 
     //methods for Bus CRUD
     addBus() {
-      
       if (this.newBus.vehicleNumber && this.newBus.type) {
         let data = {
           vechileNumber: this.newBus.vehicleNumber,
@@ -867,14 +934,13 @@ export default {
             this.showToast("Error Adding..\n please try again", "top", "error");
           }
         });
-      }else{
-        this.showToast("All the fields are required", "top","error")
+      } else {
+        this.showToast("All the fields are required", "top", "error");
       }
     },
     showEditBusDialog(e) {
       this.selectedBus = e;
       this.editBusModal = true;
-
     },
     editBus() {
       if (this.selectedBus.vechileNumber !== "") {
@@ -898,7 +964,6 @@ export default {
       }
     },
     deleteBus(e) {
-      
       deleteBus(e.id).then((res) => {
         if (res.status === 200) {
           this.refreshData();
