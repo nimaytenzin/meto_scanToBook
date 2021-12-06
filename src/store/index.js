@@ -11,8 +11,10 @@ export default createStore({
     selectedSeats:[],
     selectedDate:"",
     total:0,
+    selectedSchedule:{},
     bookedBy:{},
     authToken:'',
+    selectedRoutes:[],
     schedules:[],
     customerBooking:{
       schedule:{},
@@ -35,8 +37,8 @@ export default createStore({
     addDepartureDate(state,date){
       state.departureDate = date
     },
-    addBus(state,bus){
-      state.selectedBus = bus
+    addSelectedSchedule(state,data){
+      state.selectedSchedule = data
     },
     addSeats(state,seats){
      state.selectedSeats.push(seats);
@@ -47,6 +49,9 @@ export default createStore({
             state.selectedSeats.splice(index,1)
         }
       })
+    },
+    addMatchedRoutes(state, data){
+      state.selectedRoutes = data
     },
     resetSeats(state){
       state.selectedSeats =[]
@@ -82,7 +87,7 @@ export default createStore({
     },
 
     commitSelectedDate(state,data){
-      state.selectedDate = data
+      state.departureDate = data
     },
     
     commitRemoveCustomerSeat(state,selectedSeat){
@@ -100,6 +105,10 @@ export default createStore({
   getters: {
     origin: state => {
       return state.origin
+    },
+    getDepartureDate: state =>{
+      return state.departureDate
     }
+
   }
 })

@@ -36,6 +36,10 @@ export async function getPassengerData(scheduleId){
     return await axios.get(`${devUrl}/schedules/${scheduleId}`)
 }
 
+export async function getScheduleByRouteAndDate(routeId,date){
+    return await axios.get(`${devUrl}/schedules/get-rid-date/${routeId}/${date}`)
+}
+
 export async function getSchedulesBetween(from,to){
     return await axios.get(`${devUrl}/schedules/between/${from}/${to}`)
 }

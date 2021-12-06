@@ -3,11 +3,6 @@
     <h2 class="bg-gray-300 w-full text-gray-800 text-left p-4 rounded">
       Routes and Stop Management
     </h2>
-
-    <p>
-      {{  }}
-    </p>
-
     <div class="flex flex-row gap-7">
       <div
         class="
@@ -230,19 +225,6 @@
                 tracking-wider
               "
             >
-              Est. Duration
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
               Days
             </td>
             <td
@@ -275,12 +257,11 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="route in routes" :key="route.id" class="hover:bg-gray-200">
-            <td class="px-6 py-4 whitespace-nowrap">{{ route.origin.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ route.routepath.origin.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ route.destination.name }}
+              {{ route.routepath.destination.name }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">Nu.{{ route.fare }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ getETA(route.ETA) }}</td>
             <td class="flex flex-row justify-center">
               <p
                 v-for="day in route.routeDays"
@@ -595,55 +576,6 @@
               v-model="newRoute.fare"
             />
           </div>
-          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
-            >Est. Travel Time</label
-          >
-          <div class="flex justify-center">
-            <div class="flex">
-              <div>
-                <select
-                  name="hours"
-                  v-model="eta.hrs"
-                  class="bg-transparent text-xl appearance-none outline-none"
-                >
-                  <option value="0">0</option>
-                  <option value="01">1</option>
-                  <option value="02">2</option>
-                  <option value="03">3</option>
-                  <option value="04">4</option>
-                  <option value="05">5</option>
-                  <option value="06">6</option>
-                  <option value="07">7</option>
-                  <option value="08">8</option>
-                  <option value="09">9</option>
-                  <option value="10">10</option>
-                  <option value="11">10</option>
-                  <option value="12">12</option>
-                </select>
-                <p>Hours</p>
-              </div>
-              <span class="text-xl mr-3">:</span>
-              <div>
-                <select
-                  name="minutes"
-                  class="
-                    bg-transparent
-                    text-xl
-                    appearance-none
-                    outline-none
-                    mr-4
-                  "
-                  v-model="eta.min"
-                >
-                  <option value="0">00</option>
-                  <option value="15">15</option>
-                  <option value="30">30</option>
-                  <option value="30">45</option>
-                </select>
-                <p>Minutes</p>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="modal__action">
           <button
@@ -955,7 +887,6 @@ export default {
         mins:"0",
         ampm:"am"
       },
-      //Validation checking parameters
       stops: [],
       routes: [],
 
@@ -967,6 +898,7 @@ export default {
   },
   created() {
     getAllRoutes().then((res) => {
+      console.log("rerer",res)
       this.routes = res;
     });
 
@@ -1021,14 +953,6 @@ export default {
         case 5:
           return "Sat";
       }
-    },
-
-    getETA(e) {
-      let ok = e.split(":");
-      let hrs = ok[0];
-      let min = ok[1];
-
-      return `${hrs} Hrs ${min} Mins`;
     },
     addStop() {
       if (this.newStop.name) {
@@ -1129,17 +1053,15 @@ export default {
     },
     addRoute() {
       this.newRoute.days = this.weekdaysSelected;
-      let eta = `${this.eta.hrs}:${this.eta.min}:00`;
       let departureTime = this.parseDepartureTime(this.departureTime);
       this.newRoute.departureTime = departureTime;
-      this.newRoute.ETA = eta;
 
       addNewRoute(this.newRoute)
         .then((res) => {
+          console.log(res)
           let routeId = res.data[0].routeId;
           if (res.status === 201) {
             let date = this.parseDate(res.data[0].createdAt);
-
             let reqBody = {
               routeId: routeId,
               onDays: this.newRoute.days,

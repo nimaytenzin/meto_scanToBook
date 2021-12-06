@@ -279,10 +279,11 @@ export default {
       this.$router.push("/book");
     }
 
-    this.fare = this.$store.state.selectedBus?.route?.fare
-      ? this.$store.state.selectedBus.route.fare
-      : 0;
-    if (this.$store.state.selectedBus.id) {
+    console.log(this.$store.state.selectedSchedule)
+
+    this.fare = this.$store.state.selectedSchedule.route.fare
+  
+    if (this.$store.state.selectedSchedule) {
       this.errorModal = true;
       this.isLoader = true;
       this.connectWs();
@@ -350,7 +351,7 @@ export default {
   methods: {
     connectWs() {
       this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.$store.state.selectedBus.id}`
+        `${process.env.VUE_APP_WSS}/${this.$store.state.selectedSchedule.id}`
       );
       this.conn.onopen = (event) => {
         this.isConnected = true;

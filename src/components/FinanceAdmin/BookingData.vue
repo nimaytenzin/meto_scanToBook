@@ -1,70 +1,301 @@
 <template>
   <div class="min-h-screen flex flex-col p-4">
-    <h2 class="bg-gray-300 w-full text-gray-800 text-left p-4 rounded">
-      Montly Booking Data
-    </h2>
+    <div
+      class="
+        bg-gray-300
+        flex
+        justify-between
+        w-full
+        text-gray-800 text-left
+        p-4
+        rounded
+      "
+    >
+      <div>
+        View for:
+        <select v-model="year" class="text-xl p-3 border text-blue-900">
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+        </select>
+        <select v-model="month" class="text-xl p-3 border text-blue-900">
+          <option value="January">January</option>
+          <option value="Febrauray">Febrauray</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="Jan">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
+        <button
+          class="
+            bg-gray-400
+            px-5
+            py-3
+            text-sm
+            shadow-sm
+            font-medium
+            tracking-wider
+            text-gray-100
+            rounded
+            hover:bg-gray-500
+          "
+        >
+          Load Data
+        </button>
+      </div>
+
+      <div>
+        <button
+          class="
+            p-2
+            pl-5
+            pr-5
+            bg-blue-500
+            text-gray-100 text-lg
+            rounded-lg
+            focus:border-4
+            border-blue-300
+          "
+        >
+          Download Data
+        </button>
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-bold text-center my-3">Monthly Summary</h1>
+
+    <div
+      class="
+        bg-white
+        border-t
+        flex
+        mb-5
+        items-start
+        justify-center
+        gap-6
+        w-full
+      "
+    >
+      <div class="bg-gray-800 text-gray-300 p-2 rounded h-full">
+        <div class="p-4 text-sm rounded-md shadow-lg">
+          <div class="text-right">
+            <p class="font-semibold text-3xl">Nu 65000</p>
+            <span> Total Revenue</span>
+          </div>
+          <div>
+            <hr class="border-dashed my-2" />
+            <table class="w-full text-right">
+              <tr>
+                <td>Ebooking (65%)</td>
+                <td>Nu 42250</td>
+              </tr>
+              <tr>
+                <td>Counter Sale (35%)</td>
+                <td>
+                  <table class="w-full text-right">
+                    <tr>
+                      <td>Mbob</td>
+                      <td>Nu 18200</td>
+                    </tr>
+                    <tr>
+                      <td>Cash</td>
+                      <td>Nu 4550</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 text-gray-300 p-2 rounded h-full">
+        <div class="p-4 text-sm rounded-md shadow-lg">
+          <div class="text-right">
+            <p class="font-semibold text-3xl">12400</p>
+            <span> Total Bookings</span>
+          </div>
+          <div>
+            <hr class="border-dashed my-2" />
+            <table class="w-full text-right">
+              <tr>
+                <td>Ebooking (65%)</td>
+                <td>8060</td>
+              </tr>
+              <tr>
+                <td>Counter Sale (35%)</td>
+                <td>4340</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 text-gray-300 p-2 rounded h-full">
+        <div class="p-4 text-sm rounded-md shadow-lg">
+          <div class="text-right">
+            <p class="font-semibold text-3xl">Popular Destinations</p>
+          </div>
+          <div>
+            <hr class="border-dashed my-2" />
+            <table class="w-full text-right">
+              <tr>
+                <td>Thimphu</td>
+                <td>8060 bookings</td>
+              </tr>
+              <tr>
+                <td>Paro</td>
+                <td>4000 Boookings</td>
+              </tr>
+              <tr>
+                <td>Punakha</td>
+                <td>1250 Boookings</td>
+              </tr>
+              <tr>
+                <td>Gasa</td>
+                <td>300 Boookings</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-800 text-gray-300 p-2 rounded h-full">
+        <div class="p-4 text-sm rounded-md shadow-lg">
+          <div class="text-right">
+            <p class="font-semibold text-3xl">65 %</p>
+            <span>Booking Rate</span>
+          </div>
+          <div class="text-right">
+            <p class="font-semibold text-3xl">12400</p>
+            <span>Cancellations</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div>
-      <div class="bg-white border-t flex items-end justify-center gap-6 w-full">
-        <span class="text-xs xs:text-sm text-gray-900">
-          Showing {{ buses.limit }} entries| Page {{ buses.currentPage + 1 }} of
-          {{ buses.lastPage + 1 }}
-        </span>
-        <div class="inline-flex mt-2 xs:mt-0">
+      <div>
+        <div class="border">
+          Filter by Origin
+          <select
+            v-model="originSelected"
+            class="text-xl p-3 border text-blue-900"
+          >
+            <option
+              v-for="origin in origins"
+              :value="origin"
+              :key="origin"
+              class="bg-white"
+            >
+              {{ origin.name }}
+            </option>
+          </select>
           <button
             class="
+              bg-gray-400
+              px-5
+              py-3
               text-sm
-              bg-gray-300
-              hover:bg-gray-400
-              text-gray-800
-              font-semibold
-              py-2
-              px-4
-              rounded-l
+              shadow-sm
+              font-medium
+              tracking-wider
+              text-gray-100
+              rounded
+              hover:bg-gray-500
             "
-            @click="getBusData(buses.firstPage)"
           >
-            First
+            Apply Filter
           </button>
-          <button
-            class="text-sm text-gray-800 font-semibold py-2 px-4"
-            :class="
-              buses.previousPage === null
-                ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed'
-                : 'bg-gray-300 hover:bg-gray-400 cursor-pointer'
-            "
-            @click="getBusData(buses.previousPage)"
+        </div>
+
+        <div class="border">
+          Filter by Destination
+          <select
+            v-model="originSelected"
+            class="text-xl p-3 border text-blue-900"
           >
-            Prev
-          </button>
-          <button
-            class="text-sm text-gray-800 font-semibold py-2 px-4"
-            :class="
-              buses.nextPage === null
-                ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed'
-                : 'bg-gray-300 hover:bg-gray-400 cursor-pointer'
-            "
-            @click="getBusData(buses.nextPage)"
-          >
-            Next
-          </button>
+            <option
+              v-for="origin in origins"
+              :value="origin"
+              :key="origin"
+              class="bg-white"
+            >
+              {{ origin.name }}
+            </option>
+          </select>
           <button
             class="
+              bg-gray-400
+              px-5
+              py-3
               text-sm
-              bg-gray-300
-              hover:bg-gray-400
-              text-gray-800
-              font-semibold
-              py-2
-              px-4
-              rounded-r
+              shadow-sm
+              font-medium
+              tracking-wider
+              text-gray-100
+              rounded
+              hover:bg-gray-500
             "
-            @click="getBusData(buses.lastPage)"
           >
-            Last
+            Apply Filter
+          </button>
+        </div>
+
+        <div class="border">
+          Filter by Route: Origin
+          <select
+            v-model="originSelected"
+            class="text-xl p-3 border text-blue-900"
+          >
+            <option
+              v-for="origin in origins"
+              :value="origin"
+              :key="origin"
+              class="bg-white"
+            >
+              {{ origin.name }}
+            </option>
+          </select>
+
+          Destination
+          <select
+            v-model="originSelected"
+            class="text-xl p-3 border text-blue-900"
+          >
+            <option
+              v-for="origin in origins"
+              :value="origin"
+              :key="origin"
+              class="bg-white"
+            >
+              {{ origin.name }}
+            </option>
+          </select>
+          <button
+            class="
+              bg-gray-400
+              px-5
+              py-3
+              text-sm
+              shadow-sm
+              font-medium
+              tracking-wider
+              text-gray-100
+              rounded
+              hover:bg-gray-500
+            "
+          >
+            Apply Filter
           </button>
         </div>
       </div>
+
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -79,7 +310,7 @@
                 tracking-wider
               "
             >
-              Bus Number
+              Booking ID
             </td>
             <td
               class="
@@ -92,7 +323,7 @@
                 tracking-wider
               "
             >
-              Bus Model
+              Amount
             </td>
             <td
               class="
@@ -105,7 +336,7 @@
                 tracking-wider
               "
             >
-              Class Type
+              Booking Mode
             </td>
             <td
               class="
@@ -118,83 +349,114 @@
                 tracking-wider
               "
             >
-              Edit
+              Payment Mode
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Booking Details
             </td>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="bus in buses.data" :key="bus" class="hover:bg-gray-200">
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ bus.vechileNumber }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ bus.busType?.make ? bus.busType.make : "-" }}
-              {{ bus.busType?.model ? bus.busType.model : "-" }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ bus.busType?.type ? bus.busType.type : "" }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap flex gap-4">
-              <button @click="showEditBusDialog(bus)" class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-                Edit
-              </button>
+          <tr class="hover:bg-gray-200">
+            <td class=" px-2 whitespace-nowrap">123</td>
+            <td class=" px-2 whitespace-nowrap">Nu 255</td>
+            <td class=" px-2 whitespace-nowrap">Online</td>
+            <td class=" px-2 whitespace-nowrap">Online</td>
+            <td class=" px-2 whitespace-nowrap">
+              <div>
+                Thimphu - Paro
 
-              <button class="flex items-center" @click="deleteBus(bus)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-                Delete
-              </button>
+              </div>
             </td>
+
+            
+            
           </tr>
         </tbody>
       </table>
     </div>
+    <vue-excel-xlsx
+      :data="data"
+      :columns="columns"
+      :filename="filename"
+      :sheetname="'sheetname'"
+    >
+      Download
+    </vue-excel-xlsx>
   </div>
 </template>
 
 
 <script>
-import {
-  getAllBusPaginated,
-} from "../../services/busServices";
+import { getAllBusPaginated } from "../../services/busServices";
+import { getAllStops } from "../../services/stopServices";
 
 export default {
   data() {
     return {
       buses: [],
-      selectedBus: {}
+      selectedBus: {},
+      origins: [],
+      originSelected: {},
+      month: "December",
+      year: 2021,
+      columns: [
+        {
+          label: "Product",
+          field: "product",
+        },
+        {
+          label: "Price",
+          field: "price",
+          dataFormat: this.priceFormat,
+        },
+        {
+          label: "Quantity",
+          field: "quantity",
+        },
+      ],
+      data: [
+        {
+          product: "Beverage",
+          price: 10,
+          quantity: 2,
+        },
+        {
+          product: "Snack",
+          price: 12,
+          quantity: 6,
+        },
+        {
+          product: "Beverage",
+          price: 10,
+          quantity: 5,
+        },
+        {
+          product: "Snack",
+          price: 12,
+          quantity: 3,
+        },
+      ],
+      filename:"nima"
     };
   },
   created() {
     getAllBusPaginated(0).then((res) => {
-      console.log("Sfsafsdfdsfdsf", res);
       this.buses = res.data;
+    });
+    getAllStops().then((res) => {
+      this.origins = res;
+      this.originSelected = res[0];
     });
   },
   methods: {
@@ -202,7 +464,10 @@ export default {
       getAllBusPaginated(pageNo).then((res) => {
         this.buses = res.data;
       });
-    }
+    },
+    priceFormat(value) {
+      return "$ " + value;
+    },
   },
 };
 </script>
