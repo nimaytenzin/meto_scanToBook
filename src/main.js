@@ -11,6 +11,7 @@ import VueTilt from 'vue-tilt.js'
 import VCalendar from 'v-calendar';
 import VueChartkick from 'vue-chartkick'
 import 'chartkick/chart.js'
+import VueExcelXlsx from "vue-excel-xlsx";
 
 
 import VueLoading from 'vue-loading-overlay';
@@ -25,6 +26,7 @@ createApp(App)
     .use(SetupCalendar, {})
     .use(VueTilt)
     .use(VueNumber)
+    .use(VueExcelXlsx)
     .use(VueChartkick)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)

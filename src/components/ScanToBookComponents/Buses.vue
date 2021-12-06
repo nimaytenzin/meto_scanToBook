@@ -1,8 +1,5 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center">
-    <!-- <div>
-      <img src="../../assets/meto.png" alt="" width="100" />
-    </div> -->
     <div>
       <h1 class="text-3xl text-gray-500 text-center">Buses</h1>
       <h1 class="text-3xl text-gray-500 text-center mt-3">
@@ -26,12 +23,9 @@
         <div class="flex flex-row justify-around items-center">
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(origin)</p>
-            <h1 class="text-center text-3xl text-blue-300">
+            <h1 class="text-center text-3xl text-blue-900">
               {{ this.$store.state.origin.name }}
             </h1>
-            <!-- <p class="text-md text-center">
-              ({{ this.$store.state.origin.dzo }})
-            </p> -->
           </div>
           <div
             class="
@@ -48,12 +42,9 @@
           </div>
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(destination)</p>
-            <h1 class="text-center text-3xl text-blue-300">
+            <h1 class="text-center text-3xl text-blue-900">
               {{ this.$store.state.destination.name }}
             </h1>
-            <!-- <p class="text-md text-center">
-              ({{ this.$store.state.destination.dzo }})
-            </p> -->
           </div>
         </div>
         <p class="text-center mt-4 text-gray-500 italic">on</p>
@@ -61,15 +52,13 @@
           {{ departureDate }}
         </h2>
       </div>
-
       <div class="mt-4">
         <table class="table min-w-full rounded">
-          <thead class="bg-blue-100 p-3 rounded h-10">
+          <thead class="bg-gray-100 p-3 rounded h-10">
             <tr class="text-left font-light text-sm">
               <th class="pl-3 ml-2 mr-4">Departure Time</th>
               <th class="pl-3 ml-5 mr-5">Fare</th>
               <th class="pl-3 ml-5 mr-5">Select</th>
-
               <th></th>
             </tr>
           </thead>
@@ -81,45 +70,38 @@
           >
             <tr
               class="
-                hover:bg-blue-100
+                hover:bg-gray-100
                 cursor-pointer
                 select-none
                 h-14
                 text-gray-700
               "
-              @click="commitToStore({ schedule })"
+              @click="commitToStore(schedule)"
               :class="tableRowColor(schedule)"
             >
               <td class="pl-3 mr-2 border-r border-gray-100">
                 {{ getdepTime(schedule.route?.departureTime) }}
               </td>
               <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route?.fare }}</td>
-
               <td class="pl-3 ml-5 mr-5">
-           
-                  <button
-                    v-if="!displayIcon(schedule)"
-                    class="
-                      p-2
-                      rounded
-                      text-sm
-                      font-medium
-                      text-gray-800
-                      bg-blue-200
-                      hover:bg-blue-400
-                      active:bg-grey-900
-                      transition-all
-                    "
-                  >
-                    Select Bus
-                  </button>
+                <button
+                  v-if="!displayIcon(schedule)"
+                  class="
+                    p-2
+                    rounded
+                    text-sm
+                    font-medium
+                    text-gray-800
+                    bg-blue-200
+                    hover:bg-blue-400
+                    active:bg-grey-900
+                    transition-all
+                  "
+                >
+                  Select Bus
+                </button>
 
-                  <p
-                    v-else
-                  >
-                   Bus Selected
-                  </p>
-               
+                <p v-else>Bus Selected</p>
               </td>
 
               <td class="pl-3 ml-5 mr-5">
@@ -195,19 +177,38 @@
         Seat Selection >
       </button>
     </div>
-
-    <!-- <p>{{ this.$store.state }}</p> -->
   </div>
 </template>
 
 <script>
-import { getMiniDetailsById } from "../../services/scheduleServices";
+import {
+  getMiniDetailsById,
+  getScheduleByRouteAndDate,
+} from "../../services/scheduleServices";
 export default {
   created() {
-    
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+    this.routes = this.$store.state.selectedRoutes;
+
+    this.routes.forEach((route) => {
+      console.log(route);
+      getScheduleByRouteAndDate(route.id, this.$store.state.departureDate).then(
+        (res) => {
+          // console.log(res);
+          if (res.data) {
+            let schedule = res.data;
+            schedule.route = route;
+            this.schedules.push(schedule);
+          }
+        }
+      );
+    });
+
+    console.log("SCHEDULES", this.schedules);
+
+    // console.log(this.$store.state.origin, this.$store.state.destination, this.$store.state.departureDate)
     this.$store.state.schedules.forEach((element) => {
       getMiniDetailsById(element.id).then((res) => {
         this.schedules.push(res.data);
@@ -217,6 +218,7 @@ export default {
   data() {
     return {
       schedules: [],
+      routes: [],
       date: new Date(),
       ok: false,
       selectedSchedule: {},
@@ -224,8 +226,8 @@ export default {
   },
   computed: {
     departureDate() {
-      console.log(this.$store.state.schedules, "MATCHED SCHEDULES");
-      let d = new Date(this.$store.state.selectedDate);
+      // console.log(this.$store.state.schedules, "MATCHED SCHEDULES");
+      let d = new Date(this.$store.state.departureDate);
       return d.toDateString();
     },
   },
@@ -244,22 +246,15 @@ export default {
       return "bg-white";
     },
     seatSelection() {
-      if (Object.keys(this.selectedSchedule).length !== 0) {
+      // console.log(this.selectedSchedule)
+      if (this.selectedSchedule) {
         this.$router.push("/book/seats");
       } else {
-        this.$toast.show("Select a departure time", {
+       this.$toast.show("Please Select the departure time", {
           position: "top",
           type: "error",
         });
       }
-    },
-
-    getETA(e) {
-      let ok = e.split(":");
-      let hrs = ok[0];
-      let min = ok[1];
-
-      return `${hrs}Hrs : ${min}Mins`;
     },
     getdepTime: function (time) {
       let tissme = time.split(":");
@@ -278,9 +273,9 @@ export default {
     },
     commitToStore(e) {
       this.ok = true;
-      this.selectedSchedule = e.schedule;
-      console.log(e);
-      this.$store.commit("addBus", e.schedule);
+      this.selectedSchedule = e;
+      console.log(e, 'Selected Schedule');
+      this.$store.commit("addSelectedSchedule", e);
     },
     prev() {
       this.$router.push("/book/destination");
