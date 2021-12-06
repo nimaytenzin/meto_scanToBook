@@ -2,10 +2,9 @@ import axios from 'axios'
 import authHeader from './auth-HeaderServices';
 const devUrl = process.env.VUE_APP_DEV_API
 
-
-
-
-
+export async function getServiceCharge(){
+    return await axios.get(`${devUrl}/bank-details/service-charge`)
+}
 
 export async function confirmPayment(data) {
     return await axios.post(`${devUrl}/bookings/confirmbooking/`,data,{headers:authHeader()})

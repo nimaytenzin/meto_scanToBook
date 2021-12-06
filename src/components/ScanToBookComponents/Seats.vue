@@ -275,20 +275,22 @@
 <script>
 export default {
   created() {
-    if (this.$store.state.origin === "") {
+    if (
+      this.$store.state.origin === "" &&
+      this.$store.state.selectedSchedule === null
+    ) {
       this.$router.push("/book");
-    }
-
-    console.log(this.$store.state.selectedSchedule)
-
-    this.fare = this.$store.state.selectedSchedule.route.fare
-  
-    if (this.$store.state.selectedSchedule) {
-      this.errorModal = true;
-      this.isLoader = true;
-      this.connectWs();
     } else {
-      this.$router.push("/book");
+      this.fare = this.$store.state.selectedSchedule.route.fare;
+      this.roomId = this.$store.state.selectedSchedule.id;
+
+      if (this.$store.state.selectedSchedule) {
+        this.errorModal = true;
+        this.isLoader = true;
+        this.connectWs();
+      } else {
+        this.$router.push("/book");
+      }
     }
   },
   data() {
@@ -299,10 +301,9 @@ export default {
       isLoader: false,
       errorModal: false,
       connectionAttempt: 0,
-      //schedule id = room id for the websocket
       msg: {},
       lockedSeats: [],
-      roomId: this.$store.state.selectedBus.id,
+      roomId: null,
       conn: null,
       showModal: false,
       reverSeatModal: false,
@@ -403,10 +404,13 @@ export default {
         } else if (messageJson.messageType === "LOCK_FAIL") {
           console.log("Lock Acknowledged by the server");
           this.showModal = false;
-          this.$toast.show("Some one else is booking the seat! please select another seat", {
-            position: "top",
-            type: "error",
-          });
+          this.$toast.show(
+            "Some one else is booking the seat! please select another seat",
+            {
+              position: "top",
+              type: "error",
+            }
+          );
         }
       };
     },

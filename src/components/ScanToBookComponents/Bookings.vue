@@ -8,7 +8,7 @@
     </div>
     <div
       class="
-        p-6
+        p-4
         mx-auto
         bg-white
         rounded-xl
@@ -16,7 +16,7 @@
         min-w-6/12
         mt-7
         items-center
-        space-x-4
+        space-x-2
       "
     >
       <div class="flex flex-col">
@@ -24,12 +24,9 @@
           <div class="flex flex-row justify-around items-center">
             <div class="flex flex-col">
               <p class="text-sm text-center text-gray-600">(origin)</p>
-              <h1 class="text-center text-3xl text-blue-300">
+              <h1 class="text-center text-3xl text-blue-800">
                 {{ this.$store.state.origin.name }}
               </h1>
-              <!-- <p class="text-md text-center">
-              ({{ this.$store.state.origin.dzo }})
-            </p> -->
             </div>
             <div
               class="
@@ -46,135 +43,159 @@
             </div>
             <div class="flex flex-col">
               <p class="text-sm text-center text-gray-600">(destination)</p>
-              <h1 class="text-center text-3xl text-blue-300">
+              <h1 class="text-center text-3xl text-blue-800">
                 {{ this.$store.state.destination.name }}
               </h1>
-              <!-- <p class="text-md text-center">
-              ({{ this.$store.state.destination.dzo }})
-            </p> -->
             </div>
           </div>
           <p class="text-center mt-4 text-gray-500 italic">on</p>
-          <h2 class="text-center text-2xl text-gray-500">
+          <h2 class="text-center text-2xl text-gray-600">
             {{ departureDate }}
           </h2>
         </div>
-
-        <div class="flex-1 text-center">
-          <hr class="border-dashed mt-4 mb-4" />
-          <h5>Booked Seats</h5>
-          <div class="flex flex-row justify-center items-center">
-            <div
-              v-for="item in this.$store.state.selectedSeats"
-              :key="item"
-              class="m-1 p-1 rounded relative"
-            >
-              <img src="../../assets/seatUnavailable.png" width="50" alt="" />
-              <p
-                class="
-                  absolute
-                  top-1/2
-                  left-1/2
-                  bg-white bg-opacity-60
-                  rounded-sm
-                  pl-1
-                  pr-1
-                  transform
-                  -translate-x-1/2 -translate-y-1/2
-                "
-              >
-                {{ item.number }}
-              </p>
-            </div>
-          </div>
-        </div>
+        <br />
 
         <div
           class="
             font-nunito
-            text-white text-center
-            bg-gray-400
+            text-gray-200 text-left
+            bg-gray-600
             rounded
             shadow-md
-            mt-4
+            p-2
           "
         >
-          <p class="text-md">
-            Base Fare: Nu
-            {{
-              this.$store.state.selectedBus?.route?.fare
-                ? this.$store.state.selectedBus.route.fare
-                : ""
-            }}
+          <p>Billing</p>
+         
+          <hr class="border-dashed w-full" />
+          <table class="table-auto">
+            <tr>
+              <td>Base Fare :</td>
+              <td>
+                Nu
+                {{
+                  this.$store.state.selectedSchedule?.route?.fare
+                    ? this.$store.state.selectedSchedule.route.fare
+                    : ""
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>Service Charge :</td>
+              <td>Nu {{ serviceCharge }}</td>
+            </tr>
+            <tr>
+              <td>Seats Booked :</td>
+              <td>{{ this.$store.state.selectedSeats.length }}</td>
+            </tr>
+            <tr>
+              <td>
+                <hr class="w-full border-dashed" />
+              </td>
+              <td></td>
+            </tr>
+            <tr class="text-gray-100 font-bold text-xl">
+              <td>Total :</td>
+              <td>
+                {{ total }}
+              </td>
+            </tr>
+          </table>
+           <p class="text-sm break-words"> 
+          Fare Calculation <br>
+          (Base Fare + Service Charge) x Booked Seats
           </p>
-
-          <h2 class="text-md">Total = Nu. {{ this.$store.state.total }}</h2>
         </div>
-      </div>
-      <div class="flex flex-col mt-4">
-        <h2 class="text-xl text-gray-500 italic">Enter your details</h2>
-        <label class="block text-gray-700 text-sm font-bold mb-2"> Name </label>
-        <input
-          v-model="name"
-          placeholder="Name"
-          class="
-            shadow
-            appearance-none
-            border
-            rounded
-            w-full
-            py-2
-            px-3
-            text-gray-700
-            leading-tight
-            focus:outline-none
-            focus:shadow-outline
-          "
-        />
-        <label class="block text-gray-700 text-sm font-bold mb-2">
-          Phone Number
-        </label>
-        <input
-          v-model="contact"
-          type="number"
-          placeholder="Contact"
-          class="
-            shadow
-            appearance-none
-            border
-            rounded
-            w-full
-            py-2
-            px-3
-            text-gray-700
-            leading-tight
-            focus:outline-none
-            focus:shadow-outline
-          "
-        />
-        <label
-          class="block text-gray-700 text-sm font-bold mb-2"
-          for="username"
-        >
-          CID/EID
-        </label>
-        <input
-          v-model="cid"
-          placeholder="CID/EID"
-          class="
-            shadow
-            appearance-none
-            border
-            rounded
-            w-full
-            py-2
-            px-3
-            text-gray-700
-            leading-tight
-            focus:outline-none
-            focus:shadow-outline
-          "
-        />
+
+        <div class="flex-1 text-center">
+          <hr class="border-dashed mt-4 mb-4" />
+          <p class="text-xl font-semibold text-gray-600">
+            Enter Passenger Details
+          </p>
+          <p class="text-center font-thin text-sm">
+            Please Ensure Phone Numbers are Correct
+          </p>
+          <div class="flex flex-col justify-center items-center">
+            <div
+              class="flex flex-row gap-2 items-center"
+              v-for="(item, index) in this.$store.state.selectedSeats"
+              :key="item"
+            >
+              <div class="p-1 rounded relative">
+                <img src="../../assets/seatUnavailable.png" width="50" alt="" />
+                <p
+                  class="
+                    absolute
+                    top-1/2
+                    left-1/2
+                    bg-white bg-opacity-60
+                    rounded-sm
+                    pl-1
+                    pr-1
+                    transform
+                    -translate-x-1/2 -translate-y-1/2
+                  "
+                >
+                  {{ item.number }}
+                </p>
+              </div>
+              <div class="flex flex-col mt-4">
+                <p class="my-1 text-gray-800 font-thin">
+                  Passenger {{ index + 1 }}
+                </p>
+                <input
+                  v-model="this.passengers[index].name"
+                  placeholder="Name"
+                  class="
+                    appearance-none
+                    border-b
+                    rounded-sm
+                    w-full
+                    py-2
+                    px-2
+                    text-gray-700
+                    leading-tight
+                    focus:outline-none focus:shadow-outline
+                  "
+                />
+                <input
+                  v-model="this.passengers[index].contact"
+                  type="number"
+                  placeholder="Contact"
+                  class="
+                    appearance-none
+                    border-b
+                    rounded
+                    w-full
+                    py-2
+                    px-2
+                    text-gray-700
+                    leading-tight
+                    focus:outline-none focus:shadow-outline
+                  "
+                />
+                <input
+                  v-model="this.passengers[index].cid"
+                  placeholder="CID/EID/WorkPermit"
+                  class="
+                    appearance-none
+                    border-b
+                    rounded
+                    w-full
+                    py-2
+                    px-2
+                    text-gray-700
+                    leading-tight
+                    focus:outline-none focus:shadow-outline
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-center break-words font-thin text-sm mt-3">
+            Please Ensure Details are Correct. <br> The company wont be liable for any wrong details entered
+          </p>
       </div>
     </div>
 
@@ -214,26 +235,46 @@
   </div>
 </template>
 
+  <style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>
+
+
 <script>
 import { addNewBooking } from "../../services/bookingServices";
+import { getServiceCharge } from "../../services/paymentServices";
 export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
+    getServiceCharge().then((res) => {
+      this.serviceCharge = res.data.serviceCharge;
+      this.total =
+      this.$store.state.selectedSchedule.route.fare *
+        this.$store.state.selectedSeats.length +
+      this.serviceCharge * this.$store.state.selectedSeats.length;
+    });
     this.$store.state.selectedSeats.forEach((seat) => {
+      this.passengers.push({});
       this.seats.push(seat.number);
     });
+    
   },
   data() {
     return {
       name: "",
       contact: "",
       cid: "",
-      bookings: {},
-      booking: {},
-      bookingsWithSeats: {},
+      newBooking: {},
       seats: [],
+      passengers: [],
+      serviceCharge: null,
+      total: 0,
     };
   },
   computed: {
@@ -248,43 +289,32 @@ export default {
       this.$router.push("/book/seats");
     },
     pay() {
-      if (this.name && this.contact && this.cid) {
-        this.bookings = {
-          scheduleId: this.$store.state.selectedBus.id,
-          bookingTime: new Date(),
-          customerName: this.name,
-          customerContact: this.contact,
-          customerCid: this.cid,
-          amount: this.$store.state.total,
-        };
-
-        this.bookingsWithSeats = {
-          booking: this.bookings,
-          seats: this.seats,
-        };
-
-        addNewBooking(this.bookingsWithSeats).then((res) => {
-          if (res.status === 201) {
-            this.$store.commit("addScanBookingId", res.data.id);
-            this.addDetail();
-            this.$toast.show("loading RMA payment gateway", {
-              position: "top",
-              type: "info",
-            });
-            this.$router.push(`/book/loadPayment`);
-          } else {
-            this.$toast.show("Newtork Error..try again", {
-              position: "top",
-              type: "error",
-            });
-          }
-        });
-      } else {
-        this.$toast.show("Enter your details", {
-          position: "top",
-          type: "error",
-        });
-      }
+      let booking = {
+        booking: {
+          scheduleId: this.$store.state.selectedSchedule.id,
+          modality: "Online",
+          amount: this.total,
+        },
+        seats: this.seats,
+        passengers: this.passengers,
+      };
+      addNewBooking(booking).then((res) => {
+        if (res.status === 201) {
+          console.log("BOOING SUCCESS", res.data);
+          this.$store.commit("addScanBookingId", res.data.id);
+          this.addDetail();
+          this.$toast.show("loading RMA payment gateway", {
+            position: "top",
+            type: "info",
+          });
+          this.$router.push(`/book/loadPayment`);
+        } else {
+          this.$toast.show("Newtork Error..try again", {
+            position: "top",
+            type: "error",
+          });
+        }
+      });
     },
     addDetail() {
       let user = {

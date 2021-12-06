@@ -1009,8 +1009,6 @@ export default {
             });
           }
         });
-
-
       }
     },
 
@@ -1045,7 +1043,6 @@ export default {
     parseDate(e) {
       let fromDate = new Date(Date.parse(e));
       let toDate = new Date(Date.parse(e) + 86400000 * 6 * 30);
-
       return {
         fromDate: fromDate,
         toDate: toDate,

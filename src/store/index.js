@@ -11,7 +11,7 @@ export default createStore({
     selectedSeats:[],
     selectedDate:"",
     total:0,
-    selectedSchedule:{},
+    selectedSchedule:null,
     bookedBy:{},
     authToken:'',
     selectedRoutes:[],
@@ -108,6 +108,9 @@ export default createStore({
     },
     getDepartureDate: state =>{
       return state.departureDate
+    },
+    getSelectedSchedule:state =>{
+      return state.selectedSchedule
     }
 
   }
