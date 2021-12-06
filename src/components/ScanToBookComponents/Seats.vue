@@ -34,54 +34,20 @@
       </div>
     </div>
 
-    <div class="roundexd mt-2">
-      <div v-if="bookedSeats.length !== 0">
-        <h5 class="text-center">Booked Seats</h5>
-        <div class="flex flex-row justify-center items-center">
-          <div
-            v-for="item in bookedSeats"
-            :key="item"
-            class="m-1 p-1 rounded relative"
-          >
-            <img src="../../assets/seatUnavailable.png" width="50" alt="" />
-            <p
-              class="
-                absolute
-                top-1/2
-                left-1/2
-                bg-white bg-opacity-60
-                rounded-sm
-                pl-1
-                pr-1
-                transform
-                -translate-x-1/2 -translate-y-1/2
-              "
-            >
-              {{ item.number }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-2 text-left bg-blue-100 p-2 rounded text-gray-800">
-      <h4>Base Fare: Nu.{{ fare }}</h4>
-      <h4>Total: Nu.{{ total }}</h4>
-    </div>
 
     <div
       class="
         p-1
         mx-auto
         bg-white
-        rounded-xl
+        rounded-md
         shadow-md
         mt-1
         items-center
         space-x-4
       "
     >
-      <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3 rounded border">
+      <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3 ">
         <div
           v-for="item in seats"
           :key="item"
@@ -113,6 +79,77 @@
           </p>
         </div>
       </div>
+    </div>
+
+    <div
+      v-if="bookedSeats.length !== 0"
+      class="font-nunito text-gray-200 text-sm text-left bg-gray-600 rounded shadow-md"
+    >
+      <div class="p-2">
+        <table class="table-auto">
+          <tr>
+            <td>Base Fare :</td>
+            <td>Nu {{ fare }}</td>
+          </tr>
+          <tr>
+            <td>Service Charge :</td>
+            <td>Nu {{ serviceCharge }}</td>
+          </tr>
+          <tr>
+            <td>Seats Booked :</td>
+            <td>{{ bookedSeats.length }}</td>
+          </tr>
+          <tr>
+            <td>
+              <hr class="w-full border-dashed" />
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      <div>
+        <h5 class="text-center">Booked Seats</h5>
+        <div
+          class="grid grid-cols-4 justify-items-center bg-white "
+        >
+          <div
+            v-for="item in bookedSeats"
+            :key="item"
+            class="m-1 p-1 rounded relative"
+          >
+            <img src="../../assets/seatUnavailable.png" width="46" alt="" />
+            <p
+              class="
+                absolute
+                top-1/2
+                left-1/2
+                bg-white bg-opacity-20
+                rounded-sm
+                pl-1
+                pr-1
+                transform
+                -translate-x-1/2 -translate-y-1/2
+              "
+            >
+              {{ item.number }}
+            </p>
+          </div>
+        </div>
+      </div>
+       <div class="p-2">
+          <table>
+            <tr class="text-gray-100 font-bold">
+              <td>Total :</td>
+              <td>
+                {{ total }}
+              </td>
+            </tr>
+          </table>
+          <p class="text-xs break-words">
+            (Base Fare + Service Charge) x Booked Seats
+          </p>
+        </div>
     </div>
 
     <div>
@@ -297,6 +334,7 @@ export default {
     return {
       fare: 0,
       total: 0,
+      serviceCharge: this.$store.state.serviceCharge,
       isConnected: false,
       isLoader: false,
       errorModal: false,

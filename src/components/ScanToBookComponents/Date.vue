@@ -74,8 +74,6 @@
         Next
       </button>
     </div>
-
-    <!-- <p> {{ this.$store.state }} </p> -->
   </div>
 </template>
 
@@ -101,24 +99,34 @@ export default {
           routePath.routes.forEach((route) => {
             this.routes.push(route);
             route.routeDays.forEach((routeDay) => {
-              this.routeDays.push({
-                dates: { weekdays: this.routeHash[routeDay.day] },
-              });
+              if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
+                this.days.push(this.routeHash[routeDay.day]);
+              }
             });
           });
         });
+
+        this.attributes = [
+          {
+            dot: "green",
+            dates: { weekdays: this.days },
+            popover: {
+              label: "Bus Availble",
+            },
+          },
+        ];
       })
       .catch((err) => console.log(err));
 
-    this.$store.commit("addMatchedRoutes",this.routes)
-
-    console.log("Matching Routes", this.routes)
+    this.$store.commit("addMatchedRoutes", this.routes);
   },
   data() {
     return {
       date: "",
+      days: [],
       routeDays: [],
       routes: [],
+      attributes: [],
       dateClicked: false,
       routeHash: {
         0: 2, //monday
@@ -131,39 +139,22 @@ export default {
       },
     };
   },
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.routeDays.map((routeDay) => ({
-          dates: routeDay.dates,
-          dot: {
-            color: "green",
-            class: "opacity-75",
-          },
-          popover: {
-            label: "Bus Avaialble",
-          },
-        })),
-      ];
-    },
-  },
-
   methods: {
     previous() {
       this.$router.push("/book/destination");
     },
     onDayClick(e) {
       this.dateClicked = true;
-      if (e.popovers[0].label === "Bus Avaialble") {
+
+      if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
         let formattedDate = e.id + " 00:00:00";
         this.$store.commit("commitSelectedDate", formattedDate);
-        this.$toast.show(` Bus avialable on  ${e.ariaLabel}`, {
+        this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
           position: "top",
           type: "success",
         });
       } else {
-        this.$toast.show(`No Bus Avaialble`, {
+        this.$toast.show(`No Bus Availble`, {
           position: "top",
           type: "error",
         });

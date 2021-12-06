@@ -66,6 +66,7 @@
 
 <script>
 import { getAllStops } from "../../services/stopServices";
+import { getServiceCharge } from "../../services/paymentServices";
 
 export default {
   data() {
@@ -75,7 +76,11 @@ export default {
     };
   },
   created() {
+    getServiceCharge().then(res =>{
+        this.$store.commit("addServiceCharge",res.data.serviceCharge)
+    })
     getAllStops().then((res) => {
+      this.$store.commit("commitStops",res)
       this.origins = res;
       this.originSelected = res[0];
     });

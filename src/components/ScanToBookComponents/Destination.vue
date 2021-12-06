@@ -32,7 +32,6 @@
           v-for="destination in destinations"
           :value="destination"
           :key="destination"
-          :disabled="disableOption(destination)"
         >
           {{ destination.name }}
         </option>
@@ -77,7 +76,6 @@
 </template>
 
 <script>
-import { getAllStops } from "../../services/stopServices";
 export default {
   data() {
     return {
@@ -89,32 +87,19 @@ export default {
   created() {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
-    }else{
-      this.destinationSelected = this.$store.state.destination
-    }
-    getAllStops().then((res) => {
-      
-      res.forEach((element) => {
-        if (element.id !== this.$store.state.origin.id) {
-
-          this.destinations.push(element);
-        }else{
+    } else {
+      this.$store.state.stops.forEach((stop) => {
+        if (stop.id !== this.$store.state.origin.id) {
+          this.destinations.push(stop);
         }
       });
       this.destinationSelected = this.destinations[0];
-    });
+    }
   },
   methods: {
     addDestination(val) {
       this.$store.commit("addDestination", val);
       this.$router.push("/book/date");
-    },
-    disableOption(opt) {
-      let origin = this.$store.state.origin;
-      if (opt === origin) {
-        return true;
-      }
-      return false;
     },
   },
 };

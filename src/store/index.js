@@ -11,6 +11,8 @@ export default createStore({
     selectedSeats:[],
     selectedDate:"",
     total:0,
+    stops:null,
+    serviceCharge:null,
     selectedSchedule:null,
     bookedBy:{},
     authToken:'',
@@ -50,6 +52,9 @@ export default createStore({
         }
       })
     },
+    addServiceCharge(state,serviccharge){
+      state.serviceCharge = serviccharge
+    },
     addMatchedRoutes(state, data){
       state.selectedRoutes = data
     },
@@ -70,6 +75,10 @@ export default createStore({
     },
     addScanBookingId(state, id){
       state.scanBookingId = id
+    },
+
+    commitStops(state,stopData){
+      state.stops  = stopData
     },
 
     //book from the frontend

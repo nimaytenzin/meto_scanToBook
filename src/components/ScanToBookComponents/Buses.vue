@@ -1,25 +1,18 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center">
     <div>
+      <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
+    </div>
+    <div>
       <h1 class="text-3xl text-gray-500 text-center">Buses</h1>
       <h1 class="text-3xl text-gray-500 text-center mt-3">
         འགྲུལ་འཁོར་ གདམ་ཁ་རྐྱབ་གནང་།
       </h1>
     </div>
     <div
-      class="
-        p-6
-        mx-auto
-        bg-white
-        rounded-xl
-        shadow-md
-        min-w-6/12
-        mt-7
-        items-center
-        space-x-4
-      "
+      class="mx-auto bg-white rounded-xl shadow-md min-w-6/12 mt-7 items-center"
     >
-      <div class="flex flex-col">
+      <div class="flex p-3 flex-col">
         <div class="flex flex-row justify-around items-center">
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(origin)</p>
@@ -52,60 +45,86 @@
           {{ departureDate }}
         </h2>
       </div>
-      <div class="mt-4">
-        <table class="table min-w-full rounded">
-          <thead class="bg-gray-100 p-3 rounded h-10">
-            <tr class="text-left font-light text-sm">
-              <th class="pl-3 ml-2 mr-4">Departure Time</th>
-              <th class="pl-3 ml-5 mr-5">Fare</th>
-              <th class="pl-3 ml-5 mr-5">Select</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody
-            v-for="schedule in schedules"
-            :value="schedule"
-            :key="schedule"
-            class="text-left mt-4"
-          >
-            <tr
+
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
               class="
-                hover:bg-gray-100
-                cursor-pointer
-                select-none
-                h-14
-                text-gray-700
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
               "
-              @click="commitToStore(schedule)"
-              :class="tableRowColor(schedule)"
             >
-              <td class="pl-3 mr-2 border-r border-gray-100">
-                {{ getdepTime(schedule.route?.departureTime) }}
-              </td>
-              <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route?.fare }}</td>
-              <td class="pl-3 ml-5 mr-5">
-                <button
-                  v-if="!displayIcon(schedule)"
-                  class="
-                    p-2
-                    rounded
-                    text-sm
-                    font-medium
-                    text-gray-800
-                    bg-blue-200
-                    hover:bg-blue-400
-                    active:bg-grey-900
-                    transition-all
-                  "
-                >
-                  Select Bus
-                </button>
-
-                <p v-else>Bus Selected</p>
-              </td>
-
-              <td class="pl-3 ml-5 mr-5">
-                <div v-if="displayIcon(schedule)">
+              Departure
+            </th>
+            <th
+              scope="col"
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Fare
+            </th>
+            <th
+              scope="col"
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Click to Select
+            </th>
+            
+          </tr>
+        </thead>
+        <tbody
+          class="bg-white divide-y divide-gray-200"
+          v-for="schedule in schedules"
+          :key="schedule"
+        >
+          <tr @click="commitToStore(schedule)" :class="tableRowColor(schedule)">
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ getdepTime(schedule.route?.departureTime) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              Nu. {{ schedule.route?.fare }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                v-if="!displayIcon(schedule)"
+                class="
+                  rounded
+                  w-full
+                  py-1
+                  px-2
+                  font-medium
+                  text-gray-900
+                  bg-gray-200
+                  hover:bg-gray-300 hover:text-gray-900
+                  active:bg-grey-900
+                "
+              >
+                Select Bus
+              </button>
+              <div v-else>
+                <div v-if="displayIcon(schedule)" class="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 mr-2"
@@ -120,28 +139,13 @@
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
+                  Bus Selected
                 </div>
-                <div v-else>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                    />
-                  </svg>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="inline-flex mt-8">
@@ -191,12 +195,9 @@ export default {
       this.$router.push("/book");
     }
     this.routes = this.$store.state.selectedRoutes;
-
     this.routes.forEach((route) => {
-      console.log(route);
       getScheduleByRouteAndDate(route.id, this.$store.state.departureDate).then(
         (res) => {
-          // console.log(res);
           if (res.data) {
             let schedule = res.data;
             schedule.route = route;
@@ -207,8 +208,6 @@ export default {
     });
 
     console.log("SCHEDULES", this.schedules);
-
-    // console.log(this.$store.state.origin, this.$store.state.destination, this.$store.state.departureDate)
     this.$store.state.schedules.forEach((element) => {
       getMiniDetailsById(element.id).then((res) => {
         this.schedules.push(res.data);
@@ -226,7 +225,6 @@ export default {
   },
   computed: {
     departureDate() {
-      // console.log(this.$store.state.schedules, "MATCHED SCHEDULES");
       let d = new Date(this.$store.state.departureDate);
       return d.toDateString();
     },
@@ -241,7 +239,7 @@ export default {
     },
     tableRowColor(e) {
       if (e.id === this.selectedSchedule.id) {
-        return "bg-gray-300 text-white";
+        return "bg-gray-300 text-black ";
       }
       return "bg-white";
     },
@@ -250,7 +248,7 @@ export default {
       if (this.selectedSchedule) {
         this.$router.push("/book/seats");
       } else {
-       this.$toast.show("Please Select the departure time", {
+        this.$toast.show("Please Select the departure time", {
           position: "top",
           type: "error",
         });
@@ -274,7 +272,7 @@ export default {
     commitToStore(e) {
       this.ok = true;
       this.selectedSchedule = e;
-      console.log(e, 'Selected Schedule');
+      console.log(e, "Selected Schedule");
       this.$store.commit("addSelectedSchedule", e);
     },
     prev() {
