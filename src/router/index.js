@@ -60,6 +60,12 @@ const routes = [
       },
       {
         path: 'eticket/:bookingId', component: () => import('../components/ScanToBookComponents/ETicket.vue')
+      },
+      {
+        path: 'failticket/:bookingId',component:()=>  import('../components/ScanToBookComponents/FailTicket.vue')
+      },
+      {
+        path: 'cancelticket',component:()=>  import('../components/ScanToBookComponents/CancelPayment.vue')
       }
     ]
   },
