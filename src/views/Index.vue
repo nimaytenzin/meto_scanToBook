@@ -200,7 +200,7 @@
                         />
                       </div>
                       <div>
-                        Bookings
+                        Happy Customers
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -533,7 +533,7 @@
               ></polygon>
             </svg>
           </div>
-
+<!-- 
           <div class="container mx-auto px-4 mt-10">
             <div class="items-center flex flex-wrap">
               <div
@@ -577,20 +577,13 @@
                   v-tilt
                 />
               </div>
-              <!-- <div class="w-full md:w-3/12 ml-auto mr-auto px-4">
-                <img
-                  alt="..."
-                  class="max-w-full rounded-lg shadow-lg"
-                  src="https://images.unsplash.com/photo-1555212697-194d092e3b8f?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80"
-                />
-              </div> -->
             </div>
-          </div>
+          </div> -->
 
           <!-- //end company values  -->
 
-          <div class="flex flex-wrap items-center mt-32">
-            <div class="w-full md:w-5/12 px-4 mr-auto ml-auto">
+          <div class="flex flex-wrap items-center my-32">
+            <div class="w-full px-4 mr-auto ml-auto">
               <h3 class="text-3xl mb-2 font-semibold leading-normal">
                 About Meto Transport
               </h3>
@@ -640,7 +633,7 @@
                 care.
               </p>
             </div>
-            <div class="w-full md:w-4/12 px-4 mr-auto ml-auto">
+            <!-- <div class="w-full md:w-4/12 px-4 mr-auto ml-auto">
               <div
                 class="
                   relative
@@ -678,7 +671,7 @@
                   </p>
                 </blockquote>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
@@ -1237,7 +1230,8 @@ export default {
   },
 
   created() {
-    console.log("PROCESS ENV", process.env)
+    console.log("PROCESS ENV", process.env);
+
     getAllBuses().then((res) => {
       this.buses = res.length;
     });

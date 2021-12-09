@@ -12,8 +12,6 @@ import VCalendar from 'v-calendar';
 import VueChartkick from 'vue-chartkick'
 import 'chartkick/chart.js'
 import VueExcelXlsx from "vue-excel-xlsx";
-
-
 import VueLoading from 'vue-loading-overlay';
 
 createApp(App)

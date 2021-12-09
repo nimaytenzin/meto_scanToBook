@@ -104,7 +104,12 @@
         />
       </div>
 
-      <div class="inline-flex mt-8">
+      <div v-if="busAvailable">
+        <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
+          <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
+          Bus available
+        </h2>
+
         <button
           class="
             bg-gray-100
@@ -137,59 +142,102 @@
         </button>
       </div>
 
-      <div class="flex flex-wrap mt-5" v-if="schedules.length">
-        <table class="table min-w-full rounded">
-          <thead class="bg-gray-100 p-3 text-gray-700 rounded h-10">
-            <tr class="text-left font-light text-sm">
-              <th class="pl-3 ml-2 mr-4">Departure Time</th>
-
-              <th class="pl-3 ml-5 mr-5">Fare</th>
-              <th class="pl-3 ml-5 mr-5">Select Seats</th>
+      <div class="flex flex-wrap mt-5" v-if="schedules.length !== 0">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Departure
+              </th>
+              <th
+                scope="col"
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Fare
+              </th>
+              <th
+                scope="col"
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody
+            class="bg-white divide-y divide-gray-200"
             v-for="schedule in schedules"
-            :value="schedule"
             :key="schedule"
-            class="text-left mt-4"
           >
             <tr
-              class="
-                hover:bg-blue-100
-                cursor-pointer
-                select-none
-                h-14
-                text-gray-700
-              "
               @click="commitSchedule(schedule)"
+              :class="tableRowColor(schedule)"
             >
-              <td class="pl-3 mr-2 border-r border-gray-100">
-                {{ schedule.route.departureTime }}
+              <td class="px-6 py-4 whitespace-nowrap">
+                {{ getdepTime(schedule.route?.departureTime) }}
               </td>
-              <td class="pl-3 ml-5 mr-5">Nu. {{ schedule.route.fare }}</td>
-              <td class="pl-3 ml-5 mr-5">
-                <button
-                  type="button"
-                  class="
-                    btn-outline-primary
-                    transition
-                    duration-300
-                    ease-in-out
-                    focus:outline-none
-                    focus:shadow-outline
-                    border border-purple-700
-                    hover:bg-purple-700
-                    text-purple-700
-                    hover:text-white
-                    font-normal
-                    py-2
-                    px-4
-                    rounded
-                  "
-                  @click="openSeatSelect(schedule)"
-                >
-                  Select Seats
-                </button>
+              <td class="px-6 py-4 whitespace-nowrap">
+                Nu. {{ schedule.route?.fare }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div>
+                  <button
+                    class="
+                      rounded-l
+                      py-1
+                      px-2
+                      font-medium
+                      text-gray-900
+                      bg-gray-200
+                      hover:bg-gray-300 hover:text-gray-900
+                      active:bg-grey-900
+                    "
+                    @click="openSeatSelect(schedule)"
+                  >
+                    Book
+                  </button>
+                  <button
+                    class="
+                      rounded-r
+                      py-1
+                      px-2
+                      font-medium
+                      text-gray-900
+                      bg-gray-200
+                      hover:bg-gray-300 hover:text-gray-900
+                      active:bg-grey-900
+                    "
+                    @click="viewPassengers(schedule)"
+                  >
+                    Passengers
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -207,6 +255,7 @@
       <div class="modal__content text-center mt-5">
         <h3 class="text-xl">Book?</h3>
         <p class="text-center">Booked Seats</p>
+
         <p v-if="total">Total: Nu {{ total }}</p>
         <div class="flex flex-row justify-center">
           <div
@@ -272,7 +321,7 @@
           class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
           @click="addPassengerDetails()"
         >
-          Book
+          Add Passenger Details
         </button>
         <button
           class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
@@ -316,70 +365,193 @@
       class="w-max-screen"
       :click-to-close="false"
     >
-      <div class="modal__content text-center mt-5">
-        <div class="flex flex-col mt-4">
-          <h2 class="text-xl text-gray-500 italic">Enter passenger details</h2>
+      <div class="modal__content text-center">
+        <div class="flex flex-col">
+          <div class="flex-1 text-center">
+            <p class="text-xl font-semibold text-gray-600">
+              Enter Passenger Details
+            </p>
+            <p class="text-center font-thin text-sm">
+              Please Ensure Phone Numbers are Correct
+            </p>
+            <div class="flex flex-col justify-center items-center">
+              <div
+                class="flex flex-row gap-2 items-center"
+                v-for="(item, index) in bookedSeats"
+                :key="item"
+              >
+                <div class="p-1 rounded relative">
+                  <img
+                    src="../../../assets/seatUnavailable.png"
+                    width="50"
+                    alt=""
+                  />
+                  <p
+                    class="
+                      absolute
+                      top-1/2
+                      left-1/2
+                      bg-white bg-opacity-60
+                      rounded-sm
+                      pl-1
+                      pr-1
+                      transform
+                      -translate-x-1/2 -translate-y-1/2
+                    "
+                  >
+                    {{ item.number }}
+                  </p>
+                </div>
+                <div class="flex flex-col mt-4">
+                  <p class="my-1 text-gray-800 font-thin">
+                    Passenger {{ index + 1 }}
+                  </p>
+                  <!-- <select v-model="passengers[index].seatNumber">
+                    <option
+                     :value="item.number">{{ item.number }}</option>
+                  </select> -->
+                  <input
+                    v-model="passengers[index].name"
+                    placeholder="Name"
+                    class="
+                      appearance-none
+                      border-b
+                      rounded-sm
+                      w-full
+                      py-2
+                      px-2
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none focus:shadow-outline
+                    "
+                  />
+                  <input
+                    v-model="passengers[index].contact"
+                    type="number"
+                    placeholder="Contact"
+                    class="
+                      appearance-none
+                      border-b
+                      rounded
+                      w-full
+                      py-2
+                      px-2
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none focus:shadow-outline
+                    "
+                  />
+                  <input
+                    v-model="passengers[index].cid"
+                    placeholder="CID/EID/WorkPermit"
+                    class="
+                      appearance-none
+                      border-b
+                      rounded
+                      w-full
+                      py-2
+                      px-2
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none focus:shadow-outline
+                    "
+                  />
+                </div>
+              </div>
+            </div>
 
-          <input
-            v-model="customerName"
-            placeholder="Name"
-            class="
-              shadow
-              appearance-none
-              border
-              rounded
-              w-full
-              py-2
-              mt-1
-              mb-1
-              px-3
-              text-gray-700
-              leading-tight
-              focus:outline-none
-              focus:shadow-outline
-            "
-          />
+            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
 
-          <input
-            v-model="customerContact"
-            type="number"
-            placeholder="Contact"
-            class="
-              shadow
-              appearance-none
-              border
-              rounded
-              w-full
-              py-2
-              px-3
-              mt-1
-              mb-1
-              text-gray-700
-              leading-tight
-              focus:outline-none
-              focus:shadow-outline
-            "
-          />
+            <p class="text-xl my-1 font-semibold text-gray-600">
+              Payment Details
+            </p>
+            <div
+              class="
+                font-nunito
+                text-gray-200 text-left
+                bg-gray-600
+                rounded
+                shadow-md
+                p-2
+              "
+            >
+              <p>Billing</p>
 
-          <input
-            v-model="customerCid"
-            placeholder="CID/EID"
-            class="
-              shadow
-              appearance-none
-              border
-              rounded
-              w-full
-              mt-1
-              mb-1
-              py-2
-              px-3
-              text-gray-700
-              leading-tight
-              focus:outline-none
-              focus:shadow-outline
-            "
-          />
+              <hr class="border-dashed w-full" />
+              <table class="table-auto">
+                <tr>
+                  <td>Base Fare :</td>
+                  <td>
+                    Nu
+                    {{ fare }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Service Charge :</td>
+                  <td>Nu {{ serviceCharge }}</td>
+                </tr>
+                <tr>
+                  <td>Seats Booked :</td>
+                  <td>{{ bookedSeats.length }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <hr class="w-full border-dashed" />
+                  </td>
+                  <td></td>
+                </tr>
+                <tr class="text-gray-100 font-bold text-xl">
+                  <td>Total :</td>
+                  <td>
+                    {{ total }}
+                  </td>
+                </tr>
+              </table>
+              <p class="text-sm break-words">
+                Fare Calculation <br />
+                (Base Fare + Service Charge) x Booked Seats
+              </p>
+            </div>
+
+            <div class="mt-4">
+              <p class="text-xl font-semibold text-gray-600">
+                Select Payment Mode
+              </p>
+              <select
+                class="
+                  w-full
+                  h-10
+                  px-3
+                  text-base
+                  placeholder-gray-600
+                  border
+                  rounded-lg
+                  focus:shadow-outline
+                "
+                v-model="modality"
+              >
+                <option value="MBOB" class="bg-white">MBoB</option>
+                <option value="CASH" class="bg-white">Cash</option>
+              </select>
+
+              <input
+                v-if="paymentMode"
+                type="text"
+                placeholder="Journal Number"
+                class="
+                  appearance-none
+                  border-b
+                  rounded-sm
+                  w-full
+                  py-2
+                  px-2
+                  text-gray-700
+                  leading-tight
+                  focus:outline-none focus:shadow-outline
+                "
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal__action">
@@ -387,7 +559,7 @@
           class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
           @click="confirmBooking()"
         >
-          Book Ticket
+          Confirm Booking
         </button>
         <button
           class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
@@ -434,6 +606,119 @@
         <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
       </div>
     </vue-final-modal>
+
+    <vue-final-modal
+      v-model="passengerDetailsModal"
+      classes="modal-container"
+      content-class="modal-content2"
+      class="w-max-screen"
+    >
+      <div
+        
+      >
+        <div class="
+          font-nunito
+          text-gray-200
+          bg-gray-600
+          rounded-t
+          shadow-md
+          p-6
+          text-center
+        " >
+          <p>
+            <span class="text-2xl font-bold">{{ originSelected.name }}</span> to <span class="text-2xl font-bold">{{ destinationSelected.name }}</span>
+          </p> 
+          <p>
+            On
+          </p>
+         <p> {{ date }} at </p> 
+         <p>{{ selectedSchedule.route?.departureTime }} </p>
+           <div class="text-xl">
+          Fare: Nu.{{ selectedSchedule.route?.fare }} <br />
+          <p>
+             Seats Remaining: {{ seatsAvailable.length }}
+          </p>
+        <div class="flex gap-2 justify-center">
+          <p v-for="seat in seatsAvailable" :key="seat">
+            {{ seat }}
+          </p>
+        </div>
+        </div>
+        </div>
+        <div class="p-2">
+        <h3 class="text-xl px-6 font-thin"> Passengers</h3>
+          <table class="min-w-full divide-y divide-gray-200 text-gray-900 font-thin bg-white" v-if="passengersInSchedule.length">
+          <tr>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider "
+            >
+              Seat Number
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Name
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              CID
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Contact
+            </td>
+          </tr>
+          <tr v-for="passenger in passengersInSchedule" :key="passenger">
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ passenger.bookedSeat.seatNumber }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ passenger.name }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ passenger.cid }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ passenger.contact }}
+            </td>
+          </tr>
+        </table>
+        </div>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 <style scoped>
@@ -451,6 +736,17 @@
   margin: 0 1rem;
   padding: 1rem;
   border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+::v-deep .modal-content2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 90%;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
   border-radius: 0.25rem;
   background: #fff;
 }
@@ -489,23 +785,33 @@
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
 import {
-  getScheduleByDate,
-  getDetailsByDate,
+  getPassengerDataBySchedule,
+  getScheduleByRouteAndDate,
 } from "../../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../../services/routeServices";
-import { useLoading } from "vue3-loading-overlay";
-import moment from "moment";
-
 import { addNewBooking } from "../../../services/bookingServices";
+import { getServiceCharge } from "../../../services/paymentServices";
 export default {
   data() {
     return {
       stops: [],
       originSelected: {},
+      passengers: [],
       destinationSelected: {},
+      serviceCharge: 0,
+      passengerDetailsModal: false,
       date: "",
       schedules: [],
       seatSelectModal: false,
+      routeHash: {
+        0: 2, //monday
+        1: 3, //tuesday
+        2: 4, //wednesday
+        3: 5, // thrus
+        4: 6, //fri
+        5: 7, //sat
+        6: 1, // sun
+      },
       seats: [
         { id: 1, number: 1, type: "seat", status: "available" },
         { id: 2, number: 0, type: "notSeat", status: "available" },
@@ -541,9 +847,6 @@ export default {
       seatSelected: {},
       confirmSeatModal: false,
       addPassengerDetailsModal: false,
-      customerName: null,
-      customerContact: null,
-      customerCid: null,
       total: 0,
       fare: 0,
       reverSeatModal: false,
@@ -551,10 +854,31 @@ export default {
       routeDays: [],
       connectionAttempt: 0,
       errorModal: false,
-      isLoader: false,
+      attributes: [],
+      days: [],
+      routes: [],
+      selectedSchedule: {},
+      modality: "CASH",
+      passengersInSchedule: [],
+      seatsAvailable: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      ],
+      busAvailable: false,
     };
   },
+  computed: {
+    paymentMode() {
+      if (this.modality === "MBOB") {
+        return true;
+      } else {
+        false;
+      }
+    },
+  },
   created() {
+    getServiceCharge().then((res) => {
+      this.serviceCharge = res.data.serviceCharge;
+    });
     getAllStops()
       .then((res) => {
         this.stops = res;
@@ -567,14 +891,24 @@ export default {
   },
   methods: {
     onDayClick(e) {
-      this.date = e.id;
+      if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
+        this.date = e.id + " 00:00:00";
+        this.busAvailable = true;
+      } else {
+        this.busAvailable = false;
+        this.schedules = [];
+        this.$toast.show(`No Bus Availble`, {
+          position: "top",
+          type: "error",
+        });
+      }
     },
     next() {
       this.$router.push("/staff/seats");
     },
     commitSchedule(e) {
+      this.selectedSchedule = e;
       this.$store.commit("commitSchedule", e);
-      console.log(this.$store.state.customerBooking);
     },
     changeSeatStatus() {
       this.lockedSeats.forEach((seatNum) => {
@@ -585,51 +919,53 @@ export default {
       });
     },
     searchBus() {
-      this.routeDays = [];
-
+      this.attributes = [];
+      console.log(this.originSelected, this.destinationSelected);
       getRoutesByOriginDestination(
         this.originSelected.id,
         this.destinationSelected.id
       )
         .then((res) => {
-          res.data.forEach((element) => {
-            this.matchedRoutes.push(element);
-          });
-        })
-        .catch((err) => console.log(err));
-
-      let days = [];
-      let daysRequired = 7;
-
-      for (let i = 1; i <= daysRequired; i++) {
-        days.push(moment().add(i, "days").format("YYYY-MM-DD"));
-      }
-
-      days.forEach((day) => {
-        let formattedDate = day + " 00:00:00";
-        getScheduleByDate(formattedDate).then((res) => {
-          let dattt = new Date(formattedDate);
-          if (res.length) {
-            res.forEach((ok) => {
-              this.matchedRoutes.forEach((route) => {
-                if (route.id === ok.routeId) {
-                  let routeDay = {
-                    dates: new Date(ok.dateId),
-                    highlight: {
-                      color: "green",
-                      fillMode: "light",
-                    },
-                  };
-                  this.routeDays.push(routeDay);
-                }
+          console.log("ROUTES DATA", res);
+          if (res.data && res.status === 200) {
+            res.data.forEach((routePath) => {
+              routePath.routes.forEach((route) => {
+                this.routes.push(route);
+                route.routeDays.forEach((routeDay) => {
+                  if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
+                    this.days.push(this.routeHash[routeDay.day]);
+                  }
+                });
               });
             });
+            console.log("ROUTE DAYS", this.days);
+            if (this.days) {
+              this.attributes = [
+                {
+                  dot: "green",
+                  dates: { weekdays: this.days },
+                  popover: {
+                    label: "Bus Availble",
+                  },
+                },
+              ];
+            } else {
+              this.attributes = [];
+            }
           } else {
+            this.attributes = [
+              {
+                dot: "green",
+                dates: { weekdays: [] },
+                popover: {
+                  label: "Bus Availble",
+                },
+              },
+            ];
           }
-        });
-      });
+        })
+        .catch((err) => console.log(err));
     },
-
     connectWs() {
       this.conn = new WebSocket(
         `${process.env.VUE_APP_WSS}/${this.scheduleId}`
@@ -691,6 +1027,21 @@ export default {
 
       this.seatSelectModal = true;
     },
+    viewPassengers(schedule) {
+      this.passengerDetailsModal = true;
+      getPassengerDataBySchedule(schedule.id).then((res) => {
+        this.passengersInSchedule = res.data.passengers;
+        console.log("PASSENGERS",res.data)
+        this.passengersInSchedule.forEach((passenger) => {
+          let index = this.seatsAvailable.indexOf(
+            passenger.bookedSeat.seatNumber
+          );
+          if (index !== -1) {
+            this.seatsAvailable.splice(index, 1);
+          }
+        });
+      });
+    },
     bindImage(seat) {
       if (seat.type === "seat") {
         switch (seat.status) {
@@ -740,7 +1091,6 @@ export default {
     reverSeatStatus(arr) {
       arr.forEach((element) => {
         let matchedSeat = this.getSeats(parseInt(element));
-        // let matchedBookedSeat = this.matchBookedSeat(parseInt(element));
         matchedSeat.status = "available";
       });
     },
@@ -762,10 +1112,14 @@ export default {
         })
       );
       this.seatSelected.status = "available";
-
       this.bookedSeats.forEach((seat, index) => {
         if (this.seatSelected.id === seat.id) {
           this.bookedSeats.splice(index, 1);
+        }
+      });
+      this.passengers.forEach((seat, index) => {
+        if (this.seatSelected.number === seat.seatNumber) {
+          this.passengers.splice(index, 1);
         }
       });
 
@@ -780,7 +1134,8 @@ export default {
       this.bookedSeats.push(this.seatSelected);
       this.seatSelected.status = "booked";
       console.log("BOOKED SEATS", this.bookedSeats);
-      this.total += this.fare;
+      this.passengers.push({ seatNumber: this.seatSelected.number });
+      this.total += this.fare + this.serviceCharge;
       this.confirmSeatModal = false;
     },
     cancelSeat() {
@@ -794,7 +1149,21 @@ export default {
       );
       this.confirmSeatModal = false;
     },
+    getdepTime: function (time) {
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
 
+      return `${hrs}:${min} ${ampm}`;
+    },
     addPassengerDetails() {
       if (this.bookedSeats.length) {
         this.addPassengerDetailsModal = true;
@@ -807,47 +1176,78 @@ export default {
     },
 
     confirmBooking() {
-      if (this.customerName && this.customerContact && this.customerCid) {
-        let bookingDto = {
-          booking: {
-            scheduleId: this.scheduleId,
-            bookingTime: new Date(),
-            customerName: this.customerName,
-            customerContact: this.customerContact,
-            customerCid: this.customerCid,
-            amount: this.total,
-          },
-          seats: [],
-        };
-        this.bookedSeats.forEach((seat) => {
-          bookingDto.seats.push(seat.number);
-        });
-        addNewBooking(bookingDto).then((res) => {
-          if (res.status === 201) {
-            this.$toast.show("Successful", {
-              position: "top",
-              type: "success",
-            });
-            this.seatSelectModal = false;
-            this.confirmSeatModal = false;
-            this.addPassengerDetailsModal = false;
-            this.$router.push(`/staff/ticket/${res.data.id}`);
-          }
-        });
-      } else {
-        this.$toast.show("All fields are mandatory", {
-          position: "top",
-          type: "error",
-        });
-      }
+      alert("Add Data Validation Here!");
+
+      // let seats =[]
+      // this.bookedSeats.forEach(seat =>{
+      //   seats.push(seat.number)
+      // })
+      let newBooking = {
+        booking: {
+          scheduleId: this.scheduleId,
+          modality: this.modality,
+          amount: this.total,
+        },
+        // seats: seats,
+        passengers: this.passengers,
+      };
+      console.log(newBooking);
+      addNewBooking(newBooking).then((res) => {
+        if (res.status === 201) {
+          this.$toast.show("Successful", {
+            position: "top",
+            type: "success",
+          });
+          this.seatSelectModal = false;
+          this.confirmSeatModal = false;
+          this.addPassengerDetailsModal = false;
+          this.$router.push(`/staff/ticket/${res.data.id}`);
+        } else {
+          this.$toast.show("Newtork Error..try again", {
+            position: "top",
+            type: "error",
+          });
+        }
+      });
+      // if (this.customerName && this.customerContact && this.customerCid) {
+      //   let bookingDto = {
+      //     booking: {
+      //       scheduleId: this.scheduleId,
+      //       bookingTime: new Date(),
+      //       customerName: this.customerName,
+      //       customerContact: this.customerContact,
+      //       customerCid: this.customerCid,
+      //       amount: this.total,
+      //     },
+      //     seats: [],
+      //   };
+      //   this.bookedSeats.forEach((seat) => {
+      //     bookingDto.seats.push(seat.number);
+      //   });
+      //   addNewBooking(bookingDto).then((res) => {
+      //     if (res.status === 201) {
+      //       this.$toast.show("Successful", {
+      //         position: "top",
+      //         type: "success",
+      //       });
+      //       this.seatSelectModal = false;
+      //       this.confirmSeatModal = false;
+      //       this.addPassengerDetailsModal = false;
+      //       this.$router.push(`/staff/ticket/${res.data.id}`);
+      //     }
+      //   });
+      // } else {
+      //   this.$toast.show("All fields are mandatory", {
+      //     position: "top",
+      //     type: "error",
+      //   });
+      // }
     },
     cancelBooking() {
+      this.passengers = [{}];
       this.addPassengerDetailsModal = false;
     },
     closeSeatSelectModal() {
-      this.schedules = [];
-      console.log(this.bookedSeats, "OK");
-
       this.bookedSeats.forEach((seat) => {
         this.getSeats(seat.number).status = "available";
         this.conn.send(
@@ -864,29 +1264,22 @@ export default {
       this.seatSelectModal = false;
     },
 
+    tableRowColor(e) {
+      if (e.id === this.selectedSchedule.id) {
+        return "bg-gray-300 text-black ";
+      }
+      return "bg-white";
+    },
+
     viewSch() {
-      if (this.originSelected && this.destinationSelected && this.date) {
-        let formattedDate = this.date + +" 00:00:00";
-        let matchedRouteIds = [];
-        getRoutesByOriginDestination(
-          this.originSelected.id,
-          this.destinationSelected.id
-        ).then((res) => {
-          res.data.forEach((element) => {
-            matchedRouteIds.push(element.id);
-          });
-        });
-        getDetailsByDate(formattedDate).then((res) => {
-          let matchRouteSchedule = [];
-          if (res.length) {
-            res.forEach((element) => {
-              matchedRouteIds.forEach((route) => {
-                if (route === element.routeId) {
-                  matchRouteSchedule.push(element);
-                }
-              });
-            });
-            this.schedules = matchRouteSchedule;
+      this.schedules = [];
+      this.routes.forEach((route) => {
+        getScheduleByRouteAndDate(route.id, this.date).then((res) => {
+          if (res.data) {
+            let schedule = res.data;
+            schedule.route = route;
+            this.schedules.push(schedule);
+            console.log("SCHEDULE FOR DATE", this.schedules);
           } else {
             this.$toast.show("No buses on the selected day", {
               type: "error",
@@ -894,23 +1287,47 @@ export default {
             });
           }
         });
-      } else {
-        this.$toast.show("All fields are required", {
-          type: "error",
-          position: "top",
-        });
-      }
-    },
-  },
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.routeDays.map((routeDay) => ({
-          dates: routeDay.dates,
-          highlight: routeDay.highlight,
-        })),
-      ];
+      });
+      // getScheduleByRouteAndDate()
+
+      // if (this.originSelected && this.destinationSelected && this.date) {
+      //   let formattedDate = this.date + +" 00:00:00";
+      //   let matchedRouteIds = [];
+      //   getRoutesByOriginDestination(
+      //     this.originSelected.id,
+      //     this.destinationSelected.id
+      //   ).then((res) => {
+      //     console.log(res)
+      //     res.data.forEach((element) => {
+      //       matchedRouteIds.push(element.id);
+      //     });
+      //   });
+      //   getDetailsByDate(formattedDate).then((res) => {
+      //     console.log("okokok")
+      //     console.log(res)
+      //     let matchRouteSchedule = [];
+      //     if (res.length) {
+      //       res.forEach((element) => {
+      //         matchedRouteIds.forEach((route) => {
+      //           if (route === element.routeId) {
+      //             matchRouteSchedule.push(element);
+      //           }
+      //         });
+      //       });
+      //       this.schedules = matchRouteSchedule;
+      //     } else {
+      //       this.$toast.show("No buses on the selected day", {
+      //         type: "error",
+      //         position: "top",
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   this.$toast.show("Select Origin/Destination & Date", {
+      //     type: "error",
+      //     position: "top",
+      //   });
+      // }
     },
   },
 };

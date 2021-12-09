@@ -149,10 +149,10 @@ export default {
       if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
         let formattedDate = e.id + " 00:00:00";
         this.$store.commit("commitSelectedDate", formattedDate);
-        this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
-          position: "top",
-          type: "success",
-        });
+        // this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
+        //   position: "top",
+        //   type: "success",
+        // });
       } else {
         this.$toast.show(`No Bus Availble`, {
           position: "top",

@@ -5,6 +5,29 @@
 </style>
 
 <template>
+  <div class="absolute h-screen w-screen bg-white z-50" id="overlay">
+    <div
+      class="
+        flex flex-col
+        text-blue-400
+        font-thin
+        w-full
+        h-full
+        justify-start
+        mt-60
+        md:mt-80
+        items-center
+      "
+    >
+      <img
+        class="relative w-14 h-auto"
+        src="/loading.gif"
+        alt="loading..."
+        width="200"
+      />
+      <p class="text-center">Loading.....</p>
+    </div>
+  </div>
   <div
     class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
   >
@@ -34,7 +57,7 @@
       </div>
     </div>
 
-
+    
     <div
       class="
         p-1
@@ -47,7 +70,30 @@
         space-x-4
       "
     >
-      <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3 ">
+    <div
+      class="
+        font-nunito
+        text-gray-200 text-sm text-left
+        bg-gray-600
+        rounded
+        shadow-md
+      "
+    >
+      <div class="p-2">
+        <div>
+          <p class="text-center">
+            {{ origin }} to {{ destination }}
+          </p>
+        </div>
+        <div>
+          <p class="text-center">
+            Departure on {{ departuredate }} <br />
+            {{ departureTime }}
+          </p>
+        </div>
+      </div>
+    </div>
+      <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3">
         <div
           v-for="item in seats"
           :key="item"
@@ -83,7 +129,13 @@
 
     <div
       v-if="bookedSeats.length !== 0"
-      class="font-nunito text-gray-200 text-sm text-left bg-gray-600 rounded shadow-md"
+      class="
+        font-nunito
+        text-gray-200 text-sm text-left
+        bg-gray-600
+        rounded
+        shadow-md
+      "
     >
       <div class="p-2">
         <table class="table-auto">
@@ -110,9 +162,7 @@
 
       <div>
         <h5 class="text-center">Booked Seats</h5>
-        <div
-          class="grid grid-cols-4 justify-items-center bg-white "
-        >
+        <div class="grid grid-cols-4 justify-items-center bg-white">
           <div
             v-for="item in bookedSeats"
             :key="item"
@@ -137,19 +187,19 @@
           </div>
         </div>
       </div>
-       <div class="p-2">
-          <table>
-            <tr class="text-gray-100 font-bold">
-              <td>Total :</td>
-              <td>
-                {{ total }}
-              </td>
-            </tr>
-          </table>
-          <p class="text-xs break-words">
-            (Base Fare + Service Charge) x Booked Seats
-          </p>
-        </div>
+      <div class="p-2">
+        <table>
+          <tr class="text-gray-100 font-bold">
+            <td>Total :</td>
+            <td>
+              {{ total }}
+            </td>
+          </tr>
+        </table>
+        <p class="text-xs break-words">
+          (Base Fare + Service Charge) x Booked Seats
+        </p>
+      </div>
     </div>
 
     <div>
@@ -318,6 +368,7 @@ export default {
     ) {
       this.$router.push("/book");
     } else {
+      console.log(this.$store.state);
       this.fare = this.$store.state.selectedSchedule.route.fare;
       this.roomId = this.$store.state.selectedSchedule.id;
 
@@ -330,10 +381,17 @@ export default {
       }
     }
   },
+  mounted: function () {
+    setTimeout(function () {
+      this.document.getElementById("overlay").remove();
+    }, 3000);
+  },
   data() {
     return {
       fare: 0,
       total: 0,
+      origin: this.$store.state.origin.name,
+      destination: this.$store.state.destination.name,
       serviceCharge: this.$store.state.serviceCharge,
       isConnected: false,
       isLoader: false,
@@ -386,6 +444,26 @@ export default {
     bookedSeats() {
       return this.$store.state.selectedSeats;
     },
+    departuredate() {
+      let d = new Date(this.$store.state.departureDate);
+      return d.toDateString();
+    },
+    departureTime() {
+      let time = this.$store.state.selectedSchedule.route.departureTime;
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
+
+      return `${hrs}:${min} ${ampm}`;
+    },
   },
   methods: {
     connectWs() {
@@ -397,7 +475,7 @@ export default {
         this.connectionAttempt = 0;
         this.errorModal = false;
         this.isLoader = false;
-        console.log("Successfully connected to the echo websocket server");
+        console.log("Successfully connected to MetoSocket Server");
       };
 
       this.conn.onclose = (evt) => {

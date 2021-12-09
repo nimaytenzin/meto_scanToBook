@@ -1,32 +1,5 @@
 <template >
-  <div class="absolute h-screen w-screen bg-white z-50" id="overlay" style="height:200vh">
-    <div
-      class="
-        flex flex-col
-        text-blue-400
-        font-thin
-        w-full
-        h-full
-        justify-start
-        mt-60
-        md:mt-80
-        items-center
-      "
-    >
-      <img
-        class="relative w-14 h-auto"
-        src="/loading.gif"
-        alt="loading..."
-        width="200"
-      />
-      <p class="text-center">
-        Generating E Ticket
-        <br />
-        Thank You for Choosing Meto Transport.
-      </p>
-    </div>
-  </div>
-  <div
+ <div
     class="
       min-h-screen
       overflow-hidden
@@ -37,7 +10,7 @@
   >
     <div v-if="busStatus">
       <div class="flex flex-col items-center justify-center">
-        <img src="../../assets/meto.png" alt="" width="50" />
+        <img src="../../../meto.png" alt="" width="50" />
 
         <div>
           <h1 class="text-2xl text-gray-500 text-center">E Ticket</h1>
@@ -101,7 +74,7 @@
             </div>
 
             <div>
-              <img src="../../assets/meto.png" alt="" class="h-10" />
+              <img src="../../../assets/meto.png" alt="" class="h-10" />
             </div>
           </div>
           <hr class="border-dashed" />
@@ -155,7 +128,7 @@
                   class="m-1 p-1 rounded relative"
                 >
                   <img
-                    src="../../assets/seatUnavailable.png"
+                    src="../../../assets/seatUnavailable.png"
                     width="50"
                     alt=""
                   />
@@ -201,7 +174,7 @@
             class="pt-3 mt-0 rounded-b-3xl flex flex-col"
             style="
               box-shadow: 0 6px 6px -6px #333;
-              background-image: url(../../assets/meto.png);
+              background-image: url(../../../assets/meto.png);
             "
           >
             <div class="flex justify-center items-center">
@@ -325,7 +298,7 @@
         </div>
 
         <div class="bg-white rounded-full">
-          <img src="../../assets/meto.png" alt="" class="h-10" />
+          <img src="../../../assets/meto.png" alt="" class="h-10" />
         </div>
       </div>
       <h2
@@ -365,11 +338,13 @@
   </div>
 </template>
 
+
+
 <script>
 import domtoimage from "dom-to-image";
 import QRCodeVue3 from "qrcode-vue3";
 import { useRoute } from "vue-router";
-import { getBookingDetail } from "../../services/bookingServices";
+import { getBookingDetail } from "../../../services/bookingServices";
 
 export default {
   created() {

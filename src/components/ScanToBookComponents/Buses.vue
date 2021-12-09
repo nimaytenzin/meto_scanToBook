@@ -229,7 +229,6 @@ export default {
       return d.toDateString();
     },
   },
-
   methods: {
     displayIcon(e) {
       if (e.id === this.selectedSchedule.id) {

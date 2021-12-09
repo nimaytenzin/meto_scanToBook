@@ -15,6 +15,10 @@ export async function getScheduleByDate(date) {
     return schedules
 }
 
+export async function getPassengerDataBySchedule(scheduleId){
+    return await axios.get(`${devUrl}/schedules/schedule-passenger/${scheduleId}`)
+}
+
 export async function getDetailsByDate(date) {
     let schedules = [];
     const response = await axios.get(`${devUrl}/schedules/details/${date}`,{

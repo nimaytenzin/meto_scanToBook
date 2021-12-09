@@ -8,16 +8,49 @@
       justify-center
     "
   >
-    <div>
-      <img src="../../../assets/meto.png" alt="" width="50" />
-    </div>
-
-    <div>
-      <h1 class="text-2xl text-gray-500 text-center">E Ticket</h1>
-      <h1 class="text-2xl text-gray-500 text-center mt-3">ཤོག་འཟིན།</h1>
-    </div>
-
     <div v-if="busStatus">
+      <div class="flex flex-col items-center justify-center">
+        <img src="/meto.png" alt="" width="50" />
+
+        <div>
+          <h1 class="text-2xl text-gray-500 text-center">E Ticket</h1>
+          <h1 class="text-2xl text-gray-500 text-center mt-3">ཤོག་འཟིན།</h1>
+        </div>
+        <div class="mt-3">
+          <button
+            class="
+              bg-gray-100
+              hover:bg-gray-400
+              text-gray-500
+              hover:text-white
+              font-bold
+              py-2
+              px-4
+              rounded-l
+            "
+            @click="bookAgainCounter()"
+          >
+            Book Again
+          </button>
+          <button
+            class="
+              bg-blue-600
+              hover:bg-blue-400
+              text-blue-50
+              hover:text-white
+              font-bold
+              py-2
+              px-4
+              rounded-r
+            "
+            id="saveBtn"
+            @click="saveImage()"
+          >
+            Save Ticket
+          </button>
+        </div>
+      </div>
+
       <div
         class="
           p-6
@@ -41,7 +74,7 @@
             </div>
 
             <div>
-              <img src="../../../assets/meto.png" alt="" class="h-10" />
+              <img src="/meto.png" alt="" class="h-10" />
             </div>
           </div>
           <hr class="border-dashed" />
@@ -52,7 +85,7 @@
                 <div class="flex flex-col">
                   <p class="text-sm text-center text-gray-600">(origin)</p>
                   <h1 class="text-center text-3xl text-black font-bold">
-                    {{ bookingData.schedule?.route?.origin.name }}
+                    {{ origin }}
                   </h1>
                 </div>
                 <div
@@ -71,15 +104,12 @@
                 <div class="flex flex-col">
                   <p class="text-sm text-center text-gray-600">(destination)</p>
                   <h1 class="text-center text-3xl text-black font-bold">
-                    {{ bookingData.schedule?.route?.destination.name }}
+                    {{ destination }}
                   </h1>
-                  <!-- <p class="text-md text-center">
-              ({{ this.$store.state.destination.dzo }})
-            </p> -->
                 </div>
               </div>
               <p class="text-center mt-4 text-gray-500 italic">on</p>
-              <h2 class="text-center text-2xl text-gray-500">
+              <h2 class="text-center text-2xl text-gray-700">
                 {{ bookingData.schedule?.calendarDate?.Day_Name }}
                 {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
                 {{ bookingData.schedule?.calendarDate?.Month_Name }}
@@ -97,11 +127,7 @@
                   :key="item"
                   class="m-1 p-1 rounded relative"
                 >
-                  <img
-                    src="../../../assets/seatUnavailable.png"
-                    width="50"
-                    alt=""
-                  />
+                  <img src="/seatUnavailable.png" width="50" alt="" />
                   <p
                     class="
                       absolute
@@ -123,44 +149,33 @@
           </div>
           <hr class="border-dashed" />
 
-          <div class="flex flex-row pt-3">
-            <div class="flex-1 p-3">
-              <p>Boarding</p>
-              <h2 class="text-blue-900">
-                {{ bookingData.schedule?.route?.origin.name }}
-              </h2>
-              <h3 class="text-gray-500">
-                {{ getdepTime(bookingData.schedule?.route?.departureTime)   }}
-              </h3>
-              <p class="text-gray-500 text-sm">
-                {{ bookingData.schedule?.route?.origin.contact }}
-              </p>
-            </div>
-            <div class="flex-1 p-3">
-              <p>Drop</p>
-              <h2 class="text-blue-900">
-                {{ bookingData.schedule?.route?.destination.name }}
-              </h2>
-              <h3 class="text-gray-500">
-                {{ getETA(bookingData.schedule?.route?.ETA) }}
-              </h3>
-              <p class="text-gray-500 text-sm">
-                {{ bookingData.schedule?.route?.destination.contact }}
-              </p>
-            </div>
+          <div class="text-center gap-2">
+            <p class="text-xl font-semibold">
+              Boarding Time:
+              <span>
+                {{
+                  getdepTime(bookingData?.schedule?.route?.departureTime)
+                }}</span
+              >
+            </p>
+            <h2 class="text-sm">
+              Contact
+              {{ bookingData.schedule?.route?.routepath?.origin.contact }} for
+              assistance/query.
+            </h2>
           </div>
 
           <hr class="border-dashed" />
-
           <div
             class="pt-3 mt-0 rounded-b-3xl flex flex-col"
             style="
               box-shadow: 0 6px 6px -6px #333;
-              background-image: url(../../../assets/meto.png);
+              background-image: '/meto.png';
             "
           >
             <div class="flex justify-center items-center">
               <QRCodeVue3
+                id="qrcode"
                 :width="300"
                 :height="300"
                 v-bind:value="qrDataString"
@@ -208,44 +223,58 @@
           </div>
 
           <div class="pt-4 pb-4 flex flex-row justify-between">
-            <div>
-              <p>Booked By</p>
-              <h2 class="text-blue-900 break-words">
-                {{ bookingData.customerName }}
-              </h2>
-              <p class="text-gray-500 mt-1 text-sm">
-                {{ bookingData.customerContact }}
-              </p>
-              <p class="text-gray-500 mt-1 text-sm">
-                {{ bookingData.customerCid }}
-              </p>
+            <div class="p-2">
+              <p>Passengers</p>
+              <ol
+                class="text-xs"
+                v-for="(passenger, index) in bookingData.passengers"
+                :key="passenger"
+              >
+                <li>
+                  {{ index + 1 }}.{{ passenger.name }} (cid:
+                  {{ passenger.cid }} )
+                </li>
+              </ol>
             </div>
             <div>
               <p>Fare Details</p>
-              <h2 class="text-blue-900">Fare: Nu.250</h2>
-              <h2 class="text-blue-900">
-                Seats Booked: {{ bookingData.bookedSeats?.length }}
-              </h2>
-              <h2 class="text-blue-900">Total: Nu. {{ bookingData.amount }}</h2>
+              <div class="text-sm">
+                <h2 class="text-blue-900">Fare: Nu.250</h2>
+                <h2 class="text-blue-900">
+                  Seats Booked: {{ bookingData.bookedSeats?.length }}
+                </h2>
+                <h2 class="text-blue-900">
+                  Total: Nu. {{ bookingData.amount }}
+                </h2>
+              </div>
             </div>
           </div>
 
-          <p>
+          <p class="text-center text-sm">
+            Click/visit the link below to check Bus Details : <br />
             Your Bus Details will be uploaded 2 hours before departure <br />
           </p>
+
           <button
             @click="openBusDetails"
-            class="text-black font-bold py-2 px-4 rounded"
+            class="text-black font-bold px-4 rounded"
           >
-            Click here to check Details : <br />
             {{ url }}{{ checkBusRouteData.href }}
           </button>
+
+          <hr class="mt-4 mb-4" />
+
+          <p class="text-center text-sm">
+            Click/visit the link below to cancel your ticket <br />
+            Cancellation will be allowed only before 2 hours from the departure
+            time.
+          </p>
 
           <button
             @click="cancelTicket()"
             class="text-black font-bold py-2 px-4 rounded"
           >
-            Cancel Ticket: <br />
+            Click/visit this link Cancel Ticket: <br />
             {{ url }}{{ cancelTicketRouteData.href }}
           </button>
 
@@ -255,81 +284,91 @@
           </p>
         </div>
       </div>
-
-      <div class="inline-flex mt-8 mb-5">
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded-l
-          "
-          @click="bookAgain()"
-        >
-          Book Again
-        </button>
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded-l
-          "
-          id="saveBtn"
-          @click="saveImage()"
-        >
-          Save Ticket
-        </button>
-      </div>
     </div>
 
-    <div v-else>
+    <div v-else class="bg-gray-600 rounded-md flex flex-col justify-center">
+      <div class="flex flex-row justify-between p-3">
+        <div>
+          <h1 class="text-left text-sm text-gray-200">Meto Transport</h1>
+          <h1 class="text-left text-sm text-gray-200">
+            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
+          </h1>
+        </div>
 
-      <h2 class="text-3xl font-nunito font-light text-red-500 p-10 rounded-md shadow-lg text-center" >
-        Schedule Completed ! <br> Ticket Expired
+        <div class="bg-white rounded-full">
+          <img src="/meto.png" alt="" class="h-10" />
+        </div>
+      </div>
+      <h2
+        class="
+          text-2xl
+          font-nunito font-light
+          text-gray-300
+          p-10
+          rounded-md
+          shadow-lg
+          text-center
+        "
+      >
+        Schedule Completed! <br />
+        Ticket Expired
       </h2>
 
+      <button
+        class="
+          bg-gray-100
+          hover:bg-gray-400
+          text-gray-500
+          hover:text-white
+          font-bold
+          py-2
+          px-4
+        "
+        @click="bookAgain()"
+      >
+        Book your next ride!
+      </button>
+
+      <p class="text-center text-gray-200 text-xs px-3 m-4">
+        Ensuring Safety, Reliability,Comfort till your destination.
+      </p>
     </div>
   </div>
 </template>
+
+
 
 <script>
 import domtoimage from "dom-to-image";
 import QRCodeVue3 from "qrcode-vue3";
 import { useRoute } from "vue-router";
-
 import { getBookingDetail } from "../../../services/bookingServices";
 
 export default {
   created() {
     const route = useRoute();
     const bookingId = route.params.bookingId;
-
     getBookingDetail(bookingId).then((res) => {
-      this.qrDataString = res.data.checkSum;
-      console.log(res);
-      if(res.data.schedule.isFinished === 0){
-        this.busStatus = true
-      }else{
-        this.busStatus = false
+      console.log("RESPOMSE", res);
+      if (res.status === 200) {
+        this.qrDataString = res.data.checkSum;
+        this.origin = res.data.schedule.route.routepath.origin.name;
+        this.destination = res.data.schedule.route.routepath.destination.name;
+        console.log(this.origin, this.destination);
+        if (res.data.schedule.isFinished === 0) {
+          this.busStatus = true;
+        } else {
+          this.busStatus = false;
+        }
+        this.bookingData = res.data;
+      } else {
+        this.$router.push("/service-down");
       }
-
-      this.bookingData = res.data;
     });
-
     this.checkBusRouteData = this.$router.resolve({
       name: "viewBusDetails",
       params: { id: bookingId },
     });
-
     this.cancelTicketRouteData = this.$router.resolve({
       name: "cancelTicket",
       params: { bookingId: bookingId },
@@ -340,41 +379,42 @@ export default {
       eta: "7Hrs 30 mins",
       departureTime: "7:00 AM",
       qrData: {},
-      busStatus:null,
-      bookingData: {
-        bookedSeats: [],
-        calendarDate: {},
-        schedule: {
-          route: {
-            origin: {},
-            destination: {},
-          },
-        },
-      },
+      busStatus: null,
+      origin: null,
+      dataLoaded: false,
+      destination: null,
+      bookingData: {},
       qrDataString: "",
       seatNumbers: "",
       cancelTicketRouteData: "",
       checkBusRouteData: "",
-      url: "localhost:8081",
+      seatsBooked: 0,
+      url: process.env.VUE_APP_DEV_API,
     };
   },
   components: {
     QRCodeVue3,
   },
-
   computed: {
     depDate() {
       return `${this.bookingData.schedule.calendarDate.Day_Name} ${this.bookingData.schedule.calendarDate.Calendar_Day} ${this.bookingData.schedule.calendarDate.Month_Name} ${this.bookingData.schedule.calendarDate.Calendar_Year} `;
     },
+    loadingClass() {
+      if (this.dataLoaded) {
+        return "hidden";
+      } else {
+        return "";
+      }
+    },
   },
- 
-
 
   methods: {
+    qrLoad() {
+      alert("QR CODE LOADED");
+    },
     saveImage() {
       const scale = 3;
       const node = document.getElementById("eTicket");
-
       const style = {
         transform: "scale(" + scale + ")",
         transformOrigin: "top left",
@@ -397,26 +437,20 @@ export default {
       });
     },
     getdepTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
+      if (time) {
+        let tissme = time.split(":");
+        let hrs = parseInt(tissme[0]);
+        let min = parseInt(tissme[1]).toLocaleString("en-US", {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+        let ampm = "am";
+        if (hrs > 12) {
+          hrs = hrs - 12;
+          ampm = "pm";
+        }
+        return `${hrs}:${min} ${ampm}`;
       }
-
-      return `${hrs}:${min} ${ampm}`;
-    },
-    getETA(e) {
-      let ok = e.split(":");
-      let hrs = ok[0];
-      let min = ok[1];
-
-      return `${hrs} Hrs ${min} Mins`;
     },
     openBusDetails() {
       window.open(this.checkBusRouteData.href, "_blank");
@@ -424,10 +458,18 @@ export default {
     cancelTicket() {
       window.open(this.cancelTicketRouteData.href, "_blank");
     },
+    bookAgainCounter() {
+      this.$router.back();
+    },
     bookAgain() {
-
-
-      this.$router.push("/staff");
+      this.$store.state.origin = "";
+      this.$store.state.destination = "";
+      this.$store.state.departureDate = "";
+      this.$store.state.selectedBus = "";
+      this.$store.state.selectedSeats = [];
+      this.$store.state.total = 0;
+      this.$store.state.bookedBy = {};
+      this.$router.push("/book");
     },
   },
 };

@@ -33,7 +33,6 @@
         </div>
       </div>
     </div>
-
     <div class="mt-5"> 
       <table class="min-w-full divide-y divide-gray-200 table-auto">
         <thead class="bg-gray-50">
@@ -129,7 +128,6 @@
                   booking.schedule.calendarDate.Calendar_Year
                 }}
               </p>
-
               <p>Departure Time : {{ booking.schedule.route?.departureTime }}</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">

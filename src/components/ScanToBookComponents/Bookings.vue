@@ -254,10 +254,7 @@ export default {
     }
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
-      this.total =
-      this.$store.state.selectedSchedule.route.fare *
-        this.$store.state.selectedSeats.length +
-      this.serviceCharge * this.$store.state.selectedSeats.length;
+      this.total = (this.$store.state.selectedSchedule.route.fare + this.serviceCharge) * this.$store.state.selectedSeats.length;
     });
     this.$store.state.selectedSeats.forEach((seat) => {
       this.passengers.push({});

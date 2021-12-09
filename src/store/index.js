@@ -1,4 +1,3 @@
-import { integer } from '@vuelidate/validators';
 import { createStore } from 'vuex'
 
 export default createStore({
