@@ -20,8 +20,8 @@ export async function addNewBusType(data){
 }
 
 export async function deleteBusType(id){
-   return await axios.delete(`${devUrl}/bus-types/${id}`)
+   return await axios.delete(`${devUrl}/bus-types/${id}`,{headers:authHeader()})
 }
 export async function editBusType(id,data){
-    return await axios.put(`${devUrl}/bus-types/${id}`,data)
+    return await axios.put(`${devUrl}/bus-types/${id}`,data,{headers:authHeader()})
 }

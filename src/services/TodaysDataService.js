@@ -9,7 +9,7 @@ export async function todaysAllData() {
 }
 
 export async function getTodayAllPaginated(pageNo) {
-     return await axios.get(`${devUrl}/bookings/today-all-paginated/${pageNo}`)
+     return await axios.get(`${devUrl}/bookings/today-all-paginated/${pageNo}`,{headers:authHeader()})
  }
 
 export async function todaysMbobData() {
@@ -27,18 +27,18 @@ export async function todaysCancelledData() {
 }
 
 export async function getTodayMbobPaginated(pageNo) {
-     return await axios.get(`${devUrl}/bookings/today-mbob-paginated/${pageNo}`)
+     return await axios.get(`${devUrl}/bookings/today-mbob-paginated/${pageNo}`,{headers:authHeader()})
  }
 
  export async function getTodayOnlinePaginated(pageNo) {
-     return await axios.get(`${devUrl}/bookings/today-online-paginated/${pageNo}`)
+     return await axios.get(`${devUrl}/bookings/today-online-paginated/${pageNo}`,{headers:authHeader()})
  }
  export async function getTodayCashPaginated(pageNo) {
-     return await axios.get(`${devUrl}/bookings/today-cash-paginated/${pageNo}`)
+     return await axios.get(`${devUrl}/bookings/today-cash-paginated/${pageNo}`,{headers:authHeader()})
  }
 
 //  today-cancelled-paginated
 
 export async function getTodayCancelledPaginated(pageNo) {
-     return await axios.get(`${devUrl}/bookings/today-cancelled-paginated/${pageNo}`)
+     return await axios.get(`${devUrl}/bookings/today-cancelled-paginated/${pageNo}`,{headers:authHeader()})
  }

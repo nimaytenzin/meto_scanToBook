@@ -16,15 +16,15 @@ export async function getAllRoutes() {
 }
 
 export async function addNewRoute(data){
-    return await axios.post(`${devUrl}/routes`,data)
+    return await axios.post(`${devUrl}/routes`,data,{headers:authHeader()})
 
 }
 
 export async function deleteRoute(id){
-   return await axios.delete(`${devUrl}/routes/${id}`)
+   return await axios.delete(`${devUrl}/routes/${id}`,{headers:authHeader()})
 }
 export async function editBus(id,data){
-    return await axios.put(`${devUrl}/buses/${id}`,data)
+    return await axios.put(`${devUrl}/buses/${id}`,data,{headers:authHeader()})
 }
 
 export async function getRoutesByOriginDestination(originId, destinationId){
