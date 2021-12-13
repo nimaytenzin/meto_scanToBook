@@ -565,7 +565,6 @@ export default {
         hrs = hrs - 12;
         ampm = "pm";
       }
-
       return `${hrs}:${min} ${ampm}`;
     },
     getData(pageNo) {
