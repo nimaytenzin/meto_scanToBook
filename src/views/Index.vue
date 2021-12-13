@@ -228,7 +228,8 @@
                   </div>
                 </div>
 
-                <button
+               <div class="flex gap-2 justify-center"> 
+                  <button
                   class="
                     bg-gray-200
                     p-2
@@ -245,6 +246,24 @@
                 >
                   Book Your Next ride
                 </button>
+                <button
+                  class="
+                    bg-gray-200
+                    p-2
+                    rounded
+                    text-xl
+                    font-semibold
+                    mt-2
+                    hover:bg-gray-800
+                    hover:text-gray-100
+                    transition
+                    hover:bg-opacity-50
+                  "
+                  @click="goToBooking()"
+                >
+                  Regenerate Ticket
+                </button>
+               </div>
               </div>
             </div>
           </div>
@@ -1209,6 +1228,7 @@ import { getAllRoutes } from "../services/routeServices";
 import { sendFeedback } from "../services/FeedbackServices";
 import { getAllBookings } from "../services/bookingServices";
 import { getAllStops } from "../services/stopServices";
+
 export default {
   name: "landing-page",
   components: {

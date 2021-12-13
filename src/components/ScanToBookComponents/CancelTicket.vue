@@ -8,37 +8,35 @@
       justify-center
     "
   >
-    <div>
-      <img src="../../assets/meto.png" alt="" width="50" />
-    </div>
-
-    <div>
-      <h1 class="text-2xl text-gray-500 text-center">Cancel Ticket</h1>
-      <h1 class="text-2xl text-gray-500 text-center mt-3">ཤོག་འཟིན།</h1>
-    </div>
     <div
       class="
-        p-6
         mx-auto
         bg-white
         rounded-xl
         shadow-lg
         min-w-content
-        mt-1
         items-center
-        space-x-4
       "
     >
-      <div class="flex flex-col max-w-full p-3 m-3 bg-white">
+      <div
+        class="
+          flex flex-col
+          max-w-full
+          font-nunito
+          text-gray-200 text-left
+          bg-gray-600
+          rounded
+          shadow-md
+        "
+      >
         <div class="flex flex-row justify-between p-3">
           <div>
-            <h1 class="text-left text-sm text-gray-500">Meto Transport</h1>
-            <h1 class="text-left text-sm text-gray-500">
+            <h1 class="text-left text-sm text-gray-100">Meto Transport</h1>
+            <h1 class="text-left text-sm text-gray-100">
               ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
             </h1>
           </div>
-
-          <div>
+          <div class="rounded-full bg-white">
             <img src="../../assets/meto.png" alt="" class="h-10" />
           </div>
         </div>
@@ -46,11 +44,8 @@
         <div v-if="!refunded">
           <div class="text-center font-light mt-4 mb-2">
             Ticket Details
-
-            <p>Origin: {{ bookingData.schedule?.route?.origin.name }}</p>
-            <p>
-              Destination: {{ bookingData.schedule?.route?.destination.name }}
-            </p>
+            <p>Origin: {{ origin }}</p>
+            <p>Destination: {{ destination }}</p>
             <p>
               Departure Date:
               {{ bookingData.schedule?.calendarDate?.Month_Name }}
@@ -61,38 +56,38 @@
               Departure Time: {{ bookingData.schedule?.route?.departureTime }}
             </p>
 
-            <h2 class="text-xl">Refund Amount : Nu {{ bookingData.amount }}</h2>
+            <h2 class="text-xl bg-gray-200 text-gray-500 my-2" >Refund Amount : Nu {{ bookingData.amount }}</h2>
           </div>
 
-          <div class="text-center font-light mt-4 mb-2 rounded-lg border-white">
-            <table>
-              <tr>
+          <div class=" w-full mt-4 mb-2 rounded-lg border-white">
+            <table class="table-auto rouded-r">
+              <tr class="bg-gray-50 text-gray-600">
                 <td class="text-left">Bank Name</td>
                 <td class="font-bold text-xl">
                   <input
-                    class=""
+                    class="p-1 rounded-r"
                     type="text"
                     placeholder="Bank Name"
                     v-model="refundAccountDetails.bankName"
                   />
                 </td>
               </tr>
-              <tr>
+              <tr class="bg-gray-50 text-gray-600">
                 <td class="text-left">Account Number</td>
                 <td class="font-bold text-xl">
                   <input
-                    class=""
+                    class="p-1 rounded-r"
                     type="text"
                     placeholder="Account Number"
                     v-model="refundAccountDetails.accNo"
                   />
                 </td>
               </tr>
-              <tr>
+              <tr  class="bg-gray-50 text-gray-600">
                 <td class="text-left">Account Name</td>
                 <td class="font-bold text-xl">
                   <input
-                    class=""
+                    class="p-1 rounded-r"
                     type="text"
                     placeholder="Account Name"
                     v-model="refundAccountDetails.accName"
@@ -119,7 +114,7 @@
             </button>
           </div>
 
-          <p class="text-center text-gray-500 text-sm mt-4 mb-4">
+          <p class="text-center text-gray-200 text-sm my-4 px-2">
             Refund may take few days depending on the refund requests recieved.
             <br />
             Ensuring Safety, Reliability,Comfort till your destination.
@@ -292,11 +287,14 @@ export default {
       bookingData: {},
       refunded: false,
       update: false,
+      origin: "",
+      destintion: "",
+      seatsBooked: "",
       refundAccountDetails: {
-        accNo: 0,
+        accNo: "",
         accName: "",
         bankName: "",
-        checkInStatus: "CANCELLED",
+        bookingStatus: "CANCELLED",
       },
       confirmDetailsModal: false,
       socketConn: null,
@@ -307,11 +305,16 @@ export default {
 
     getBookingDetail(this.bookingId)
       .then((res) => {
+        console.log(res.data);
         if (res.status === 200) {
           if (res.data.checkInStatus === "REFUNDED") {
             this.refunded = true;
           }
           this.bookingData = res.data;
+          this.origin = this.bookingData.schedule.route.routepath.origin.name;
+          this.destination =
+            this.bookingData.schedule.route.routepath.destination.name;
+
           console.log(res.data);
           if (res.data.accNo) {
             this.refundAccountDetails.bankName = res.data.bankName;
@@ -377,6 +380,7 @@ export default {
         bankName: this.refundAccountDetails.bankName,
         accNo: this.refundAccountDetails.accNo,
         accName: this.refundAccountDetails.accName,
+        bookingStatus:"CANCELLED"
       }).then((res) => {
         if (res.status === 200) {
           this.$toast.show("Updated", {

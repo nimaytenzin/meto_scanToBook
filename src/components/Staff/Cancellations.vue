@@ -27,7 +27,7 @@
           <div class="my-auto">
             <div class="text-lg">Refunds Pending</div>
             <div class="text-4xl text-white font-bold text-center">
-              {{ cancelledBookings.length }}
+                kkk
             </div>
           </div>
         </div>
@@ -111,24 +111,15 @@
             class="hover:bg-gray-200"
           >
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>Name: {{ booking.customerName }}</p>
-              <p>Contact: {{ booking.customerContact }}</p>
-              <p>ID: {{ booking.customerCid }}</p>
+                Testing
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>Origin: {{ booking.schedule.route?.origin?.name }}</p>
-              <p>Destination: {{ booking.schedule.route?.destination?.name }}</p>
+              <p>Origin: </p>
+              <p>Destination: </p>
               <p>
                 Departure Date:
-                {{
-                  booking.schedule.calendarDate.Calendar_Day +
-                  " " +
-                  booking.schedule.calendarDate.Month_Name +
-                  " " +
-                  booking.schedule.calendarDate.Calendar_Year
-                }}
               </p>
-              <p>Departure Time : {{ booking.schedule.route?.departureTime }}</p>
+              <p>Departure Time :</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
               Nu {{ booking.amount }}
@@ -261,7 +252,7 @@ export default {
   created() {
     getAllCanelled().then((res) => {
       this.cancelledBookings = res.data;
-      console.log(this.cancelledBookings)
+      console.log("CANCELLED",this.cancelledBookings)
       console.log(res.data);
     });
   },

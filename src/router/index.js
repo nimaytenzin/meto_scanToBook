@@ -113,22 +113,7 @@ const routes = [
         path: 'booking-data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path: 'view-passengers/:scheduleId', component: () => import('../components/Admin/ViewPassengers.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path: 'transfer-passengers/:scheduleId', component: () => import('../components/Admin/TransferPassenger.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true }
+        path:'today',component:()=>import('../components/FinanceAdmin/Today.vue'), meta:{ requiresAuth:true }
       }
 
     ]

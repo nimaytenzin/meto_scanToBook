@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="mt-5"> 
+    <div class="mt-5">
       <table class="min-w-full divide-y divide-gray-200 table-auto">
         <thead class="bg-gray-50">
           <tr>
@@ -117,35 +117,37 @@
               <p>ID: {{ booking.customerCid }}</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>Origin: {{ booking.schedule.route?.origin?.name }}</p>
-              <p>Destination: {{ booking.schedule.route?.destination?.name }}</p>
               <p>
-                Departure Date:
-                {{
-                  booking.schedule.calendarDate.Calendar_Day +
-                  " " +
-                  booking.schedule.calendarDate.Month_Name +
-                  " " +
-                  booking.schedule.calendarDate.Calendar_Year
+                Origin: {{ booking.schedule.route?.routepath.origin?.name }}
+              </p>
+              <p>
+                Destination:
+                {{ booking.schedule.route?.routepath.destination?.name }}
+              </p>
+              <p>
+                Departure Date:{{
+                  formatDepartureDate(booking.schedule.dateId)
                 }}
               </p>
 
-              <p>Departure Time : {{ booking.schedule.route?.departureTime }}</p>
+              <p>
+                Departure Time :
+                {{ getDeptTime(booking.schedule.route.departureTime) }}
+              </p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
               Nu {{ booking.amount }}
             </td>
 
             <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>
-                Bank: {{ booking.bankName }}
-              </p>
-              <p>
-                Account Number: {{ booking.accNo }}
-              </p>
-              <p>
-                Account Name: {{ booking.accName }}
-              </p>
+              <div v-if="booking.accNo && booking.accName">
+                <p>Bank: {{ booking.bankName }}</p>
+                <p>Account Number: {{ booking.accNo }}</p>
+                <p>Account Name: {{ booking.accName }}</p>
+              </div>
+              <div v-else>
+                Account Details Not Provided
+              </div>
             </td>
 
             <td>
@@ -169,42 +171,33 @@
           </tr>
         </tbody>
       </table>
-
-
-     
+    </div>
+  </div>
+  <vue-final-modal
+    v-model="confirmModal"
+    classes="modal-container"
+    content-class="modal-content"
+    class="w-max-screen"
+  >
+    <div class="modal__content text-center mt-1 flex flex-col overflow-visible">
+      <h3 class="text-xl mb-5">Are you sure?</h3>
     </div>
 
-
-    
-
-  </div>
-    <vue-final-modal
-        v-model="confirmModal"
-        classes="modal-container"
-        content-class="modal-content"
-        class="w-max-screen"
+    <div class="modal__action">
+      <button
+        class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+        @click="confirmRefund()"
       >
-        <div
-          class="modal__content text-center mt-1 flex flex-col overflow-visible"
-        >
-          <h3 class="text-xl mb-5">Are you sure?</h3>
-
-        </div>
-          
-        <div class="modal__action">
-          <button
-            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-            @click="confirmRefund()"
-          >
-            Confirm Refund          </button>
-          <button
-            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            @click="confirmModal = false"
-          >
-            Cancel
-          </button>
-        </div>
-      </vue-final-modal>
+        Confirm Refund
+      </button>
+      <button
+        class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+        @click="confirmModal = false"
+      >
+        Cancel
+      </button>
+    </div>
+  </vue-final-modal>
 </template>
 
 <style scoped>
@@ -263,7 +256,7 @@ export default {
   created() {
     getAllCanelled().then((res) => {
       this.cancelledBookings = res.data;
-      console.log(this.cancelledBookings)
+      console.log(this.cancelledBookings);
       console.log(res.data);
     });
   },
@@ -277,12 +270,38 @@ export default {
   methods: {
     openConfirmModal(booking) {
       this.bookingSelected = booking;
-      this.confirmModal = true
+      this.confirmModal = true;
+    },
+
+    formatDepartureDate(date) {
+      let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return new Date(date).toLocaleDateString("en-US", options);
+    },
+    getDeptTime: function (time) {
+      let tissme = time.split(":");
+      let hrs = parseInt(tissme[0]);
+      let min = parseInt(tissme[1]).toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+      let ampm = "am";
+      if (hrs > 12) {
+        hrs = hrs - 12;
+        ampm = "pm";
+      }
+
+      return `${hrs}:${min} ${ampm}`;
     },
 
     confirmRefund() {
+      console.log(this.bookingSelected)
       let data = {
-        checkInStatus: "REFUNDED",
+        bookingStatus: "REFUNDED",
       };
       cancelBooking(this.bookingSelected.id, data).then((res) => {
         if (res.status === 200) {
@@ -291,7 +310,7 @@ export default {
             position: "top",
           });
           this.refreshData();
-          this.confirmModal = false 
+          this.confirmModal = false;
         }
       });
     },

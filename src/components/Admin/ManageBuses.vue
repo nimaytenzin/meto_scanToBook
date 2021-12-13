@@ -193,22 +193,13 @@
         <p>Add Buses</p>
       </button>
 
- <div
-        class="
-          bg-white
-          border-t
-          flex 
-          items-end
-          justify-center
-          gap-6
-          w-full
-        "
-      >
+      <div class="bg-white border-t flex items-end justify-center gap-6 w-full">
         <span class="text-xs xs:text-sm text-gray-900">
-          Showing  {{ buses.limit  }} entries|  Page {{ buses.currentPage +1 }} of {{ buses.lastPage +1 }} 
+          Showing {{ buses.limit }} entries| Page {{ buses.currentPage + 1 }} of
+          {{ buses.lastPage + 1 }}
         </span>
         <div class="inline-flex mt-2 xs:mt-0">
-           <button
+          <button
             class="
               text-sm
               bg-gray-300
@@ -219,39 +210,33 @@
               px-4
               rounded-l
             "
-             @click="getBusData(buses.firstPage)"
-           
+            @click="getBusData(buses.firstPage)"
           >
             First
           </button>
           <button
-            class="
-              text-sm
-              text-gray-800
-              font-semibold
-              py-2
-              px-4
+            class="text-sm text-gray-800 font-semibold py-2 px-4"
+            :class="
+              buses.previousPage === null
+                ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed'
+                : 'bg-gray-300 hover:bg-gray-400 cursor-pointer'
             "
-            :class="buses.previousPage === null  ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed': 'bg-gray-300 hover:bg-gray-400 cursor-pointer' "
-             @click="getBusData(buses.previousPage)"
-           
+            @click="getBusData(buses.previousPage)"
           >
             Prev
           </button>
           <button
-            class="
-              text-sm
-              text-gray-800
-              font-semibold
-              py-2
-              px-4
+            class="text-sm text-gray-800 font-semibold py-2 px-4"
+            :class="
+              buses.nextPage === null
+                ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed'
+                : 'bg-gray-300 hover:bg-gray-400 cursor-pointer'
             "
-            :class="buses.nextPage === null  ? 'bg-gray-100 hover:bg-gray-100 cursor-not-allowed': 'bg-gray-300 hover:bg-gray-400 cursor-pointer' "
-             @click="getBusData(buses.nextPage)"
+            @click="getBusData(buses.nextPage)"
           >
             Next
           </button>
-           <button
+          <button
             class="
               text-sm
               bg-gray-300
@@ -262,7 +247,7 @@
               px-4
               rounded-r
             "
-             @click="getBusData(buses.lastPage)"
+            @click="getBusData(buses.lastPage)"
           >
             Last
           </button>
@@ -377,8 +362,6 @@
           </tr>
         </tbody>
       </table>
-
-     
     </div>
 
     <div>
@@ -869,10 +852,10 @@ export default {
         this.showToast("All the Fields are required", "top", "error");
       }
     },
-    getBusData(pageNo){
-      getAllBusPaginated(pageNo).then(res =>{
-        this.buses = res.data
-      })
+    getBusData(pageNo) {
+      getAllBusPaginated(pageNo).then((res) => {
+        this.buses = res.data;
+      });
     },
     editBusType() {
       if (

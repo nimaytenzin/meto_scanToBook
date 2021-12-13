@@ -1,21 +1,13 @@
-<style>
-.avialable {
-  background-color: red;
-}
-</style>
 
 <template>
-  <div class="absolute h-screen w-screen bg-white z-50" id="overlay">
+  <div id="spinner">
     <div
       class="
         flex flex-col
         text-blue-400
         font-thin
-        w-full
-        h-full
+        text-xl
         justify-start
-        mt-60
-        md:mt-80
         items-center
       "
     >
@@ -25,7 +17,7 @@
         alt="loading..."
         width="200"
       />
-      <p class="text-center">Loading.....</p>
+      <p class="text-center">{{ message }}</p>
     </div>
   </div>
   <div
@@ -57,7 +49,6 @@
       </div>
     </div>
 
-    
     <div
       class="
         p-1
@@ -70,29 +61,27 @@
         space-x-4
       "
     >
-    <div
-      class="
-        font-nunito
-        text-gray-200 text-sm text-left
-        bg-gray-600
-        rounded
-        shadow-md
-      "
-    >
-      <div class="p-2">
-        <div>
-          <p class="text-center">
-            {{ origin }} to {{ destination }}
-          </p>
-        </div>
-        <div>
-          <p class="text-center">
-            Departure on {{ departuredate }} <br />
-            {{ departureTime }}
-          </p>
+      <div
+        class="
+          font-nunito
+          text-gray-200 text-sm text-left
+          bg-gray-600
+          rounded
+          shadow-md
+        "
+      >
+        <div class="p-2">
+          <div>
+            <p class="text-center">{{ origin }} to {{ destination }}</p>
+          </div>
+          <div>
+            <p class="text-center">
+              Departure on {{ departuredate }} <br />
+              {{ departureTime }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
       <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3">
         <div
           v-for="item in seats"
@@ -104,7 +93,6 @@
             :src="bindImage(item)"
             alt="Seat "
             class="object-contain w-12 z-0 cursor-pointer"
-            rel="preload"
             v-if="item.type == 'seat' || item.type === 'driver'"
           />
           <p
@@ -126,7 +114,6 @@
         </div>
       </div>
     </div>
-
     <div
       v-if="bookedSeats.length !== 0"
       class="
@@ -168,7 +155,12 @@
             :key="item"
             class="m-1 p-1 rounded relative"
           >
-            <img src="../../assets/seatUnavailable.png" width="46" alt="" />
+            <img
+              src="../../assets/seatUnavailable.png"
+              width="46"
+              alt=""
+              rel="preload"
+            />
             <p
               class="
                 absolute
@@ -233,15 +225,26 @@
 
       <vue-final-modal
         v-model="errorModal"
-        classes="modal-container"
-        content-class="modal-content"
-        class="w-max-screen"
+        classes="modal-container2"
         :click-to-close="false"
       >
-        <div class="text-center mt-5">
-          <h3 class="text-xl font-nunito font-thin">
-            Connecting to Meto Web Services
-          </h3>
+        <div
+          class="
+            flex flex-col
+            text-blue-400
+            font-thin
+            text-xl
+            justify-start
+            items-center
+          "
+        >
+          <img
+            class="relative w-14 h-auto"
+            src="/loading.gif"
+            alt="loading..."
+            width="200"
+          />
+          <p class="text-center">Connecting to Meto Web Services..</p>
         </div>
       </vue-final-modal>
 
@@ -309,14 +312,31 @@
     </div>
   </div>
 </template>
-
-
-
 <style scoped>
+#spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  transition: opacity 0.2s;
+}
+
 ::v-deep .modal-container {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+::v-deep .modal-container2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
 }
 ::v-deep .modal-content {
   position: relative;
@@ -326,8 +346,14 @@
   min-width: max-content;
   margin: 0 1rem;
   padding: 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.25rem;
+  background: #fff;
+}
+::v-deep .modal-content2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  min-width: 100%;
   background: #fff;
 }
 .modal__title {
@@ -368,10 +394,8 @@ export default {
     ) {
       this.$router.push("/book");
     } else {
-      console.log(this.$store.state);
       this.fare = this.$store.state.selectedSchedule.route.fare;
       this.roomId = this.$store.state.selectedSchedule.id;
-
       if (this.$store.state.selectedSchedule) {
         this.errorModal = true;
         this.isLoader = true;
@@ -383,20 +407,21 @@ export default {
   },
   mounted: function () {
     setTimeout(function () {
-      this.document.getElementById("overlay").remove();
-    }, 3000);
+      this.document.getElementById("spinner").remove();
+    }, 2000);
   },
   data() {
     return {
       fare: 0,
       total: 0,
+      message: "Connecting to Meto Web Services...",
       origin: this.$store.state.origin.name,
       destination: this.$store.state.destination.name,
       serviceCharge: this.$store.state.serviceCharge,
       isConnected: false,
-      isLoader: false,
-      errorModal: false,
+      errorModal: true,
       connectionAttempt: 0,
+      socketConnected: false,
       msg: {},
       lockedSeats: [],
       roomId: null,
@@ -449,20 +474,21 @@ export default {
       return d.toDateString();
     },
     departureTime() {
-      let time = this.$store.state.selectedSchedule.route.departureTime;
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
+      if (this.$store.state.selectedSchedule) {
+        let time = this.$store.state.selectedSchedule?.route?.departureTime;
+        let tissme = time.split(":");
+        let hrs = parseInt(tissme[0]);
+        let min = parseInt(tissme[1]).toLocaleString("en-US", {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+        let ampm = "am";
+        if (hrs > 12) {
+          hrs = hrs - 12;
+          ampm = "pm";
+        }
+        return `${hrs}:${min} ${ampm}`;
       }
-
-      return `${hrs}:${min} ${ampm}`;
     },
   },
   methods: {
@@ -474,16 +500,12 @@ export default {
         this.isConnected = true;
         this.connectionAttempt = 0;
         this.errorModal = false;
-        this.isLoader = false;
+        this.message = "Loading Seats...";
         console.log("Successfully connected to MetoSocket Server");
+        this.socketConnected = true;
       };
-
       this.conn.onclose = (evt) => {
-        if (!this.isLoader) {
-          this.errorModal = true;
-          this.isLoader = true;
-        }
-
+        this.errorModal = true;
         this.connectionAttempt++;
         console.log("WSS CONNECTION closed");
         console.log("RECONNECTING");
@@ -491,7 +513,7 @@ export default {
         if (!this.isConnected) {
           setTimeout(() => {
             console.log(this.connectionAttempt);
-            if (this.connectionAttempt === 7) {
+            if (this.connectionAttempt === 10) {
               this.errorModal = false;
               this.$router.push("/service-down");
             } else {
@@ -506,7 +528,6 @@ export default {
         if (messageJson.messageType === "LOCK") {
           console.log("LOCK MESSAGE RECIEVED");
           this.lockedSeats = messageJson.lockedList;
-
           this.changeSeatStatus();
           console.log(messageJson);
         } else if (messageJson.messageType === "LOCK_LEAVE") {

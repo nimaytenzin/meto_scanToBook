@@ -536,6 +536,7 @@
 
               <input
                 v-if="paymentMode"
+                v-model="journalNumber"
                 type="text"
                 placeholder="Journal Number"
                 class="
@@ -802,6 +803,7 @@ export default {
       passengerDetailsModal: false,
       date: "",
       schedules: [],
+      journalNumber:null,
       seatSelectModal: false,
       routeHash: {
         0: 2, //monday
@@ -1187,6 +1189,7 @@ export default {
           scheduleId: this.scheduleId,
           modality: this.modality,
           amount: this.total,
+          journalNumber:this.journalNumber
         },
         // seats: seats,
         passengers: this.passengers,

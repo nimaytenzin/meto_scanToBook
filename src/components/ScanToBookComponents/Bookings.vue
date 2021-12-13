@@ -70,7 +70,7 @@
           <hr class="border-dashed w-full" />
           <table class="table-auto">
             <tr>
-              <td>Base Fare :</td>
+              <td>Base Fare :</td> 
               <td>
                 Nu
                 {{
@@ -257,8 +257,7 @@ export default {
       this.total = (this.$store.state.selectedSchedule.route.fare + this.serviceCharge) * this.$store.state.selectedSeats.length;
     });
     this.$store.state.selectedSeats.forEach((seat) => {
-      this.passengers.push({});
-      this.seats.push(seat.number);
+      this.passengers.push({seatNumber:seat.number});
     });
     
   },
@@ -292,7 +291,6 @@ export default {
           modality: "Online",
           amount: this.total,
         },
-        seats: this.seats,
         passengers: this.passengers,
       };
       addNewBooking(booking).then((res) => {

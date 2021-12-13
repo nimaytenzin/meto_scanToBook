@@ -1,15 +1,12 @@
 <template >
-  <div class="absolute h-screen w-screen bg-white z-50" id="overlay" style="height:200vh">
+  <div id="spinner">
     <div
       class="
         flex flex-col
         text-blue-400
         font-thin
-        w-full
-        h-full
+        text-xl
         justify-start
-        mt-60
-        md:mt-80
         items-center
       "
     >
@@ -19,11 +16,7 @@
         alt="loading..."
         width="200"
       />
-      <p class="text-center">
-        Generating E Ticket
-        <br />
-        Thank You for Choosing Meto Transport.
-      </p>
+      <p class="text-center">{{ message }}</p>
     </div>
   </div>
   <div
@@ -181,9 +174,9 @@
           <hr class="border-dashed" />
 
           <div class="text-center gap-2">
-            <p class="text-xl font-semibold">
+            <p class="text-xl text-gray-700">
               Boarding Time:
-              <span>
+              <span class="font-bold">
                 {{
                   getdepTime(bookingData?.schedule?.route?.departureTime)
                 }}</span
@@ -261,7 +254,7 @@
                 v-for="(passenger, index) in bookingData.passengers"
                 :key="passenger"
               >
-                <li> 
+                <li>
                   {{ index + 1 }}.{{ passenger.name }} (cid:
                   {{ passenger.cid }} )
                 </li>
@@ -270,20 +263,20 @@
             <div>
               <p>Fare Details</p>
               <div class="text-sm">
-                <h2 class="text-blue-900">Fare: Nu.250</h2>
-              <h2 class="text-blue-900">
-                Seats Booked: {{ bookingData.bookedSeats?.length }}
-              </h2>
-              <h2 class="text-blue-900">Total: Nu. {{ bookingData.amount }}</h2>
+                <h2 class="text-blue-900">Fare: {{ fare }}</h2>
+                <h2 class="text-blue-900">
+                  Seats Booked: {{ bookingData.bookedSeats?.length }}
+                </h2>
+                <h2 class="text-blue-900">
+                  Total: Nu. {{ bookingData.amount }}
+                </h2>
               </div>
             </div>
           </div>
-
           <p class="text-center text-sm">
             Click/visit the link below to check Bus Details : <br />
             Your Bus Details will be uploaded 2 hours before departure <br />
           </p>
-
           <button
             @click="openBusDetails"
             class="text-black font-bold px-4 rounded"
@@ -365,6 +358,22 @@
   </div>
 </template>
 
+<style>
+#spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  transition: opacity 0.2s;
+}
+</style>
+
 <script>
 import domtoimage from "dom-to-image";
 import QRCodeVue3 from "qrcode-vue3";
@@ -381,7 +390,7 @@ export default {
         this.qrDataString = res.data.checkSum;
         this.origin = res.data.schedule.route.routepath.origin.name;
         this.destination = res.data.schedule.route.routepath.destination.name;
-        console.log(this.origin, this.destination);
+        this.fare = res.data.schedule.route.fare;
         if (res.data.schedule.isFinished === 0) {
           this.busStatus = true;
         } else {
@@ -403,10 +412,11 @@ export default {
   },
   data() {
     return {
-      eta: "7Hrs 30 mins",
       departureTime: "7:00 AM",
       qrData: {},
+      fare: 0,
       busStatus: null,
+      message: "Generating your Ticket..Sending SMS Confirmation",
       origin: null,
       dataLoaded: false,
       destination: null,
@@ -423,11 +433,8 @@ export default {
     QRCodeVue3,
   },
   mounted: function () {
-    setTimeout(function () {
-      // const elem = document.getElementById("saveBtn");
-      // elem.click();
-      console.log("QR Generated");
-      this.document.getElementById("overlay").remove();
+     setTimeout(function () {
+      this.document.getElementById("spinner").remove();
     }, 3000);
   },
   computed: {

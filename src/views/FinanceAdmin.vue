@@ -86,6 +86,22 @@
             Home
           </p>
         </router-link>
+         <router-link to="/finance/today">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+            Today
+          </p>
+        </router-link>
         <router-link to="/finance/booking-data">
           <p
             class="
