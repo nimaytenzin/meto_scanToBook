@@ -32,7 +32,7 @@ export async function getDetailsByDate(date) {
 }
 
 export async function addNewSchedule(data){
-    return await axios.post(`${devUrl}/schedules`,data)
+    return await axios.post(`${devUrl}/schedules`,data,{headers:authHeader()})
 
 }
 
@@ -53,10 +53,10 @@ export async function getMiniDetailsById(scheduleId){
 }
 
 export async function deleteScheduleByRouteId(id){
-   return await axios.delete(`${devUrl}/schedules/route/${id}`)
+   return await axios.delete(`${devUrl}/schedules/route/${id}`,{headers:authHeader()})
 }
 export async function assignBus(id,data){
-    return await axios.put(`${devUrl}/schedules/${id}`,data)
+    return await axios.put(`${devUrl}/schedules/${id}`,data,{headers:authHeader()})
 }
 
 export async function getBusNumber(bookingId){
@@ -64,7 +64,7 @@ export async function getBusNumber(bookingId){
 } 
 
 export async function updateSchedule(scheduleId,data){
-    return await axios.put(`${devUrl}/schedules/${scheduleId}`,data)
+    return await axios.put(`${devUrl}/schedules/${scheduleId}`,data,{headers:authHeader()})
 }
 
 export async function getScheduleDetailsById(scheduleId){
