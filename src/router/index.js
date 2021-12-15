@@ -107,15 +107,14 @@ const routes = [
     component: () => import('../views/FinanceAdmin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/FinanceAdmin/Index.vue'), meta: { requiresAuth: true }
+        path:'',component:()=>import('../components/FinanceAdmin/Today.vue'), meta:{ requiresAuth:true }
+      },
+      {
+        path: 'monthly', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true }
       },
       {
         path: 'booking-data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true }
-      },
-      {
-        path:'today',component:()=>import('../components/FinanceAdmin/Today.vue'), meta:{ requiresAuth:true }
       }
-
     ]
   },
   {
@@ -149,7 +148,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   const loggedIn = sessionStorage.getItem('token');
-
+  
   if (to.matched.some(route => route.meta.requiresAuth)) {
     if (!loggedIn) {
       next({ path: '/login' });

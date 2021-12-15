@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col p-4">
-    <h1 class="text-2xl font-bold text-center my-3">Today</h1>
-
+    <h1 class="text-2xl font-semibold text-center my-3 text-gray-700"> Kuzu Zangpo ! Here's your Statistics for todays </h1>
     <div
       class="
         bg-white
@@ -164,7 +163,6 @@
         </div>
       </div>
     </div>
-
     <div>
       <div class="w-full flex justify-between text-gray-50">
         <div>

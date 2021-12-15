@@ -96,14 +96,15 @@ export default {
     )
       .then((res) => {
         res.data.forEach((routePath) => {
-          routePath.routes.forEach((route) => {
-            this.routes.push(route);
-            route.routeDays.forEach((routeDay) => {
-              if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
-                this.days.push(this.routeHash[routeDay.day]);
-              }
-            });
-          });
+          console.log(routePath);
+          // routePath.routes.forEach((route) => {
+          //   this.routes.push(route);
+          //   route.routeDays.forEach((routeDay) => {
+          //     if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
+          //       this.days.push(this.routeHash[routeDay.day]);
+          //     }
+          //   });
+          // });
         });
 
         this.attributes = [

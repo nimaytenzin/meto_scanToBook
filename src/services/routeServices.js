@@ -30,3 +30,12 @@ export async function editBus(id,data){
 export async function getRoutesByOriginDestination(originId, destinationId){
     return await axios.get(`${devUrl}/route-path/${originId}/${destinationId}`)
 }
+
+export async function getAllRoutePaths(){
+    return await axios.get(`${devUrl}/route-path`)
+}
+
+export async function createNewRoutePath(data){
+    return await axios.post(`${devUrl}/route-path`,data)
+}
+

@@ -64,7 +64,7 @@
               >
                 Name
               </th>
-               <th
+              <th
                 class="
                   px-6
                   py-3
@@ -148,6 +148,14 @@
           </tbody>
         </table>
       </div>
+    </div>
+
+    <button @click="addRoutePathModal= true">
+      Add ROute Path
+    </button>
+
+    <div v-for="routepath in routepaths" :key="routepath">
+        {{ routepath }}
     </div>
 
     <div>
@@ -257,7 +265,9 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="route in routes" :key="route.id" class="hover:bg-gray-200">
-            <td class="px-6 py-4 whitespace-nowrap">{{ route.routepath.origin.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ route.routepath.origin.name }}
+            </td>
             <td class="px-6 py-4 whitespace-nowrap">
               {{ route.routepath.destination.name }}
             </td>
@@ -340,8 +350,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="text"
             v-model="newStop.name"
@@ -361,8 +370,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="number"
             v-model="newStop.contact"
@@ -406,8 +414,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             v-model="selectedStop.name"
           />
@@ -426,8 +433,7 @@
               px-3
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
             type="number"
             v-model="selectedStop.contact"
@@ -449,21 +455,19 @@
         </div>
       </vue-final-modal>
 
-      <!-- Add Routes Modal -->
+      <!-- Add RoutePaths Modal -->
       <vue-final-modal
-        v-model="addRoutesModal"
+        v-model="addRoutePathModal"
         classes="modal-container"
         content-class="modal-content"
         class="w-max-screen"
       >
-        <div
-          class="modal__content text-center mt-1 flex flex-col overflow-visible"
-        >
-          <h3 class="text-xl mb-5">Add a Bus Route?</h3>
+        <div class="modal__content text-center mt-1 flex flex-col">
+          <h3 class="text-xl mb-2">Add a RoutePath?</h3>
           <label class="text-sm text-left text-gray-400 italic">Origin</label>
           <select
-            v-model="newRoute.originId"
-            class="text-xl bg-white text-blue-900 p-2"
+            v-model="newRoutePath.originId"
+            class="text-3xl p-5 bg-white text-blue-900"
           >
             <option
               v-for="stop in stops"
@@ -478,8 +482,8 @@
             >Destination</label
           >
           <select
-            v-model="newRoute.destinationId"
-            class="text-xl bg-white text-blue-900 p-2"
+            v-model="newRoutePath.destinationId"
+            class="text-3xl p-5 bg-white text-blue-900"
           >
             <option
               v-for="stop in stops"
@@ -490,10 +494,51 @@
               {{ stop.name }}
             </option>
           </select>
+        </div>
+        <div class="modal__action">
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="addRoutePath()"
+          >
+            Add RoutePath
+          </button>
+          <button
+            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+            @click="addRoutePathModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </vue-final-modal>
+
+      <!-- Add Routes Modal -->
+      <vue-final-modal
+        v-model="addRoutesModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen"
+      >
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
+          <h3 class="text-xl mb-5">Add a Bus Route?</h3>
+          <label class="text-sm text-left text-gray-400 italic">Select Route Path</label>
+          <select
+            v-model="newRoute.routepathId"
+            class="text-xl bg-white text-blue-900 p-2"
+          >
+            <option
+              v-for="routepath in routepaths"
+              :value="routepath.id"
+              :key="routepath"
+              class="bg-white"
+            >
+              {{ routepath }}
+            </option>
+          </select>
           <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
             >Select Weekdays from the dropdown</label
           >
-
           <Multiselect
             v-model="weekdaysSelected"
             mode="tags"
@@ -513,8 +558,8 @@
                 v-model="departureTime.hrs"
                 class="bg-transparent text-xl appearance-none outline-none"
               >
-                <option value="0" >0</option>
-                <option value="1" >1</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -564,8 +609,7 @@
               w-full
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
           >
             <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
@@ -707,8 +751,7 @@
               w-full
               text-gray-700
               leading-tight
-              focus:outline-none
-              focus:shadow-outline
+              focus:outline-none focus:shadow-outline
             "
           >
             <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
@@ -849,11 +892,11 @@ import {
   addNewRoute,
   getAllRoutes,
   deleteRoute,
+  getAllRoutePaths,
+  createNewRoutePath
 } from "../../services/routeServices";
 
-import {
-  addNewSchedule,
-} from "../../services/scheduleServices";
+import { addNewSchedule } from "../../services/scheduleServices";
 
 export default {
   components: {
@@ -866,7 +909,10 @@ export default {
       editStopModal: false,
       addRoutesModal: false,
       editRouteModal: false,
+      addRoutePathModal:false,
       timezone: "",
+      newRoutePath:{},
+      routepaths:[],
       weekDays: [
         { value: 0, label: "Monday" },
         { value: 1, label: "Tuesday" },
@@ -879,13 +925,13 @@ export default {
       week: ["Mon", "Tues", "Wed", "Thrus", "Fri", "Sat", "Sun"],
       weekdaysSelected: [],
       eta: {
-        hrs:"0",
-        min:'0'
+        hrs: "0",
+        min: "0",
       },
       departureTime: {
-        hrs:"0",
-        mins:"0",
-        ampm:"am"
+        hrs: "0",
+        mins: "0",
+        ampm: "am",
       },
       stops: [],
       routes: [],
@@ -898,16 +944,19 @@ export default {
   },
   created() {
     getAllRoutes().then((res) => {
-      console.log("rerer",res)
+      console.log("rerer", res);
       this.routes = res;
     });
 
+    getAllRoutePaths().then(res =>{
+      this.routepaths = res.data
+      console.log(res)
+    })
+
+  
     getAllStops()
       .then((res) => {
         this.stops = res;
-        this.newRoute.originId = res[0].id
-        this.newRoute.destinationId = res[1].id
-
       })
       .catch((err) => console.log(err));
   },
@@ -929,30 +978,40 @@ export default {
       return `${hrs}:${min} ${ampm}`;
     },
 
-
     getWeekDays(dayNo) {
       switch (dayNo) {
         case 6:
-          return "Sun";
+          return "Sat";
           break;
         case 0:
-          return "Mon";
+          return "Sun";
           break;
         case 1:
-          return "Tues";
+          return "Mon";
           break;
         case 2:
-          return "Wed";
+          return "Tue";
           break;
         case 3:
-          return "Thurs";
+          return "Wed";
           break;
         case 4:
-          return "Fri";
+          return "Thu";
           break;
         case 5:
-          return "Sat";
+          return "Fri";
       }
+    },
+    addRoutePath() {
+      alert("INSERT ROUTE PATH");
+      createNewRoutePath(this.newRoutePath).then(res =>{
+        console.log(res)
+
+    getAllRoutePaths().then(res =>{
+      this.routepaths = res.data
+      console.log(res)
+    })
+      })
     },
     addStop() {
       if (this.newStop.name) {
@@ -1053,35 +1112,37 @@ export default {
       let departureTime = this.parseDepartureTime(this.departureTime);
       this.newRoute.departureTime = departureTime;
 
-      addNewRoute(this.newRoute)
-        .then((res) => {
-          console.log(res)
-          let routeId = res.data[0].routeId;
-          if (res.status === 201) {
-            let date = this.parseDate(res.data[0].createdAt);
-            let reqBody = {
-              routeId: routeId,
-              onDays: this.newRoute.days,
-              fromDate: date.fromDate,
-              toDate: date.toDate,
-            };
-            addNewSchedule(reqBody).then((res) => {
-              if (res.status === 201) {
-                this.reloadData();
-                this.addRoutesModal = false;
-              }
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      console.log(this.newRoute)
+
+      // addNewRoute(this.newRoute)
+      //   .then((res) => {
+      //     console.log(res);
+      //     let routeId = res.data[0].routeId;
+      //     if (res.status === 201) {
+      //       let date = this.parseDate(res.data[0].createdAt);
+      //       let reqBody = {
+      //         routeId: routeId,
+      //         onDays: this.newRoute.days,
+      //         fromDate: date.fromDate,
+      //         toDate: date.toDate,
+      //       };
+      //       addNewSchedule(reqBody).then((res) => {
+      //         if (res.status === 201) {
+      //           this.reloadData();
+      //           this.addRoutesModal = false;
+      //         }
+      //       });
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     },
 
     editRoute(e) {
       this.selectedRoute = e;
       this.editRouteModal = true;
-      console.log(this.selectedRoute)
+      console.log(this.selectedRoute);
     },
 
     confirmRouteEdit() {
@@ -1129,10 +1190,7 @@ export default {
       });
     },
 
-    decomposeDepTime(timeString){
-
-    }
+    decomposeDepTime(timeString) {},
   },
-
 };
 </script>

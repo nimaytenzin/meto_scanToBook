@@ -29,12 +29,22 @@ export default createStore({
     }
   },
   mutations: {
+    resetStoreState(state){
+      state.selectedSeats =[]
+      state.origin = ""
+      state.destination= ""
+      state.selectedSchedule =""
+      
+    },
     addOrigin(state,origin){
       state.origin = origin;
-    },
+    },  //used
+    commitStops(state,stopData){
+      state.stops  = stopData
+    }, //used
     addDestination(state,destination){
       state.destination = destination
-    },
+    },  //used
     addDepartureDate(state,date){
       state.departureDate = date
     },
@@ -53,19 +63,13 @@ export default createStore({
     },
     addServiceCharge(state,serviccharge){
       state.serviceCharge = serviccharge
-    },
+    }, //used
     addMatchedRoutes(state, data){
       state.selectedRoutes = data
-    },
-    resetSeats(state){
-      state.selectedSeats =[]
-    },
+    }, //used
     addTotal(state,total){
       state.total = total
-    },
-    addBookedBy(state, data){
-      state.bookedBy = data
-    },
+    }, //used
     addAuthorizationToken(state, authToken){
       state.authToken = authToken
     },
@@ -76,28 +80,13 @@ export default createStore({
       state.scanBookingId = id
     },
 
-    commitStops(state,stopData){
-      state.stops  = stopData
-    },
-
     //book from the frontend
     commitSchedule(state,schedule){
       state.customerBooking.schedule = schedule
     },
-    commitCustomerTotal(state,total){
-      state.customerBooking.total = total
-    },
-    commitCustomerSeats(state,seats){
-      state.customerBooking.seats = state.customerBooking.seats.concat(seats);
-    },
-    commitCustomerDetails(state, details){
-      state.customerBooking.customer = details
-    },
-
     commitSelectedDate(state,data){
       state.departureDate = data
-    },
-    
+    },   
     commitRemoveCustomerSeat(state,selectedSeat){
       state.customerBooking.seats.forEach((seat,index) =>{
         if(selectedSeat.id === seat.id){

@@ -186,7 +186,6 @@
 
 <script>
 import {
-  getMiniDetailsById,
   getScheduleByRouteAndDate,
 } from "../../services/scheduleServices";
 export default {
@@ -206,20 +205,13 @@ export default {
         }
       );
     });
-
-    console.log("SCHEDULES", this.schedules);
-    this.$store.state.schedules.forEach((element) => {
-      getMiniDetailsById(element.id).then((res) => {
-        this.schedules.push(res.data);
-      });
-    });
   },
   data() {
     return {
       schedules: [],
       routes: [],
       date: new Date(),
-      ok: false,
+      selected: false,
       selectedSchedule: {},
     };
   },
@@ -243,11 +235,11 @@ export default {
       return "bg-white";
     },
     seatSelection() {
-      // console.log(this.selectedSchedule)
-      if (this.selectedSchedule) {
+      console.log(this.selectedSchedule)
+      if ( Object.keys( this.selectedSchedule).length && this.selected) {
         this.$router.push("/book/seats");
       } else {
-        this.$toast.show("Please Select the departure time", {
+        this.$toast.show("Please Select a departure time", {
           position: "top",
           type: "error",
         });
@@ -269,7 +261,7 @@ export default {
       return `${hrs}:${min} ${ampm}`;
     },
     commitToStore(e) {
-      this.ok = true;
+      this.selected = true;
       this.selectedSchedule = e;
       console.log(e, "Selected Schedule");
       this.$store.commit("addSelectedSchedule", e);

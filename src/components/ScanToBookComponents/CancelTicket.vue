@@ -9,14 +9,7 @@
     "
   >
     <div
-      class="
-        mx-auto
-        bg-white
-        rounded-xl
-        shadow-lg
-        min-w-content
-        items-center
-      "
+      class="mx-auto bg-white rounded-xl shadow-lg min-w-content items-center"
     >
       <div
         class="
@@ -41,107 +34,117 @@
           </div>
         </div>
 
-        <div v-if="!refunded">
-          <div class="text-center font-light mt-4 mb-2">
-            Ticket Details
-            <p>Origin: {{ origin }}</p>
-            <p>Destination: {{ destination }}</p>
-            <p>
-              Departure Date:
-              {{ bookingData.schedule?.calendarDate?.Month_Name }}
-              {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
-              {{ bookingData.schedule?.calendarDate?.Calendar_Year }}
-            </p>
-            <p>
-              Departure Time: {{ bookingData.schedule?.route?.departureTime }}
-            </p>
-
-            <h2 class="text-xl bg-gray-200 text-gray-500 my-2" >Refund Amount : Nu {{ bookingData.amount }}</h2>
-          </div>
-
-          <div class=" w-full mt-4 mb-2 rounded-lg border-white">
-            <table class="table-auto rouded-r">
-              <tr class="bg-gray-50 text-gray-600">
-                <td class="text-left">Bank Name</td>
-                <td class="font-bold text-xl">
-                  <input
-                    class="p-1 rounded-r"
-                    type="text"
-                    placeholder="Bank Name"
-                    v-model="refundAccountDetails.bankName"
-                  />
-                </td>
-              </tr>
-              <tr class="bg-gray-50 text-gray-600">
-                <td class="text-left">Account Number</td>
-                <td class="font-bold text-xl">
-                  <input
-                    class="p-1 rounded-r"
-                    type="text"
-                    placeholder="Account Number"
-                    v-model="refundAccountDetails.accNo"
-                  />
-                </td>
-              </tr>
-              <tr  class="bg-gray-50 text-gray-600">
-                <td class="text-left">Account Name</td>
-                <td class="font-bold text-xl">
-                  <input
-                    class="p-1 rounded-r"
-                    type="text"
-                    placeholder="Account Name"
-                    v-model="refundAccountDetails.accName"
-                  />
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <div class="flex justify-center">
-            <button
-              @click="cancelTicket()"
-              v-if="!update"
-              class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            >
-              Cancel Ticket
-            </button>
-            <button
-              v-else
-              @click="updateDetails()"
-              class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-            >
-              Update Details
-            </button>
-          </div>
-
-          <p class="text-center text-gray-200 text-sm my-4 px-2">
-            Refund may take few days depending on the refund requests recieved.
-            <br />
-            Ensuring Safety, Reliability,Comfort till your destination.
-          </p>
+        <div class="p-5 flex flex-col">
+          <h1 class="text-2xl">Enter CancelCode Sent via SMS</h1>
+          <input
+            type="text"
+            class="p-2 rounded text-gray-700"
+            v-model="cancelcode"
+          />
+          <button
+            @click="verifyCancelCode"
+            class="bg-gray-100 text-gray-500 mt-4 p-2 rounded"
+          >
+            Submit
+          </button>
         </div>
 
-        <div
-          v-else
-          class="
-            flex flex-col
-            m-auto
-            bg-indigo-900
-            text-blue-100
-            p-6
-            italic
-            rounded-lg
-            border-white
-            mt-4
-          "
-        >
-          <h2 class="text-2xl text-center">Amount Refunded</h2>
+        <div v-if="cancelAuthorized">
+          <div v-if="!refunded">
+            <div class="text-center font-light mt-4 mb-2">
+              Ticket Details
+              <p>Origin: {{ origin }}</p>
+              <p>Destination: {{ destination }}</p>
+              <p>
+                Departure Date:
+                {{ bookingData.schedule?.calendarDate?.Month_Name }}
+                {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
+                {{ bookingData.schedule?.calendarDate?.Calendar_Year }}
+              </p>
+              <p>
+                Departure Time: {{ bookingData.schedule?.route?.departureTime }}
+              </p>
 
-          <p class="text-center text-blue-100 text-sm mt-4 mb-4">
-            Thank you for choosing Meto Transport.Avail our services for your
-            next ride. <br />
-            Ensuring Safety, Reliability,Comfort till your destination.
-          </p>
+              <h2 class="text-xl bg-white rounded-sm text-gray-500 my-2">
+                Refund Amount : Nu {{ bookingData.amount }}
+              </h2>
+            </div>
+
+            <div class=" w-full mt-4 mb-2 rounded-sm bg-white">
+             <div class="p-4 gap-2 flex flex-col">
+               <h2 class="text-xl text-gray-500 my-2">
+                Enter Bank Details
+              </h2>
+                <input
+                class="p-1 rounded-r text-gray-800"
+                type="text"
+                placeholder="Bank Name"
+                v-model="refundAccountDetails.bankName"
+              />
+
+              <input
+                class="p-1 rounded-r text-gray-800"
+                type="number"
+                placeholder="Account Number"
+                v-model="refundAccountDetails.accNo"
+              />
+
+              <input
+                class="p-1 rounded-r text-gray-800"
+                type="text"
+                placeholder="Account Name"
+                v-model="refundAccountDetails.accName"
+              />
+             </div>
+            </div>
+
+            <div class="flex justify-center">
+              <button
+                @click="cancelTicket()"
+                v-if="!update"
+                class="bg-gray-600  text-white mt-4 ml-5 p-2 rounded"
+              >
+                Cancel Ticket
+              </button>
+              <button
+                v-else
+                @click="updateDetails()"
+                class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+              >
+                Update Details
+              </button>
+            </div>
+
+            <p class="text-center text-gray-200 text-sm my-4 px-2">
+              Refund may take few days depending on the refund requests
+              recieved.
+              <br />
+              Ensuring Safety, Reliability,Comfort till your destination.
+            </p>
+          </div>
+
+          <div
+            v-else
+            class="
+              flex flex-col
+              m-auto
+              bg-indigo-900
+              text-blue-100
+              p-6
+              italic
+              rounded-lg
+              border-white
+              mt-4
+            "
+          >
+            <h2 class="text-2xl text-center">Amount Refunded</h2>
+
+            <p class="text-center text-blue-100 text-sm mt-4 mb-4">
+              Thank you for choosing Meto Transport.Avail our services for your
+              next ride. <br />
+              Ensuring Safety, Reliability,Comfort till your destination.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -287,6 +290,7 @@ export default {
       bookingData: {},
       refunded: false,
       update: false,
+      cancelAuthorized: false,
       origin: "",
       destintion: "",
       seatsBooked: "",
@@ -297,16 +301,17 @@ export default {
         bookingStatus: "CANCELLED",
       },
       confirmDetailsModal: false,
-      socketConn: null,
+      cancelcode: "",
+      realCancelCode: "",
     };
   },
   created() {
     this.bookingId = this.$route.params.bookingId;
-
     getBookingDetail(this.bookingId)
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
+          this.realCancelCode = res.data.cancelcode;
           if (res.data.checkInStatus === "REFUNDED") {
             this.refunded = true;
           }
@@ -314,15 +319,12 @@ export default {
           this.origin = this.bookingData.schedule.route.routepath.origin.name;
           this.destination =
             this.bookingData.schedule.route.routepath.destination.name;
-
-          console.log(res.data);
           if (res.data.accNo) {
             this.refundAccountDetails.bankName = res.data.bankName;
             this.refundAccountDetails.accNo = res.data.accNo;
             this.refundAccountDetails.accName = res.data.accName;
             this.update = true;
           }
-
           this.socketConn = new WebSocket(
             "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
           );
@@ -350,6 +352,17 @@ export default {
   },
 
   methods: {
+    verifyCancelCode() {
+      if (this.cancelcode === this.realCancelCode) {
+        this.cancelAuthorized = true;
+      } else {
+        this.cancelAuthorized = false;
+        this.$toast.show("CancelCode Doesnot Match, Unathorized", {
+          position: "top",
+          type: "error",
+        });
+      }
+    },
     confirmCancel() {
       cancelBooking(this.bookingId, this.refundAccountDetails).then((res) => {
         if (res.status === 200) {
@@ -380,7 +393,7 @@ export default {
         bankName: this.refundAccountDetails.bankName,
         accNo: this.refundAccountDetails.accNo,
         accName: this.refundAccountDetails.accName,
-        bookingStatus:"CANCELLED"
+        bookingStatus: "CANCELLED",
       }).then((res) => {
         if (res.status === 200) {
           this.$toast.show("Updated", {

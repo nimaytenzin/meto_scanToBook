@@ -16,8 +16,9 @@
       >
         <div
           class="absolute top-0 w-full h-full bg-center bg-cover"
-          :style="{'background-image': 'url(' + require('../assets/hero.png') + ')'}"
-          
+          :style="{
+            'background-image': 'url(' + require('../assets/hero.png') + ')',
+          }"
         >
           <span
             id="blackOverlay"
@@ -228,42 +229,48 @@
                   </div>
                 </div>
 
-               <div class="flex gap-2 justify-center"> 
+                <div
+                  class="
+                    flex flex-col
+                    md:flex-row
+                    items-center
+                    gap-2
+                    justify-center
+                  "
+                >
                   <button
-                  class="
-                    bg-gray-200
-                    p-2
-                    rounded
-                    text-xl
-                    font-semibold
-                    mt-2
-                    hover:bg-gray-800
-                    hover:text-gray-100
-                    transition
-                    hover:bg-opacity-50
-                  "
-                  @click="goToBooking()"
-                >
-                  Book Your Next ride
-                </button>
-                <button
-                  class="
-                    bg-gray-200
-                    p-2
-                    rounded
-                    text-xl
-                    font-semibold
-                    mt-2
-                    hover:bg-gray-800
-                    hover:text-gray-100
-                    transition
-                    hover:bg-opacity-50
-                  "
-                  @click="goToBooking()"
-                >
-                  Regenerate Ticket
-                </button>
-               </div>
+                    class="
+                      bg-gray-200
+                      p-2
+                      rounded
+                      text-xl
+                      font-semibold
+                      mt-2
+                      hover:bg-gray-800 hover:text-gray-100
+                      transition
+                      hover:bg-opacity-50
+                    "
+                    @click="goToBooking()"
+                  >
+                    Book Your Next ride
+                  </button>
+                  <button
+                    class="
+                      bg-gray-200
+                      p-2
+                      rounded
+                      text-xl
+                      font-semibold
+                      mt-2
+                      hover:bg-gray-800 hover:text-gray-100
+                      transition
+                      hover:bg-opacity-50
+                    "
+                    @click="regenerateTicketModal = true"
+                  >
+                    Regenerate Ticket
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -552,7 +559,7 @@
               ></polygon>
             </svg>
           </div>
-<!-- 
+          <!-- 
           <div class="container mx-auto px-4 mt-10">
             <div class="items-center flex flex-wrap">
               <div
@@ -1126,8 +1133,7 @@
                         rounded
                         text-sm
                         shadow
-                        focus:outline-none
-                        focus:ring
+                        focus:outline-none focus:ring
                         w-full
                       "
                       v-model="feedBack.name"
@@ -1160,8 +1166,7 @@
                         rounded
                         text-sm
                         shadow
-                        focus:outline-none
-                        focus:ring
+                        focus:outline-none focus:ring
                         w-full
                       "
                       placeholder="Type a message..."
@@ -1217,16 +1222,173 @@
         </div>
       </section>
     </main>
+
+    <vue-final-modal
+      v-model="regenerateTicketModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+    >
+      <div class="modal__content text-center mt-1 flex flex-col">
+        <h3 class="text-xl mb-2 text-gray-700">
+          <span class="text-sm">
+            Lost your Eticket? No worries! Please enter the contact details of
+            any of the passengers.</span
+          >
+          <br />
+          Regenerate Ticket?
+        </h3>
+        <div class="flex flex-col md:flex-row gap-2 justify-center items-center">
+          <input
+            class="
+              shadow-sm
+              appearance-none
+              rounded
+              w-full
+              md:w-1/2
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+            "
+            placeholder="Contact"
+            type="tel"
+            v-model="ticket.contact"
+          />
+          <input
+            class="
+              shadow-sm
+              appearance-none
+              rounded
+              w-full
+              md:w-1/2
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+            "
+            placeholder="CID/Work Permit"
+            type="text"
+            v-model="ticket.cid"
+          />
+        </div>
+        <div class="mb-4">
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="searchBookings"
+          >
+            Search Ticket
+          </button>
+          <button
+            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+            @click="regenerateTicketModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <table v-if="validSearch" class="table-auto mt-4">
+          <tr>
+            <td class="text-xs font-medium text-gray-500">BookingID</td>
+            <td class="text-xs font-medium text-gray-500">Route</td>
+            <td class="text-xs font-medium text-gray-500">Departure Date</td>
+            <td class="text-xs font-medium text-gray-500">Action</td>
+          </tr>
+          <tr
+            v-for="validbooking in searchedBookings"
+            :key="validbooking"
+            class="text-sm md:text-md border-b-2 text-gray-600"
+          >
+            <td>
+              {{ validbooking.booking.id }}
+            </td>
+            <td>
+              {{ validbooking.booking.schedule.route.routepath.origin.name }} to
+              {{
+                validbooking.booking.schedule.route.routepath.destination.name
+              }}
+            </td>
+            <td>
+              {{ formatDepartureDate(validbooking.booking.schedule.dateId) }}
+            </td>
+            <td>
+              <button
+                @click="generateTicket(validbooking.booking.id)"
+                class="
+                  bg-gray-100
+                  hover:bg-gray-400
+                  text-gray-500
+                  hover:text-white
+                  font-bold
+                  p-2
+                  rounded-r
+                "
+              >
+                Generate
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </vue-final-modal>
     <footer-component></footer-component>
   </div>
 </template>
+
+<style scoped>
+::v-deep .modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+::v-deep .modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 90%;
+  width: auto;
+  margin: 0 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+.modal__title {
+  margin: 0 2rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.modal__content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.modal__action {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 1rem 0 0;
+}
+.modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+</style>
+
+<style scoped>
+.dark-mode div::v-deep .modal-content {
+  border-color: #2d3748;
+  background-color: #1a202c;
+}
+</style>
 <script>
 import NavbarComponent from "../components/Landing/Navbar.vue";
 import FooterComponent from "../components/Landing/Footer.vue";
 import { getAllBuses } from "../services/busServices";
 import { getAllRoutes } from "../services/routeServices";
 import { sendFeedback } from "../services/FeedbackServices";
-import { getAllBookings } from "../services/bookingServices";
+import { getAllBookings, regenerateTicket } from "../services/bookingServices";
 import { getAllStops } from "../services/stopServices";
 
 export default {
@@ -1246,6 +1408,13 @@ export default {
       routes: 0,
       bookings: 0,
       stops: 0,
+      regenerateTicketModal: false,
+      ticket: {
+        contact: null,
+        cid: null,
+      },
+      searchedBookings: [],
+      validSearch:false,
     };
   },
 
@@ -1272,8 +1441,45 @@ export default {
     theFormat(number) {
       return Math.floor(number);
     },
-    scanToBook(){
-      this.$router.push('/book')
+    formatDepartureDate(date) {
+      let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return new Date(date).toLocaleDateString("en-US", options);
+    },
+    scanToBook() {
+      this.$router.push("/book");
+    },
+    generateTicket(bookingId) {
+      this.$router.push(`/book/eticket/${bookingId}`);
+    },
+    searchBookings() {
+      if (this.ticket.cid && this.ticket.contact) {
+        console.log(this.ticket.cid,this.ticket.contact)
+        regenerateTicket(this.ticket.cid, this.ticket.contact).then((res) => {
+          if (res.status === 200 && res.data.length !== 0) {
+            this.searchedBookings = res.data;
+            this.validSearch = true
+          } else {
+            this.validSearch = false
+            this.$toast.show("No Matching Records", {
+              position: "top",
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.$toast.show(
+          "Please Enter the CID and Contact Number of a passenger",
+          {
+            position: "top",
+            type: "error",
+          }
+        );
+      }
     },
 
     send() {

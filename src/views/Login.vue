@@ -109,11 +109,17 @@ export default {
     login() {
       login(this.user)
         .then((res) => {
+
           sessionStorage.setItem("token", res.data.token);
           let role = VueJwtDecode.decode(res.data.token).role;
           if (role === 1) {
             this.$router.push("/admin");
-          } else {
+          }else if(role === 2){
+            this.$router.push("/finance");
+          }else if(role === 3){
+            this.$router.push("/staff");
+
+          }else {
             this.$router.push("/book");
           }
         })

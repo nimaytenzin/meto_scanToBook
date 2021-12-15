@@ -614,109 +614,125 @@
       content-class="modal-content2"
       class="w-max-screen"
     >
-      <div
-        
-      >
-        <div class="
-          font-nunito
-          text-gray-200
-          bg-gray-600
-          rounded-t
-          shadow-md
-          p-6
-          text-center
-        " >
+      <div>
+        <div
+          class="
+            font-nunito
+            text-gray-200
+            bg-gray-600
+            rounded-t
+            shadow-md
+            p-6
+            text-center
+          "
+        >
           <p>
-            <span class="text-2xl font-bold">{{ originSelected.name }}</span> to <span class="text-2xl font-bold">{{ destinationSelected.name }}</span>
-          </p> 
-          <p>
-            On
+            <span class="text-2xl font-bold">{{ originSelected.name }}</span> to
+            <span class="text-2xl font-bold">{{
+              destinationSelected.name
+            }}</span>
           </p>
-         <p> {{ date }} at </p> 
-         <p>{{ selectedSchedule.route?.departureTime }} </p>
-           <div class="text-xl">
-          Fare: Nu.{{ selectedSchedule.route?.fare }} <br />
-          <p>
-             Seats Remaining: {{ seatsAvailable.length }}
-          </p>
-        <div class="flex gap-2 justify-center">
-          <p v-for="seat in seatsAvailable" :key="seat">
-            {{ seat }}
-          </p>
+          <p>On</p>
+          <p>{{ date }} at</p>
+          <p>{{ selectedSchedule.route?.departureTime }}</p>
+          <div class="text-xl">
+            Fare: Nu.{{ selectedSchedule.route?.fare }} <br />
+            <p>Seats Remaining: {{ seatsAvailable.length }}</p>
+            <div class="flex gap-2 justify-center">
+              <p v-for="seat in seatsAvailable" :key="seat">
+                {{ seat }}
+              </p>
+            </div>
+          </div>
         </div>
-        </div>
-        </div>
-        <div class="p-2">
-        <h3 class="text-xl px-6 font-thin"> Passengers</h3>
-          <table class="min-w-full divide-y divide-gray-200 text-gray-900 font-thin bg-white" v-if="passengersInSchedule.length">
-          <tr>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider "
-            >
-              Seat Number
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Name
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              CID
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Contact
-            </td>
-          </tr>
-          <tr v-for="passenger in passengersInSchedule" :key="passenger">
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ passenger.bookedSeat.seatNumber }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ passenger.name }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ passenger.cid }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ passenger.contact }}
-            </td>
-          </tr>
-        </table>
+        <h3 class="text-xl px-6 font-thin">Passengers</h3>
+
+ <thead>
+              <tr>
+                <td
+                  class="
+                    px-6
+                    py-3
+                    text-left text-xs
+                    font-medium
+                    text-gray-500
+                    uppercase
+                    tracking-wider
+                  "
+                >
+                  Seat Number
+                </td>
+                <td
+                  class="
+                    px-6
+                    py-3
+                    text-left text-xs
+                    font-medium
+                    text-gray-500
+                    uppercase
+                    tracking-wider
+                  "
+                >
+                  Name
+                </td>
+                <td
+                  class="
+                    px-6
+                    py-3
+                    text-left text-xs
+                    font-medium
+                    text-gray-500
+                    uppercase
+                    tracking-wider
+                  "
+                >
+                  CID
+                </td>
+                <td
+                  class="
+                    px-6
+                    py-3
+                    text-left text-xs
+                    font-medium
+                    text-gray-500
+                    uppercase
+                    tracking-wider
+                  "
+                >
+                  Contact
+                </td>
+              </tr>
+            </thead>
+
+        <div class="p-2 flex overflow-scroll" style="height:40vh">
+          <table
+            class="
+              min-w-full
+              divide-y divide-gray-200
+              text-gray-900
+              font-thin
+              bg-white
+            "
+            v-if="passengersInSchedule.length"
+          >
+           
+            <tbody class="overflow-y-scroll" style="50vh">
+              <tr v-for="passenger in passengersInSchedule" :key="passenger">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.bookedSeat.seatNumber }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.name }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.cid }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.contact }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </vue-final-modal>
@@ -803,7 +819,7 @@ export default {
       passengerDetailsModal: false,
       date: "",
       schedules: [],
-      journalNumber:null,
+      journalNumber: null,
       seatSelectModal: false,
       routeHash: {
         0: 2, //monday
@@ -1033,7 +1049,7 @@ export default {
       this.passengerDetailsModal = true;
       getPassengerDataBySchedule(schedule.id).then((res) => {
         this.passengersInSchedule = res.data.passengers;
-        console.log("PASSENGERS",res.data)
+        console.log("PASSENGERS", res.data);
         this.passengersInSchedule.forEach((passenger) => {
           let index = this.seatsAvailable.indexOf(
             passenger.bookedSeat.seatNumber
@@ -1189,7 +1205,7 @@ export default {
           scheduleId: this.scheduleId,
           modality: this.modality,
           amount: this.total,
-          journalNumber:this.journalNumber
+          journalNumber: this.journalNumber,
         },
         // seats: seats,
         passengers: this.passengers,

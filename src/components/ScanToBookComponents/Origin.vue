@@ -12,8 +12,7 @@
       <h1 class="text-3xl text-gray-500 text-center mt-3">
         ན་བུ་ག་སྟེ་ལས་བྱོནམ་སྨོ?
       </h1>
-        
-  
+      
     </div>
 
     <div
@@ -84,8 +83,7 @@ export default {
       this.origins = res;
       this.originSelected = res[0];
     });
-    this.$store.commit('resetSeats')
-    console.log(this.$store.origin)
+    this.$store.commit('resetStoreState')
     if(this.$store.state.origin){
       this.originSelected = this.$store.state.origin
     }

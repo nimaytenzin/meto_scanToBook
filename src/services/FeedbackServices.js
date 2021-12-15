@@ -7,13 +7,13 @@ export async function sendFeedback(data) {
 }
 
 export async function getAll() {
-    return await axios.get(`${devUrl}/feedbacks`)
+    return await axios.get(`${devUrl}/feedbacks`,{headers:authHeader()})
 
 }
 
 export async function deleteFeedback(id) {
-    return await axios.delete(`${devUrl}/feedbacks/${id}`)
+    return await axios.delete(`${devUrl}/feedbacks/${id}`,{headers:authHeader()})
 }
 export async function updateFeedback(id, data) {
-    return await axios.put(`${devUrl}/feedbacks/${id}`, data)
+    return await axios.put(`${devUrl}/feedbacks/${id}`, data,{headers:authHeader()})
 }

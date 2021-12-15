@@ -390,7 +390,9 @@ export default {
   created() {
     if (
       this.$store.state.origin === "" &&
-      this.$store.state.selectedSchedule === null
+      this.$store.state.selectedSchedule === null &&
+      this.$store.state.selectedSchedule.route.fare === null &
+      this.$store.state.selectedSchedule.id === null
     ) {
       this.$router.push("/book");
     } else {

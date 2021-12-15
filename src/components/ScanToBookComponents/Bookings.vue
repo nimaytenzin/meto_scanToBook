@@ -295,9 +295,7 @@ export default {
       };
       addNewBooking(booking).then((res) => {
         if (res.status === 201) {
-          console.log("BOOING SUCCESS", res.data);
           this.$store.commit("addScanBookingId", res.data.id);
-          this.addDetail();
           this.$toast.show("loading RMA payment gateway", {
             position: "top",
             type: "info",
@@ -310,15 +308,7 @@ export default {
           });
         }
       });
-    },
-    addDetail() {
-      let user = {
-        name: this.name,
-        contact: this.contact,
-        cid: this.cid,
-      };
-      this.$store.commit("addBookedBy", user);
-    },
+    }
   },
 };
 </script>

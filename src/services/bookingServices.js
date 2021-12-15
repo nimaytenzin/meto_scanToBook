@@ -39,4 +39,13 @@ export async function getBookingsByScheduleId(id){
 }
 
 
+export async function regenerateTicket(cid,contact){
+    return await axios.get(`${devUrl}/bookings/regenerate/${contact}/${cid}`)
+}
+
+
+export async function getCancelCode(bookingId){
+    return await axios.get(`${devUrl}/bookings/cancelcode/${bookingId}`)
+}
+
 

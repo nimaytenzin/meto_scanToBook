@@ -416,7 +416,7 @@ export default {
       qrData: {},
       fare: 0,
       busStatus: null,
-      message: "Generating your Ticket..Sending SMS Confirmation",
+      message: "Generating your Ticket! please wait",
       origin: null,
       dataLoaded: false,
       destination: null,

@@ -83,10 +83,10 @@
               hover:text-white
             "
           >
-            Home
+             Today
           </p>
         </router-link>
-         <router-link to="/finance/today">
+         <router-link to="/finance/monthly">
           <p
             class="
               block
@@ -99,7 +99,7 @@
               hover:text-white
             "
           >
-            Today
+            Monthly Data
           </p>
         </router-link>
         <router-link to="/finance/booking-data">
