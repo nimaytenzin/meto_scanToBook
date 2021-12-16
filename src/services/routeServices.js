@@ -39,3 +39,7 @@ export async function createNewRoutePath(data){
     return await axios.post(`${devUrl}/route-path`,data)
 }
 
+export async function editRoute(id,data){
+    return await axios.put(`${devUrl}/routes/${id}`,data,{headers:authHeader()})
+}
+

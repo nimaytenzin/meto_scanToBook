@@ -96,19 +96,19 @@
         </thead>
         <tbody
           class="bg-white divide-y divide-gray-200"
-          v-for="schedule in schedules"
-          :key="schedule"
+          v-for="route in routes"
+          :key="route"
         >
-          <tr @click="commitToStore(schedule)" :class="tableRowColor(schedule)">
+          <tr @click="commitToStore(route)" :class="tableRowColor(route)">
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ getdepTime(schedule.route?.departureTime) }}
+              {{ route.departureTime }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              Nu. {{ schedule.route?.fare }}
+              Nu. {{ route.fare }}  
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button
-                v-if="!displayIcon(schedule)"
+                v-if="!displayIcon(route)"
                 class="
                   rounded
                   w-full
@@ -124,7 +124,7 @@
                 Select Bus
               </button>
               <div v-else>
-                <div v-if="displayIcon(schedule)" class="flex items-center">
+                <div v-if="displayIcon(route)" class="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 mr-2"
@@ -185,31 +185,20 @@
 </template>
 
 <script>
-import {
-  getScheduleByRouteAndDate,
-} from "../../services/scheduleServices";
+import crypto from 'crypto';
+
 export default {
   created() {
-    if (this.$store.state.origin === "") {
+    console.log(this.$store.state.departureDate, "PKOKOKOKOK")
+    if (this.$store.state.origin === "" && this.$store.state.avaialableRoutes.length === 0) {
       this.$router.push("/book");
     }
-    this.routes = this.$store.state.selectedRoutes;
-    this.routes.forEach((route) => {
-      getScheduleByRouteAndDate(route.id, this.$store.state.departureDate).then(
-        (res) => {
-          if (res.data) {
-            let schedule = res.data;
-            schedule.route = route;
-            this.schedules.push(schedule);
-          }
-        }
-      );
-    });
+    this.routes = this.$store.state.avaialableRoutes;
   },
   data() {
     return {
-      schedules: [],
       routes: [],
+      selectedRoute:{},
       date: new Date(),
       selected: false,
       selectedSchedule: {},
@@ -223,20 +212,27 @@ export default {
   },
   methods: {
     displayIcon(e) {
-      if (e.id === this.selectedSchedule.id) {
+      if (e.id === this.selectedRoute.id) {
         return true;
       }
       return false;
     },
     tableRowColor(e) {
-      if (e.id === this.selectedSchedule.id) {
+      if (e.id === this.selectedRoute.id) {
         return "bg-gray-300 text-black ";
       }
       return "bg-white";
     },
     seatSelection() {
       console.log(this.selectedSchedule)
-      if ( Object.keys( this.selectedSchedule).length && this.selected) {
+      var plaintext = `${this.selectedRoute.id}|${this.$store.state.departureDate}`
+      var hash = crypto.createHash('sha1')
+      hash.update(plaintext)
+      var roomID = hash.digest('hex');
+      this.$store.commit("commitSchedule",roomID);
+      
+
+      if ( Object.keys( this.selectedRoute).length && this.selected) {
         this.$router.push("/book/seats");
       } else {
         this.$toast.show("Please Select a departure time", {
@@ -245,24 +241,10 @@ export default {
         });
       }
     },
-    getdepTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
 
-      return `${hrs}:${min} ${ampm}`;
-    },
     commitToStore(e) {
       this.selected = true;
-      this.selectedSchedule = e;
+      this.selectedRoute = e;
       console.log(e, "Selected Schedule");
       this.$store.commit("addSelectedSchedule", e);
     },

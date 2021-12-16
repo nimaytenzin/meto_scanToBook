@@ -13,6 +13,7 @@ export default createStore({
     stops:null,
     serviceCharge:null,
     selectedSchedule:null,
+    avaialableRoutes:[],
     bookedBy:{},
     authToken:'',
     selectedRoutes:[],
@@ -60,6 +61,9 @@ export default createStore({
             state.selectedSeats.splice(index,1)
         }
       })
+    },
+    commitAvailableRoute(state,routes){
+      state.avaialableRoutes = routes
     },
     addServiceCharge(state,serviccharge){
       state.serviceCharge = serviccharge

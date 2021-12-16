@@ -81,12 +81,17 @@
 import { Calendar, DatePicker } from "v-calendar";
 import "vue3-loading-overlay/dist/vue3-loading-overlay.css";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
+
 export default {
   components: {
     Calendar,
     DatePicker,
   },
   created() {
+    
+    
+
+  
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
@@ -95,16 +100,11 @@ export default {
       this.$store.state.destination.id
     )
       .then((res) => {
-        res.data.forEach((routePath) => {
-          console.log(routePath);
-          // routePath.routes.forEach((route) => {
-          //   this.routes.push(route);
-          //   route.routeDays.forEach((routeDay) => {
-          //     if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
-          //       this.days.push(this.routeHash[routeDay.day]);
-          //     }
-          //   });
-          // });
+        console.log("ROUTES WITH DAYS", res);
+        this.routes = res.data.routes;
+        this.$store.commit("commitAvailableRoute", this.routes);
+        this.routes.forEach((route) => {
+          this.days.push(route.day);
         });
 
         this.attributes = [
@@ -125,19 +125,10 @@ export default {
     return {
       date: "",
       days: [],
-      routeDays: [],
       routes: [],
       attributes: [],
       dateClicked: false,
-      routeHash: {
-        0: 2, //monday
-        1: 3, //tuesday
-        2: 4, //wednesday
-        3: 5, // thrus
-        4: 6, //fri
-        5: 7, //sat
-        6: 1, // sun
-      },
+      daySelected: null,
     };
   },
   methods: {
@@ -145,11 +136,14 @@ export default {
       this.$router.push("/book/destination");
     },
     onDayClick(e) {
+      console.log(e);
       this.dateClicked = true;
+      this.daySelected = e.weekday;
 
       if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
-        let formattedDate = e.id + " 00:00:00";
+        let formattedDate = e.id;
         this.$store.commit("commitSelectedDate", formattedDate);
+
         // this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
         //   position: "top",
         //   type: "success",
@@ -163,6 +157,15 @@ export default {
     },
     addDepartureDate() {
       if (this.$store.getters.getDepartureDate) {
+        let matchedRoutes = [];
+        this.routes.forEach((route) => {
+          if (route.day === this.daySelected) {
+            matchedRoutes.push(route);
+          }
+        });
+        console.log(matchedRoutes);
+        // commitAvailableRoute
+        this.$store.commit("commitAvailableRoute", matchedRoutes);
         this.$router.push("/book/buses");
       } else {
         if (this.dateClicked === true) {

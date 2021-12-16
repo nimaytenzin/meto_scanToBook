@@ -388,16 +388,14 @@
 <script>
 export default {
   created() {
+    console.log(this.$store.state.schedule)
     if (
-      this.$store.state.origin === "" &&
-      this.$store.state.selectedSchedule === null &&
-      this.$store.state.selectedSchedule.route.fare === null &
-      this.$store.state.selectedSchedule.id === null
+      this.$store.state.origin === ""
     ) {
       this.$router.push("/book");
     } else {
       this.fare = this.$store.state.selectedSchedule.route.fare;
-      this.roomId = this.$store.state.selectedSchedule.id;
+      this.roomId = this.$store.state.schedule;
       if (this.$store.state.selectedSchedule) {
         this.errorModal = true;
         this.isLoader = true;
