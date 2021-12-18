@@ -386,17 +386,20 @@
 }
 </style>
 <script>
+
 export default {
   created() {
-    console.log(this.$store.state.schedule)
+    // console.log(this.$store.state.schedule)
+    console.log(this.$store.state)
     if (
       this.$store.state.origin === ""
     ) {
       this.$router.push("/book");
     } else {
-      this.fare = this.$store.state.selectedSchedule.route.fare;
-      this.roomId = this.$store.state.schedule;
-      if (this.$store.state.selectedSchedule) {
+      this.fare = this.$store.state.selectedSchedule?.fare;
+      this.roomId = this.$store.state.scanRoomID;
+      console.log(this.roomId)
+      if (this.$store.state.scanRoomID) {
         this.errorModal = true;
         this.isLoader = true;
         this.connectWs();
@@ -415,9 +418,10 @@ export default {
       fare: 0,
       total: 0,
       message: "Connecting to Meto Web Services...",
-      origin: this.$store.state.origin.name,
-      destination: this.$store.state.destination.name,
+      origin: this.$store.state.origin?.name,
+      destination: this.$store.state.destination?.name,
       serviceCharge: this.$store.state.serviceCharge,
+      departureTime:this.$store.state.selectedSchedule?.departureTime,
       isConnected: false,
       errorModal: true,
       connectionAttempt: 0,
@@ -473,28 +477,11 @@ export default {
       let d = new Date(this.$store.state.departureDate);
       return d.toDateString();
     },
-    departureTime() {
-      if (this.$store.state.selectedSchedule) {
-        let time = this.$store.state.selectedSchedule?.route?.departureTime;
-        let tissme = time.split(":");
-        let hrs = parseInt(tissme[0]);
-        let min = parseInt(tissme[1]).toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        });
-        let ampm = "am";
-        if (hrs > 12) {
-          hrs = hrs - 12;
-          ampm = "pm";
-        }
-        return `${hrs}:${min} ${ampm}`;
-      }
-    },
   },
   methods: {
     connectWs() {
       this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.$store.state.selectedSchedule.id}`
+        `${process.env.VUE_APP_WSS}/${this.roomId}`
       );
       this.conn.onopen = (event) => {
         this.isConnected = true;
@@ -693,6 +680,7 @@ export default {
       this.reverSeatModal = false;
     },
     addSeat(seat) {
+      console.log("CLICK", seat)
       if (seat.type === "seat") {
         this.selectedSeat = seat;
         if (seat.status === "locked") {
@@ -710,6 +698,7 @@ export default {
               seatId: this.selectedSeat.number.toString(),
             })
           );
+          this.showModal = true
         }
       }
     },

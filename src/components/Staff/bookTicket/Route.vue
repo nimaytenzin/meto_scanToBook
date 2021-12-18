@@ -200,10 +200,10 @@
               :class="tableRowColor(schedule)"
             >
               <td class="px-6 py-4 whitespace-nowrap">
-                {{ getdepTime(schedule.route?.departureTime) }}
+               {{ schedule.departureTime }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                Nu. {{ schedule.route?.fare }}
+                Nu. {{ schedule.fare }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
@@ -647,64 +647,64 @@
         </div>
         <h3 class="text-xl px-6 font-thin">Passengers</h3>
 
- <thead>
-              <tr>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Seat Number
-                </td>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Name
-                </td>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  CID
-                </td>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Contact
-                </td>
-              </tr>
-            </thead>
+        <thead>
+          <tr>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Seat Number
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Name
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              CID
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Contact
+            </td>
+          </tr>
+        </thead>
 
-        <div class="p-2 flex overflow-scroll" style="height:40vh">
+        <div class="p-2 flex overflow-scroll" style="height: 40vh">
           <table
             class="
               min-w-full
@@ -715,7 +715,6 @@
             "
             v-if="passengersInSchedule.length"
           >
-           
             <tbody class="overflow-y-scroll" style="50vh">
               <tr v-for="passenger in passengersInSchedule" :key="passenger">
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -821,15 +820,6 @@ export default {
       schedules: [],
       journalNumber: null,
       seatSelectModal: false,
-      routeHash: {
-        0: 2, //monday
-        1: 3, //tuesday
-        2: 4, //wednesday
-        3: 5, // thrus
-        4: 6, //fri
-        5: 7, //sat
-        6: 1, // sun
-      },
       seats: [
         { id: 1, number: 1, type: "seat", status: "available" },
         { id: 2, number: 0, type: "notSeat", status: "available" },
@@ -877,6 +867,7 @@ export default {
       routes: [],
       selectedSchedule: {},
       modality: "CASH",
+      weekDay:null,
       passengersInSchedule: [],
       seatsAvailable: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -911,6 +902,9 @@ export default {
     onDayClick(e) {
       if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
         this.date = e.id + " 00:00:00";
+        this.weekDay = e.weekday;
+        console.log(e)
+        console.log("WEEKDAY", this.weekDay)
         this.busAvailable = true;
       } else {
         this.busAvailable = false;
@@ -946,15 +940,11 @@ export default {
         .then((res) => {
           console.log("ROUTES DATA", res);
           if (res.data && res.status === 200) {
-            res.data.forEach((routePath) => {
-              routePath.routes.forEach((route) => {
-                this.routes.push(route);
-                route.routeDays.forEach((routeDay) => {
-                  if (this.days.indexOf(this.routeHash[routeDay.day]) === -1) {
-                    this.days.push(this.routeHash[routeDay.day]);
-                  }
-                });
-              });
+            this.routes = res.data.routes;
+            res.data.routes.forEach((route) => {
+              if (this.days.indexOf(route.day) === -1) {
+                this.days.push(route.day);
+              }
             });
             console.log("ROUTE DAYS", this.days);
             if (this.days) {
@@ -971,15 +961,7 @@ export default {
               this.attributes = [];
             }
           } else {
-            this.attributes = [
-              {
-                dot: "green",
-                dates: { weekdays: [] },
-                popover: {
-                  label: "Bus Availble",
-                },
-              },
-            ];
+            this.$toast.show("No Bus");
           }
         })
         .catch((err) => console.log(err));
@@ -1135,7 +1117,7 @@ export default {
           this.bookedSeats.splice(index, 1);
         }
       });
-      this.passengers.forEach((seat, index) => {
+      this.passengers((seat, index) => {
         if (this.seatSelected.number === seat.seatNumber) {
           this.passengers.splice(index, 1);
         }
@@ -1166,21 +1148,6 @@ export default {
         })
       );
       this.confirmSeatModal = false;
-    },
-    getdepTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
-
-      return `${hrs}:${min} ${ampm}`;
     },
     addPassengerDetails() {
       if (this.bookedSeats.length) {
@@ -1291,22 +1258,17 @@ export default {
     },
 
     viewSch() {
+      
       this.schedules = [];
+      console.log(this.weekDay, this.routes)
       this.routes.forEach((route) => {
-        getScheduleByRouteAndDate(route.id, this.date).then((res) => {
-          if (res.data) {
-            let schedule = res.data;
-            schedule.route = route;
-            this.schedules.push(schedule);
-            console.log("SCHEDULE FOR DATE", this.schedules);
-          } else {
-            this.$toast.show("No buses on the selected day", {
-              type: "error",
-              position: "top",
-            });
-          }
-        });
+        if(route.day === this.weekDay){
+          this.schedules.push(route)
+        }
       });
+      console.log(this.schedules)
+
+      
       // getScheduleByRouteAndDate()
 
       // if (this.originSelected && this.destinationSelected && this.date) {

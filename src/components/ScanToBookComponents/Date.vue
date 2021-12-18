@@ -89,9 +89,6 @@ export default {
   },
   created() {
     
-    
-
-  
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }

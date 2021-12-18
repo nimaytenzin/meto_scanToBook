@@ -11,6 +11,7 @@ export default createStore({
     selectedDate:"",
     total:0,
     stops:null,
+    scanRoomID:null,
     serviceCharge:null,
     selectedSchedule:null,
     avaialableRoutes:[],
@@ -54,6 +55,9 @@ export default createStore({
     },
     addSeats(state,seats){
      state.selectedSeats.push(seats);
+    },
+    commitScanRoomId(state,data){
+      state.scanRoomID = data
     },
     removeSeat(state,selectedSeat){
       state.selectedSeats.forEach((seat,index) =>{

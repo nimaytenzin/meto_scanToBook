@@ -74,8 +74,8 @@
               <td>
                 Nu
                 {{
-                  this.$store.state.selectedSchedule?.route?.fare
-                    ? this.$store.state.selectedSchedule.route.fare
+                  this.$store.state.selectedSchedule?.fare
+                    ? this.$store.state.selectedSchedule.fare
                     : ""
                 }}
               </td>
@@ -254,7 +254,7 @@ export default {
     }
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
-      this.total = (this.$store.state.selectedSchedule.route.fare + this.serviceCharge) * this.$store.state.selectedSeats.length;
+      this.total = (this.$store.state.selectedSchedule.fare + this.serviceCharge) * this.$store.state.selectedSeats.length;
     });
     this.$store.state.selectedSeats.forEach((seat) => {
       this.passengers.push({seatNumber:seat.number});
@@ -287,12 +287,15 @@ export default {
     pay() {
       let booking = {
         booking: {
-          scheduleId: this.$store.state.selectedSchedule.id,
+          routeId: this.$store.state.selectedSchedule.id,
           modality: "Online",
           amount: this.total,
+          scheduleHash:this.$store.state.scanRoomID,
+          scheduleDate:this.$store.state.departureDate
         },
         passengers: this.passengers,
       };
+      console.log(booking)
       addNewBooking(booking).then((res) => {
         if (res.status === 201) {
           this.$store.commit("addScanBookingId", res.data.id);

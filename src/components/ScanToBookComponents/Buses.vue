@@ -225,12 +225,15 @@ export default {
     },
     seatSelection() {
       console.log(this.selectedSchedule)
+
       var plaintext = `${this.selectedRoute.id}|${this.$store.state.departureDate}`
+      console.log("PLAINTEXT", plaintext);
+
       var hash = crypto.createHash('sha1')
       hash.update(plaintext)
       var roomID = hash.digest('hex');
       this.$store.commit("commitSchedule",roomID);
-      
+      this.$store.commit("commitScanRoomId",roomID);
 
       if ( Object.keys( this.selectedRoute).length && this.selected) {
         this.$router.push("/book/seats");
