@@ -136,11 +136,9 @@ export default {
       console.log(e);
       this.dateClicked = true;
       this.daySelected = e.weekday;
-
       if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
         let formattedDate = e.id;
         this.$store.commit("commitSelectedDate", formattedDate);
-
         // this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
         //   position: "top",
         //   type: "success",

@@ -625,7 +625,6 @@ export default {
     finalizeBooking() {
       if (this.$store.state.selectedSeats) {
         this.$store.commit("addTotal", this.total);
-
         this.$store.state.selectedSeats.forEach((seat) => {
           this.conn.send(
             JSON.stringify({

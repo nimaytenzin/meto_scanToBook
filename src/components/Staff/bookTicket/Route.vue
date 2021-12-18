@@ -200,7 +200,7 @@
               :class="tableRowColor(schedule)"
             >
               <td class="px-6 py-4 whitespace-nowrap">
-               {{ schedule.departureTime }}
+                {{ schedule.departureTime }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 Nu. {{ schedule.fare }}
@@ -487,10 +487,6 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Service Charge :</td>
-                  <td>Nu {{ serviceCharge }}</td>
-                </tr>
-                <tr>
                   <td>Seats Booked :</td>
                   <td>{{ bookedSeats.length }}</td>
                 </tr>
@@ -507,10 +503,6 @@
                   </td>
                 </tr>
               </table>
-              <p class="text-sm break-words">
-                Fare Calculation <br />
-                (Base Fare + Service Charge) x Booked Seats
-              </p>
             </div>
 
             <div class="mt-4">
@@ -718,7 +710,7 @@
             <tbody class="overflow-y-scroll" style="50vh">
               <tr v-for="passenger in passengersInSchedule" :key="passenger">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  {{ passenger.bookedSeat.seatNumber }}
+                  {{ passenger.seatNumber }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   {{ passenger.name }}
@@ -800,13 +792,15 @@
 <script>
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
-import {
-  getPassengerDataBySchedule,
-  getScheduleByRouteAndDate,
-} from "../../../services/scheduleServices";
+import crypto from "crypto";
+
+import { getPassengerDataBySchedule } from "../../../services/scheduleServices";
 import { getRoutesByOriginDestination } from "../../../services/routeServices";
-import { addNewBooking } from "../../../services/bookingServices";
-import { getServiceCharge } from "../../../services/paymentServices";
+import {
+  addNewBooking,
+  getPassengersOnBus,
+} from "../../../services/bookingServices";
+
 export default {
   data() {
     return {
@@ -814,7 +808,7 @@ export default {
       originSelected: {},
       passengers: [],
       destinationSelected: {},
-      serviceCharge: 0,
+
       passengerDetailsModal: false,
       date: "",
       schedules: [],
@@ -851,7 +845,6 @@ export default {
         { id: 28, number: 19, type: "seat", status: "available" },
       ],
       bookedSeats: [],
-      scheduleId: 0,
       seatSelected: {},
       confirmSeatModal: false,
       addPassengerDetailsModal: false,
@@ -867,12 +860,16 @@ export default {
       routes: [],
       selectedSchedule: {},
       modality: "CASH",
-      weekDay:null,
+      weekDay: null,
       passengersInSchedule: [],
       seatsAvailable: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
       ],
       busAvailable: false,
+
+      roomID: null,
+      routeId: 0,
+      departureDate: "",
     };
   },
   computed: {
@@ -885,9 +882,6 @@ export default {
     },
   },
   created() {
-    getServiceCharge().then((res) => {
-      this.serviceCharge = res.data.serviceCharge;
-    });
     getAllStops()
       .then((res) => {
         this.stops = res;
@@ -903,8 +897,8 @@ export default {
       if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
         this.date = e.id + " 00:00:00";
         this.weekDay = e.weekday;
-        console.log(e)
-        console.log("WEEKDAY", this.weekDay)
+        console.log("WEEKDAY", e);
+        this.departureDate = e.id;
         this.busAvailable = true;
       } else {
         this.busAvailable = false;
@@ -967,9 +961,7 @@ export default {
         .catch((err) => console.log(err));
     },
     connectWs() {
-      this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.scheduleId}`
-      );
+      this.conn = new WebSocket(`${process.env.VUE_APP_WSS}/${this.roomId}`);
       this.conn.onopen = (event) => {
         this.isConnected = true;
         this.connectionAttempt = 0;
@@ -1018,29 +1010,44 @@ export default {
       };
     },
 
-    openSeatSelect(schedule) {
-      this.scheduleId = schedule.id;
-      this.fare = schedule.route.fare;
+    openSeatSelect(route) {
+      console.log(route);
+      this.routeId = route.id;
+      this.fare = route.fare;
       this.errorModal = true;
       this.isLoader = true;
+      var plaintext = `${this.routeId}|${this.departureDate}`;
+      var hash = crypto.createHash("sha1");
+      hash.update(plaintext);
+      this.roomId = hash.digest("hex");
       this.connectWs();
-
       this.seatSelectModal = true;
     },
     viewPassengers(schedule) {
       this.passengerDetailsModal = true;
-      getPassengerDataBySchedule(schedule.id).then((res) => {
-        this.passengersInSchedule = res.data.passengers;
+      getPassengersOnBus(schedule.id, this.departureDate).then((res) => {
         console.log("PASSENGERS", res.data);
-        this.passengersInSchedule.forEach((passenger) => {
-          let index = this.seatsAvailable.indexOf(
-            passenger.bookedSeat.seatNumber
-          );
-          if (index !== -1) {
-            this.seatsAvailable.splice(index, 1);
-          }
+        res.data.forEach((booking) => {
+          booking.passengers.forEach((passenger, index) => {
+            passenger.seatNumber = booking.bookedSeats[index].seatNumber;
+            this.passengersInSchedule.push(passenger);
+            let indexss = this.seatsAvailable.indexOf(
+              passenger.seatNumber
+            );
+            if (indexss !== -1) {
+              this.seatsAvailable.splice(index, 1);
+            }
+          });
         });
       });
+      console.log(this.passengersInSchedule);
+      // getPassengerDataBySchedule(schedule.id).then((res) => {
+      //   this.passengersInSchedule = res.data.passengers;
+      //   console.log("PASSENGERS", res.data);
+      //   this.passengersInSchedule.forEach((passenger) => {
+      //
+      //   });
+      // });
     },
     bindImage(seat) {
       if (seat.type === "seat") {
@@ -1078,7 +1085,7 @@ export default {
         } else {
           this.conn.send(
             JSON.stringify({
-              roomId: this.scheduleId.toString(),
+              roomId: this.roomId.toString(),
               messageType: "LOCK",
               seatId: seat.number.toString(),
             })
@@ -1106,7 +1113,7 @@ export default {
     confirmRevert() {
       this.conn.send(
         JSON.stringify({
-          roomId: this.scheduleId.toString(),
+          roomId: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.seatSelected.number.toString(),
         })
@@ -1117,12 +1124,11 @@ export default {
           this.bookedSeats.splice(index, 1);
         }
       });
-      this.passengers((seat, index) => {
+      this.passengers.forEach((seat, index) => {
         if (this.seatSelected.number === seat.seatNumber) {
           this.passengers.splice(index, 1);
         }
       });
-
       this.total -= this.fare;
       this.seatSelected = {};
       this.reverSeatModal = false;
@@ -1135,14 +1141,14 @@ export default {
       this.seatSelected.status = "booked";
       console.log("BOOKED SEATS", this.bookedSeats);
       this.passengers.push({ seatNumber: this.seatSelected.number });
-      this.total += this.fare + this.serviceCharge;
+      this.total += this.fare;
       this.confirmSeatModal = false;
     },
     cancelSeat() {
       console.log(this.seatSelected);
       this.conn.send(
         JSON.stringify({
-          roomId: this.scheduleId.toString(),
+          roomId: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.seatSelected.number.toString(),
         })
@@ -1169,10 +1175,12 @@ export default {
       // })
       let newBooking = {
         booking: {
-          scheduleId: this.scheduleId,
+          scheduleDate: this.departureDate,
+          scheduleHash: this.roomId,
           modality: this.modality,
           amount: this.total,
           journalNumber: this.journalNumber,
+          routeId: this.routeId,
         },
         // seats: seats,
         passengers: this.passengers,
@@ -1238,7 +1246,7 @@ export default {
         this.getSeats(seat.number).status = "available";
         this.conn.send(
           JSON.stringify({
-            roomId: this.scheduleId.toString(),
+            roomId: this.roomId.toString(),
             messageType: "LOCK_LEAVE",
             seatId: seat.number.toString(),
           })
@@ -1258,17 +1266,15 @@ export default {
     },
 
     viewSch() {
-      
       this.schedules = [];
-      console.log(this.weekDay, this.routes)
+      console.log(this.weekDay, this.routes);
       this.routes.forEach((route) => {
-        if(route.day === this.weekDay){
-          this.schedules.push(route)
+        if (route.day === this.weekDay) {
+          this.schedules.push(route);
         }
       });
-      console.log(this.schedules)
+      console.log(this.schedules);
 
-      
       // getScheduleByRouteAndDate()
 
       // if (this.originSelected && this.destinationSelected && this.date) {

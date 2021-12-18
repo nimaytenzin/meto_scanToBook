@@ -130,10 +130,7 @@
               </div>
               <p class="text-center mt-4 text-gray-500 italic">on</p>
               <h2 class="text-center text-2xl text-gray-700">
-                {{ bookingData.schedule?.calendarDate?.Day_Name }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
-                {{ bookingData.schedule?.calendarDate?.Month_Name }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Year }}
+                {{ parseDepartureDate(departureDate) }}
               </h2>
             </div>
           </div>
@@ -178,7 +175,7 @@
               Boarding Time:
               <span class="font-bold">
                 {{
-                  getdepTime(bookingData?.schedule?.route?.departureTime)
+                 departureTime
                 }}</span
               >
             </p>
@@ -384,14 +381,16 @@ export default {
   created() {
     const route = useRoute();
     const bookingId = route.params.bookingId;
+
     getBookingDetail(bookingId).then((res) => {
-      console.log("RESPOMSE", res);
       if (res.status === 200) {
         this.qrDataString = res.data.checkSum;
-        this.origin = res.data.schedule.route.routepath.origin.name;
-        this.destination = res.data.schedule.route.routepath.destination.name;
-        this.fare = res.data.schedule.route.fare;
-        if (res.data.schedule.isFinished === 0) {
+        this.origin = res.data.route.routepath.origin.name;
+        this.destination = res.data.route.routepath.destination.name;
+        this.departureDate = res.data.scheduleDate;
+        this.departureTime = res.data.route.departureTime;
+        this.fare = res.data.route.fare;
+        if (res.data.bookingStatus === "PENDING") {
           this.busStatus = true;
         } else {
           this.busStatus = false;
@@ -412,7 +411,8 @@ export default {
   },
   data() {
     return {
-      departureTime: "7:00 AM",
+      departureTime: null,
+      departureDate:null,
       qrData: {},
       fare: 0,
       busStatus: null,
@@ -438,9 +438,6 @@ export default {
     }, 3000);
   },
   computed: {
-    depDate() {
-      return `${this.bookingData.schedule.calendarDate.Day_Name} ${this.bookingData.schedule.calendarDate.Calendar_Day} ${this.bookingData.schedule.calendarDate.Month_Name} ${this.bookingData.schedule.calendarDate.Calendar_Year} `;
-    },
     loadingClass() {
       if (this.dataLoaded) {
         return "hidden";
@@ -453,6 +450,10 @@ export default {
   methods: {
     qrLoad() {
       alert("QR CODE LOADED");
+    },
+     parseDepartureDate(dd) {
+      let d = new Date(dd);
+      return d.toDateString();
     },
     saveImage() {
       const scale = 3;

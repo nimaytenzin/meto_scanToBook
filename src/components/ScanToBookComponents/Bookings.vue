@@ -295,7 +295,6 @@ export default {
         },
         passengers: this.passengers,
       };
-      console.log(booking)
       addNewBooking(booking).then((res) => {
         if (res.status === 201) {
           this.$store.commit("addScanBookingId", res.data.id);

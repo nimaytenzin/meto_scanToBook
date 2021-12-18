@@ -43,14 +43,12 @@
           </div>
         </div>
 
-        <div class="text-center font-bold text-2xl mt-4 mb-2" v-if="busNumber">
+        <div class="text-center font-bold text-2xl mt-4 mb-2" v-if="bus">
 
             <h2>
-              {{ busNumber }}
+              {{ bus.vechileNumber }}
             </h2>
-            <h4>
-              {{ busType }}
-            </h4>
+
 
         </div>
         <div v-else class="text-center font-bold text-2xl mt-4 mb-2"> 
@@ -70,22 +68,21 @@
 </template>
 
 <script>
-
-import { getBusNumber} from '../../services/scheduleServices'
+import { getBusbyBookingId } from '../../services/bookingServices';
 export default {
   data() {
     return {
-      busNumber:null,
-      busType:null
+      bus:null
     };
   },
   created() {
 
     let bookingId = this.$route.params.id
-    getBusNumber(bookingId).then(res =>{
-      this.busNumber = res.data.bus.vechileNumber
-      this.busType = res.data.bus.busType.make + " " + res.data.bus.busType.model
+    getBusbyBookingId(bookingId).then(res =>{
+      console.log(res)
+      this.bus = res.data.bus
     })
+   
   },
  
   methods: {

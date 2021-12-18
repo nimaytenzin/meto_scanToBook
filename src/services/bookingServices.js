@@ -48,4 +48,12 @@ export async function getCancelCode(bookingId){
     return await axios.get(`${devUrl}/bookings/cancelcode/${bookingId}`)
 }
 
+export async function getBusbyBookingId(id){
+    return await axios.get(`${devUrl}/bookings/get-bus/${id}`)
+}
 
+
+
+export async function getPassengersOnBus(routeId,departureDate){
+    return await axios.get(`${devUrl}/bookings/get-route-date/${routeId}/${departureDate}`)
+}
