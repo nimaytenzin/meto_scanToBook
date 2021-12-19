@@ -82,7 +82,9 @@
               bg-indigo-600
               hover:bg-indigo-700
               focus:outline-none
-              focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+              focus:ring-2
+              focus:ring-offset-2
+              focus:ring-indigo-500
             "
             @click="login()"
           >
@@ -109,21 +111,21 @@ export default {
     login() {
       login(this.user)
         .then((res) => {
-
           sessionStorage.setItem("token", res.data.token);
           let role = VueJwtDecode.decode(res.data.token).role;
           if (role === 1) {
             this.$router.push("/admin");
-          }else if(role === 2){
+          } else if (role === 2) {
             this.$router.push("/finance");
-          }else if(role === 3){
+          } else if (role === 3) {
             this.$router.push("/staff");
-
-          }else {
+          } else {
             this.$router.push("/book");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          this.$toast.show("Inavalid Credentials")
+        });
     },
   },
 };
