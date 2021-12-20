@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import {verfiyToken} from '../services/authServices'
+
 
 const routes = [
   {
@@ -145,17 +147,15 @@ const router = createRouter({
 })
 
 
-router.beforeEach((to, from, next) => {
-
-  const loggedIn = sessionStorage.getItem('token');
-  
+router.beforeEach(async(to, from, next) => {
   if (to.matched.some(route => route.meta.requiresAuth)) {
-    if (!loggedIn) {
-      next({ path: '/login' });
-      return
-    } else {
-      next();
-      return
+    // let verified = verfiyToken().then(res =>console.log(res)).catch(err=>console.log(err))
+    let verified = await verfiyToken();
+    if(verified){
+      next()
+    }else{
+      sessionStorage.clear("token")
+      next({path:'/login'})
     }
   }
   next();

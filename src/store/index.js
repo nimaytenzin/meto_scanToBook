@@ -1,3 +1,4 @@
+
 import { createStore } from 'vuex'
 
 export default createStore({
@@ -28,7 +29,8 @@ export default createStore({
         cutomerContact:0,
         customerCid:''
       }
-    }
+    },
+    tokenVerified:false,
   },
   mutations: {
     resetStoreState(state){
@@ -102,8 +104,10 @@ export default createStore({
         }
       })
     },
+
   },
   actions: {
+
   },
   modules: {
   },
