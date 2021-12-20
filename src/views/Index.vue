@@ -1292,6 +1292,7 @@
             <td class="text-xs font-medium text-gray-500">BookingID</td>
             <td class="text-xs font-medium text-gray-500">Route</td>
             <td class="text-xs font-medium text-gray-500">Departure Date</td>
+            <td class="text-xs font-medium text-gray-500">Departure Time</td>
             <td class="text-xs font-medium text-gray-500">Action</td>
           </tr>
           <tr
@@ -1303,13 +1304,16 @@
               {{ validbooking.booking.id }}
             </td>
             <td>
-              {{ validbooking.booking.schedule.route.routepath.origin.name }} to
+              {{ validbooking.booking.route.routepath.origin.name }} to
               {{
-                validbooking.booking.schedule.route.routepath.destination.name
+                validbooking.booking.route.routepath.destination.name
               }}
             </td>
             <td>
-              {{ formatDepartureDate(validbooking.booking.schedule.dateId) }}
+              {{validbooking.booking.route.departureTime }}
+            </td>
+            <td>
+              {{ formatDepartureDate(validbooking.booking.scheduleDate) }}
             </td>
             <td>
               <button
@@ -1419,7 +1423,6 @@ export default {
   },
 
   created() {
-    console.log("PROCESS ENV", process.env);
 
     getAllBuses().then((res) => {
       this.buses = res.length;
@@ -1458,7 +1461,6 @@ export default {
     },
     searchBookings() {
       if (this.ticket.cid && this.ticket.contact) {
-        console.log(this.ticket.cid,this.ticket.contact)
         regenerateTicket(this.ticket.cid, this.ticket.contact).then((res) => {
           if (res.status === 200 && res.data.length !== 0) {
             this.searchedBookings = res.data;

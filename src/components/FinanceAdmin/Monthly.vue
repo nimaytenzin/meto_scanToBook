@@ -4,7 +4,7 @@
   >
     <h1 class="text-3xl font-semibold text-center my-4 text-gray-700">  Statistics for December 2021 </h1>
 
-    <div
+    <!-- <div
       class="
         bg-white
         border-t border-dotted
@@ -221,7 +221,7 @@
       </div>
     </div>
 
-    <div class="w-full"></div>
+    <div class="w-full"></div> -->
   </div>
 </template>
 
@@ -230,106 +230,106 @@ import { getDailyStatistics } from "../../services/AnalyticsService";
 const devUrl = process.env.VUE_APP_DEV_API;
 
 export default {
-  beforeCreate() {
-    getDailyStatistics().then((res) => {
-      res.data.forEach((row) => {
-        this.chartData[0].data[row.date] = row.online_sale;
-        this.chartData[1].data[row.date] = row.counter_sale;
-        this.chartData[2].data[row.date] = row.total_sale;
-      });
-    });
-  },
+  // beforeCreate() {
+  //   getDailyStatistics().then((res) => {
+  //     res.data.forEach((row) => {
+  //       this.chartData[0].data[row.date] = row.online_sale;
+  //       this.chartData[1].data[row.date] = row.counter_sale;
+  //       this.chartData[2].data[row.date] = row.total_sale;
+  //     });
+  //   });
+  // },
   data() {
     return {
-      weekly_saleUrl: `${devUrl}/daily-statistics/weekly-sale`,
-      weekly_bookingUrl: `${devUrl}/daily-statistics/weekly-bookings`,
-      weekly_bookrateUrl: `${devUrl}/daily-statistics/weekly-bookrate`,
-      weekly_cancellationUrl: `${devUrl}/daily-statistics/weekly-cancellations`,
-      chartData: [
-        {
-          name: "Online Sale",
-          data: {},
-        },
-        {
-          name: "Counter Sale",
-          data: {},
-        },
-        {
-          name: "Total Sale",
-          data: {},
-        },
-      ],
-      data: [
-        {
-          name: "Ebooking",
-          data: {
-            "2017-01-01": 3,
-            "2017-01-02": 4,
-            "2017-01-03": 5,
-            "2017-01-04": 2,
-            "2017-01-05": 3,
-            "2017-01-06": 4,
-            "2017-01-07": 5,
-          },
-        },
-        {
-          name: "Mbob",
-          data: {
-            "2017-01-01": 5,
-            "2017-01-02": 3,
-            "2017-01-03": 6,
-            "2017-01-04": 5,
-            "2017-01-05": 6,
-            "2017-01-06": 7,
-            "2017-01-07": 9,
-          },
-        },
-        {
-          name: "Cash",
-          data: {
-            "2017-01-01": 8,
-            "2017-01-02": 7,
-            "2017-01-03": 11,
-            "2017-01-04": 7,
-            "2017-01-05": 9,
-            "2017-01-06": 11,
-            "2017-01-07": 14,
-          },
-        },
-        {
-          name: "Total",
-          data: {
-            "2017-01-01": 16,
-            "2017-01-02": 14,
-            "2017-01-03": 22,
-            "2017-01-04": 14,
-            "2017-01-05": 18,
-            "2017-01-06": 22,
-            "2017-01-07": 28,
-          },
-        },
-      ],
-      origins: [
-        {
-          dzo: "ཐིམ་ཕུ",
-          eng: "Thimphu",
-        },
-        {
-          dzo: "སྤ་རོ",
-          eng: "Paro",
-        },
-      ],
-      originSelected: {
-        dzo: "ཐིམ་ཕུ",
-        eng: "Thimphu",
-      },
+    //   weekly_saleUrl: `${devUrl}/daily-statistics/weekly-sale`,
+    //   weekly_bookingUrl: `${devUrl}/daily-statistics/weekly-bookings`,
+    //   weekly_bookrateUrl: `${devUrl}/daily-statistics/weekly-bookrate`,
+    //   weekly_cancellationUrl: `${devUrl}/daily-statistics/weekly-cancellations`,
+    //   chartData: [
+    //     {
+    //       name: "Online Sale",
+    //       data: {},
+    //     },
+    //     {
+    //       name: "Counter Sale",
+    //       data: {},
+    //     },
+    //     {
+    //       name: "Total Sale",
+    //       data: {},
+    //     },
+    //   ],
+    //   data: [
+    //     {
+    //       name: "Ebooking",
+    //       data: {
+    //         "2017-01-01": 3,
+    //         "2017-01-02": 4,
+    //         "2017-01-03": 5,
+    //         "2017-01-04": 2,
+    //         "2017-01-05": 3,
+    //         "2017-01-06": 4,
+    //         "2017-01-07": 5,
+    //       },
+    //     },
+    //     {
+    //       name: "Mbob",
+    //       data: {
+    //         "2017-01-01": 5,
+    //         "2017-01-02": 3,
+    //         "2017-01-03": 6,
+    //         "2017-01-04": 5,
+    //         "2017-01-05": 6,
+    //         "2017-01-06": 7,
+    //         "2017-01-07": 9,
+    //       },
+    //     },
+    //     {
+    //       name: "Cash",
+    //       data: {
+    //         "2017-01-01": 8,
+    //         "2017-01-02": 7,
+    //         "2017-01-03": 11,
+    //         "2017-01-04": 7,
+    //         "2017-01-05": 9,
+    //         "2017-01-06": 11,
+    //         "2017-01-07": 14,
+    //       },
+    //     },
+    //     {
+    //       name: "Total",
+    //       data: {
+    //         "2017-01-01": 16,
+    //         "2017-01-02": 14,
+    //         "2017-01-03": 22,
+    //         "2017-01-04": 14,
+    //         "2017-01-05": 18,
+    //         "2017-01-06": 22,
+    //         "2017-01-07": 28,
+    //       },
+    //     },
+    //   ],
+    //   origins: [
+    //     {
+    //       dzo: "ཐིམ་ཕུ",
+    //       eng: "Thimphu",
+    //     },
+    //     {
+    //       dzo: "སྤ་རོ",
+    //       eng: "Paro",
+    //     },
+    //   ],
+    //   originSelected: {
+    //     dzo: "ཐིམ་ཕུ",
+    //     eng: "Thimphu",
+    //   },
     };
   },
   methods: {
-    addOrigin(val) {
-      this.$store.commit("addOrigin", val);
-      this.$router.push("/book/destination");
-    },
+    // addOrigin(val) {
+    //   this.$store.commit("addOrigin", val);
+    //   this.$router.push("/book/destination");
+    // },
   },
 };
 </script>

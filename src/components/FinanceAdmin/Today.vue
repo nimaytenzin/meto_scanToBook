@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col p-4">
     <h1 class="text-2xl font-semibold text-center my-3 text-gray-700"> Kuzu Zangpo ! Here's your Statistics for todays </h1>
-    <div
+    <!-- <div
       class="
         bg-white
         border-t border-dotted
@@ -464,7 +464,7 @@
           Dowload Data
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -509,140 +509,140 @@ export default {
     };
   },
   created() {
-    getTodayAllPaginated(0).then((res) => {
-      this.bookings = res.data;
-      this.allBookings = res.data;
-      this.todayStats.totalBookingsToday = res.data.count;
-      this.todayStats.totalRevenueToday = res.data.amount;
-    });
+    // getTodayAllPaginated(0).then((res) => {
+    //   this.bookings = res.data;
+    //   this.allBookings = res.data;
+    //   this.todayStats.totalBookingsToday = res.data.count;
+    //   this.todayStats.totalRevenueToday = res.data.amount;
+    // });
 
-    getTodayCashPaginated(0).then((res) => {
-      this.cashBookings = res.data;
-      this.todayStats.cashRevenue = res.data.amount;
-      this.todayStats.counterBooking = res.data.count;
-    });
+    // getTodayCashPaginated(0).then((res) => {
+    //   this.cashBookings = res.data;
+    //   this.todayStats.cashRevenue = res.data.amount;
+    //   this.todayStats.counterBooking = res.data.count;
+    // });
 
-    getTodayMbobPaginated(0).then((res) => {
-      this.mbobBookings = res.data;
-      this.todayStats.mbobRevenue = res.data.amount;
-      this.todayStats.mbobBookings = res.data.count;
-    });
+    // getTodayMbobPaginated(0).then((res) => {
+    //   this.mbobBookings = res.data;
+    //   this.todayStats.mbobRevenue = res.data.amount;
+    //   this.todayStats.mbobBookings = res.data.count;
+    // });
 
-    getTodayOnlinePaginated(0).then((res) => {
-      this.onlineBookings = res.data;
-      this.todayStats.onlineBooking = res.data.count;
-      this.todayStats.onlineRevenue = res.data.amount;
-    });
-    getTodayCancelledPaginated(0).then((res) => {
-      this.cancelledBookings = res.data;
-      this.todayStats.cancellations = res.data.count;
-    });
+    // getTodayOnlinePaginated(0).then((res) => {
+    //   this.onlineBookings = res.data;
+    //   this.todayStats.onlineBooking = res.data.count;
+    //   this.todayStats.onlineRevenue = res.data.amount;
+    // });
+    // getTodayCancelledPaginated(0).then((res) => {
+    //   this.cancelledBookings = res.data;
+    //   this.todayStats.cancellations = res.data.count;
+    // });
   },
   methods: {
-    theFormat(number) {
-      return Math.floor(number);
-    },
-    formatDepartureDate(date) {
-      let options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString("en-US", options);
-    },
-    getDeptTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
-      return `${hrs}:${min} ${ampm}`;
-    },
-    getData(pageNo) {
-      if (pageNo !== null) {
-        if (this.selected === "ALL") {
-          getTodayAllPaginated(pageNo).then((res) => {
-            this.bookings = res.data;
-          });
-        } else if (this.selected === "CASH") {
-          getTodayCashPaginated(pageNo).then((res) => {
-            this.bookings = res.data;
-          });
-        } else if (this.selected === "MBOB") {
-          getTodayMbobPaginated(pageNo).then((res) => {
-            this.bookings = res.data;
-          });
-        } else if (this.selected === "ONLINE") {
-          getTodayOnlinePaginated(pageNo).then((res) => {
-            this.bookings = res.data;
-          });
-        } else {
-          getTodayCancelledPaginated(pageNo).then((res) => {
-            this.bookings = res.data;
-          });
-        }
-      }
-    },
-    assignData(type) {
-      if (type === "ALL") {
-        this.selected = "ALL";
-        this.bookings = this.allBookings;
-      } else if (type === "MBOB") {
-        this.selected = "MBOB";
-        this.bookings = this.mbobBookings;
-      } else if (type === "ONLINE") {
-        this.selected = "ONLINE";
-        this.bookings = this.onlineBookings;
-      } else if (type === "CANCELLED") {
-        this.selected = "CANCELLED";
-        this.bookings = this.cancelledBookings;
-      } else if (type === "CASH") {
-        this.selected = "CASH";
-        this.bookings = this.cashBookings;
-      }
-    },
-    jsonToXLS(data, fileName) {
-      var data = XLSX.utils.json_to_sheet(data);
-      var wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, data, fileName);
-      XLSX.writeFile(wb, fileName);
-    },
-    downloadData() {
-      let date = new Date()
-        .toJSON()
-        .slice(0, 10)
-        .split("-")
-        .reverse()
-        .join("_");
-      if (this.selected === "ALL") {
-        todaysAllData().then((res) => {
-          this.jsonToXLS(res.data, `${date}_all.xlsx`);
-        });
-      } else if (this.selected === "MBOB") {
-        todaysMbobData().then((res) => {
-          this.jsonToXLS(res.data, `${date}_mbob.xlsx`);
-        });
-      } else if (this.selected === "ONLINE") {
-        todaysOnlineData().then((res) => {
-          this.jsonToXLS(res.data, `${date}_online.xlsx`);
-        });
-      } else if (this.selected === "CASH") {
-        todaysCashData().then((res) => {
-          this.jsonToXLS(res.data, `${date}_cash.xlsx`);
-        });
-      } else {
-        todaysCancelledData().then((res) => {
-          this.jsonToXLS(res.data, `${date}_cancelled.xlsx`);
-        });
-      }
-    },
+    // theFormat(number) {
+    //   return Math.floor(number);
+    // },
+    // formatDepartureDate(date) {
+    //   let options = {
+    //     weekday: "long",
+    //     year: "numeric",
+    //     month: "long",
+    //     day: "numeric",
+    //   };
+    //   return new Date(date).toLocaleDateString("en-US", options);
+    // },
+    // getDeptTime: function (time) {
+    //   let tissme = time.split(":");
+    //   let hrs = parseInt(tissme[0]);
+    //   let min = parseInt(tissme[1]).toLocaleString("en-US", {
+    //     minimumIntegerDigits: 2,
+    //     useGrouping: false,
+    //   });
+    //   let ampm = "am";
+    //   if (hrs > 12) {
+    //     hrs = hrs - 12;
+    //     ampm = "pm";
+    //   }
+    //   return `${hrs}:${min} ${ampm}`;
+    // },
+    // getData(pageNo) {
+    //   if (pageNo !== null) {
+    //     if (this.selected === "ALL") {
+    //       getTodayAllPaginated(pageNo).then((res) => {
+    //         this.bookings = res.data;
+    //       });
+    //     } else if (this.selected === "CASH") {
+    //       getTodayCashPaginated(pageNo).then((res) => {
+    //         this.bookings = res.data;
+    //       });
+    //     } else if (this.selected === "MBOB") {
+    //       getTodayMbobPaginated(pageNo).then((res) => {
+    //         this.bookings = res.data;
+    //       });
+    //     } else if (this.selected === "ONLINE") {
+    //       getTodayOnlinePaginated(pageNo).then((res) => {
+    //         this.bookings = res.data;
+    //       });
+    //     } else {
+    //       getTodayCancelledPaginated(pageNo).then((res) => {
+    //         this.bookings = res.data;
+    //       });
+    //     }
+    //   }
+    // },
+    // assignData(type) {
+    //   if (type === "ALL") {
+    //     this.selected = "ALL";
+    //     this.bookings = this.allBookings;
+    //   } else if (type === "MBOB") {
+    //     this.selected = "MBOB";
+    //     this.bookings = this.mbobBookings;
+    //   } else if (type === "ONLINE") {
+    //     this.selected = "ONLINE";
+    //     this.bookings = this.onlineBookings;
+    //   } else if (type === "CANCELLED") {
+    //     this.selected = "CANCELLED";
+    //     this.bookings = this.cancelledBookings;
+    //   } else if (type === "CASH") {
+    //     this.selected = "CASH";
+    //     this.bookings = this.cashBookings;
+    //   }
+    // },
+    // jsonToXLS(data, fileName) {
+    //   var data = XLSX.utils.json_to_sheet(data);
+    //   var wb = XLSX.utils.book_new();
+    //   XLSX.utils.book_append_sheet(wb, data, fileName);
+    //   XLSX.writeFile(wb, fileName);
+    // },
+    // downloadData() {
+    //   let date = new Date()
+    //     .toJSON()
+    //     .slice(0, 10)
+    //     .split("-")
+    //     .reverse()
+    //     .join("_");
+    //   if (this.selected === "ALL") {
+    //     todaysAllData().then((res) => {
+    //       this.jsonToXLS(res.data, `${date}_all.xlsx`);
+    //     });
+    //   } else if (this.selected === "MBOB") {
+    //     todaysMbobData().then((res) => {
+    //       this.jsonToXLS(res.data, `${date}_mbob.xlsx`);
+    //     });
+    //   } else if (this.selected === "ONLINE") {
+    //     todaysOnlineData().then((res) => {
+    //       this.jsonToXLS(res.data, `${date}_online.xlsx`);
+    //     });
+    //   } else if (this.selected === "CASH") {
+    //     todaysCashData().then((res) => {
+    //       this.jsonToXLS(res.data, `${date}_cash.xlsx`);
+    //     });
+    //   } else {
+    //     todaysCancelledData().then((res) => {
+    //       this.jsonToXLS(res.data, `${date}_cancelled.xlsx`);
+    //     });
+    //   }
+    // },
   },
 };
 </script>

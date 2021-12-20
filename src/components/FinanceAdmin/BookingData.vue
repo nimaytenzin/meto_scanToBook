@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col p-4">
-    <div
+    <!-- <div
       class="
         bg-gray-300
         flex
@@ -282,7 +282,7 @@
       :sheetname="'sheetname'"
     >
       Download
-    </vue-excel-xlsx>
+    </vue-excel-xlsx> -->
   </div>
 </template>
 
@@ -294,70 +294,70 @@ import { getAllStops } from "../../services/stopServices";
 export default {
   data() {
     return {
-      buses: [],
-      selectedBus: {},
-      origins: [],
-      originSelected: {},
-      month: "December",
-      year: 2021,
-      columns: [
-        {
-          label: "Product",
-          field: "product",
-        },
-        {
-          label: "Price",
-          field: "price",
-          dataFormat: this.priceFormat,
-        },
-        {
-          label: "Quantity",
-          field: "quantity",
-        },
-      ],
-      data: [
-        {
-          product: "Beverage",
-          price: 10,
-          quantity: 2,
-        },
-        {
-          product: "Snack",
-          price: 12,
-          quantity: 6,
-        },
-        {
-          product: "Beverage",
-          price: 10,
-          quantity: 5,
-        },
-        {
-          product: "Snack",
-          price: 12,
-          quantity: 3,
-        },
-      ],
-      filename:"nima"
+      // buses: [],
+      // selectedBus: {},
+      // origins: [],
+      // originSelected: {},
+      // month: "December",
+      // year: 2021,
+      // columns: [
+      //   {
+      //     label: "Product",
+      //     field: "product",
+      //   },
+      //   {
+      //     label: "Price",
+      //     field: "price",
+      //     dataFormat: this.priceFormat,
+      //   },
+      //   {
+      //     label: "Quantity",
+      //     field: "quantity",
+      //   },
+      // ],
+      // data: [
+      //   {
+      //     product: "Beverage",
+      //     price: 10,
+      //     quantity: 2,
+      //   },
+      //   {
+      //     product: "Snack",
+      //     price: 12,
+      //     quantity: 6,
+      //   },
+      //   {
+      //     product: "Beverage",
+      //     price: 10,
+      //     quantity: 5,
+      //   },
+      //   {
+      //     product: "Snack",
+      //     price: 12,
+      //     quantity: 3,
+      //   },
+      // ],
+      // filename:"nima"
     };
   },
   created() {
-    getAllBusPaginated(0).then((res) => {
-      this.buses = res.data;
-    });
-    getAllStops().then((res) => {
-      this.origins = res;
-      this.originSelected = res[0];
-    });
+    // getAllBusPaginated(0).then((res) => {
+    //   this.buses = res.data;
+    // });
+    // getAllStops().then((res) => {
+    //   this.origins = res;
+    //   this.originSelected = res[0];
+    // });
   },
   methods: {
-    getBusData(pageNo) {
-      getAllBusPaginated(pageNo).then((res) => {
-        this.buses = res.data;
-      });
-    },
-    priceFormat(value) {
-      return "$ " + value;
-    },
+    // getBusData(pageNo) {
+    //   getAllBusPaginated(pageNo).then((res) => {
+    //     this.buses = res.data;
+    //   });
+    // },
+    // priceFormat(value) {
+    //   return "$ " + value;
+    // },
   },
 };
 </script>
