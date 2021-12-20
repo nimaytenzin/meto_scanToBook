@@ -10,7 +10,7 @@
         Cancellations
       </h1>
 
-      <div
+      <!-- <div
         class="
           flex flex-col
           m-auto
@@ -171,9 +171,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
   </div>
-  <vue-final-modal
+  </div>
+  <!-- <vue-final-modal
     v-model="confirmModal"
     classes="modal-container"
     content-class="modal-content"
@@ -197,7 +198,7 @@
         Cancel
       </button>
     </div>
-  </vue-final-modal>
+  </vue-final-modal> -->
 </template>
 
 <style scoped>
@@ -254,71 +255,68 @@ import { getAllCanelled } from "../../services/bookingServices";
 import { cancelBooking } from "../../services/bookingServices";
 export default {
   created() {
-    getAllCanelled().then((res) => {
-      this.cancelledBookings = res.data;
-      console.log(this.cancelledBookings);
-      console.log(res.data);
-    });
+    // getAllCanelled().then((res) => {
+    //   this.cancelledBookings = res.data;
+    //   console.log(this.cancelledBookings);
+    //   console.log(res.data);
+    // });
   },
   data() {
     return {
-      cancelledBookings: [],
-      bookingSelected: {},
-      confirmModal: false,
+      // cancelledBookings: [],
+      // bookingSelected: {},
+      // confirmModal: false,
     };
   },
   methods: {
-    openConfirmModal(booking) {
-      this.bookingSelected = booking;
-      this.confirmModal = true;
-    },
-
-    formatDepartureDate(date) {
-      let options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString("en-US", options);
-    },
-    getDeptTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
-
-      return `${hrs}:${min} ${ampm}`;
-    },
-
-    confirmRefund() {
-      console.log(this.bookingSelected)
-      let data = {
-        bookingStatus: "REFUNDED",
-      };
-      cancelBooking(this.bookingSelected.id, data).then((res) => {
-        if (res.status === 200) {
-          this.$toast.show("Amound Succefully Refunded", {
-            type: "success",
-            position: "top",
-          });
-          this.refreshData();
-          this.confirmModal = false;
-        }
-      });
-    },
-    refreshData() {
-      getAllCanelled().then((res) => {
-        this.cancelledBookings = res.data;
-      });
-    },
+    // openConfirmModal(booking) {
+    //   this.bookingSelected = booking;
+    //   this.confirmModal = true;
+    // },
+    // formatDepartureDate(date) {
+    //   let options = {
+    //     weekday: "long",
+    //     year: "numeric",
+    //     month: "long",
+    //     day: "numeric",
+    //   };
+    //   return new Date(date).toLocaleDateString("en-US", options);
+    // },
+    // getDeptTime: function (time) {
+    //   let tissme = time.split(":");
+    //   let hrs = parseInt(tissme[0]);
+    //   let min = parseInt(tissme[1]).toLocaleString("en-US", {
+    //     minimumIntegerDigits: 2,
+    //     useGrouping: false,
+    //   });
+    //   let ampm = "am";
+    //   if (hrs > 12) {
+    //     hrs = hrs - 12;
+    //     ampm = "pm";
+    //   }
+    //   return `${hrs}:${min} ${ampm}`;
+    // },
+    // confirmRefund() {
+    //   console.log(this.bookingSelected)
+    //   let data = {
+    //     bookingStatus: "REFUNDED",
+    //   };
+    //   cancelBooking(this.bookingSelected.id, data).then((res) => {
+    //     if (res.status === 200) {
+    //       this.$toast.show("Amound Succefully Refunded", {
+    //         type: "success",
+    //         position: "top",
+    //       });
+    //       this.refreshData();
+    //       this.confirmModal = false;
+    //     }
+    //   });
+    // },
+    // refreshData() {
+    //   getAllCanelled().then((res) => {
+    //     this.cancelledBookings = res.data;
+    //   });
+    // },
   },
 };
 </script>

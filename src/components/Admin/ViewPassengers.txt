@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div
+    <div>
+    <!-- <div
       class="min-h-screen flex flex-col items-center sm:ml2 sm:mr2"
       v-if="!scheduleStatus"
-    >
-      <div>
+    > -->
+      <!-- <div>
         <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
       </div>
       <div class="flex flex-col justify-center items-center">
@@ -105,11 +106,11 @@
             Cancel Bus
           </button>
         </div>
-      </div>
+      </div> -->
 
       <!--  -->
 
-      <div class="mt-4" v-if="scheduleBookings.length">
+      <!-- <div class="mt-4" v-if="scheduleBookings.length">
         <h2 class="text-center text-xl font-semibold">Booking Details</h2>
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -259,9 +260,9 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
 
-      <div class="inline-flex mt-8">
+      <!-- <div class="inline-flex mt-8">
         <button
           class="
             bg-gray-100
@@ -277,10 +278,10 @@
         >
           Schedules
         </button>
-      </div>
+      </div> -->
     </div>
 
-    <div
+    <!-- <div
       class="
         min-h-screen
         flex flex-col
@@ -329,9 +330,9 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <vue-final-modal
+    <!-- <vue-final-modal
       v-model="transferSelectedModal"
       classes="modal-container"
       content-class="modal-content"
@@ -837,7 +838,7 @@
           cancel
         </button>
       </div>
-    </vue-final-modal>
+    </vue-final-modal> -->
   </div>
 </template>
 
@@ -913,686 +914,686 @@ import moment from "moment";
 export default {
   data() {
     return {
-      scheduleId: null,
-      //check if schedule is cancelled or not
-      scheduleStatus: 0,
-      socketConnection: null,
-      conn2: null,
-      conn: null,
-      //modal
-      cancelBookingModal: false,
-      transferSelectedModal: false,
-      confirmTransferModal: false,
-      //transfer booking logic vars
+      // scheduleId: null,
+      // //check if schedule is cancelled or not
+      // scheduleStatus: 0,
+      // socketConnection: null,
+      // conn2: null,
+      // conn: null,
+      // //modal
+      // cancelBookingModal: false,
+      // transferSelectedModal: false,
+      // confirmTransferModal: false,
+      // //transfer booking logic vars
 
-      selectedBooking: {},
-      seatsToTransfer: 0,
+      // selectedBooking: {},
+      // seatsToTransfer: 0,
 
-      reverSeatModal: false,
+      // reverSeatModal: false,
 
-      //transfer schedule vars
-      matchedRoutes: [],
-      transferOrigin: {},
-      transferDestination: {},
-      transferDate: null,
-      selectedTransferSchedule: {},
-      transferSchedules: [],
-      matchedTransferSchedules: [],
-      transferSeats: [],
-      selectedTransferSeat: {},
-      //Seat state
-      lockedSeats: [],
-      addSeatModal: false,
-      showSeats: false,
-      showSchedulesTable: false,
-      seats: [
-        { id: 1, number: 1, type: "seat", status: "available" },
-        { id: 2, number: 0, type: "notSeat", status: "available" },
-        { id: 3, number: 0, type: "notSeat", status: "available" },
-        { id: 4, number: 0, type: "notseat", status: "available" },
-        { id: 5, number: 2, type: "seat", status: "available" },
-        { id: 6, number: 0, type: "notSeat", status: "available" },
-        { id: 7, number: 3, type: "seat", status: "available" },
-        { id: 8, number: 4, type: "seat", status: "available" },
-        { id: 9, number: 0, type: "notSeat", status: "available" },
-        { id: 10, number: 0, type: "notSeat", status: "available" },
-        { id: 11, number: 5, type: "seat", status: "available" },
-        { id: 12, number: 6, type: "seat", status: "available" },
-        { id: 13, number: 7, type: "seat", status: "available" },
-        { id: 14, number: 0, type: "notSeat", status: "available" },
-        { id: 15, number: 8, type: "seat", status: "available" },
-        { id: 16, number: 9, type: "seat", status: "available" },
-        { id: 17, number: 10, type: "seat", status: "available" },
-        { id: 18, number: 0, type: "notSeat", status: "available" },
-        { id: 19, number: 11, type: "seat", status: "available" },
-        { id: 20, number: 12, type: "seat", status: "available" },
-        { id: 21, number: 13, type: "seat", status: "available" },
-        { id: 22, number: 0, type: "notseat", status: "available" },
-        { id: 23, number: 14, type: "seat", status: "available" },
-        { id: 24, number: 15, type: "seat", status: "available" },
-        { id: 25, number: 16, type: "seat", status: "available" },
-        { id: 26, number: 17, type: "seat", status: "available" },
-        { id: 27, number: 18, type: "seat", status: "available" },
-        { id: 28, number: 19, type: "seat", status: "available" },
-      ],
-      scheduleData: {
-        route: {
-          origin: {},
-          destination: {},
-        },
-        calendarDate: {
-          Month_Name: "",
-          Calendar_Day: 0,
-          Calendar_Year: 0,
-        },
-      },
+      // //transfer schedule vars
+      // matchedRoutes: [],
+      // transferOrigin: {},
+      // transferDestination: {},
+      // transferDate: null,
+      // selectedTransferSchedule: {},
+      // transferSchedules: [],
+      // matchedTransferSchedules: [],
+      // transferSeats: [],
+      // selectedTransferSeat: {},
+      // //Seat state
+      // lockedSeats: [],
+      // addSeatModal: false,
+      // showSeats: false,
+      // showSchedulesTable: false,
+      // seats: [
+      //   { id: 1, number: 1, type: "seat", status: "available" },
+      //   { id: 2, number: 0, type: "notSeat", status: "available" },
+      //   { id: 3, number: 0, type: "notSeat", status: "available" },
+      //   { id: 4, number: 0, type: "notseat", status: "available" },
+      //   { id: 5, number: 2, type: "seat", status: "available" },
+      //   { id: 6, number: 0, type: "notSeat", status: "available" },
+      //   { id: 7, number: 3, type: "seat", status: "available" },
+      //   { id: 8, number: 4, type: "seat", status: "available" },
+      //   { id: 9, number: 0, type: "notSeat", status: "available" },
+      //   { id: 10, number: 0, type: "notSeat", status: "available" },
+      //   { id: 11, number: 5, type: "seat", status: "available" },
+      //   { id: 12, number: 6, type: "seat", status: "available" },
+      //   { id: 13, number: 7, type: "seat", status: "available" },
+      //   { id: 14, number: 0, type: "notSeat", status: "available" },
+      //   { id: 15, number: 8, type: "seat", status: "available" },
+      //   { id: 16, number: 9, type: "seat", status: "available" },
+      //   { id: 17, number: 10, type: "seat", status: "available" },
+      //   { id: 18, number: 0, type: "notSeat", status: "available" },
+      //   { id: 19, number: 11, type: "seat", status: "available" },
+      //   { id: 20, number: 12, type: "seat", status: "available" },
+      //   { id: 21, number: 13, type: "seat", status: "available" },
+      //   { id: 22, number: 0, type: "notseat", status: "available" },
+      //   { id: 23, number: 14, type: "seat", status: "available" },
+      //   { id: 24, number: 15, type: "seat", status: "available" },
+      //   { id: 25, number: 16, type: "seat", status: "available" },
+      //   { id: 26, number: 17, type: "seat", status: "available" },
+      //   { id: 27, number: 18, type: "seat", status: "available" },
+      //   { id: 28, number: 19, type: "seat", status: "available" },
+      // ],
+      // scheduleData: {
+      //   route: {
+      //     origin: {},
+      //     destination: {},
+      //   },
+      //   calendarDate: {
+      //     Month_Name: "",
+      //     Calendar_Day: 0,
+      //     Calendar_Year: 0,
+      //   },
+      // },
 
-      scheduleBookings: [],
+      // scheduleBookings: [],
 
-      stops: [],
-      routeDays: [],
-      connectionAttempt: 0,
-      isLoader: false,
-      errorModal: false,
+      // stops: [],
+      // routeDays: [],
+      // connectionAttempt: 0,
+      // isLoader: false,
+      // errorModal: false,
     };
   },
   methods: {
-    getdepTime: function (time) {
-      let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
+  //   getdepTime: function (time) {
+  //     let tissme = time.split(":");
+  //     let hrs = parseInt(tissme[0]);
+  //     let min = parseInt(tissme[1]).toLocaleString("en-US", {
+  //       minimumIntegerDigits: 2,
+  //       useGrouping: false,
+  //     });
+  //     let ampm = "am";
+  //     if (hrs > 12) {
+  //       hrs = hrs - 12;
+  //       ampm = "pm";
+  //     }
 
-      return `${hrs}:${min} ${ampm}`;
-    },
-    getSeats(number) {
-      for (let i = 0; i < this.seats.length; i++) {
-        if (this.seats[i].number === number) {
-          return this.seats[i];
-        }
-      }
-      return null;
-    },
-    matchBookedSeat(id) {
-      // let bookedSeats = this.$store.state.selectedSeats;
-      // console.log(bookedSeats);
-      // for (let i = 0; i < bookedSeats.length; i++) {
-      //   if (bookedSeats[i].number === id) {
-      //     return bookedSeats[i];
-      //   }
-      // }
-      // return null;
-    },
-    bindImage(seat) {
-      if (seat.type === "seat") {
-        switch (seat.status) {
-          case "available":
-            return require("../../assets/seatAvailable.png");
-            break;
-          case "booked":
-            return require("../../assets/seatUnavailable.png");
-            break;
-          case "driver":
-            return require("../../assets/steeringwheel.png");
-            break;
-          case "locked":
-            return require("../../assets/seatSelected.png");
-            break;
-          default:
-            return require("../../assets/seatAvailable.png");
-            break;
-        }
-      } else {
-        return require("../../assets/seatAvailable.png");
-      }
-    },
-    changeSeatStatus() {
-      this.lockedSeats.forEach((seatNum) => {
-        let matchedSeat = this.getSeats(seatNum);
-        if (matchedSeat.status !== "booked") {
-          matchedSeat.status = "locked";
-        }
-      });
+  //     return `${hrs}:${min} ${ampm}`;
+  //   },
+  //   getSeats(number) {
+  //     for (let i = 0; i < this.seats.length; i++) {
+  //       if (this.seats[i].number === number) {
+  //         return this.seats[i];
+  //       }
+  //     }
+  //     return null;
+  //   },
+  //   matchBookedSeat(id) {
+  //     // let bookedSeats = this.$store.state.selectedSeats;
+  //     // console.log(bookedSeats);
+  //     // for (let i = 0; i < bookedSeats.length; i++) {
+  //     //   if (bookedSeats[i].number === id) {
+  //     //     return bookedSeats[i];
+  //     //   }
+  //     // }
+  //     // return null;
+  //   },
+  //   bindImage(seat) {
+  //     if (seat.type === "seat") {
+  //       switch (seat.status) {
+  //         case "available":
+  //           return require("../../assets/seatAvailable.png");
+  //           break;
+  //         case "booked":
+  //           return require("../../assets/seatUnavailable.png");
+  //           break;
+  //         case "driver":
+  //           return require("../../assets/steeringwheel.png");
+  //           break;
+  //         case "locked":
+  //           return require("../../assets/seatSelected.png");
+  //           break;
+  //         default:
+  //           return require("../../assets/seatAvailable.png");
+  //           break;
+  //       }
+  //     } else {
+  //       return require("../../assets/seatAvailable.png");
+  //     }
+  //   },
+  //   changeSeatStatus() {
+  //     this.lockedSeats.forEach((seatNum) => {
+  //       let matchedSeat = this.getSeats(seatNum);
+  //       if (matchedSeat.status !== "booked") {
+  //         matchedSeat.status = "locked";
+  //       }
+  //     });
 
-      // if (this.transferSeats.length) {
-      //   this.lockedSeats.forEach((seatNumber) => {
-      //     this.transferSeats.forEach((seat) => {
-      //       if (seatNumber === seat.number) {
-      //         this.getSeats(seatNumber).status = "booked";
-      //       } else {
-      //         this.getSeats(seatNumber).status = "locked";
-      //       }
-      //     });
-      //   });
-      // } else {
-      //   this.lockedSeats.forEach((seatNumber) => {
-      //     this.getSeats(seatNumber).status = "locked";
-      //   });
-      // }
-    },
-    cancelBus() {
-      updateSchedule(this.scheduleId, {
-        isFinished: 2,
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(this.scheduleData);
-          console.log(this.scheduleData.bookings, "Bookings to cancel");
-          this.scheduleBookings.forEach((booking) => {
-            updateBooking(booking.bookingId, {
-              checkInStatus: "CANCELLED",
-            })
-              .then((res) => {
-                if (res.status === 200) {
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          });
-          this.refreshData();
-          this.$toast.show(
-            "Bus Schedule Cancelled, SMS alert sent to passengers"
-          );
-        }
-      });
-    },
+  //     // if (this.transferSeats.length) {
+  //     //   this.lockedSeats.forEach((seatNumber) => {
+  //     //     this.transferSeats.forEach((seat) => {
+  //     //       if (seatNumber === seat.number) {
+  //     //         this.getSeats(seatNumber).status = "booked";
+  //     //       } else {
+  //     //         this.getSeats(seatNumber).status = "locked";
+  //     //       }
+  //     //     });
+  //     //   });
+  //     // } else {
+  //     //   this.lockedSeats.forEach((seatNumber) => {
+  //     //     this.getSeats(seatNumber).status = "locked";
+  //     //   });
+  //     // }
+  //   },
+  //   cancelBus() {
+  //     updateSchedule(this.scheduleId, {
+  //       isFinished: 2,
+  //     }).then((res) => {
+  //       if (res.status === 200) {
+  //         console.log(this.scheduleData);
+  //         console.log(this.scheduleData.bookings, "Bookings to cancel");
+  //         this.scheduleBookings.forEach((booking) => {
+  //           updateBooking(booking.bookingId, {
+  //             checkInStatus: "CANCELLED",
+  //           })
+  //             .then((res) => {
+  //               if (res.status === 200) {
+  //               }
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //             });
+  //         });
+  //         this.refreshData();
+  //         this.$toast.show(
+  //           "Bus Schedule Cancelled, SMS alert sent to passengers"
+  //         );
+  //       }
+  //     });
+  //   },
 
-    openBookingsModal(booking, bookedSeat) {
-      this.selectedBooking = booking;
-      this.cancelBookingModal = true;
-    },
+  //   openBookingsModal(booking, bookedSeat) {
+  //     this.selectedBooking = booking;
+  //     this.cancelBookingModal = true;
+  //   },
 
-    reverSeatStatus(arr) {
-      arr.forEach((element) => {
-        let matchedSeat = this.getSeats(parseInt(element));
-        // let matchedBookedSeat = this.matchBookedSeat(parseInt(element));
-        matchedSeat.status = "available";
-      });
-    },
+  //   reverSeatStatus(arr) {
+  //     arr.forEach((element) => {
+  //       let matchedSeat = this.getSeats(parseInt(element));
+  //       // let matchedBookedSeat = this.matchBookedSeat(parseInt(element));
+  //       matchedSeat.status = "available";
+  //     });
+  //   },
 
-    openCancelBookingModal(e) {
-      this.selectedBooking = e;
-      console.log(this.selectedBooking, "SELECTED BOOKING ");
+  //   openCancelBookingModal(e) {
+  //     this.selectedBooking = e;
+  //     console.log(this.selectedBooking, "SELECTED BOOKING ");
 
-      this.cancelBookingModal = true;
-    },
+  //     this.cancelBookingModal = true;
+  //   },
 
-    cancelBooking() {
-      let status = {
-        checkInStatus: "CANCELLED",
-      };
-      cancelBooking(this.selectedBooking.id, status).then((res) => {
-        if (res.status === 200) {
-          this.refreshData();
-          this.$toast.show(
-            `SMS FOR CANCEL LINK ${window.location.host}/cancel-ticket/${this.selectedBooking.id}`,
-            {
-              type: "info",
-              position: "top",
-            }
-          );
+  //   cancelBooking() {
+  //     let status = {
+  //       checkInStatus: "CANCELLED",
+  //     };
+  //     cancelBooking(this.selectedBooking.id, status).then((res) => {
+  //       if (res.status === 200) {
+  //         this.refreshData();
+  //         this.$toast.show(
+  //           `SMS FOR CANCEL LINK ${window.location.host}/cancel-ticket/${this.selectedBooking.id}`,
+  //           {
+  //             type: "info",
+  //             position: "top",
+  //           }
+  //         );
 
-          this.connectWs2();
+  //         this.connectWs2();
 
-          this.selectedBooking.bookedSeats.forEach((seat) => {
-            this.conn2.onopen = (event) => {
-              this.conn2.send(
-                JSON.stringify({
-                  roomId: this.selectedBooking.scheduleId.toString(),
-                  messageType: "LOCK_LEAVE",
-                  seatId: seat.seatNumber.toString(),
-                })
-              );
-            };
-          });
+  //         this.selectedBooking.bookedSeats.forEach((seat) => {
+  //           this.conn2.onopen = (event) => {
+  //             this.conn2.send(
+  //               JSON.stringify({
+  //                 roomId: this.selectedBooking.scheduleId.toString(),
+  //                 messageType: "LOCK_LEAVE",
+  //                 seatId: seat.seatNumber.toString(),
+  //               })
+  //             );
+  //           };
+  //         });
 
-          this.cancelBookingModal = false;
-        }
-      });
-    },
+  //         this.cancelBookingModal = false;
+  //       }
+  //     });
+  //   },
 
-    populateRouteDays() {
-      this.routeDays = [];
+  //   populateRouteDays() {
+  //     this.routeDays = [];
 
-      getRoutesByOriginDestination(
-        this.transferOrigin.id,
-        this.transferDestination.id
-      )
-        .then((res) => {
-          res.data.forEach((element) => {
-            this.matchedRoutes.push(element);
-          });
-        })
-        .catch((err) => console.log(err));
+  //     getRoutesByOriginDestination(
+  //       this.transferOrigin.id,
+  //       this.transferDestination.id
+  //     )
+  //       .then((res) => {
+  //         res.data.forEach((element) => {
+  //           this.matchedRoutes.push(element);
+  //         });
+  //       })
+  //       .catch((err) => console.log(err));
 
-      let days = [];
-      let daysRequired = 14;
+  //     let days = [];
+  //     let daysRequired = 14;
 
-      for (let i = 1; i <= daysRequired; i++) {
-        days.push(moment().add(i, "days").format("YYYY-MM-DD"));
-      }
+  //     for (let i = 1; i <= daysRequired; i++) {
+  //       days.push(moment().add(i, "days").format("YYYY-MM-DD"));
+  //     }
 
-      days.forEach((day) => {
-        let formattedDate = day + " 00:00:00";
-        getScheduleByDate(formattedDate).then((res) => {
-          let dattt = new Date(formattedDate);
-          if (res.length) {
-            res.forEach((ok) => {
-              this.matchedRoutes.forEach((route) => {
-                if (route.id === ok.routeId) {
-                  let routeDay = {
-                    dates: new Date(ok.dateId),
-                    highlight: {
-                      color: "green",
-                      fillMode: "light",
-                    },
-                  };
-                  this.routeDays.push(routeDay);
-                }
-              });
-            });
-          } else {
-          }
-        });
-      });
-      //finda all matched routes
-    },
+  //     days.forEach((day) => {
+  //       let formattedDate = day + " 00:00:00";
+  //       getScheduleByDate(formattedDate).then((res) => {
+  //         let dattt = new Date(formattedDate);
+  //         if (res.length) {
+  //           res.forEach((ok) => {
+  //             this.matchedRoutes.forEach((route) => {
+  //               if (route.id === ok.routeId) {
+  //                 let routeDay = {
+  //                   dates: new Date(ok.dateId),
+  //                   highlight: {
+  //                     color: "green",
+  //                     fillMode: "light",
+  //                   },
+  //                 };
+  //                 this.routeDays.push(routeDay);
+  //               }
+  //             });
+  //           });
+  //         } else {
+  //         }
+  //       });
+  //     });
+  //     //finda all matched routes
+  //   },
 
-    // transferPassenger() {
-    //   this.$router.push(`/admin/transfer-passengers/${this.scheduleId}`);
-    // },
-    transferSelectedPassenger(booking, bookedSeat) {
-      this.selectedBookedSeat = bookedSeat;
-      this.selectedBooking = booking;
-      this.selectedBookedSeat.bookingDetails = booking;
+  //   // transferPassenger() {
+  //   //   this.$router.push(`/admin/transfer-passengers/${this.scheduleId}`);
+  //   // },
+  //   transferSelectedPassenger(booking, bookedSeat) {
+  //     this.selectedBookedSeat = bookedSeat;
+  //     this.selectedBooking = booking;
+  //     this.selectedBookedSeat.bookingDetails = booking;
 
-      this.transferSelectedModal = true;
-    },
+  //     this.transferSelectedModal = true;
+  //   },
 
-    cancelRevert() {
-      this.reverSeatModal = false;
-    },
-    confirmRevert() {
-      this.conn.send(
-        JSON.stringify({
-          roomId: this.selectedTransferSchedule.toString(),
-          messageType: "LOCK_LEAVE",
-          seatId: this.selectedTransferSeat.number.toString(),
-        })
-      );
-      this.selectedTransferSeat.status = "available";
+  //   cancelRevert() {
+  //     this.reverSeatModal = false;
+  //   },
+  //   confirmRevert() {
+  //     this.conn.send(
+  //       JSON.stringify({
+  //         roomId: this.selectedTransferSchedule.toString(),
+  //         messageType: "LOCK_LEAVE",
+  //         seatId: this.selectedTransferSeat.number.toString(),
+  //       })
+  //     );
+  //     this.selectedTransferSeat.status = "available";
 
-      this.transferSeats.forEach((seat, index) => {
-        if (this.selectedTransferSeat.id === seat.id) {
-          this.transferSeats.splice(index, 1);
-        }
-      });
+  //     this.transferSeats.forEach((seat, index) => {
+  //       if (this.selectedTransferSeat.id === seat.id) {
+  //         this.transferSeats.splice(index, 1);
+  //       }
+  //     });
 
-      this.total -= this.fare;
-      this.selectedTransferSeat = {};
-      this.reverSeatModal = false;
-    },
+  //     this.total -= this.fare;
+  //     this.selectedTransferSeat = {};
+  //     this.reverSeatModal = false;
+  //   },
 
-    openTransferBookingModal(booking) {
-      this.selectedBooking = booking;
-      this.seatsToTransfer = this.selectedBooking.bookedSeats.length;
+  //   openTransferBookingModal(booking) {
+  //     this.selectedBooking = booking;
+  //     this.seatsToTransfer = this.selectedBooking.bookedSeats.length;
 
-      this.transferSelectedModal = true;
-    },
-    transferPassenger() {
-      this.confirmTransferModal = true;
-      /***
-       * get old booked seats id
-       * update ->seat Number and schedule id to the newly selected one
-       * get also the old seatId and schedule
-       * {
-       *  oldScehdule:{
-       *      id: Oldid,
-       *      booking:{
-       *        id:id,
-       *        scheduleId:oldScheduleId,
-       *        bookedSears:[{
-       *           id:same,
-       *           seatNumber:OldSeatNumber
-       *           scheduleId:OldScheduleId,
-       *           bookingId:remainsSame
-       *        }]
-       *     }
-       *  }
-       * }
-       */
-    },
+  //     this.transferSelectedModal = true;
+  //   },
+  //   transferPassenger() {
+  //     this.confirmTransferModal = true;
+  //     /***
+  //      * get old booked seats id
+  //      * update ->seat Number and schedule id to the newly selected one
+  //      * get also the old seatId and schedule
+  //      * {
+  //      *  oldScehdule:{
+  //      *      id: Oldid,
+  //      *      booking:{
+  //      *        id:id,
+  //      *        scheduleId:oldScheduleId,
+  //      *        bookedSears:[{
+  //      *           id:same,
+  //      *           seatNumber:OldSeatNumber
+  //      *           scheduleId:OldScheduleId,
+  //      *           bookingId:remainsSame
+  //      *        }]
+  //      *     }
+  //      *  }
+  //      * }
+  //      */
+  //   },
 
-    cancelPassengerTransfer() {
-      this.confirmTransferModal = false;
-    },
-    confirmPassengerTransfer() {
-      let newScheduleId = this.selectedTransferSchedule.id;
-      this.selectedBooking.bookedSeats.forEach((bookedSeat, index) => {
-        updateBookedSeat(bookedSeat.id, {
-          scheduleId: newScheduleId,
-          seatNumber: this.transferSeats[index].number,
-        });
-      });
-      updateBooking(this.selectedBooking.id, {
-        scheduleId: newScheduleId,
-      }).then((res) => {
-        if (res.status === 200) {
-          this.refreshData();
-        }
-      });
+  //   cancelPassengerTransfer() {
+  //     this.confirmTransferModal = false;
+  //   },
+  //   confirmPassengerTransfer() {
+  //     let newScheduleId = this.selectedTransferSchedule.id;
+  //     this.selectedBooking.bookedSeats.forEach((bookedSeat, index) => {
+  //       updateBookedSeat(bookedSeat.id, {
+  //         scheduleId: newScheduleId,
+  //         seatNumber: this.transferSeats[index].number,
+  //       });
+  //     });
+  //     updateBooking(this.selectedBooking.id, {
+  //       scheduleId: newScheduleId,
+  //     }).then((res) => {
+  //       if (res.status === 200) {
+  //         this.refreshData();
+  //       }
+  //     });
 
-      this.confirmTransferModal = false;
-      this.addSeatModal = false;
-      this.transferSelectedModal = false;
+  //     this.confirmTransferModal = false;
+  //     this.addSeatModal = false;
+  //     this.transferSelectedModal = false;
 
-      // console.log(this.selectedTransferSchedule)
-    },
+  //     // console.log(this.selectedTransferSchedule)
+  //   },
 
-    checkBookedSeatsByScheduleAndBooking() {},
-    cancelSelectedPassenger() {
-      this.selectedPassengerBookings.forEach((ele) => {
-        cancelBooking(ele.id).then((res) => {});
-      });
-    },
+  //   checkBookedSeatsByScheduleAndBooking() {},
+  //   cancelSelectedPassenger() {
+  //     this.selectedPassengerBookings.forEach((ele) => {
+  //       cancelBooking(ele.id).then((res) => {});
+  //     });
+  //   },
 
-    //User clicks on a date and it triggers schedule search
-    onDayClick(e) {
-      this.transferSchedules = [];
-      this.selectedDate = e.ariaLabel;
-      let formattedDate = e.id + " 00:00:00";
-      getDetailsByDate(formattedDate).then((res) => {
-        this.transferSchedules = res;
-      });
-    },
-    //but all the schedules dont match the route ID
-    //so when we click seatch button we get the route
-    // id of that origin and destination
+  //   //User clicks on a date and it triggers schedule search
+  //   onDayClick(e) {
+  //     this.transferSchedules = [];
+  //     this.selectedDate = e.ariaLabel;
+  //     let formattedDate = e.id + " 00:00:00";
+  //     getDetailsByDate(formattedDate).then((res) => {
+  //       this.transferSchedules = res;
+  //     });
+  //   },
+  //   //but all the schedules dont match the route ID
+  //   //so when we click seatch button we get the route
+  //   // id of that origin and destination
 
-    searchTransferSchedules() {
-      if (
-        this.transferOrigin.id &&
-        this.transferDestination.id &&
-        this.selectedDate
-      ) {
-        this.matchedTransferSchedules = [];
-        this.matchedRoutes = [];
-        getRoutesByOriginDestination(
-          this.transferOrigin.id,
-          this.transferDestination.id
-        ).then((res) => {
-          res.data.forEach((data) => {
-            this.matchedRoutes.push(data);
-          });
+  //   searchTransferSchedules() {
+  //     if (
+  //       this.transferOrigin.id &&
+  //       this.transferDestination.id &&
+  //       this.selectedDate
+  //     ) {
+  //       this.matchedTransferSchedules = [];
+  //       this.matchedRoutes = [];
+  //       getRoutesByOriginDestination(
+  //         this.transferOrigin.id,
+  //         this.transferDestination.id
+  //       ).then((res) => {
+  //         res.data.forEach((data) => {
+  //           this.matchedRoutes.push(data);
+  //         });
 
-          this.transferSchedules.forEach((schedule) => {
-            this.matchedRoutes.forEach((route) => {
-              console.log(route, "MAtch route ID");
-              if (route.id === schedule.route.id) {
-                this.matchedTransferSchedules.push(schedule);
-              }
-            });
-          });
-        });
-        this.showSchedulesTable = true;
-      } else {
-        this.$toast.show("Please select a departure Date", {
-          position: "top",
-          type: "error",
-        });
-      }
-    },
+  //         this.transferSchedules.forEach((schedule) => {
+  //           this.matchedRoutes.forEach((route) => {
+  //             console.log(route, "MAtch route ID");
+  //             if (route.id === schedule.route.id) {
+  //               this.matchedTransferSchedules.push(schedule);
+  //             }
+  //           });
+  //         });
+  //       });
+  //       this.showSchedulesTable = true;
+  //     } else {
+  //       this.$toast.show("Please select a departure Date", {
+  //         position: "top",
+  //         type: "error",
+  //       });
+  //     }
+  //   },
 
-    selectTransferSchedule(schedule) {
-      this.selectedTransferSchedule = schedule;
-      this.$toast.show("Schedule Selected", {
-        position: "top",
-        type: "success",
-      });
-    },
+  //   selectTransferSchedule(schedule) {
+  //     this.selectedTransferSchedule = schedule;
+  //     this.$toast.show("Schedule Selected", {
+  //       position: "top",
+  //       type: "success",
+  //     });
+  //   },
 
-    //now click on select seats to trigger a wss connection
-    showSelectSeats() {
-      if (this.selectedTransferSchedule.id) {
-        this.showSeats = true;
-        //handle socket connection
+  //   //now click on select seats to trigger a wss connection
+  //   showSelectSeats() {
+  //     if (this.selectedTransferSchedule.id) {
+  //       this.showSeats = true;
+  //       //handle socket connection
 
-        this.errorModal = true;
-        this.isLoader = true;
-        this.connectWs();
-      } else {
-        this.$toast.show("Please select a schedule to transfer", {
-          position: "top",
-          type: "error",
-        });
-      }
-    },
-    connectWs() {
-      this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.selectedTransferSchedule.id}`
-      );
-      this.conn.onopen = (event) => {
-        this.isConnected = true;
-        this.connectionAttempt = 0;
-        this.errorModal = false;
-        this.isLoader = false;
-        console.log("Successfully connected to the echo websocket server");
-      };
+  //       this.errorModal = true;
+  //       this.isLoader = true;
+  //       this.connectWs();
+  //     } else {
+  //       this.$toast.show("Please select a schedule to transfer", {
+  //         position: "top",
+  //         type: "error",
+  //       });
+  //     }
+  //   },
+  //   connectWs() {
+  //     this.conn = new WebSocket(
+  //       `${process.env.VUE_APP_WSS}/${this.selectedTransferSchedule.id}`
+  //     );
+  //     this.conn.onopen = (event) => {
+  //       this.isConnected = true;
+  //       this.connectionAttempt = 0;
+  //       this.errorModal = false;
+  //       this.isLoader = false;
+  //       console.log("Successfully connected to the echo websocket server");
+  //     };
 
-      this.conn.onclose = (evt) => {
-        if (!this.isLoader) {
-          this.errorModal = true;
-          this.isLoader = true;
-        }
+  //     this.conn.onclose = (evt) => {
+  //       if (!this.isLoader) {
+  //         this.errorModal = true;
+  //         this.isLoader = true;
+  //       }
 
-        this.connectionAttempt++;
-        console.log("WSS CONNECTION closed");
-        console.log("RECONNECTING");
-        this.isConnected = false;
-        if (!this.isConnected) {
-          setTimeout(() => {
-            console.log(this.connectionAttempt);
-            if (this.connectionAttempt === 7) {
-              this.errorModal = false;
-              this.isLoader = false;
-              this.$router.push("/service-down");
-            } else {
-              this.connectWs();
-            }
-          }, 1000);
-        }
-      };
-      this.conn.onmessage = (evt) => {
-        let messageJson = JSON.parse(evt.data);
-        if (messageJson.messageType === "LOCK") {
-          console.log("LOCK MESSAGE RECIEVED");
-          this.lockedSeats = messageJson.lockedList;
+  //       this.connectionAttempt++;
+  //       console.log("WSS CONNECTION closed");
+  //       console.log("RECONNECTING");
+  //       this.isConnected = false;
+  //       if (!this.isConnected) {
+  //         setTimeout(() => {
+  //           console.log(this.connectionAttempt);
+  //           if (this.connectionAttempt === 7) {
+  //             this.errorModal = false;
+  //             this.isLoader = false;
+  //             this.$router.push("/service-down");
+  //           } else {
+  //             this.connectWs();
+  //           }
+  //         }, 1000);
+  //       }
+  //     };
+  //     this.conn.onmessage = (evt) => {
+  //       let messageJson = JSON.parse(evt.data);
+  //       if (messageJson.messageType === "LOCK") {
+  //         console.log("LOCK MESSAGE RECIEVED");
+  //         this.lockedSeats = messageJson.lockedList;
 
-          this.changeSeatStatus();
-          console.log(messageJson);
-        } else if (messageJson.messageType === "LOCK_LEAVE") {
-          console.log("LOCK LEAVE RECIEVED");
-          console.log(messageJson);
-          this.reverSeatStatus(messageJson.leaveList);
-        } else if (messageJson.messageType === "LOCK_CONFIRM") {
-        }
-      };
-    },
+  //         this.changeSeatStatus();
+  //         console.log(messageJson);
+  //       } else if (messageJson.messageType === "LOCK_LEAVE") {
+  //         console.log("LOCK LEAVE RECIEVED");
+  //         console.log(messageJson);
+  //         this.reverSeatStatus(messageJson.leaveList);
+  //       } else if (messageJson.messageType === "LOCK_CONFIRM") {
+  //       }
+  //     };
+  //   },
 
-    connectWs2() {
-      this.conn2 = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
-      );
-      this.conn2.onopen = (event) => {
-        this.isConnected = true;
-        this.connectionAttempt = 0;
-        this.errorModal = false;
-        this.isLoader = false;
-        console.log("Successfully connected to the echo websocket server");
-      };
+  //   connectWs2() {
+  //     this.conn2 = new WebSocket(
+  //       `${process.env.VUE_APP_WSS}/${this.selectedBooking.scheduleId}`
+  //     );
+  //     this.conn2.onopen = (event) => {
+  //       this.isConnected = true;
+  //       this.connectionAttempt = 0;
+  //       this.errorModal = false;
+  //       this.isLoader = false;
+  //       console.log("Successfully connected to the echo websocket server");
+  //     };
 
-      this.conn2.onclose = (evt) => {
-        if (!this.isLoader) {
-          this.errorModal = true;
-          this.isLoader = true;
-        }
+  //     this.conn2.onclose = (evt) => {
+  //       if (!this.isLoader) {
+  //         this.errorModal = true;
+  //         this.isLoader = true;
+  //       }
 
-        this.connectionAttempt++;
-        console.log("WSS CONNECTION closed");
-        console.log("RECONNECTING");
-        this.isConnected = false;
-        if (!this.isConnected) {
-          setTimeout(() => {
-            console.log(this.connectionAttempt);
-            if (this.connectionAttempt === 7) {
-              this.errorModal = false;
-              this.isLoader = false;
-              this.$router.push("/service-down");
-            } else {
-              this.connectWs2();
-            }
-          }, 1000);
-        }
-      };
-      this.conn2.onmessage = (evt) => {
-        let messageJson = JSON.parse(evt.data);
-        if (messageJson.messageType === "LOCK") {
-          console.log("LOCK MESSAGE RECIEVED");
-          this.lockedSeats = messageJson.lockedList;
+  //       this.connectionAttempt++;
+  //       console.log("WSS CONNECTION closed");
+  //       console.log("RECONNECTING");
+  //       this.isConnected = false;
+  //       if (!this.isConnected) {
+  //         setTimeout(() => {
+  //           console.log(this.connectionAttempt);
+  //           if (this.connectionAttempt === 7) {
+  //             this.errorModal = false;
+  //             this.isLoader = false;
+  //             this.$router.push("/service-down");
+  //           } else {
+  //             this.connectWs2();
+  //           }
+  //         }, 1000);
+  //       }
+  //     };
+  //     this.conn2.onmessage = (evt) => {
+  //       let messageJson = JSON.parse(evt.data);
+  //       if (messageJson.messageType === "LOCK") {
+  //         console.log("LOCK MESSAGE RECIEVED");
+  //         this.lockedSeats = messageJson.lockedList;
 
-          this.changeSeatStatus();
-          console.log(messageJson);
-        } else if (messageJson.messageType === "LOCK_LEAVE") {
-          console.log("LOCK LEAVE RECIEVED");
-          console.log(messageJson);
-          this.reverSeatStatus(messageJson.leaveList);
-        } else if (messageJson.messageType === "LOCK_CONFIRM") {
-        }
-      };
-    },
-    addSeat(seat) {
-      console.log(seat);
-      if (this.transferSeats.length < this.seatsToTransfer) {
-        if (seat.type === "seat") {
-          if (seat.status === "locked") {
-            this.$toast.show("The seat is being booked", {
-              position: "top",
-              type: "error",
-            });
-          } else if (seat.status === "booked") {
-            this.reverSeatModal = true;
-          } else {
-            this.conn.send(
-              JSON.stringify({
-                roomId: this.selectedTransferSchedule.id.toString(),
-                messageType: "LOCK",
-                seatId: seat.number.toString(),
-              })
-            );
-            this.addSeatModal = true;
-            this.selectedTransferSeat = seat;
-          }
-        }
-      } else {
-        this.$toast.show("Selection completed", {
-          position: "top",
-          type: "info",
-        });
-      }
-    },
-    confirmSeat() {
-      this.transferSeats.push(this.selectedTransferSeat);
-      this.selectedTransferSeat.status = "booked";
-      this.addSeatModal = false;
-    },
-    cancelSeat() {
-      this.conn.send(
-        JSON.stringify({
-          roomId: this.selectedTransferSchedule.id.toString(),
-          messageType: "LOCK_LEAVE",
-          seatId: this.selectedTransferSeat.number.toString(),
-        })
-      );
-      this.addSeatModal = false;
-    },
-    computeTableSelect(schedule) {
-      if (this.selectedTransferSchedule.id === schedule.id) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    refreshData() {
-      getPassengerData(this.scheduleId).then((res) => {
-        this.scheduleStatus = res.data.isFinished;
-        this.scheduleData = res.data;
-        res.data.bookings.forEach((booking, i) => {
-          booking.bookedSeats.forEach((bookedSeat, i) => {
-            this.seatsAvailable.forEach((seat, j) => {
-              if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
-                this.seatsAvailable.splice(j, 1);
-              }
-            });
-          });
-        });
-        this.selectedPassengerBookings = [];
-      });
-    },
-  },
-  computed: {
-    depDate: () => {
-      return this.getdepTime(this.scheduleData.route.departureTime);
-    },
+  //         this.changeSeatStatus();
+  //         console.log(messageJson);
+  //       } else if (messageJson.messageType === "LOCK_LEAVE") {
+  //         console.log("LOCK LEAVE RECIEVED");
+  //         console.log(messageJson);
+  //         this.reverSeatStatus(messageJson.leaveList);
+  //       } else if (messageJson.messageType === "LOCK_CONFIRM") {
+  //       }
+  //     };
+  //   },
+  //   addSeat(seat) {
+  //     console.log(seat);
+  //     if (this.transferSeats.length < this.seatsToTransfer) {
+  //       if (seat.type === "seat") {
+  //         if (seat.status === "locked") {
+  //           this.$toast.show("The seat is being booked", {
+  //             position: "top",
+  //             type: "error",
+  //           });
+  //         } else if (seat.status === "booked") {
+  //           this.reverSeatModal = true;
+  //         } else {
+  //           this.conn.send(
+  //             JSON.stringify({
+  //               roomId: this.selectedTransferSchedule.id.toString(),
+  //               messageType: "LOCK",
+  //               seatId: seat.number.toString(),
+  //             })
+  //           );
+  //           this.addSeatModal = true;
+  //           this.selectedTransferSeat = seat;
+  //         }
+  //       }
+  //     } else {
+  //       this.$toast.show("Selection completed", {
+  //         position: "top",
+  //         type: "info",
+  //       });
+  //     }
+  //   },
+  //   confirmSeat() {
+  //     this.transferSeats.push(this.selectedTransferSeat);
+  //     this.selectedTransferSeat.status = "booked";
+  //     this.addSeatModal = false;
+  //   },
+  //   cancelSeat() {
+  //     this.conn.send(
+  //       JSON.stringify({
+  //         roomId: this.selectedTransferSchedule.id.toString(),
+  //         messageType: "LOCK_LEAVE",
+  //         seatId: this.selectedTransferSeat.number.toString(),
+  //       })
+  //     );
+  //     this.addSeatModal = false;
+  //   },
+  //   computeTableSelect(schedule) {
+  //     if (this.selectedTransferSchedule.id === schedule.id) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   },
+  //   refreshData() {
+  //     getPassengerData(this.scheduleId).then((res) => {
+  //       this.scheduleStatus = res.data.isFinished;
+  //       this.scheduleData = res.data;
+  //       res.data.bookings.forEach((booking, i) => {
+  //         booking.bookedSeats.forEach((bookedSeat, i) => {
+  //           this.seatsAvailable.forEach((seat, j) => {
+  //             if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
+  //               this.seatsAvailable.splice(j, 1);
+  //             }
+  //           });
+  //         });
+  //       });
+  //       this.selectedPassengerBookings = [];
+  //     });
+  //   },
+  // },
+  // computed: {
+  //   depDate: () => {
+  //     return this.getdepTime(this.scheduleData.route.departureTime);
+  //   },
 
-    depTime: () => {},
-    attributes() {
-      return [
-        ...this.routeDays.map((routeDay) => ({
-          dates: routeDay.dates,
-          highlight: routeDay.highlight,
-        })),
-      ];
-    },
+  //   depTime: () => {},
+  //   attributes() {
+  //     return [
+  //       ...this.routeDays.map((routeDay) => ({
+  //         dates: routeDay.dates,
+  //         highlight: routeDay.highlight,
+  //       })),
+  //     ];
+  //   },
   },
 
   created() {
-    this.scheduleId = this.$route.params.scheduleId;
+    // this.scheduleId = this.$route.params.scheduleId;
 
-    this.seatsAvailable = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-    ];
-    getAllStops().then((res) => {
-      this.stops = res;
-    });
-    getPassengerData(this.scheduleId).then((res) => {
-      this.scheduleStatus = res.data.isFinished;
-      this.scheduleData = res.data;
-      console.log(res.data);
+    // this.seatsAvailable = [
+    //   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    // ];
+    // getAllStops().then((res) => {
+    //   this.stops = res;
+    // });
+    // getPassengerData(this.scheduleId).then((res) => {
+    //   this.scheduleStatus = res.data.isFinished;
+    //   this.scheduleData = res.data;
+    //   console.log(res.data);
 
-      this.transferOrigin = res.data.route.origin;
-      this.transferDestination = res.data.route.destination;
+    //   this.transferOrigin = res.data.route.origin;
+    //   this.transferDestination = res.data.route.destination;
 
-      getBookingsByScheduleId(this.scheduleId).then((resp) => {
-        this.scheduleBookings = resp.data;
-        console.log(this.scheduleBookings, "FDSFDS");
-        resp.data.forEach((booking, i) => {
-          booking.bookedSeats.forEach((bookedSeat, i) => {
-            this.seatsAvailable.forEach((seat, j) => {
-              if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
-                this.seatsAvailable.splice(j, 1);
-              }
-            });
-          });
-        });
-      });
-    });
+    //   getBookingsByScheduleId(this.scheduleId).then((resp) => {
+    //     this.scheduleBookings = resp.data;
+    //     console.log(this.scheduleBookings, "FDSFDS");
+    //     resp.data.forEach((booking, i) => {
+    //       booking.bookedSeats.forEach((bookedSeat, i) => {
+    //         this.seatsAvailable.forEach((seat, j) => {
+    //           if (bookedSeat.seatNumber === this.seatsAvailable[j]) {
+    //             this.seatsAvailable.splice(j, 1);
+    //           }
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
   },
 };
 </script>

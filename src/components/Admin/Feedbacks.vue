@@ -10,7 +10,7 @@
         Feedbacks
       </h1>
 
-      <div
+      <!-- <div
         class="
           flex flex-col
           m-auto
@@ -135,10 +135,12 @@
 
 
      
-    </div>
+    </div> -->
 
 
     
+
+  </div>
 
   </div>
   
@@ -152,52 +154,52 @@ import {
 }from '../../services/FeedbackServices'
 export default {
   created() {
-    getAll().then((res)=>{
-        console.log(res)
-        this.feedbacks = res.data
-    })
+    // getAll().then((res)=>{
+    //     console.log(res)
+    //     this.feedbacks = res.data
+    // })
   },
   data() {
     return {
-     feedbacks:[]
+    //  feedbacks:[]
     };
   },
   methods: {
-    openConfirmModal(booking) {
-      this.bookingSelected = booking;
-      this.confirmModal = true
-    },
+    // openConfirmModal(booking) {
+    //   this.bookingSelected = booking;
+    //   this.confirmModal = true
+    // },
 
-    dismiss(e){
-      updateFeedback(e.id,{
-        dismissed:true
-      }).then(res =>{
-        if(res.status === 200){
-          this.$toast.show("Success",{
-            position:"top",
-            type:"info"
-          })
-          this.refreshData()
-        }
-      })
-    },
+    // dismiss(e){
+    //   updateFeedback(e.id,{
+    //     dismissed:true
+    //   }).then(res =>{
+    //     if(res.status === 200){
+    //       this.$toast.show("Success",{
+    //         position:"top",
+    //         type:"info"
+    //       })
+    //       this.refreshData()
+    //     }
+    //   })
+    // },
 
-    delete(e){
-      deleteFeedback(e.id).then(res =>{
-        if(res.status === 200){
-          this.$toast.show("Success",{
-            position:"top",
-            type:"info"
-          })
-          this.refreshData()
-        }
-      })
-    },
-    refreshData() {
-      getAll().then((res) => {
-        this.feedbacks = res.data;
-      });
-    },
+    // delete(e){
+    //   deleteFeedback(e.id).then(res =>{
+    //     if(res.status === 200){
+    //       this.$toast.show("Success",{
+    //         position:"top",
+    //         type:"info"
+    //       })
+    //       this.refreshData()
+    //     }
+    //   })
+    // },
+    // refreshData() {
+    //   getAll().then((res) => {
+    //     this.feedbacks = res.data;
+    //   });
+    // },
   },
 };
 </script>

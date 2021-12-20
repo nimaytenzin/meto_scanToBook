@@ -2,11 +2,11 @@
   <div class="min-h-screen flex flex-col p-4 justify-start items-center">
     <h2 class="text-xl m-2">Click on a date to view Schedule for that date</h2>
 
-    <Calendar
+    <!-- <Calendar
       :min-date="new Date()"
       @dayclick="onDayClick($event)"
-    />
-    <table class="min-w-full divide-y divide-gray-200 table-auto">
+    /> -->
+    <!-- <table class="min-w-full divide-y divide-gray-200 table-auto">
             <thead class="bg-gray-50">
               <tr>
                 <td
@@ -151,7 +151,7 @@
                 </td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
 
   </div>
 </template>
@@ -214,51 +214,48 @@ import { getRoutesByWeekday } from '../../services/routeServices';
 export default {
   data() {
     return {
-      status: "bus Set",
-      date: new Date(),
-      selectedDate: "",
-      schedules: [],
-      buses: [],
-      selectedBus: {}
+      // status: "bus Set",
+      // date: new Date(),
+      // selectedDate: "",
+      // schedules: [],
+      // buses: [],
+      // selectedBus: {}
     };
   },
   computed: {},
   created() {
-    getAllBuses().then((res) => {
-      this.buses = res;
-      console.log("BUSES,",res)
-    });
+    // getAllBuses().then((res) => {
+    //   this.buses = res;
+    // });
   },
 
   methods: {
-    updateBus(e) {
-      let updateData = {
-        busId: e.busId,
-      };
-      assignBus(e.id, updateData).then((res) => {
-        if (res.status === 200) {
-          this.$toast.show("Bus Assigned", {
-            type: "success",
-            position: "top",
-          });
-        }
-      });
-    },
-    onDayClick(e) {
-      getRoutesByWeekday(e.weekday).then(res =>{
-        console.log(res)
-        this.schedules = res.data
-      })      
-      //get schedule by date and asssign it ot he schedules
-      this.$toast.show(`Showing Schedule for ${this.selectedDate}`, {
-        type: "info",
-        position: "top",
-      });
-      console.log(e);
-    },
-    viewPassengers(schedule) {
-      this.$router.push(`/admin/view-passengers/${schedule.id}`);
-    },
+    // updateBus(e) {
+    //   let updateData = {
+    //     busId: e.busId,
+    //   };
+    //   assignBus(e.id, updateData).then((res) => {
+    //     if (res.status === 200) {
+    //       this.$toast.show("Bus Assigned", {
+    //         type: "success",
+    //         position: "top",
+    //       });
+    //     }
+    //   });
+    // },
+    // onDayClick(e) {
+    //   getRoutesByWeekday(e.weekday).then(res =>{
+    //     this.schedules = res.data
+    //   })      
+    //   //get schedule by date and asssign it ot he schedules
+    //   this.$toast.show(`Showing Schedule for ${this.selectedDate}`, {
+    //     type: "info",
+    //     position: "top",
+    //   });
+    // },
+    // viewPassengers(schedule) {
+    //   this.$router.push(`/admin/view-passengers/${schedule.id}`);
+    // },
   },
 };
 </script>

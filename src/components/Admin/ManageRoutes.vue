@@ -947,7 +947,6 @@ export default {
     this.fetchStopData();
     getStaffs().then((res) => {
       this.staffs = res.data;
-      console.log(res);
     });
   },
 
@@ -967,7 +966,6 @@ export default {
       getAllStops()
         .then((res) => {
           this.stops = res;
-          console.log(res.data);
         })
         .catch((err) => console.log(err));
     },
@@ -1045,7 +1043,6 @@ export default {
 
     editStop(e) {
       this.selectedStop = e;
-      console.log(e);
       this.editStopModal = true;
     },
 
@@ -1127,7 +1124,6 @@ export default {
             type: "error",
           });
         }
-        console.log(res);
       });
     },
 
@@ -1136,11 +1132,10 @@ export default {
       this.selectedRoute = selectedRoute;
       this.editRouteModal = true;
       this.selectedDepartureTimeArr = selectedRoute.departureTime.split(":");
-      console.log(this.selectedRoutepath, this.selectedRoute);
     },
 
     confirmRouteEdit() {
-      console.log(this.selectedRoute);
+
       this.selectedRoute.departureTime =
         this.selectedDepartureTimeArr[0] +
         ":" +
@@ -1168,21 +1163,12 @@ export default {
 
     deleteRoute(e) {
       deleteRoute(e.id).then((res) => {
-        console.log(res);
         if (res.status === 200) {
           this.fetchRouteData();
           //delete on cascade
         }
       });
     },
-
-    deleteRoutepath(rouetepathId) {
-      if (confirm("Are you sure??")) {
-        console.log(rouetepathId);
-      }
-    },
-
-    decomposeDepTime(timeString) {},
   },
 };
 </script>
