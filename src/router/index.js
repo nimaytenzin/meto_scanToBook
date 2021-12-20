@@ -130,9 +130,9 @@ const routes = [
           { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true } }
         ]
       },
-      {
-        path: 'view-cancellations', component: () => import('../components/Staff/Cancellations.vue'), meta: { requiresAuth: true }
-      }
+      // {
+      //   path: 'view-cancellations', component: () => import('../components/Staff/Cancellations.vue'), meta: { requiresAuth: true }
+      // }
     ]
   }
 
