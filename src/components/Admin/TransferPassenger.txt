@@ -1,313 +1,313 @@
-// <template>
-//   <div
-//     class="min-h-screen flex flex-col items-center  sm:ml2 sm:mr2"
-//     v-if="!scheduleStatus"
-//   >
-//     <div>
-//       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
-//     </div>
-//     <div class="flex flex-col justify-center items-center">
-//       <h1 class="text-3xl text-gray-500 text-center font-nunito">
-//         Schedule Details
-//       </h1>
-//     </div>
+<template>
+  <div
+    class="min-h-screen flex flex-col items-center  sm:ml2 sm:mr2"
+    v-if="!scheduleStatus"
+  >
+    <div>
+      <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
+    </div>
+    <div class="flex flex-col justify-center items-center">
+      <h1 class="text-3xl text-gray-500 text-center font-nunito">
+        Schedule Details
+      </h1>
+    </div>
 
-//     <div
-//       class="
-//         flex flex-col
-//         m-auto
-//         bg-indigo-900
-//         text-blue-100
-//         p-6
-//         gap-8
-//         rounded-lg
-//         border-white
-//         mt-4
-//       "
-//     >
-//       <div class="flex justify-around">
-//         <div class="my-auto">
-//           <div class="text-lg">Seats Available</div>
-//           <div class="text-4xl text-white font-bold">
-//             {{ seatsAvailable.length }}
-//           </div>
-//         </div>
-//         <div class="my-auto">
-//           <div class="text-lg">Passengers</div>
-//           <div class="text-4xl text-white font-bold">
-//             {{ 19 - seatsAvailable.length }}
-//           </div>
-//         </div>
-//       </div>
-//       <div class="text-md">
-//         <p>Origin: {{ scheduleData.route.origin.name }}</p>
-//         <p>Destination: {{ scheduleData.route.destination.name }}</p>
-//         <p>Departure Date and time: 12th June 7:00 AM</p>
-//         <p>Fare: {{ scheduleData.route.fare }}</p>
-//         <p>
-//           Bus:
-//           {{
-//             scheduleData.bus?.vechileNumber
-//               ? scheduleData.bus.vechileNumber
-//               : "Bus Not assigned"
-//           }}
-//         </p>
-//         <hr class="border mt-2 mb-2" />
-//         Seats Available
-//         <p class="text-xl">
-//           {{ seatsAvailable }}
-//         </p>
-//       </div>
+    <div
+      class="
+        flex flex-col
+        m-auto
+        bg-indigo-900
+        text-blue-100
+        p-6
+        gap-8
+        rounded-lg
+        border-white
+        mt-4
+      "
+    >
+      <div class="flex justify-around">
+        <div class="my-auto">
+          <div class="text-lg">Seats Available</div>
+          <div class="text-4xl text-white font-bold">
+            {{ seatsAvailable.length }}
+          </div>
+        </div>
+        <div class="my-auto">
+          <div class="text-lg">Passengers</div>
+          <div class="text-4xl text-white font-bold">
+            {{ 19 - seatsAvailable.length }}
+          </div>
+        </div>
+      </div>
+      <div class="text-md">
+        <p>Origin: {{ scheduleData.route.origin.name }}</p>
+        <p>Destination: {{ scheduleData.route.destination.name }}</p>
+        <p>Departure Date and time: 12th June 7:00 AM</p>
+        <p>Fare: {{ scheduleData.route.fare }}</p>
+        <p>
+          Bus:
+          {{
+            scheduleData.bus?.vechileNumber
+              ? scheduleData.bus.vechileNumber
+              : "Bus Not assigned"
+          }}
+        </p>
+        <hr class="border mt-2 mb-2" />
+        Seats Available
+        <p class="text-xl">
+          {{ seatsAvailable }}
+        </p>
+      </div>
 
-//       <div class="inline-flex" role="group" aria-label="Button group">
-//         <button
-//           class="
-//             h-10
-//             px-5
-//             text-indigo-100
-//             transition-colors
-//             duration-100
-//             bg-indigo-700
-//             rounded-l-lg
-//             focus:shadow-outline
-//             hover:bg-indigo-800
-//           "
-//           @click="cancelBus()"
-//         >
-//           Cancel Bus
-//         </button>
-//       </div>
-//     </div>
+      <div class="inline-flex" role="group" aria-label="Button group">
+        <button
+          class="
+            h-10
+            px-5
+            text-indigo-100
+            transition-colors
+            duration-100
+            bg-indigo-700
+            rounded-l-lg
+            focus:shadow-outline
+            hover:bg-indigo-800
+          "
+          @click="cancelBus()"
+        >
+          Cancel Bus
+        </button>
+      </div>
+    </div>
 
-//     <div class="mt-4" v-if="scheduleData.bookedSeats.length">
-//       <h2 class="text-center text-xl font-semibold">Passenger Details</h2>
-//       <table class="min-w-full divide-y divide-gray-200">
-//         <thead class="bg-gray-50">
-//           <tr>
-//             <td
-//               class="
-//                 px-6
-//                 py-3
-//                 text-left text-xs
-//                 font-medium
-//                 text-gray-500
-//                 uppercase
-//                 tracking-wider
-//               "
-//             >
-//               Seat Number
-//             </td>
-//             <td
-//               class="
-//                 px-6
-//                 py-3
-//                 text-left text-xs
-//                 font-medium
-//                 text-gray-500
-//                 uppercase
-//                 tracking-wider
-//               "
-//             >
-//               Passenger Name
-//             </td>
-//             <td
-//               class="
-//                 px-6
-//                 py-3
-//                 text-left text-xs
-//                 font-medium
-//                 text-gray-500
-//                 uppercase
-//                 tracking-wider
-//               "
-//             >
-//               Passenger CID
-//             </td>
-//             <td
-//               class="
-//                 px-6
-//                 py-3
-//                 text-left text-xs
-//                 font-medium
-//                 text-gray-500
-//                 uppercase
-//                 tracking-wider
-//               "
-//             >
-//               Passenger Contact
-//             </td>
-//           </tr>
-//         </thead>
-//         <tbody class="bg-white divide-y divide-gray-200">
-//           <tr
-//             v-for="bookedSeat in scheduleData.bookedSeats"
-//             :key="bookedSeat"
-//             class="hover:bg-gray-200"
-//           >
-//             <td class="px-2 py-4 whitespace-nowrap">
-//               {{ bookedSeat.seatNumber }}
-//             </td>
-//             <td class="px-2 py-4 whitespace-nowrap">
-//               {{ bookedSeat.booking.customerName }}
-//             </td>
-//             <td class="px-2 py-4 whitespace-nowrap">
-//               {{ bookedSeat.booking.customerCid }}
-//             </td>
-//             <td class="px-2 py-4 whitespace-nowrap">
-//               {{ bookedSeat.booking.customerContact }}
-//             </td>
-//           </tr>
-//         </tbody>
-//       </table>
-//     </div>
+    <div class="mt-4" v-if="scheduleData.bookedSeats.length">
+      <h2 class="text-center text-xl font-semibold">Passenger Details</h2>
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Seat Number
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Passenger Name
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Passenger CID
+            </td>
+            <td
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Passenger Contact
+            </td>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            v-for="bookedSeat in scheduleData.bookedSeats"
+            :key="bookedSeat"
+            class="hover:bg-gray-200"
+          >
+            <td class="px-2 py-4 whitespace-nowrap">
+              {{ bookedSeat.seatNumber }}
+            </td>
+            <td class="px-2 py-4 whitespace-nowrap">
+              {{ bookedSeat.booking.customerName }}
+            </td>
+            <td class="px-2 py-4 whitespace-nowrap">
+              {{ bookedSeat.booking.customerCid }}
+            </td>
+            <td class="px-2 py-4 whitespace-nowrap">
+              {{ bookedSeat.booking.customerContact }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-//     <div class="inline-flex mt-8">
-//       <button
-//         class="
-//           bg-gray-100
-//           hover:bg-gray-400
-//           text-gray-500
-//           hover:text-white
-//           font-bold
-//           py-2
-//           px-4
-//           rounded
-//         "
-//         @click="addOrigin(originSelected)"
-//       >
-//         Schedules
-//       </button>
-//     </div>
-//   </div>
+    <div class="inline-flex mt-8">
+      <button
+        class="
+          bg-gray-100
+          hover:bg-gray-400
+          text-gray-500
+          hover:text-white
+          font-bold
+          py-2
+          px-4
+          rounded
+        "
+        @click="addOrigin(originSelected)"
+      >
+        Schedules
+      </button>
+    </div>
+  </div>
 
-//   <div
-//     class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
-//     v-else
-//   >
-//     <div>
-//       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
-//     </div>
-//     <div class="flex flex-col justify-center items-center m-10 mb-10">
-//       <h1 class="text-3xl text-red-500 font-bold text-center font-nunito">
-//         Schedule Cancelled
-//       </h1>
-//     </div>
+  <div
+    class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
+    v-else
+  >
+    <div>
+      <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
+    </div>
+    <div class="flex flex-col justify-center items-center m-10 mb-10">
+      <h1 class="text-3xl text-red-500 font-bold text-center font-nunito">
+        Schedule Cancelled
+      </h1>
+    </div>
 
-//     <div
-//       class="
-//         flex flex-col
-//         m-auto
-//         bg-indigo-900
-//         text-blue-100
-//         p-6
-//         gap-8
-//         rounded-lg
-//         border-white
-//         mt-4
-//       "
-//     >
-//       <div class="text-md">
-//         Details
-//         <p>Origin: {{ scheduleData.route.origin.name }}</p>
-//         <p>Destination: {{ scheduleData.route.destination.name }}</p>
-//         <p>Departure Date and time: 12th June 7:00 AM</p>
-//         <p>Fare: {{ scheduleData.route.fare }}</p>
-//         <p>
-//           Bus:
-//           {{
-//             scheduleData.bus?.vechileNumber
-//               ? scheduleData.bus.vechileNumber
-//               : "Bus Not assigned"
-//           }}
-//         </p>
-//       </div>
-//     </div>
+    <div
+      class="
+        flex flex-col
+        m-auto
+        bg-indigo-900
+        text-blue-100
+        p-6
+        gap-8
+        rounded-lg
+        border-white
+        mt-4
+      "
+    >
+      <div class="text-md">
+        Details
+        <p>Origin: {{ scheduleData.route.origin.name }}</p>
+        <p>Destination: {{ scheduleData.route.destination.name }}</p>
+        <p>Departure Date and time: 12th June 7:00 AM</p>
+        <p>Fare: {{ scheduleData.route.fare }}</p>
+        <p>
+          Bus:
+          {{
+            scheduleData.bus?.vechileNumber
+              ? scheduleData.bus.vechileNumber
+              : "Bus Not assigned"
+          }}
+        </p>
+      </div>
+    </div>
 
 
     
-//   </div>
-// </template>
+  </div>
+</template>
 
-// <script>
-// import {
-//   getPassengerData,
-//   updateSchedule,
-// } from "../../services/scheduleServices";
-// import { updateBooking,cancelBooking } from "../../services/bookingServices";
-// export default {
-//   data() {
-//     return {
-//       scheduleId: null,
-//       scheduleStatus: 0,
-//       scheduleData: {
-//         route: {
-//           origin: {},
-//           destination: {},
-//         },
-//         bookedSeats: [],
-//         seatsAvailable: [],
-//       },
-//     };
-//   },
-//   methods: {
-//     cancelBus() {
-//       updateSchedule(this.scheduleId, {
-//         isFinished: 2,
-//       }).then((res) => {
-//         if (res.status === 200) {
-//           this.scheduleData.bookedSeats.forEach((booking) => {
-//             cancelBooking(booking.bookingId, {
-//               checkInStatus: "CANCELLED",
-//             })
-//               .then((res) => {
-//                 if (res.status === 200) {
-//                     console.log(12)
-//                 }
-//               })
-//               .catch((err) => {
-//                 console.log(err);
-//               });
-//           });
-//           this.refreshData();
-//           this.$toast.show(
-//             "Bus Schedule Cancelled, SMS alert sent to passengers"
-//           );
-//         }
-//       });
-//     },
-//     transferPassenger() {},
-//     refreshData() {
-//       getPassengerData(this.scheduleId).then((res) => {
-//         this.scheduleStatus = res.data.isFinished;
-//         this.scheduleData = res.data;
-//         console.log(res.data, "grab booking");
-//         res.data.bookedSeats.forEach((bookedSeat, i) => {
-//           this.seatsAvailable.forEach((seat, j) => {
-//             if (res.data.bookedSeats[i].seatNumber === this.seatsAvailable[j]) {
-//               this.seatsAvailable.splice(j, 1);
-//             }
-//           });
-//         });
-//       });
-//     },
-//   },
-//   created() {
-//     this.scheduleId = this.$route.params.scheduleId;
-//     this.seatsAvailable = [
-//       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-//     ];
-//     getPassengerData(this.scheduleId).then((res) => {
-//       this.scheduleStatus = res.data.isFinished;
-//       this.scheduleData = res.data;
-//       console.log(res.data, "grab booking");
-//       res.data.bookedSeats.forEach((bookedSeat, i) => {
-//         this.seatsAvailable.forEach((seat, j) => {
-//           if (res.data.bookedSeats[i].seatNumber === this.seatsAvailable[j]) {
-//             this.seatsAvailable.splice(j, 1);
-//           }
-//         });
-//       });
-//     });
-//   },
-// };
-// </script>
+<script>
+import {
+  getPassengerData,
+  updateSchedule,
+} from "../../services/scheduleServices";
+import { updateBooking,cancelBooking } from "../../services/bookingServices";
+export default {
+  data() {
+    return {
+      scheduleId: null,
+      scheduleStatus: 0,
+      scheduleData: {
+        route: {
+          origin: {},
+          destination: {},
+        },
+        bookedSeats: [],
+        seatsAvailable: [],
+      },
+    };
+  },
+  methods: {
+    cancelBus() {
+      updateSchedule(this.scheduleId, {
+        isFinished: 2,
+      }).then((res) => {
+        if (res.status === 200) {
+          this.scheduleData.bookedSeats.forEach((booking) => {
+            cancelBooking(booking.bookingId, {
+              checkInStatus: "CANCELLED",
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                    console.log(12)
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          });
+          this.refreshData();
+          this.$toast.show(
+            "Bus Schedule Cancelled, SMS alert sent to passengers"
+          );
+        }
+      });
+    },
+    transferPassenger() {},
+    refreshData() {
+      getPassengerData(this.scheduleId).then((res) => {
+        this.scheduleStatus = res.data.isFinished;
+        this.scheduleData = res.data;
+        console.log(res.data, "grab booking");
+        res.data.bookedSeats.forEach((bookedSeat, i) => {
+          this.seatsAvailable.forEach((seat, j) => {
+            if (res.data.bookedSeats[i].seatNumber === this.seatsAvailable[j]) {
+              this.seatsAvailable.splice(j, 1);
+            }
+          });
+        });
+      });
+    },
+  },
+  created() {
+    this.scheduleId = this.$route.params.scheduleId;
+    this.seatsAvailable = [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    ];
+    getPassengerData(this.scheduleId).then((res) => {
+      this.scheduleStatus = res.data.isFinished;
+      this.scheduleData = res.data;
+      console.log(res.data, "grab booking");
+      res.data.bookedSeats.forEach((bookedSeat, i) => {
+        this.seatsAvailable.forEach((seat, j) => {
+          if (res.data.bookedSeats[i].seatNumber === this.seatsAvailable[j]) {
+            this.seatsAvailable.splice(j, 1);
+          }
+        });
+      });
+    });
+  },
+};
+</script>
