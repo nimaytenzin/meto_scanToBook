@@ -43,3 +43,7 @@ export async function editRoute(id,data){
     return await axios.put(`${devUrl}/routes/${id}`,data,{headers:authHeader()})
 }
 
+
+export async function getRoutesByWeekday(weekday){
+    return await axios.get(`${devUrl}/routes/routesby-weekday/${weekday}`,{headers:authHeader()})
+ }

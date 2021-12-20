@@ -4,15 +4,7 @@ const devUrl = process.env.VUE_APP_DEV_API
 
 
 export async function getAllBuses() {
-    let buses = [];
-    const response = await axios.get(`${devUrl}/buses`,{
-        headers: authHeader()
-      })
-        .then(res => {
-            buses = res.data
-        })
-        .catch(err => console.log(err))
-    return buses
+    return await axios.get(`${devUrl}/buses`)
 }
 
 export async function getAllBusPaginated(pageNo) {

@@ -1,51 +1,12 @@
 <template>
-  <div class="min-h-screen flex flex-col p-4 justify-center items-center">
-    <h1>Schedule Bus</h1>
-
+  <div class="min-h-screen flex flex-col p-4 justify-start items-center">
     <h2 class="text-xl m-2">Click on a date to view Schedule for that date</h2>
 
     <Calendar
       :min-date="new Date()"
-      :columns="$screens({ default: 1, lg: 2 })"
-      :rows="$screens({ default: 1, lg: 2 })"
-      :is-expanded="$screens({ default: true, lg: false })"
       @dayclick="onDayClick($event)"
     />
-
-    <vue-final-modal
-      v-model="showScheduleByDayModal"
-      classes="modal-container"
-      content-class="modal-content"
-      class="w-max-screen"
-    >
-      <div class="modal__content text-center mt-1 flex flex-col gap-2">
-        <div class="flex justify-between">
-          <h3 class="text-xl text-indigo-800 font-light mb-3">
-            <span class="text-sm text-gray-500">Schedule for</span>
-            {{ selectedDate }}
-          </h3>
-          <button
-            @click="showScheduleByDayModal = false"
-            class="cursor-pointer text-red-600 font-bold"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
-        </div>
-        <div v-if="schedules.length !== 0">
-          <table class="min-w-full divide-y divide-gray-200 table-auto">
+    <table class="min-w-full divide-y divide-gray-200 table-auto">
             <thead class="bg-gray-50">
               <tr>
                 <td
@@ -114,20 +75,6 @@
                   Estimated Arrival Time
                 </td>
                 <td>Passengers</td>
-                <td
-                  class="
-                    px-6
-                    py-3
-                    text-left text-xs
-                    font-medium
-                    text-gray-500
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Add Bus
-                </td>
-
                 <td>Actions</td>
               </tr>
             </thead>
@@ -138,20 +85,20 @@
                 class="hover:bg-gray-200"
               >
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ getdepTime(schedule?.route?.departureTime) }}
+                 {{ schedule.departureTime }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ schedule.route?.origin?.name }}
+                  {{ schedule.routepathId }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ schedule?.route?.destination?.name }}
+                  {{ schedule.routepathId }}
                 </td>
                 
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  Nu.{{ schedule?.route?.fare }}
+                  Nu.{{ schedule.fare }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-                  {{ getETA(schedule?.route?.ETA) }}
+                 {{ schedule.isActive }}
                 </td>
                 <td>
                   <button @click="viewPassengers(schedule)">
@@ -159,24 +106,12 @@
                   </button>
                 </td>
                 <td>
-                  <select
-                    class="text-3xl p-5 bg-white text-blue-900"
-                    v-model="schedule.busId"
-                  >
-                    <option
-                      v-for="bus in buses"
-                      :value="bus.id"
-                      :key="bus"
-                      class="bg-white"
-                    >
-                      {{ bus.vechileNumber }}
-                    </option>
-                  </select>
+                  <button>Add Bus</button>
                 </td>
 
                 <td v-if="schedule.busId" class="bg-green-400">
                   <p>
-                    {{ statusOk }}
+                    No bus
                   </p>
 
                   <button
@@ -196,7 +131,7 @@
                 </td>
                 <td v-else class="bg-red-400">
                   <p>
-                    {{ statusNotOk }}
+                    pklsokds
                   </p>
 
                   <button
@@ -217,14 +152,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
-        <div v-else>
-          <h4 class="m-10 text-indigo-800 font text-2xl">
-            --- No Schedules to show ---
-          </h4>
-        </div>
-      </div>
-    </vue-final-modal>
+
   </div>
 </template>
 
@@ -282,63 +210,31 @@
 import { getDetailsByDate } from "../../services/scheduleServices";
 import { getAllBuses } from "../../services/busServices";
 import { assignBus } from "../../services/scheduleServices";
+import { getRoutesByWeekday } from '../../services/routeServices';
 export default {
   data() {
     return {
       status: "bus Set",
       date: new Date(),
       selectedDate: "",
-      showScheduleByDayModal: false,
       schedules: [],
       buses: [],
-      selectedBus: {},
-      statusOk: "Bus Assigned",
-      statusNotOk: "Bus Not Assigned",
+      selectedBus: {}
     };
   },
   computed: {},
   created() {
     getAllBuses().then((res) => {
       this.buses = res;
+      console.log("BUSES,",res)
     });
   },
 
   methods: {
-    getdepTime: function (time) {
-      if(time){
-        let tissme = time.split(":");
-      let hrs = parseInt(tissme[0]);
-      let min = parseInt(tissme[1]).toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      });
-      let ampm = "am";
-      if (hrs > 12) {
-        hrs = hrs - 12;
-        ampm = "pm";
-      }
-
-      return `${hrs}:${min} ${ampm}`;
-      }
-    },
-    p(e) {
-      console.log(e);
-    },
-
-    getETA(e) {
-      if (e) {
-        let ok = e.split(":");
-        let hrs = ok[0];
-        let min = ok[1];
-
-        return `${hrs} Hrs ${min} Mins`;
-      }return ""
-    },
     updateBus(e) {
       let updateData = {
         busId: e.busId,
       };
-      console.log(updateData, e);
       assignBus(e.id, updateData).then((res) => {
         if (res.status === 200) {
           this.$toast.show("Bus Assigned", {
@@ -349,13 +245,10 @@ export default {
       });
     },
     onDayClick(e) {
-      this.selectedDate = e.ariaLabel;
-      let formattedDate = e.id + " 00:00:00";
-      getDetailsByDate(formattedDate).then((res) => {
-        this.schedules = res;
-        console.log(this.schedules);
-      });
-      this.showScheduleByDayModal = true;
+      getRoutesByWeekday(e.weekday).then(res =>{
+        console.log(res)
+        this.schedules = res.data
+      })      
       //get schedule by date and asssign it ot he schedules
       this.$toast.show(`Showing Schedule for ${this.selectedDate}`, {
         type: "info",
@@ -363,7 +256,6 @@ export default {
       });
       console.log(e);
     },
-
     viewPassengers(schedule) {
       this.$router.push(`/admin/view-passengers/${schedule.id}`);
     },
