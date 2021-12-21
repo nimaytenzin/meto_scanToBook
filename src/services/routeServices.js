@@ -32,7 +32,7 @@ export async function getRoutesByOriginDestination(originId, destinationId){
 }
 
 export async function getAllRoutePaths(){
-    return await axios.get(`${devUrl}/route-path`,{headers:authHeader})
+    return await axios.get(`${devUrl}/route-path`)
 }
 
 export async function createNewRoutePath(data){
