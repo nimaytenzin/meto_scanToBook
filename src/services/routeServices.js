@@ -47,3 +47,15 @@ export async function editRoute(id,data){
 export async function getRoutesByWeekday(weekday){
     return await axios.get(`${devUrl}/routes/routesby-weekday/${weekday}`,{headers:authHeader()})
  }
+
+ export async function createNewBusRoster(data){
+    return await axios.post(`${devUrl}/bus-roster`,data,{headers:authHeader()})
+ }
+
+ export async function getBusbyRouteAndDate(date,routeId){
+    return await axios.get(`${devUrl}/bus-roster/get/${date}/${routeId}`)
+ }
+
+ export async function updateBusRoster(id,data){
+    return await axios.put(`${devUrl}/bus-roster/${id}`,data,{headers:authHeader()})
+}
