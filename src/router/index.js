@@ -149,16 +149,17 @@ const router = createRouter({
 
 router.beforeEach(async(to, from, next) => {
   if (to.matched.some(route => route.meta.requiresAuth)) {
-    // let verified = verfiyToken().then(res =>console.log(res)).catch(err=>console.log(err))
     let verified = await verfiyToken();
     if(verified){
-      next()
+      next();
     }else{
       sessionStorage.clear("token")
       next({path:'/login'})
     }
+  }else{
+    next();
   }
-  next();
+  
 });
 
 export default router

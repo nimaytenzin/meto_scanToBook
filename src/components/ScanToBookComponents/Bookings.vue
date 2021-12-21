@@ -291,7 +291,9 @@ export default {
           modality: "Online",
           amount: this.total,
           scheduleHash:this.$store.state.scanRoomID,
-          scheduleDate:this.$store.state.departureDate
+          scheduleDate:this.$store.state.departureDate,
+          operatorId:null,
+          serviceCharge:(this.serviceCharge * this.passengers.length)
         },
         passengers: this.passengers,
       };

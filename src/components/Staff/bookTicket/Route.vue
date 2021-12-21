@@ -584,7 +584,6 @@
                     appearance-none
                     border-b
                     rounded-sm
-                    w-1/2
                     py-2
                     px-2
                     text-gray-700
@@ -694,94 +693,46 @@
             </p>
           </div>
         </div>
-        <div v-if="passengersInSchedule.length">
-          <h3 class="text-xl px-6 font-thin">Passengers</h3>
-          <thead>
-            <tr>
-              <td
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Seat Number
-              </td>
-              <td
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Name
-              </td>
-              <td
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                CID
-              </td>
-              <td
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Contact
-              </td>
-            </tr>
-          </thead>
+         <div v-if="passengersInSchedule.length">
+        <h3 class="text-xl px-6 font-thin">Passengers</h3>
 
-          <div class="p-2 flex overflow-scroll" style="height: 40vh">
-            <table
-              class="
-                min-w-full
-                divide-y divide-gray-200
-                text-gray-900
-                font-thin
-                bg-white
-              "
-            >
-              <tbody class="overflow-y-scroll" style="50vh">
-                <tr v-for="passenger in passengersInSchedule" :key="passenger">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.seatNumber }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.name }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.cid }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.contact }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="p-2 flex overflow-scroll" style="height: 40vh">
+          <table
+            class="
+              min-w-full
+              divide-y divide-gray-200
+              text-gray-900
+              font-thin
+              bg-white
+            "
+          >
+            <thead>
+              <tr >
+                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Seat Number</td>
+                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Name</td>
+                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">CID</td>
+                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Contact</td>
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll" style="50vh">
+              <tr v-for="passenger in passengersInSchedule" :key="passenger">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.seatNumber }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.name }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.cid }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ passenger.contact }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
       </div>
     </vue-final-modal>
   </div>
@@ -847,6 +798,8 @@
 
 
 <script>
+import VueJwtDecode from "vue-jwt-decode";
+
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
 import crypto from "crypto";
@@ -938,6 +891,7 @@ export default {
     },
   },
   created() {
+
     getAllStops()
       .then((res) => {
         this.stops = res;
@@ -1089,7 +1043,6 @@ export default {
       this.passengersInSchedule = [];
       this.passengerDetailsModal = true;
       getPassengersOnBus(schedule.id, this.departureDate).then((res) => {
-
         res.data.forEach((booking) => {
           booking.passengers.forEach((passenger, index) => {
             passenger.seatNumber = booking.bookedSeats[index].seatNumber;
@@ -1227,6 +1180,11 @@ export default {
           amount: this.total,
           journalNumber: this.journalNumber,
           routeId: this.routeId,
+          serviceCharge:0,
+          depositBank:this.journalDetails.bankName,
+          depositJournal:this.journalDetails.journalNumber,
+          depositContact:this.journalDetails.contactNumber,
+          operator:VueJwtDecode.decode( sessionStorage.getItem("token")).id
         },
         passengers: this.passengers,
       };
