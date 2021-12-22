@@ -86,40 +86,7 @@
              Today
           </p>
         </router-link>
-         <router-link to="/finance/monthly">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            Monthly Data
-          </p>
-        </router-link>
-        <router-link to="/finance/booking-data">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            Booking Data
-          </p>
-        </router-link>
-
-     
+       
         <div>
           <p
             class="
