@@ -7,89 +7,51 @@
       class="
         bg-white
         border-t border-dotted
-        pt-2
         flex
-        items-start
+        items-center
         justify-center
         gap-6
         w-full
         mb-10
       "
     >
-      <div class="bg-gray-800 text-gray-300 p-2 myrounded h-full">
-        <div class="p-4 text-sm rounded-md shadow-lg">
+      <div
+        class="
+          flex
+          justify-center
+          items-center
+          bg-gray-800
+          text-gray-300
+          rounded-tl-md rounded-br-md
+        "
+        style="height: 200px; width: 250px"
+      >
+        <div class="text-sm rounded-md shadow-lg">
           <div class="text-right">
             <p class="font-semibold text-3xl">
-              Nu
-              <number
-                :from="0"
-                :to="5"
-                :format="theFormat"
-                :duration="2"
-                :delay="1"
-                easing="Power1.easeOut"
-              />
+              Nu {{ statsToday.TOTAL?.amount? statsToday.TOTAL.amount :0  }}
             </p>
-            <span> Total Revenue</span>
+            <span> Total Sale</span>
           </div>
           <div>
             <hr class="border-dashed my-2" />
             <table class="w-full text-right">
               <tr>
-                <td>Online staffData</td>
+                <td>Online</td>
                 <td>
-                  Nu
-                  <number
-                    :from="0"
-                    :to="3"
-                    :format="theFormat"
-                    :duration="2"
-                    :delay="1"
-                    easing="Power1.easeOut"
-                  />
+                  Nu {{ statsToday.ONLINE?.amount?statsToday.ONLINE.amount :0 }}
                 </td>
               </tr>
               <tr>
+                <td>Counter | Mbob</td>
                 <td>
-                  <hr class="w-full border-dashed border-gray-400" />
-                </td>
-                <td>
-                  <hr class="w-full border-dashed border-gray-400" />
+                  Nu {{ statsToday.MBOB?.amount? statsToday.MBOB.amount : 0 }}
                 </td>
               </tr>
               <tr>
-                <td>Counter staffData</td>
+                <td>Counter | Cash</td>
                 <td>
-                  <table class="w-full text-right">
-                    <tr>
-                      <td>Mbob</td>
-                      <td>
-                        Nu
-                        <number
-                          :from="0"
-                          :to="2"
-                          :format="theFormat"
-                          :duration="2"
-                          :delay="1"
-                          easing="Power1.easeOut"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Cash</td>
-                      <td>
-                        Nu
-                        <number
-                          :from="0"
-                          :to="2"
-                          :format="theFormat"
-                          :duration="2"
-                          :delay="1"
-                          easing="Power1.easeOut"
-                        />
-                      </td>
-                    </tr>
-                  </table>
+                  Nu {{ statsToday.CASH?.amount? statsToday.CASH.amount : 0 }}
                 </td>
               </tr>
             </table>
@@ -97,52 +59,51 @@
         </div>
       </div>
 
-     
-
-      <div class="bg-gray-800 text-gray-300 p-2 rounded h-full">
-        <div class="p-4 text-sm rounded-md shadow-lg">
+      <div
+        class="
+          flex
+          justify-center
+          items-center
+          bg-gray-800
+          text-gray-300
+          p-1
+          rounded-tl-md rounded-br-md
+        "
+        style="height: 200px; width: 250px"
+      >
+        <div class="text-sm rounded-md shadow-lg p-1">
           <div class="text-right">
-            <p class="font-semibold text-3xl"></p>
-            <span>staffDatas</span>
+            <p class="font-semibold text-3xl">
+             {{ statsToday.TOTAL?.ticketsSold? statsToday.TOTAL.ticketsSold:0 }}
+            </p>
+            <span> Tickets Sold</span>
           </div>
           <div>
             <hr class="border-dashed my-2" />
             <table class="w-full text-right">
               <tr>
-                <td>Online staffData</td>
-                <td></td>
+                <td>Online</td>
+                <td>
+                 {{ statsToday.ONLINE?.ticketsSold ? statsToday.ONLINE.ticketsSold: 0 }}
+                </td>
               </tr>
               <tr>
-                <td>Counter staffData</td>
-                <td></td>
+                <td>Counter | Cash</td>
+                <td>
+                 {{ statsToday.CASH?.ticketsSold ? statsToday.CASH.ticketsSold : 0 }}
+                </td>
+              </tr>
+              <tr>
+                <td>Counter | Mbob</td>
+                <td>
+                  {{ statsToday.MBOB?.ticketsSold ? statsToday.MBOB.ticketsSold : 0 }}
+                </td>
               </tr>
             </table>
           </div>
         </div>
       </div>
     </div>
-
-
-     <div >
-        <table>
-          <tr>
-            <td>Modality</td>
-            <td>Tickets Sold</td>
-            <td>Revenue</td>
-          </tr>
-          <tr v-for="data in statsToday" :key="data">
-            <td>
-              {{ data.modality }}
-            </td>
-             <td>
-              {{ data.ticketsSold? data.ticketsSold :0 }}
-            </td>
-             <td>
-              Nu {{ data.amount?data.amount:0 }}
-            </td>
-          </tr>
-        </table>
-      </div>
 
     <div class="grid grid-cols-2">
       <div class="m-2" id="staffwise data">
@@ -153,7 +114,7 @@
             <table class="table-auto">
               <tr>
                 <td>Tickets Sold</td>
-                <td > {{ staffData.ticketsSold ? staffData.ticketsSold : 0 }}</td>
+                <td>{{ staffData.ticketsSold ? staffData.ticketsSold : 0 }}</td>
               </tr>
               <tr>
                 <td>Cash Payments</td>
@@ -164,7 +125,6 @@
                 <td>{{ staffData.scanTickets ? staffData.scanTickets : 0 }}</td>
               </tr>
             </table>
-
             <p>Revenue Generated</p>
             <table>
               <tr>
@@ -172,7 +132,7 @@
                 <td>{{ staffData.amountSold ? staffData.amountSold : 0 }}</td>
               </tr>
               <tr>
-                <td>Cash </td>
+                <td>Cash</td>
                 <td>{{ staffData.cashAmount ? staffData.cashAmount : 0 }}</td>
               </tr>
               <tr>
@@ -219,18 +179,19 @@
           </div>
         </div>
       </div>
-      <div class="m-2" id="routewise data">Route Wise Bokings
+      <div class="m-2" id="routewise data">
+        Route Wise Bokings
 
-       <div>
+        <div>
           <div v-for="routeData in routeStats" :key="routeData">
-          {{ routeData.origin?.name }} - {{ routeData.destination?.name }}
-          {{ routeData.route?.departureTime }}
-          <br>
-          {{ routeData.route.id }}
+            {{ routeData.origin?.name }} - {{ routeData.destination?.name }}
+            {{ routeData.route?.departureTime }}
+            <br />
+            {{ routeData.route.id }}
             <table class="table-auto">
               <tr>
                 <td>Tickets Sold</td>
-                <td > {{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}</td>
+                <td>{{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}</td>
               </tr>
               <tr>
                 <td>Cash Payments</td>
@@ -249,7 +210,7 @@
                 <td>{{ routeData.amountSold ? routeData.amountSold : 0 }}</td>
               </tr>
               <tr>
-                <td>Cash </td>
+                <td>Cash</td>
                 <td>{{ routeData.cashAmount ? routeData.cashAmount : 0 }}</td>
               </tr>
               <tr>
@@ -257,35 +218,48 @@
                 <td>{{ routeData.scanAmount ? routeData.scanAmount : 0 }}</td>
               </tr>
             </table>
+          </div>
         </div>
-       </div>
       </div>
-      
     </div>
   </div>
 </template>
 
 <script>
-import { getStaffStatsToday,getRouteStatsToday,getStatsByModalityToday } from "../../services/bookingStatsService";
+import {
+  getStaffStatsToday,
+  getRouteStatsToday,
+  getStatsByModalityToday,
+} from "../../services/bookingStatsService";
 
 export default {
   data() {
     return {
       staffStats: [],
-      routeStats:[],
-      statsToday:[]
+      routeStats: [],
+      statsToday:{}
     };
   },
   created() {
     getStaffStatsToday().then((res) => {
       this.staffStats = res.data;
     });
-    getRouteStatsToday().then(res =>{
-      this.routeStats = res.data
-    })
-    getStatsByModalityToday().then(res =>{
-      this.statsToday = res.data
-    })
+    getRouteStatsToday().then((res) => {
+      this.routeStats = res.data;
+    });
+    getStatsByModalityToday().then((res) => {
+      let ticketsSold = 0;
+      let amount = 0;
+      res.data.forEach(data => {
+        ticketsSold += parseInt(data.ticketsSold);
+        amount += parseInt(data.amount);
+
+        this.statsToday[data.modality] = data
+      });
+      this.statsToday["TOTAL"] = {ticketsSold:ticketsSold, amount:amount}
+      console.log(this.statsToday)
+    });
+   
   },
   methods: {},
 };
