@@ -13,6 +13,11 @@ export async function getChecksum(bookingId){
     return await axios.get(`${devUrl}/bookings/checksum/${bookingId}`,{headers:authHeader()})
 }
 
+
+export async function getOverAllStats(){
+    return await axios.get(`${devUrl}/bookings/stats`)
+}
+
 export async function getAllBookings(){
     return await axios.get(`${devUrl}/bookings`,{headers:authHeader()})
 }

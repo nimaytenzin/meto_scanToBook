@@ -1389,11 +1389,7 @@
 <script>
 import NavbarComponent from "../components/Landing/Navbar.vue";
 import FooterComponent from "../components/Landing/Footer.vue";
-import { getAllBuses } from "../services/busServices";
-import { getAllRoutes } from "../services/routeServices";
-import { sendFeedback } from "../services/FeedbackServices";
-import { getAllBookings, regenerateTicket } from "../services/bookingServices";
-import { getAllStops } from "../services/stopServices";
+import { getOverAllStats, regenerateTicket } from "../services/bookingServices";
 
 export default {
   name: "landing-page",
@@ -1423,19 +1419,12 @@ export default {
   },
 
   created() {
-
-    getAllBuses().then((res) => {
-      this.buses = res.length;
-    });
-    getAllRoutes().then((res) => {
-      this.routes = res.length;
-    });
-    getAllBookings().then((res) => {
-      this.bookings = res.data.length;
-    });
-    getAllStops().then((res) => {
-      this.stops = res.length;
-    });
+    getOverAllStats().then(res =>{
+      this.buses = res.data.buses;
+      this.bookings = res.data.bookings;
+      this.stops = res.data.stops;
+      this.routes = res.data.routes;
+    })
   },
   methods: {
     goToBooking() {

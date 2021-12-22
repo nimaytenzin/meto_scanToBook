@@ -1184,11 +1184,10 @@ export default {
           depositBank:this.journalDetails.bankName,
           depositJournal:this.journalDetails.journalNumber,
           depositContact:this.journalDetails.contactNumber,
-          operator:VueJwtDecode.decode( sessionStorage.getItem("token")).id
+          operatorId:VueJwtDecode.decode( sessionStorage.getItem("token")).id
         },
         passengers: this.passengers,
       };
-
       addNewBooking(newBooking).then((res) => {
         if (res.status === 201) {
           this.$toast.show("Successful", {
@@ -1206,6 +1205,7 @@ export default {
           });
         }
       });
+
     },
     cancelBooking() {
       this.addPassengerDetailsModal = false;
