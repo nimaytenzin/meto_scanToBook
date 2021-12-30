@@ -89,7 +89,7 @@
               <p>Booked Seats</p>
               <div class="flex flex-row justify-center items-center">
                 <div
-                  v-for="item in bookingData.bookedSeats"
+                  v-for="item in bookingData.passengers"
                   :key="item"
                   class="m-1 p-1 rounded relative"
                 >

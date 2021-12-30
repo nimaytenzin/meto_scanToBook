@@ -140,7 +140,7 @@
               <p>Booked Seats</p>
               <div class="flex flex-row justify-center items-center">
                 <div
-                  v-for="item in bookingData.bookedSeats"
+                  v-for="item in bookingData.passengers"
                   :key="item"
                   class="m-1 p-1 rounded relative"
                 >
@@ -262,7 +262,7 @@
               <div class="text-sm">
                 <h2 class="text-blue-900">Fare: {{ fare }}</h2>
                 <h2 class="text-blue-900">
-                  Seats Booked: {{ bookingData.bookedSeats?.length }}
+                  Seats Booked: {{ bookingData.passengers?.length }}
                 </h2>
                 <h2 class="text-blue-900">
                   Total: Nu. {{ bookingData.amount }}
@@ -289,13 +289,13 @@
             time.
           </p>
 
-          <button
+          <!-- <button
             @click="cancelTicket()"
             class="text-black font-bold py-2 px-4 rounded"
           >
             Click/visit this link Cancel Ticket: <br />
             {{ url }}{{ cancelTicketRouteData.href }}
-          </button>
+          </button> -->
 
           <hr class="border-dashed" />
           <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -396,6 +396,7 @@ export default {
           this.busStatus = false;
         }
         this.bookingData = res.data;
+        console.log(this.bookingData)
       } else {
         this.$router.push("/service-down");
       }

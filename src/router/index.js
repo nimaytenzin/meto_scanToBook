@@ -112,10 +112,10 @@ const routes = [
         path:'',component:()=>import('../components/FinanceAdmin/Today.vue'), meta:{ requiresAuth:true }
       },
       {
-        path: 'monthly', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true }
+        path: 'statistics', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'booking-data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true }
+        path: 'data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true }
       }
     ]
   },

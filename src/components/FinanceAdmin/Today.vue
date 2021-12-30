@@ -184,6 +184,19 @@
                   >
                     Total Revenue
                   </th>
+                  <th
+                    scope="col"
+                    class="
+                      text-sm
+                      font-medium
+                      text-gray-900
+                      px-6
+                      py-4
+                      text-left
+                    "
+                  >
+                    Journals for Mbob
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -221,15 +234,38 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Total:
+                      Total: Nu
                       {{ staffData.amountSold ? staffData.amountSold : 0 }}
                       <br />
-                      Cash:
+                      Cash: Nu
                       {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
                       <br />
-                      Epayment:
+                      Epayment: Nu
                       {{ staffData.scanAmount ? staffData.scanAmount : 0 }}
                     </div>
+                  </td>
+                  <td class="text-md text-gray-900 px-6 py-3 text-left">
+                    <table v-if="staffData.journals?.length">
+                      <thead>
+                        <tr>
+                          <td>Jrn No</td>
+                          <td>Bank</td>
+                          <td>Contact</td>
+                          <td>Amount</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="journal in staffData.journals"
+                          :key="journal"
+                        >
+                          <td>{{ journal.depositJournal }}</td>
+                          <td>{{ journal.depositBank }}</td>
+                          <td>{{ journal.depositContact }}</td>
+                          <td>Nu {{ journal.amount }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
                 <tr
@@ -346,13 +382,13 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Total:
+                      Total: Nu
                       {{ routeData.amountSold ? routeData.amountSold : 0 }}
                       <br />
-                      Cash:
+                      Cash:Nu
                       {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
                       <br />
-                      Epayment:
+                      Epayment:Nu
                       {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
                     </div>
                   </td>
@@ -399,6 +435,7 @@ import {
   getStaffStatsToday,
   getRouteStatsToday,
   getStatsByModalityToday,
+  getJournalDetailsbyStaff,
 } from "../../services/bookingStatsService";
 
 import domtoimage from "dom-to-image";
@@ -413,7 +450,13 @@ export default {
   },
   created() {
     getStaffStatsToday().then((res) => {
-      this.staffStats = res.data;
+      res.data.forEach((staff) => {
+        let data = staff;
+        getJournalDetailsbyStaff(staff.operatorId).then((res) => {
+          data.journals = res.data;
+        });
+        this.staffStats.push(data);
+      });
     });
     getRouteStatsToday().then((res) => {
       this.routeStats = res.data;
@@ -424,7 +467,6 @@ export default {
       res.data.forEach((data) => {
         ticketsSold += parseInt(data.ticketsSold);
         amount += parseInt(data.amount);
-
         this.statsToday[data.modality] = data;
       });
       this.statsToday["TOTAL"] = { ticketsSold: ticketsSold, amount: amount };
@@ -434,7 +476,7 @@ export default {
     today() {
       let d = new Date();
       return d.toDateString();
-    }
+    },
   },
   methods: {
     saveImage() {
@@ -454,7 +496,7 @@ export default {
         style,
       };
 
-      var filename =  this.today.split(' ').join('');;
+      var filename = this.today.split(" ").join("");
 
       domtoimage.toPng(node, param).then(function (dataUrl) {
         var link = document.createElement("a");

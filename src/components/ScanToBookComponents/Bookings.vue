@@ -298,6 +298,7 @@ export default {
         passengers: this.passengers,
       };
       addNewBooking(booking).then((res) => {
+        console.log(res)
         if (res.status === 201) {
           this.$store.commit("addScanBookingId", res.data.id);
           this.$toast.show("loading RMA payment gateway", {
@@ -311,7 +312,17 @@ export default {
             type: "error",
           });
         }
-      });
+      }).catch(err =>{
+          let msg = ""
+          err.response.data.forEach(seat =>{
+            msg + ` ${seat.seatNumber}`
+          })
+          console.log(msg)
+          this.$toast.show(`Seat Numbers ${msg} has been booked `, {
+            position: "top",
+            type: "error",
+          });
+      })
     }
   },
 };
