@@ -39,6 +39,10 @@
           Bus available
         </h2>
       </div>
+
+      <p v-if="dateSelected" class="text-gray-600 text-sm">
+        Selected Date: {{ dateSelected }}
+      </p>
     </div>
 
     <div class="inline-flex mt-8">
@@ -88,7 +92,6 @@ export default {
     DatePicker,
   },
   created() {
-    
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     }
@@ -126,6 +129,8 @@ export default {
       attributes: [],
       dateClicked: false,
       daySelected: null,
+      invalidDateClicked: false,
+      dateSelected:null
     };
   },
   methods: {
@@ -133,41 +138,51 @@ export default {
       this.$router.push("/book/destination");
     },
     onDayClick(e) {
-      console.log(e);
+      this.invalidDateClicked =false;
+
       this.dateClicked = true;
       this.daySelected = e.weekday;
-      if (e.popovers[0] && e.popovers[0].label === "Bus Availble") {
+      if (
+        e.popovers[0] &&
+        e.popovers[0].label === "Bus Availble" &&
+        !e.isDisabled
+      ) {
         let formattedDate = e.id;
         this.$store.commit("commitSelectedDate", formattedDate);
-        // this.$toast.show(` Bus Availble on  ${e.ariaLabel}`, {
-        //   position: "top",
-        //   type: "success",
-        // });
+        this.dateSelected = e.ariaLabel;
+
       } else {
-        this.$toast.show(`No Bus Availble`, {
-          position: "top",
-          type: "error",
-        });
-      }
-    },
-    addDepartureDate() {
-      if (this.$store.getters.getDepartureDate) {
-        let matchedRoutes = [];
-        this.routes.forEach((route) => {
-          if (route.day === this.daySelected) {
-            matchedRoutes.push(route);
-          }
-        });
-        console.log(matchedRoutes);
-        // commitAvailableRoute
-        this.$store.commit("commitAvailableRoute", matchedRoutes);
-        this.$router.push("/book/buses");
-      } else {
-        if (this.dateClicked === true) {
-          this.$toast.show(`No Bus Avaialble on selected Date`, {
+        this.dateSelected =null
+        if (e.isDisabled) {
+          this.$toast.show(`Select a valid Date`, {
             position: "top",
             type: "error",
           });
+          this.invalidDateClicked = true;
+        } else {
+          this.$toast.show(`No Bus Availble`, {
+            position: "top",
+            type: "error",
+          });
+        }
+      }
+    },
+    addDepartureDate() {
+      if (this.dateClicked && this.invalidDateClicked) {
+        this.$toast.show(`Selected Date has passed`, {
+          position: "top",
+          type: "error",
+        });
+      } else {
+        if (this.$store.getters.getDepartureDate) {
+          let matchedRoutes = [];
+          this.routes.forEach((route) => {
+            if (route.day === this.daySelected) {
+              matchedRoutes.push(route);
+            }
+          });
+          this.$store.commit("commitAvailableRoute", matchedRoutes);
+          this.$router.push("/book/buses");
         } else {
           this.$toast.show(`Please Select a Date `, {
             position: "top",

@@ -66,11 +66,11 @@
           "
         >
           <p>Billing</p>
-         
+
           <hr class="border-dashed w-full" />
           <table class="table-auto">
             <tr>
-              <td>Base Fare :</td> 
+              <td>Base Fare :</td>
               <td>
                 Nu
                 {{
@@ -97,13 +97,16 @@
             <tr class="text-gray-100 font-bold text-xl">
               <td>Total :</td>
               <td>
-                {{ total }}
+                {{
+                  (this.$store.state.selectedSchedule?.fare + serviceCharge) *
+                  this.$store.state.selectedSeats.length
+                }}
               </td>
             </tr>
           </table>
-           <p class="text-sm break-words"> 
-          Fare Calculation <br>
-          (Base Fare + Service Charge) x Booked Seats
+          <p class="text-sm break-words">
+            Fare Calculation <br />
+            (Base Fare + Service Charge) x Booked Seats
           </p>
         </div>
 
@@ -112,8 +115,8 @@
           <p class="text-xl font-semibold text-gray-600">
             Enter Passenger Details
           </p>
-          <p class="text-center font-thin text-sm">
-            Please Ensure Phone Numbers are Correct
+          <p class="text-center font-thin text-red-600">
+            Please Ensure Phone Numbers are Correct. <br> SMS confirmation will be sent to the Phone Numbers.
           </p>
           <div class="flex flex-col justify-center items-center">
             <div
@@ -194,8 +197,9 @@
           </div>
         </div>
         <p class="text-center break-words font-thin text-sm mt-3">
-            Please Ensure Details are Correct. <br> The company wont be liable for any wrong details entered
-          </p>
+          Please Ensure Details are Correct. <br />
+          The company wont be liable for any wrong details entered
+        </p>
       </div>
     </div>
 
@@ -254,12 +258,13 @@ export default {
     }
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
-      this.total = (this.$store.state.selectedSchedule.fare + this.serviceCharge) * this.$store.state.selectedSeats.length;
+      this.total =
+        (this.$store.state.selectedSchedule.fare + this.serviceCharge) *
+        this.$store.state.selectedSeats.length;
     });
     this.$store.state.selectedSeats.forEach((seat) => {
-      this.passengers.push({seatNumber:seat.number});
+      this.passengers.push({ seatNumber: seat.number });
     });
-    
   },
   data() {
     return {
@@ -271,6 +276,7 @@ export default {
       passengers: [],
       serviceCharge: null,
       total: 0,
+      duplicateSeat: false,
     };
   },
   computed: {
@@ -282,48 +288,83 @@ export default {
 
   methods: {
     previous() {
-      this.$router.push("/book/seats");
+      if (this.duplicateSeat) {
+        this.$store.commit("resetSelecteSeats");
+        this.$router.push("/book/seats");
+      } else {
+        this.$router.push("/book/seats");
+      }
     },
     pay() {
-      let booking = {
-        booking: {
-          routeId: this.$store.state.selectedSchedule.id,
-          modality: "Online",
-          amount: this.total,
-          scheduleHash:this.$store.state.scanRoomID,
-          scheduleDate:this.$store.state.departureDate,
-          operatorId:null,
-          serviceCharge:(this.serviceCharge * this.passengers.length)
-        },
-        passengers: this.passengers,
-      };
-      addNewBooking(booking).then((res) => {
-        console.log(res)
-        if (res.status === 201) {
-          this.$store.commit("addScanBookingId", res.data.id);
-          this.$toast.show("loading RMA payment gateway", {
-            position: "top",
-            type: "info",
-          });
-          this.$router.push(`/book/loadPayment`);
-        } else {
-          this.$toast.show("Newtork Error..try again", {
-            position: "top",
-            type: "error",
-          });
+      let detailsFilled = false;
+      console.log(this.passengers, "PASEGERS")
+      this.passengers.forEach((passenger) => {
+        if(passenger.name && passenger.cid && passenger.contact ){
+          detailsFilled = true
+        }else{
+          detailsFilled = false
         }
-      }).catch(err =>{
-          let msg = ""
-          err.response.data.forEach(seat =>{
-            msg + ` ${seat.seatNumber}`
+      });
+      if (detailsFilled) {
+        let booking = {
+          booking: {
+            routeId: this.$store.state.selectedSchedule.id,
+            modality: "Online",
+            amount: this.total,
+            scheduleHash: this.$store.state.scanRoomID,
+            scheduleDate: this.$store.state.departureDate,
+            operatorId: null,
+            serviceCharge: this.serviceCharge * this.passengers.length,
+          },
+          passengers: this.passengers,
+        };
+        addNewBooking(booking)
+          .then((res) => {
+            if (res.status === 201) {
+              this.$store.commit("addScanBookingId", res.data.id);
+              this.$toast.show("loading RMA payment gateway", {
+                position: "top",
+                type: "info",
+              });
+              this.$router.push(`/book/loadPayment`);
+            } else {
+              this.$toast.show("Newtork Error..try again", {
+                position: "top",
+                type: "error",
+              });
+            }
           })
-          console.log(msg)
-          this.$toast.show(`Seat Numbers ${msg} has been booked `, {
-            position: "top",
-            type: "error",
+          .catch((err) => {
+            if (err.response.status === 409) {
+              this.duplicateSeat = true;
+              err.response.data.forEach((seat) => {
+                this.$toast.show(
+                  `Seat Number ${seat.seatNumber} has been booked `,
+                  {
+                    position: "top",
+                    type: "error",
+                    duration: 10000,
+                  }
+                );
+              });
+              this.$toast.show("Please Select another Seat", {
+                position: "top",
+                type: "info",
+              });
+            } else {
+              this.$toast.show("Newtork Error..try again", {
+                position: "top",
+                type: "error",
+              });
+            }
           });
-      })
-    }
+      }else{
+        this.$toast.show("Please fill in all the details",{
+          position:"top",
+          type:'error'
+        })
+      }
+    },
   },
 };
 </script>

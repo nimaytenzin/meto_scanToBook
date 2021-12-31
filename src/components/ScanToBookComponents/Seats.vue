@@ -184,7 +184,7 @@
           <tr class="text-gray-100 font-bold">
             <td>Total :</td>
             <td>
-              {{ total }}
+              {{ (total+serviceCharge) * bookedSeats.length }}
             </td>
           </tr>
         </table>
@@ -389,8 +389,7 @@
 
 export default {
   created() {
-    // console.log(this.$store.state.schedule)
-    console.log(this.$store.state)
+
     if (
       this.$store.state.origin === ""
     ) {
@@ -398,7 +397,6 @@ export default {
     } else {
       this.fare = this.$store.state.selectedSchedule?.fare;
       this.roomId = this.$store.state.scanRoomID;
-      console.log(this.roomId)
       if (this.$store.state.scanRoomID) {
         this.errorModal = true;
         this.isLoader = true;
@@ -494,39 +492,35 @@ export default {
       this.conn.onclose = (evt) => {
         this.errorModal = true;
         this.connectionAttempt++;
-        console.log("WSS CONNECTION closed");
+        console.log("Connection To Meto WSS closed");
         console.log("RECONNECTING");
         this.isConnected = false;
         if (!this.isConnected) {
           setTimeout(() => {
-            console.log(this.connectionAttempt);
             if (this.connectionAttempt === 10) {
               this.errorModal = false;
               this.$router.push("/service-down");
             } else {
               this.connectWs();
             }
-          }, 1000);
+          }, 2000);
         }
       };
       this.conn.onmessage = (evt) => {
         let messageJson = JSON.parse(evt.data);
-        console.log(messageJson);
         if (messageJson.messageType === "LOCK") {
-          console.log("LOCK MESSAGE RECIEVED");
+          console.log("locked Seats RECIEVED");
           this.lockedSeats = messageJson.lockedList;
           this.changeSeatStatus();
-          console.log(messageJson);
         } else if (messageJson.messageType === "LOCK_LEAVE") {
           console.log("LOCK LEAVE RECIEVED");
-          console.log(messageJson);
           this.reverSeatStatus(messageJson.leaveList);
         } else if (messageJson.messageType === "LOCK_ACK") {
           console.log("Lock Acknowledged by the server");
           this.selectedSeat.status = "locked";
           this.showModal = true;
         } else if (messageJson.messageType === "LOCK_FAIL") {
-          console.log("Lock Acknowledged by the server");
+          console.log("Lock Acknowledge Failed");
           this.showModal = false;
           this.$toast.show(
             "Some one else is booking the seat! please select another seat",
@@ -551,7 +545,6 @@ export default {
     },
     matchBookedSeat(id) {
       let bookedSeats = this.$store.state.selectedSeats;
-      console.log(bookedSeats);
       for (let i = 0; i < bookedSeats.length; i++) {
         if (bookedSeats[i].number === id) {
           return bookedSeats[i];
@@ -569,33 +562,14 @@ export default {
           matchedSeat.status = "locked";
         }
       });
-      // if(this.$store.state.selectedSeats.length > 0){
-      //     console.log(this.lockedSeats)
-      //     var stateSeat = this.$store.state.selectedSeats
-      //     this.lockedSeats.forEach(seatNumber =>{
-      //       // this.$store.state.selectedSeats.forEach(seat=>{
-      //         stateSeat.forEach(seat=>{
-      //         if(Number(seatNumber) === Number(seat.number)){
-
-      //           this.getSeats(seatNumber).status = "booked"
-
-      //         }else{
-      //           console.log("locked for this number",seat.number);
-      //           console.log("locked for this number",seatNumber);
-      //           this.getSeats(seatNumber).status = "locked"
-      //         }
-      //       })
-      //     })
-      // }else{
-      //   this.lockedSeats.forEach(seatNumber =>{
-      //     this.getSeats(seatNumber).status = "locked"
-      //   })
-      // }
+       this.$store.state.selectedSeats.forEach(seat =>{
+        let matchedSeat = this.getSeats(seat.number);
+        matchedSeat.status = "booked"
+      })
     },
     reverSeatStatus(arr) {
       arr.forEach((element) => {
         let matchedSeat = this.getSeats(parseInt(element));
-        // let matchedBookedSeat = this.matchBookedSeat(parseInt(element));
         matchedSeat.status = "available";
       });
     },
@@ -679,7 +653,6 @@ export default {
       this.reverSeatModal = false;
     },
     addSeat(seat) {
-      console.log("CLICK", seat)
       if (seat.type === "seat") {
         this.selectedSeat = seat;
         if (seat.status === "locked") {

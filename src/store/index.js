@@ -58,6 +58,9 @@ export default createStore({
     addSeats(state,seats){
      state.selectedSeats.push(seats);
     },
+    resetSelecteSeats(state){
+      state.selectedSeats = []
+    },
     commitScanRoomId(state,data){
       state.scanRoomID = data
     },
