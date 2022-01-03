@@ -1171,8 +1171,17 @@ export default {
     },
 
     confirmBooking() {
-      alert("Add Data Validation Here!");
-      let newBooking = {
+      let detailsFilled = false;
+       this.passengers.forEach((passenger) => {
+        if(passenger.name && passenger.cid && passenger.contact ){
+          detailsFilled = true
+        }else{
+          detailsFilled = false
+        }
+      });
+      
+     if(detailsFilled){
+        let newBooking = {
         booking: {
           scheduleDate: this.departureDate,
           scheduleHash: this.roomId,
@@ -1205,6 +1214,12 @@ export default {
           });
         }
       });
+     }else{
+       this.$toast.show("Please fill in all the details",{
+          position:"top",
+          type:'error'
+        })
+     }
 
     },
     cancelBooking() {

@@ -59,3 +59,9 @@ export async function getRoutesByWeekday(weekday){
  export async function updateBusRoster(id,data){
     return await axios.put(`${devUrl}/bus-roster/${id}`,data,{headers:authHeader()})
 }
+
+export async function getBusByBookingId(bookingId){
+    return await axios.get(`${devUrl}/bus-roster/get-bookingId/${bookingId}`)
+ }
+
+

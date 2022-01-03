@@ -70,22 +70,6 @@
       </a>
 
       <nav>
-        <router-link to="/admin/">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            Home
-          </p>
-        </router-link>
         <router-link to="/admin/manage-buses">
           <p
             class="
@@ -133,38 +117,6 @@
             "
           >
             Bus Schedule
-          </p>
-        </router-link>
-        <router-link to="/admin/ticket-cancellations">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            Cancellations
-          </p>
-        </router-link>
-         <router-link to="/admin/feedbacks">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-            Feedbacks
           </p>
         </router-link>
         <div>

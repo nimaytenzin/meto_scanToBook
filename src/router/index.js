@@ -77,7 +77,7 @@ const routes = [
     component: () => import('../views/Admin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/Admin/Index.vue'), meta: { requiresAuth: true }
+        path: '', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true }
       },
       {
         path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true }

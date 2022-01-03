@@ -36,7 +36,7 @@
 
       <form
         method="post"
-        action=" http://uatbfssecure.rma.org.bt/BFSSecure/makePayment"
+        action="https://bfssecure.rma.org.bt/BFSSecure/makePayment"
       >
         <input type="hidden" name="bfs_msgType" value="AR" />
         <input

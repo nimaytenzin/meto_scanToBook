@@ -1,49 +1,112 @@
 <template>
   <div
-    class="min-h-screen flex flex-col items-center justify-start sm:ml2 sm:mr2 bg-white"
-     id="report"
+    class="
+      min-h-screen
+      flex flex-col
+      items-center
+      justify-start
+      sm:ml2 sm:mr2
+      bg-white
+    "
+    id="report"
   >
-   <button
-        @click="saveImage"
-        class="float-right p-1 bg-gray-400 text-gray-100 rounded"
-      >
-        Download Report
-      </button>
-    <h1 class="text-3xl font-semibold text-center my-4 text-gray-700 border-b-2">
+    <button
+      @click="saveImage"
+      class="float-right p-1 bg-gray-400 text-gray-100 rounded"
+    >
+      Download Report
+    </button>
+    <h1
+      class="text-3xl font-semibold text-center my-4 text-gray-700 border-b-2"
+    >
       Statistics & Trends
     </h1>
 
-    <div class="flex gap-6"> 
-      <div class="mx-10">
-        Top Routes
-        <p v-for="route in topRoutes" :key="route"> {{ route.origin.name }} - {{ route.destination.name }} | {{ route.route.departureTime }} => tickets Sold {{ route.ticketsSold }} </p>
+    <div class="flex gap-6">
+      <div class="mx-10 ">
+        <p class="text-gray-700 font-bold">
+          Top Routes (Number of tickets Sold)
+        </p>
+        <table class="w-full">
+          <tr>
+            <td>Route</td>
+            <td>No</td>
+          </tr>
+          <tr
+            v-for="route in topRoutes"
+            :key="route"
+            class="text-gray-700 border-b"
+          >
+            <td>
+              <p>{{ route.origin.name }} - {{ route.destination.name }}</p>
+              <p class="text-sm">({{ route.route.departureTime }})</p>
+            </td>
+            <td>
+              <p class="text-green-700 mx-4 font-bold">
+                {{ route.ticketsSold }}
+              </p>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <div class="mx-10">
-        Top Staffs
-        <p v-for="staff in topStaffs" :key="staff"> {{ staff.user? staff.user.name : "Online Booking" }}  => tickets Sold {{ staff.ticketsSold }} </p>
+        <p class="text-gray-700 font-bold">
+          Top Staffs (Number of Tickets Sold)
+        </p>
+
+        <table class="w-full">
+          <tr>
+            <td>Route</td>
+            <td>No</td>
+          </tr>
+          <tr
+            v-for="staff in topStaffs"
+            :key="staff"
+            class="text-gray-700 border-b"
+          >
+            <td>
+              <p>{{ staff.user ? staff.user.name : "Online Booking" }}</p>
+            </td>
+            <td>
+              <p class="text-green-700 mx-4 my-1 font-bold">
+                {{ staff.ticketsSold }}
+              </p>
+            </td>
+          </tr>
+        </table>
       </div>
-
-
     </div>
-    
 
     <div class="w-full">
-      <line-chart
-        prefix="Nu "
-        :discrete="false"
-        loading="Fetching Data..."
-        :data="data"
-        legend="bottom"
-        :colors="['#d7e0ff', '#ffb3bf', '#302E80']"
-      ></line-chart>
-      <line-chart
+      <h1
+        class="text-2xl font-semibold text-center my-4 text-gray-700"
+      >
+        Revenue Chart
+      </h1>
+       <line-chart
         prefix="Nu "
         :discrete="true"
         loading="Fetching Data..."
         :data="data2"
         legend="bottom"
-        :colors="['#302E80', '#CE8A33', '#E74A61']"
+        :colors="['#302E80', '#C9F2C7', '#F5E3E0', '#66CED6']"
+      ></line-chart>
+
+      <h1
+        class="text-2xl mt-6 font-semibold text-center my-4 text-gray-700"
+      >
+        Tickets Sold Chart
+      </h1>
+    
+
+       <line-chart
+        prefix="Nu "
+        :discrete="false"
+        loading="Fetching Data..."
+        :data="data"
+        legend="bottom"
+         :colors="['#302E80', '#C9F2C7', '#F5E3E0', '#66CED6']"
       ></line-chart>
     </div>
   </div>
@@ -57,10 +120,10 @@ import {
   getTopStaffs,
 } from "../../services/bookingStatsService";
 import domtoimage from "dom-to-image";
-
+import Route from "../Staff/bookTicket/Route.vue";
 
 export default {
-
+  components: { Route },
   created() {
     getLatestTicketsStats().then((res) => {
       this.data = res.data;
@@ -68,19 +131,19 @@ export default {
     getLatestRevenueStats().then((res) => {
       this.data2 = res.data;
     });
-    getTopMontlyRoutes().then(res =>{
-      this.topRoutes = res.data
-    })
-    getTopStaffs().then(res =>{
-      this.topStaffs= res.data
-    })
+    getTopMontlyRoutes().then((res) => {
+      this.topRoutes = res.data;
+    });
+    getTopStaffs().then((res) => {
+      this.topStaffs = res.data;
+    });
   },
   data() {
     return {
       data: [],
       data2: [],
-      topRoutes:[],
-      topStaffs:[]
+      topRoutes: [],
+      topStaffs: [],
     };
   },
   methods: {

@@ -43,23 +43,18 @@
           </div>
         </div>
 
-        <div class="text-center font-bold text-2xl mt-4 mb-2" v-if="bus">
+        <div class="text-center  mt-4 mb-2" v-if="bus">
 
-            <h2>
-              {{ bus.vechileNumber }}
+            <p class="text-center text-gray-500">Your Bus Number: </p>
+            <h2 class="text-gray-700 text-3xl">
+            {{ bus.vechileNumber }}
             </h2>
-
-
         </div>
-        <div v-else class="text-center font-bold text-2xl mt-4 mb-2"> 
-              <h2>
-                  Bus Details not yet updated.. <br> Please try again 2 hours before departure
+        <div v-else  class="text-center text-3xl mt-4 mb-2"> 
+              <h2 class="text-gray-700" >
+                  Bus Details not yet updated! 
               </h2>
         </div>
-        <p class="text-center text-gray-500 text-sm mt-4 mb-4">
-          Please Reach the station on time to not miss the bus <br>
-          Ensuring Safety, Reliability,Comfort till your destination.
-        </p>
       </div>
     </div>
 
@@ -68,7 +63,9 @@
 </template>
 
 <script>
-import { getBusbyBookingId } from '../../services/bookingServices';
+import { getBusByBookingId } from '../../services/routeServices';
+
+
 export default {
   data() {
     return {
@@ -78,9 +75,12 @@ export default {
   created() {
 
     let bookingId = this.$route.params.id
-    getBusbyBookingId(bookingId).then(res =>{
-      console.log(res)
-      this.bus = res.data.bus
+    getBusByBookingId(bookingId).then(res =>{
+      if(res.status === 200){
+        this.bus = res.data.bus
+      }
+    }).catch(err =>{
+      console.log(err)
     })
    
   },

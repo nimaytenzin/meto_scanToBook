@@ -465,11 +465,14 @@ export default {
       let ticketsSold = 0;
       let amount = 0;
       res.data.forEach((data) => {
+        console.log(data)
         ticketsSold += parseInt(data.ticketsSold);
         amount += parseInt(data.amount);
         this.statsToday[data.modality] = data;
       });
+      console.log(ticketsSold, amount)
       this.statsToday["TOTAL"] = { ticketsSold: ticketsSold, amount: amount };
+      console.log(this.statsToday)
     });
   },
   computed: {
