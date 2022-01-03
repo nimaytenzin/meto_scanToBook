@@ -5,7 +5,7 @@
     </div>
     <div>
       <h1 class="text-3xl text-gray-500 text-center">
-        Loading Payment Gateway
+        Redirecting to RMA Secured Payment Gateway
       </h1>
     </div>
     <div
@@ -94,39 +94,7 @@
       </form>
     </div>
 
-    <div class="inline-flex mt-8">
-      <button
-        class="
-          bg-gray-100
-          hover:bg-gray-400
-          text-gray-500
-          hover:text-white
-          font-bold
-          py-2
-          px-4
-          rounded-l
-        "
-        @click="previous()"
-      >
-        Prev
-      </button>
-
-      <button
-        class="
-          bg-gray-100
-          hover:bg-gray-400
-          text-gray-500
-          hover:text-white
-          font-bold
-          py-2
-          px-4
-          rounded-r
-        "
-        @click="next()"
-      >
-        Confirm Payment >
-      </button>
-    </div>
+ 
   </div>
 </template>
 
@@ -153,11 +121,9 @@ export default {
         this.hiddenFormVal.bfs_paymentDesc = "SeatBooking";
         this.hiddenFormVal.bfs_version = "1.0";
         this.hiddenFormVal.bfs_checkSum = res.data.checksum;
-        console.log(this.hiddenFormVal, "form data");
-
           setTimeout(() => {
-          this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-          // document.getElementById("submitBtn").click();
+          // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+          document.getElementById("submitBtn").click();
         }, 1000);
       } else {
         this.$toast.show("Network Error", {
@@ -185,37 +151,6 @@ export default {
       },
     };
   },
-
-  // mounted() {
-  //   console.log(this.hiddenFormVal, "TO BE SENT TO PG");
-  //   this.sendForm()
-  // },
-
-  methods: {
-    previous() {
-      this.$router.push(`/book/Bookings`);
-    },
-    next() {
-      this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
-      
-      // confirmPayment(this.hiddenFormVal).then((res) => {
-      //   if (res.status === 200) {
-      //     this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`);
-      //   } else {
-      //     this.$toast.show("Network error try again", {
-      //       position: "top",
-      //       type: "error",
-      //     });
-      //   }
-      // });
-    },
-
-    sendForm() {
-      setTimeout(() => {
-        // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-        document.getElementById("submitBtn").click();
-      }, 1000);
-    },
-  },
+   
 };
 </script>

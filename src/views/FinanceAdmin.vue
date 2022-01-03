@@ -105,7 +105,7 @@
         </router-link>
         
 
-         <router-link to="/finance/data">
+         <!-- <router-link to="/finance/data">
           <p
             class="
               block
@@ -120,7 +120,7 @@
           >
              Booking Data
           </p>
-        </router-link>
+        </router-link> -->
 
         <a href="https://bfssecure.rma.org.bt/BFSSecure/login" target="_blank">
 
