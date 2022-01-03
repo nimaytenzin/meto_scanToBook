@@ -103,6 +103,7 @@
              Statistics & Trends
           </p>
         </router-link>
+        
 
          <router-link to="/finance/data">
           <p
@@ -120,6 +121,24 @@
              Booking Data
           </p>
         </router-link>
+
+        <a href="https://bfssecure.rma.org.bt/BFSSecure/login" target="_blank">
+
+           <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+            RMA PG-Secure Transcations
+          </p>
+        </a>
        
        
         <div>
