@@ -80,7 +80,7 @@
                 >Policies</span
               >
               <ul class="list-unstyled">
-                <li>
+                <!-- <li>
                   <a
                     class="
                       text-gray-700
@@ -93,7 +93,7 @@
                     href="/policy/refund"
                     >Refund Policy</a
                   >
-                </li>
+                </li> -->
                 <li>
                   <a
                     class="

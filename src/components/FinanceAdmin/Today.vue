@@ -136,7 +136,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2">
+      <div class="grid grid-cols-1 md:grid-cols-2">
         <div class="m-2" id="staffwise data">
           <div class="my-2">
             <h1 class="text-xl font-bold text-gray-700">
@@ -184,19 +184,6 @@
                   >
                     Total Revenue
                   </th>
-                  <th
-                    scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
-                  >
-                    Journals for Mbob
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -222,50 +209,37 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Total:
-                      {{ staffData.ticketsSold ? staffData.ticketsSold : 0 }}
+                      Online:
+                      {{
+                        staffData.onlineTickets ? staffData.onlineTickets : 0
+                      }}
                       <br />
                       Cash:
                       {{ staffData.cashTickets ? staffData.cashTickets : 0 }}
                       <br />
-                      Epayment:
+                      Mbob:
                       {{ staffData.scanTickets ? staffData.scanTickets : 0 }}
+
+                      <hr class="w-full" />
+                      Total:
+                      {{ staffData.ticketsSold ? staffData.ticketsSold : 0 }}
                     </div>
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Total: Nu
-                      {{ staffData.amountSold ? staffData.amountSold : 0 }}
+                      Online: Nu
+                      {{ staffData.onlineAmount ? staffData.onlineAmount : 0 }}
                       <br />
+
                       Cash: Nu
                       {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
                       <br />
                       Epayment: Nu
                       {{ staffData.scanAmount ? staffData.scanAmount : 0 }}
+                      <hr class="w-full" />
+                      Total: Nu
+                      {{ staffData.amountSold ? staffData.amountSold : 0 }}
                     </div>
-                  </td>
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
-                    <table v-if="staffData.journals?.length">
-                      <thead>
-                        <tr>
-                          <td>Jrn No</td>
-                          <td>Bank</td>
-                          <td>Contact</td>
-                          <td>Amount</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          v-for="journal in staffData.journals"
-                          :key="journal"
-                        >
-                          <td>{{ journal.depositJournal }}</td>
-                          <td>{{ journal.depositBank }}</td>
-                          <td>{{ journal.depositContact }}</td>
-                          <td>Nu {{ journal.amount }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </td>
                 </tr>
                 <tr
@@ -370,26 +344,38 @@
 
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Total:
-                      {{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}
+                     
+
+                      Online
+                      {{
+                        routeData.onlineTickets ? routeData.onlineTickets : 0
+                      }}
                       <br />
                       Cash:
                       {{ routeData.cashTickets ? routeData.cashTickets : 0 }}
                       <br />
-                      Epayment:
+                      Mbob:
                       {{ routeData.scanTickets ? routeData.scanTickets : 0 }}
+
+                      <hr class="w-full">
+                       Total:
+                      {{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}
+                      
                     </div>
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Total: Nu
-                      {{ routeData.amountSold ? routeData.amountSold : 0 }}
+                      Online
+                      {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
                       <br />
                       Cash:Nu
                       {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
                       <br />
-                      Epayment:Nu
+                      Mbob:Nu
                       {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
+                      <hr class="w-full">
+                       Total: Nu
+                      {{ routeData.amountSold ? routeData.amountSold : 0 }}
                     </div>
                   </td>
                 </tr>
@@ -450,13 +436,7 @@ export default {
   },
   created() {
     getStaffStatsToday().then((res) => {
-      res.data.forEach((staff) => {
-        let data = staff;
-        getJournalDetailsbyStaff(staff.operatorId).then((res) => {
-          data.journals = res.data;
-        });
-        this.staffStats.push(data);
-      });
+      this.staffStats = res.data;
     });
     getRouteStatsToday().then((res) => {
       this.routeStats = res.data;
@@ -465,14 +445,14 @@ export default {
       let ticketsSold = 0;
       let amount = 0;
       res.data.forEach((data) => {
-        console.log(data)
+        console.log(data);
         ticketsSold += parseInt(data.ticketsSold);
         amount += parseInt(data.amount);
         this.statsToday[data.modality] = data;
       });
-      console.log(ticketsSold, amount)
+      console.log(ticketsSold, amount);
       this.statsToday["TOTAL"] = { ticketsSold: ticketsSold, amount: amount };
-      console.log(this.statsToday)
+      console.log(this.statsToday);
     });
   },
   computed: {

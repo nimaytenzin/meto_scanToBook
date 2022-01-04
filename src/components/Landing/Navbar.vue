@@ -122,7 +122,7 @@
               ><span class="lg:hidden inline-block ml-2">Privacy Policy</span></a
             >
           </li>
-          <li class="flex items-center">
+          <!-- <li class="flex items-center">
             <a
               class="
                 lg:text-white
@@ -150,7 +150,7 @@
               ></i
               ><span class="lg:hidden inline-block ml-2">Refund Policy</span></a
             >
-          </li>
+          </li> -->
         
           <li class="flex items-center">
             <button
