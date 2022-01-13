@@ -42,7 +42,7 @@
         <input
           type="hidden"
           name="bfs_benfTxnTime"
-          v-model="hiddenFormVal.bfs_msgType"
+          v-model="hiddenFormVal.bfs_benfTxnTime"
         />
         <input
           type="hidden"
@@ -116,7 +116,7 @@ export default {
         this.hiddenFormVal.bfs_benfId = res.data.benBankDetails.bfs_benfId;
         this.hiddenFormVal.bfs_benfBankCode =res.data.benBankDetails.bfs_benfBankCode;
         this.hiddenFormVal.bfs_txnCurrency = res.data.benBankDetails.bfs_txnCurrency;
-        this.hiddenFormVal.bfs_txnAmount = res.data.booking.amount.toFixed(2).toString();
+        this.hiddenFormVal.bfs_txnAmount = res.data.booking.amount;
         this.hiddenFormVal.bfs_remitterEmail = "customer@gmail.com";
         this.hiddenFormVal.bfs_paymentDesc = "SeatBooking";
         this.hiddenFormVal.bfs_version = "1.0";

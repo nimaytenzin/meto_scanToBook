@@ -5,10 +5,11 @@
     </div>
     <div class="flex flex-col justify-center items-center bg-green-500 p-4 rounded-2xl mt-4 shadow-2xl">
       <h1 class="text-2xl text-white text-center font-nunito">Transaction Cancelled!!</h1>
+      <h4 class="text-xl text-white text-center font-nunito">Transaction number: {{bookingId}}</h4>
     </div>
     <div class="flex flex-col justify-center items-center mt-6 w-3/4">
         <div class="flex space-x-4 mt-9">
-            <button class="bg-blue-500 text-white font-bold p-3 rounded-2xl" @click="goBack()"> Go back to main page</button>
+            <button class="bg-blue-500 text-white font-bold p-3 rounded-2xl" @click="goBack()"> Book again?</button>
         </div>
     </div>
   </div>
