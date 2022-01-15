@@ -35,8 +35,8 @@ export async function updateBooking(id,data){
 }
 
 
-export async function getAllCanelled(){
-    return await axios.get(`${devUrl}/bookings/cancelled`,{headers:authHeader()})
+export async function getCancelledBooking(){
+    return await axios.get(`${devUrl}/bookings/cancelledBookings`,{headers:authHeader()})
 }
 
 export async function getBookingsByScheduleId(id){
@@ -55,5 +55,22 @@ export async function getCancelCode(bookingId){
 
 
 export async function getPassengersOnBus(routeId,departureDate){
-    return await axios.get(`${devUrl}/bookings/get-route-date/${routeId}/${departureDate}`)
+    return await axios.get(`${devUrl}/bookings/get-route-date/${routeId}/${departureDate}`,{headers:authHeader()})
+}
+
+
+export async function getPassengerDetailsByScheduleHash(scheduleHash){
+    return await axios.get(`${devUrl}/passenger/schedule/${scheduleHash}`,{headers:authHeader()})
+}
+
+export async function getPendingBookingsByRouteId(routeId){
+    return await axios.get(`${devUrl}/bookings/pending-bookings-routeId/${routeId}`)
+}
+
+export async function publishConfirmedSeats(data){
+    return await axios.post(`${devUrl}/bookings/publishSeats`, data,{headers:authHeader()})
+}
+
+export async function deleteBookingwithPassengers(bookingID){
+    return await axios.delete(`${devUrl}/bookings/${bookingID}`, {headers:authHeader()})
 }

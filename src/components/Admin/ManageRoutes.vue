@@ -1,9 +1,20 @@
 <template>
   <div class="min-h-screen flex flex-col p-4">
-    <h2 class="bg-gray-300 w-full text-gray-800 text-left p-4 rounded">Routes and Stop Management</h2>
+    <h2 class="bg-gray-300 w-full text-gray-800 text-left p-4 rounded">
+      Routes and Stop Management
+    </h2>
     <div class="flex flex-row gap-7">
       <div
-        class="flex flex-row m-auto bg-indigo-900 text-blue-100 p-6 gap-8 rounded-lg border-white"
+        class="
+          flex flex-row
+          m-auto
+          bg-indigo-900
+          text-blue-100
+          p-6
+          gap-8
+          rounded-lg
+          border-white
+        "
       >
         <div class="my-auto">
           <div class="text-lg">Routes</div>
@@ -16,7 +27,10 @@
       </div>
 
       <div class="space-y-2 flex-1">
-        <button class="p-4 flex items-center gap-2" @click="addStopsModal = true">
+        <button
+          class="p-4 flex items-center gap-2"
+          @click="addStopsModal = true"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -38,18 +52,53 @@
           <thead class="bg-gray-50 flex">
             <tr>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >Name</th>
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Name
+              </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >Focal Staff</th>
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Focal Staff
+              </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >Edit</th>
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Edit
+              </th>
             </tr>
           </thead>
           <tbody
-            class="bg-white divide-y divide-gray-200 overflow-y-scroll flex flex-col"
+            class="
+              bg-white
+              divide-y divide-gray-200
+              overflow-y-scroll
+              flex flex-col
+            "
             style="height: 30vh"
           >
             <tr
@@ -102,7 +151,10 @@
     </div>
     <div>
       <div class="flex gap-2">
-        <button class="p-4 flex items-center gap-2" @click="addRoutePathModal = true">
+        <button
+          class="p-4 flex items-center gap-2"
+          @click="addRoutePathModal = true"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -120,7 +172,10 @@
           <p>Add New RoutePath</p>
         </button>
 
-        <button class="p-4 flex items-center gap-2" @click="addRoutesModal = true">
+        <button
+          class="p-4 flex items-center gap-2"
+          @click="addRoutesModal = true"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -143,14 +198,44 @@
         <thead class="bg-gray-50">
           <tr>
             <td
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >Origin</td>
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Origin
+            </td>
             <td
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >Destination</td>
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Destination
+            </td>
             <td
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >Routes</td>
+              class="
+                px-6
+                py-3
+                text-left text-xs
+                font-medium
+                text-gray-500
+                uppercase
+                tracking-wider
+              "
+            >
+              Routes
+            </td>
             <!-- <td
               class="
                 px-6
@@ -168,31 +253,67 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="routepath in routepaths" :key="routepath.id" class="mt-2">
-            <td class="text-md px-6 py-4 whitespace-nowrap">{{ routepath.origin.name }}</td>
-            <td class="text-md px-6 py-4 whitespace-nowrap">{{ routepath.destination.name }}</td>
+            <td class="text-md px-6 py-4 whitespace-nowrap">
+              {{ routepath.origin.name }}
+            </td>
+            <td class="text-md px-6 py-4 whitespace-nowrap">
+              {{ routepath.destination.name }}
+            </td>
             <td class="px-6 whitespace-nowrap">
               <table class="w-full table-auto divide-y divide-gray-200">
                 <tr class="bg-gray-50">
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">Status</td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">Day</td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">departureTime</td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">Fare</td>
-                  <td class="px-3 py-1 text-left text-xs font-medium text-gray-500">Action</td>
+                  <td class="px-3 py-1 text-left font-medium text-gray-500">
+                    Status
+                  </td>
+                  <td class="px-3 py-1 text-left font-medium text-gray-500">
+                    Day
+                  </td>
+                  <td class="px-3 py-1 text-left font-medium text-gray-500">
+                    departureTime
+                  </td>
+                  <td class="px-3 py-1 text-left font-medium text-gray-500">
+                    Fare
+                  </td>
+                  <td
+                    class="
+                      px-3
+                      py-1
+                      text-left text-xs
+                      font-medium
+                      text-gray-500
+                    "
+                  >
+                    Action
+                  </td>
                 </tr>
-                <tr v-for="route in routepath.routes" :key="route" class="text-gray-500">
+                <tr
+                  v-for="route in routepath.routes"
+                  :key="route"
+                  class="text-gray-500"
+                >
                   <td class="px-2 py-1">
                     <div
                       v-if="route.isActive"
                       class="text-center p-1 bg-green-400 text-green-50 rounded"
-                    >Active</div>
-                    <div v-else class="text-center bg-red-400 text-red-50 p-1 rounded">Suspended</div>
+                    >
+                      Active
+                    </div>
+                    <div
+                      v-else
+                      class="text-center bg-red-400 text-red-50 p-1 rounded"
+                    >
+                      Suspended
+                    </div>
                   </td>
-                  <td class="text-center px-2">{{ week[route.day-1] }}</td>
+                  <td class="text-center px-2">{{ week[route.day - 1] }}</td>
                   <td class="px-2">{{ route.departureTime }}</td>
                   <td class="text-center px-2">Nu.{{ route.fare }}</td>
                   <td class="px-2">
                     <div class="flex gap-2">
-                      <div @click="editRoute(routepath, route)" class="flex items-center">
+                      <div
+                        @click="editRoute(routepath, route)"
+                        class="flex items-center"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           class="h-4 w-4"
@@ -209,12 +330,13 @@
                         </svg>
                         Edit
                       </div>
-                      <!-- <div 
-                        @click="deleteRouted(route.id)"
-                        class="flex items-center">
+                      <div
+                        @click="showDeleteRouteModal(route, routepath)"
+                        class="flex items-center"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
+                          class="h-6 w-6"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -223,11 +345,11 @@
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                           />
                         </svg>
                         Delete
-                      </div>-->
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -268,25 +390,53 @@
       >
         <div class="modal__content text-center mt-1 flex flex-col">
           <h3 class="text-xl mb-2">Add a Stop?</h3>
-          <label class="text-sm text-left text-gray-400 italic">Name of the stop</label>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Name of the stop</label
+          >
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:shadow-outline
+            "
             type="text"
             v-model="newStop.name"
           />
 
-          <label class="text-sm text-left text-gray-400 italic">Focal Staff</label>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Focal Staff</label
+          >
 
-          <select name="hours" v-model="newStop.userId" class="bg-transparent outline-none">
-            <option :value="staff.id" v-for="staff in staffs" :key="staff">{{ staff.name }}</option>
+          <select
+            name="hours"
+            v-model="newStop.userId"
+            class="bg-transparent outline-none"
+          >
+            <option :value="staff.id" v-for="staff in staffs" :key="staff">
+              {{ staff.name }}
+            </option>
           </select>
         </div>
         <div class="modal__action">
-          <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="addStop()">Add Stop</button>
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="addStop()"
+          >
+            Add Stop
+          </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="addStopsModal = false"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
         </div>
       </vue-final-modal>
 
@@ -302,24 +452,47 @@
 
           <input
             type="text"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              py-2
+              px-3
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:shadow-outline
+            "
             v-model="selectedStop.name"
           />
 
-          <label class="text-sm text-left text-gray-400 italic">Focal Staff</label>
-          <select name="hours" v-model="selectedStop.userId" class="bg-transparent outline-none">
-            <option v-for="staff in staffs" :key="staff" :value="staff.id">{{ staff.name }}</option>
+          <label class="text-sm text-left text-gray-400 italic"
+            >Focal Staff</label
+          >
+          <select
+            name="hours"
+            v-model="selectedStop.userId"
+            class="bg-transparent outline-none"
+          >
+            <option v-for="staff in staffs" :key="staff" :value="staff.id">
+              {{ staff.name }}
+            </option>
           </select>
         </div>
         <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="confirmStopEdit()"
-          >Confirm Edit</button>
+          >
+            Confirm Edit
+          </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="editStopModal = false"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
         </div>
       </vue-final-modal>
 
@@ -333,33 +506,49 @@
         <div class="modal__content text-center mt-1 flex flex-col">
           <h3 class="text-xl mb-2">Add a RoutePath?</h3>
           <label class="text-sm text-left text-gray-400 italic">Origin</label>
-          <select v-model="newRoutePath.originId" class="text-3xl p-5 bg-white text-blue-900">
+          <select
+            v-model="newRoutePath.originId"
+            class="text-3xl p-5 bg-white text-blue-900"
+          >
             <option
               v-for="stop in stops"
               :value="stop.id"
               :key="stop"
               class="bg-white"
-            >{{ stop.name }}</option>
+            >
+              {{ stop.name }}
+            </option>
           </select>
-          <label class="text-sm text-left text-gray-400 italic">Destination</label>
-          <select v-model="newRoutePath.destinationId" class="text-3xl p-5 bg-white text-blue-900">
+          <label class="text-sm text-left text-gray-400 italic"
+            >Destination</label
+          >
+          <select
+            v-model="newRoutePath.destinationId"
+            class="text-3xl p-5 bg-white text-blue-900"
+          >
             <option
               v-for="stop in stops"
               :value="stop.id"
               :key="stop"
               class="bg-white"
-            >{{ stop.name }}</option>
+            >
+              {{ stop.name }}
+            </option>
           </select>
         </div>
         <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="addRoutePath()"
-          >Add RoutePath</button>
+          >
+            Add RoutePath
+          </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="addRoutePathModal = false"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
         </div>
       </vue-final-modal>
 
@@ -370,20 +559,29 @@
         content-class="modal-content"
         class="w-max-screen"
       >
-        <div class="modal__content text-center mt-1 flex flex-col overflow-visible">
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
           <h3 class="text-xl mb-5">Add a Bus Route?</h3>
-          <label class="text-sm text-left text-gray-400 italic">Select Route Path</label>
-          <select v-model="newRoute.routepathId" class="text-xl bg-white text-blue-900 p-2">
+          <label class="text-sm text-left text-gray-400 italic"
+            >Select Route Path</label
+          >
+          <select
+            v-model="newRoute.routepathId"
+            class="text-xl bg-white text-blue-900 p-2"
+          >
             <option
               v-for="routepath in routepaths"
               :value="routepath.id"
               :key="routepath"
               class="bg-white"
-            >{{ routepath.origin.name }} -{{ routepath.destination.name }}</option>
+            >
+              {{ routepath.origin.name }} -{{ routepath.destination.name }}
+            </option>
           </select>
-          <label
-            class="text-sm text-left text-gray-400 italic mt-3 mb-1"
-          >Select Weekdays from the dropdown</label>
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Select Weekdays from the dropdown</label
+          >
           <Multiselect
             v-model="weekdaysSelected"
             mode="tags"
@@ -392,7 +590,9 @@
             :options="weekDays"
           />
 
-          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3">Departure time</label>
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Departure time</label
+          >
 
           <div class="flex justify-center">
             <div class="flex">
@@ -436,9 +636,23 @@
             </div>
           </div>
 
-          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1">Fare</label>
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Fare</label
+          >
           <div
-            class="flex justify-center items-end shadow appearance-none border rounded w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="
+              flex
+              justify-center
+              items-end
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:shadow-outline
+            "
           >
             <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
             <input
@@ -450,11 +664,18 @@
           </div>
         </div>
         <div class="modal__action">
-          <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="addRoute()">Add Route</button>
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="addRoute()"
+          >
+            Add Route
+          </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="addRoutesModal = false"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
         </div>
       </vue-final-modal>
 
@@ -465,7 +686,9 @@
         content-class="modal-content"
         class="w-max-screen"
       >
-        <div class="modal__content text-center mt-1 flex flex-col overflow-visible">
+        <div
+          class="modal__content text-center mt-1 flex flex-col overflow-visible"
+        >
           <h3 class="text-xl mb-5">Edit Route?</h3>
 
           <p class="text-xl font-thin">
@@ -476,7 +699,11 @@
           <div class="flex justify-center items-center text-xl gap-2 my-1">
             Route Day :
             <div>
-              <select name="hours" v-model="selectedRoute.day" class="bg-transparent outline-none">
+              <select
+                name="hours"
+                v-model="selectedRoute.day"
+                class="bg-transparent outline-none"
+              >
                 <option value="0">Sunday</option>
                 <option value="1">Monday</option>
                 <option value="2">Tuesday</option>
@@ -508,9 +735,23 @@
             </div>
           </div>
 
-          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1">Fare</label>
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Fare</label
+          >
           <div
-            class="flex justify-center items-end shadow appearance-none border rounded w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="
+              flex
+              justify-center
+              items-end
+              shadow
+              appearance-none
+              border
+              rounded
+              w-full
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:shadow-outline
+            "
           >
             <p class="text-gray-700 mr-1 py-2 px-3">Nu.</p>
             <input
@@ -521,7 +762,9 @@
             />
           </div>
 
-          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3">Departure time</label>
+          <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
+            >Departure time</label
+          >
           <div class="flex justify-center">
             <div class="flex">
               <select
@@ -568,11 +811,155 @@
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="confirmRouteEdit()"
-          >Confirm Edit</button>
+          >
+            Confirm Edit
+          </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
             @click="editRouteModal = false"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
+        </div>
+      </vue-final-modal>
+
+      <!-- Delete Route Modal -->
+      <vue-final-modal
+        v-model="deleteRouteModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen text-gray-700"
+      >
+        <div class="modal__content text-center mt-1 flex flex-col">
+          <h3 class="text-xl mb-2">Delete Route?</h3>
+          <p class="text-red-500 my-2" v-if="pendingBookings.length !== 0">
+            Please resolve these pending Bookings before deleting the route
+          </p>
+          <div class="flex flex-col gap-2 overflow-x-scroll">
+            <div
+              v-for="booking in pendingBookings"
+              :key="booking"
+              class="bg-gray-600 rounded text-gray-200"
+            >
+              <p>Booking ID: {{ booking.id }}</p>
+              <p>
+                {{ selectedRoutepath.origin.name }} -
+                {{ selectedRoutepath.destination.name }}
+              </p>
+              <p>
+                Departure Date : {{ parseDepartureDate(booking.scheduleDate) }}
+              </p>
+              <p>Departure Time : {{ selectedRoute.departureTime }}</p>
+              <div>
+                <table class="table-auto w-full">
+                  <tr>
+                    <td>Seat No</td>
+                    <td>Name</td>
+                    <td>Contact</td>
+                  </tr>
+                  <tr v-for="passenger in booking.passengers" :key="passenger">
+                    <td>
+                      {{ passenger.seatNumber }}
+                    </td>
+                    <td>
+                      {{ passenger.name }}
+                    </td>
+                    <td>
+                      {{ passenger.contact }}
+                    </td>
+                  </tr>
+                </table>
+                <button
+                  class="bg-red-400 p-1 rounded my-3"
+                  @click="confirmCancelBooking(booking)"
+                >
+                  Cancel Booking
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal__action" v-if="pendingBookings.length === 0">
+          <button
+            class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+            @click="confirmRouteDelete()"
+          >
+            Delete Route
+          </button>
+          <button
+            class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+            @click="deleteRouteModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </vue-final-modal>
+
+      <!-- CONFLICTING BOOKINGS MODAL -->
+
+      <vue-final-modal
+        v-model="conflictingBookingsModal"
+        classes="modal-container"
+        content-class="modal-content"
+        class="w-max-screen text-gray-700"
+      >
+        <div class="modal__content text-center mt-1 flex flex-col">
+          <p class="text-red-400 my-2" >
+            Please resolve these pending Bookings before Editing the Route
+          </p>
+           <div>
+              <button
+              class="bg-gray-600 text-gray-100 mb-4 p-1 rounded-md"
+              @click="conflictingBookingsModal = false"
+            >
+              Go back
+            </button>
+           </div>
+
+          <div class="flex flex-col gap-2 overflow-x-scroll">
+            <div
+              v-for="booking in conflictingBookings"
+              :key="booking"
+              class="bg-gray-600 rounded text-gray-200"
+            >
+              <p>Booking ID: {{ booking.id }}</p>
+              <p>
+                {{ selectedRoutepath.origin.name }} -
+                {{ selectedRoutepath.destination.name }}
+              </p>
+              <p>
+                Departure Date : {{ parseDepartureDate(booking.scheduleDate) }}
+              </p>
+              <p>Departure Time : {{ selectedRoute.departureTime }}</p>
+              <div>
+                <table class="table-auto w-full">
+                  <tr>
+                    <td>Seat No</td>
+                    <td>Name</td>
+                    <td>Contact</td>
+                  </tr>
+                  <tr v-for="passenger in booking.passengers" :key="passenger">
+                    <td>
+                      {{ passenger.seatNumber }}
+                    </td>
+                    <td>
+                      {{ passenger.name }}
+                    </td>
+                    <td>
+                      {{ passenger.contact }}
+                    </td>
+                  </tr>
+                </table>
+                <button
+                  class="bg-red-400 p-1 rounded my-3"
+                  @click="confirmCancelBooking(booking)"
+                >
+                  Cancel Booking
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </vue-final-modal>
     </div>
@@ -632,7 +1019,7 @@ import {
   getAllStops,
   addNewStop,
   deleteStop,
-  editStop
+  editStop,
 } from "../../services/stopServices";
 
 import {
@@ -640,13 +1027,17 @@ import {
   deleteRoute,
   getAllRoutePaths,
   createNewRoutePath,
-  editRoute
+  editRoute,
 } from "../../services/routeServices";
 import { getStaffs } from "../../services/authServices";
+import {
+  getPendingBookingsByRouteId,
+  cancelBooking,
+} from "../../services/bookingServices";
 
 export default {
   components: {
-    Multiselect
+    Multiselect,
   },
   data() {
     return {
@@ -656,6 +1047,7 @@ export default {
       addRoutesModal: false,
       editRouteModal: false,
       addRoutePathModal: false,
+      deleteRouteModal: false,
       timezone: "",
       newRoutePath: {},
       routepaths: [],
@@ -666,18 +1058,18 @@ export default {
         { value: 4, label: "Wednesday" },
         { value: 5, label: "Thrusday" },
         { value: 6, label: "Friday" },
-        { value: 7, label: "Saturday" }
+        { value: 7, label: "Saturday" },
       ],
       week: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       weekdaysSelected: [],
       eta: {
         hrs: "0",
-        min: "0"
+        min: "0",
       },
       departureTime: {
         hrs: "0",
         mins: "0",
-        ampm: "am"
+        ampm: "am",
       },
       stops: [],
       routes: [],
@@ -688,24 +1080,27 @@ export default {
       newRoute: {},
       selectedRoute: {},
       selectedRoutepath: {},
+      pendingBookings: [],
       selectedDepartureTimeArr: [],
-      newDepartureTimeArr: ["01", "00", "AM"]
+      newDepartureTimeArr: ["01", "00", "AM"],
+      conflictingBookings: [],
+      conflictingBookingsModal: false,
     };
   },
   created() {
     this.fetchRouteData();
     this.fetchStopData();
-    getStaffs().then(res => {
+    getStaffs().then((res) => {
       this.staffs = res.data;
     });
   },
 
   methods: {
     fetchRouteData() {
-      getAllRoutePaths().then(res => {
+      getAllRoutePaths().then((res) => {
         this.routepaths = res.data;
-        this.routepaths.forEach(routepath => {
-          routepath.routes.forEach(route => {
+        this.routepaths.forEach((routepath) => {
+          routepath.routes.forEach((route) => {
             this.routes.push(route);
           });
         });
@@ -714,15 +1109,15 @@ export default {
 
     fetchStopData() {
       getAllStops()
-        .then(res => {
+        .then((res) => {
           this.stops = res;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     searchIfRoutepathExists(originId, destinationId) {
       var matched = false;
-      this.routepaths.forEach(routepath => {
+      this.routepaths.forEach((routepath) => {
         if (
           originId === routepath.originId &&
           destinationId === routepath.destinationId
@@ -731,6 +1126,51 @@ export default {
         }
       });
       return matched;
+    },
+
+    showDeleteRouteModal(route, routepath) {
+      this.selectedRoute = route;
+      this.selectedRoutepath = routepath;
+      getPendingBookingsByRouteId(route.id).then((res) => {
+        this.pendingBookings = res.data;
+        this.deleteRouteModal = true;
+      });
+    },
+    confirmRouteDelete() {
+      deleteRoute(this.selectedRoute.id).then((res) => {
+        if (res.status === 200) {
+          this.fetchRouteData();
+          this.deleteRouteModal = false;
+        } else {
+          this.$toast.show("Cannot Delete", {
+            position: "top",
+            type: "error",
+          });
+        }
+      });
+    },
+    confirmCancelBooking(booking) {
+      let cancelBookingObject = {
+        bookingId: booking.id,
+        scheduleHash: booking.scheduleHash,
+        seats: [],
+      };
+
+      booking.passengers.forEach((passenger) => {
+        cancelBookingObject.seats.push(passenger.seatNumber);
+      });
+      if (confirm("Are you sure you want to cancel?") == true) {
+        cancelBooking(booking.id, cancelBookingObject).then((res) => {
+          if (res.status === 200) {
+            getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
+              this.pendingBookings = res.data;
+              this.conflictingBookings = res.data
+            });
+          } else {
+            this.$toast.show("Network Error Try again");
+          }
+        });
+      }
     },
 
     addRoutePath() {
@@ -744,50 +1184,55 @@ export default {
           "Route path already Exists! Please Use exisiting one",
           {
             type: "error",
-            position: "top"
+            position: "top",
           }
         );
       } else {
-        createNewRoutePath(this.newRoutePath).then(res => {
+        createNewRoutePath(this.newRoutePath).then((res) => {
           if (res.status === 201) {
             this.fetchRouteData();
             this.$toast.show("Added", {
               position: "top",
-              type: "successs"
+              type: "successs",
             });
             this.addRoutePathModal = false;
           } else {
             this.$toast.show("Network Error", {
               position: "top",
-              type: "error"
+              type: "error",
             });
           }
         });
       }
     },
+
+    parseDepartureDate(date) {
+      let d = new Date(date);
+      return d.toDateString();
+    },
     addStop() {
       if (this.newStop.name) {
-        addNewStop(this.newStop).then(res => {
+        addNewStop(this.newStop).then((res) => {
           if (res.status === 201) {
             this.fetchStopData();
             this.addStopsModal = false;
             this.$toast.show("New Stop Added", {
               position: "top",
-              type: "success"
+              type: "success",
             });
             this.newStop = {};
           } else {
             this.addStopsModal = false;
             this.$toast.show("Error Adding..try again", {
               position: "top",
-              type: "error"
+              type: "error",
             });
           }
         });
       } else {
         this.$toast.show("Please enter a stop", {
           position: "top",
-          type: "error"
+          type: "error",
         });
       }
     },
@@ -798,55 +1243,37 @@ export default {
     },
 
     confirmStopEdit() {
-      editStop(this.selectedStop.id, this.selectedStop).then(res => {
+      editStop(this.selectedStop.id, this.selectedStop).then((res) => {
         if (res.status === 200) {
           this.fetchStopData();
           this.fetchRouteData();
           this.editStopModal = false;
           this.$toast.show("Stop updated", {
             position: "top",
-            type: "success"
+            type: "success",
           });
         } else {
           this.editStopModal = false;
           this.$toast.show("Error Updating..try again", {
             position: "top",
-            type: "error"
+            type: "error",
           });
         }
       });
     },
-    deleteRouted(id) {
-      if (confirm("Are you Sure you want to delete?")) {
-        deleteRoute(id).then(res => {
-          if (res.status === 200) {
-            this.fetchRouteData();
-            this.$toast.show("Delete Success", {
-              position: "top",
-              type: "success"
-            });
-          } else {
-            this.$toast.show("Network Error", {
-              position: "top",
-              type: "error"
-            });
-          }
-        });
-      }
-    },
 
     deleteStop(e) {
-      deleteStop(e.id).then(res => {
+      deleteStop(e.id).then((res) => {
         if (res.status === 200) {
           this.fetchStopData();
           this.$toast.show("Stop Deleted", {
             position: "top",
-            type: "success"
+            type: "success",
           });
         } else {
           this.$toast.show("Delete Failed..try again", {
             position: "top",
-            type: "error"
+            type: "error",
           });
         }
       });
@@ -861,18 +1288,18 @@ export default {
         ":" +
         this.newDepartureTimeArr[2];
 
-      addNewRoute(this.newRoute).then(res => {
+      addNewRoute(this.newRoute).then((res) => {
         if (res.status === 201) {
           this.fetchRouteData();
           this.$toast.show("New Bus Route Added", {
             position: "top",
-            type: "success"
+            type: "success",
           });
           this.addRoutesModal = false;
         } else {
           this.$toast.show("NetorkError", {
             position: "top",
-            type: "error"
+            type: "error",
           });
         }
       });
@@ -893,32 +1320,32 @@ export default {
         ":" +
         this.selectedDepartureTimeArr[2];
 
-      editRoute(this.selectedRoute.id, this.selectedRoute).then(res => {
-        if (res.status === 200) {
-          this.fetchRouteData();
-          this.editRouteModal = false;
+        getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
+          if (res.data.length === 0) {
+            editRoute(this.selectedRoute.id, this.selectedRoute).then((res) => {
+              if (res.status === 200) {
+                this.fetchRouteData();
+                this.editRouteModal = false;
 
-          this.$toast.show("Route updated", {
-            position: "top",
-            type: "success"
-          });
-        } else {
-          this.$toast.show("Network Error", {
-            position: "error",
-            type: "success"
-          });
-        }
-      });
+                this.$toast.show("Route updated", {
+                  position: "top",
+                  type: "success",
+                });
+              } else {
+                this.$toast.show("Network Error", {
+                  position: "error",
+                  type: "success",
+                });
+              }
+            });
+          } else {
+            this.conflictingBookings = res.data;
+            this.conflictingBookingsModal = true;
+          }
+        });
+
+      // conso
     },
-
-    deleteRoute(e) {
-      deleteRoute(e.id).then(res => {
-        if (res.status === 200) {
-          this.fetchRouteData();
-          //delete on cascade
-        }
-      });
-    }
-  }
+  },
 };
 </script>

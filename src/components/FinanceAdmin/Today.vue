@@ -209,16 +209,24 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Online:
+                      Online Booking :
                       {{
                         staffData.onlineTickets ? staffData.onlineTickets : 0
                       }}
-                      <br />
-                      Cash:
+
+                      <hr class="w-full" />
+
+                      <p>Counter Booking</p>
+                      <hr class="w-full" />
+                      <p class="text-center">
+                         Cash:
                       {{ staffData.cashTickets ? staffData.cashTickets : 0 }}
-                      <br />
-                      Mbob:
+                      </p>
+                      
+                      <p class="text-center">
+                         Mbob:
                       {{ staffData.scanTickets ? staffData.scanTickets : 0 }}
+                      </p>
 
                       <hr class="w-full" />
                       Total:
@@ -227,15 +235,20 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Online: Nu
+                      Online Booking : Nu
                       {{ staffData.onlineAmount ? staffData.onlineAmount : 0 }}
-                      <br />
-
-                      Cash: Nu
+                      <hr class="w-full" />
+                        <p>Counter Booking</p>
+                      <hr class="w-full" />
+                     <p class="text-center">
+                        Cash: Nu
                       {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
-                      <br />
-                      Epayment: Nu
+                     </p>
+                      
+                    <p class="text-center">
+                        Mbob: Nu
                       {{ staffData.scanAmount ? staffData.scanAmount : 0 }}
+                    </p>
                       <hr class="w-full" />
                       Total: Nu
                       {{ staffData.amountSold ? staffData.amountSold : 0 }}
@@ -252,14 +265,14 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 px-6 py-4 text-left">
+                  <td class="text-md text-gray-900 font-semibold px-6 py-4 text-left">
                     Total Revenue: Nu.
                     {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount : 0 }}
                     <br />
                   </td>
                   <td
                     colspan="2"
-                    class="text-md text-gray-900 px-6 py-4 text-left"
+                    class="text-md text-gray-900 font-semibold px-6 py-4 text-left"
                   >
                     Total Tickets Sold:
                     {{
@@ -344,37 +357,48 @@
 
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                     
-
-                      Online
+                      Online Booking : 
                       {{
                         routeData.onlineTickets ? routeData.onlineTickets : 0
                       }}
                       <br />
-                      Cash:
-                      {{ routeData.cashTickets ? routeData.cashTickets : 0 }}
-                      <br />
-                      Mbob:
-                      {{ routeData.scanTickets ? routeData.scanTickets : 0 }}
+                      <p>Counter Booking</p>
+                      <hr class="w-full" />
 
-                      <hr class="w-full">
-                       Total:
+                      <p class="text-center">
+                        Cash:
+                        {{ routeData.cashTickets ? routeData.cashTickets : 0 }}
+                      </p>
+
+                      <p class="text-center">
+                        Mbob:
+                        {{ routeData.scanTickets ? routeData.scanTickets : 0 }}
+                      </p>
+
+                      <hr class="w-full" />
+                      Total:
                       {{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}
-                      
                     </div>
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Online
+                      Online Booking : Nu
                       {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
                       <br />
-                      Cash:Nu
-                      {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
-                      <br />
-                      Mbob:Nu
-                      {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
-                      <hr class="w-full">
-                       Total: Nu
+
+                      <p>Counter Booking</p>
+                      <hr class="w-full" />
+                      <p class="text-center">
+                        Cash:Nu
+                        {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
+                      </p>
+
+                      <p class="text-center">
+                        Mbob:Nu
+                        {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
+                      </p>
+                      <hr class="w-full" />
+                      Total: Nu
                       {{ routeData.amountSold ? routeData.amountSold : 0 }}
                     </div>
                   </td>
@@ -389,14 +413,14 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 px-6 py-4 text-left">
+                  <td class="text-md text-gray-900 font-semibold px-6 py-4 text-left">
                     Total Revenue: Nu.
                     {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount : 0 }}
                     <br />
                   </td>
                   <td
                     colspan="2"
-                    class="text-md text-gray-900 px-6 py-4 text-left"
+                    class="text-md text-gray-900 font-semibold px-6 py-4 text-left"
                   >
                     Total Tickets Sold:
                     {{
@@ -446,13 +470,13 @@ export default {
       let amount = 0;
       res.data.forEach((data) => {
         console.log(data);
-        ticketsSold += parseInt(data.ticketsSold);
-        amount += parseInt(data.amount);
+        ticketsSold += Number(data.ticketsSold);
+        amount += Number(data.amount);
         this.statsToday[data.modality] = data;
       });
       console.log(ticketsSold, amount);
       this.statsToday["TOTAL"] = { ticketsSold: ticketsSold, amount: amount };
-      console.log(this.statsToday);
+      console.log("STATS TODAY", this.statsToday);
     });
   },
   computed: {

@@ -111,20 +111,26 @@ export default {
     login() {
       login(this.user)
         .then((res) => {
-          
           sessionStorage.setItem("token", res.data.token); 
-    
           let role = VueJwtDecode.decode(res.data.token).role;
-          console.log(VueJwtDecode.decode(res.data.token));
-          if (role === 1) {
-            this.$router.push("/admin");
-          } else if (role === 2) {
-            this.$router.push("/finance");
-          } else if (role === 3) {
-            this.$router.push("/staff");
-          } else {
-            this.$router.push("/book");
+          switch(role){
+            case 1:
+              this.$router.push("/admin");
+              break;
+            case 2:
+              this.$router.push("/finance");
+              break;
+            case 3:
+              this.$router.push("/staff");
+              break;
+            case 4:
+              this.$router.push("/superadmin");
+              break;
+            default:
+              this.$router.push("/login");
+              break;
           }
+  
         })
         .catch((err) => {
           this.$toast.show("Inavalid Credentials")

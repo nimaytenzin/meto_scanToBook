@@ -70,7 +70,7 @@
       </a>
 
       <nav>
-        <router-link to="/finance/">
+        <router-link to="/superadmin/">
           <p
             class="
               block
@@ -87,7 +87,40 @@
           </p>
         </router-link>
 
-         <router-link to="/finance/statistics">
+         
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Change Password
+          </p>
+
+        <router-link to="/superadmin/manage-users">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Manage Users
+          </p>
+        </router-link>
+
+         <router-link to="/superadmin/statistics">
           <p
             class="
               block
@@ -105,7 +138,7 @@
         </router-link>
         
 
-         <router-link to="/finance/cancellations">
+         <router-link to="/superadmin/cancellations">
           <p
             class="
               block
@@ -139,6 +172,74 @@
             RMA PG-Secure Transcations
           </p>
         </a>
+
+         <router-link to="/superadmin/manage-buses">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Buses
+          </p>
+        </router-link>
+
+         <router-link to="/superadmin/manage-routes">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Routes
+          </p>
+        </router-link>
+
+        <router-link to="/superadmin/schedules">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Schedules
+          </p>
+        </router-link>
+
+         <router-link to="/superadmin/feedbacks">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Feedbacks
+          </p>
+        </router-link>
        
        
         <div>

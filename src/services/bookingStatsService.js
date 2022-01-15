@@ -36,6 +36,11 @@ export async function getTopStaffs(){
     return await axios.get(`${devUrl}/booking-stat/top-staffs`,{headers:authHeader()})
 }
 
+export async function updateBookingStatUsingBookingId(bookingId, data){
+    return await axios.put(`${devUrl}/booking-stat/booking/${bookingId}`,data,{headers:authHeader()})
+}
+
+
 
 
 

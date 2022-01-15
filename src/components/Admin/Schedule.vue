@@ -333,7 +333,6 @@
               {{ seat }}
             </p>
           </div>
-
           <p
             v-if="!passengersInSchedule.length"
             class="m-4 text-2xl text-gray-100"
@@ -356,11 +355,27 @@
             "
           >
             <thead>
-              <tr >
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Seat Number</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Name</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">CID</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Contact</td>
+              <tr>
+                <td
+                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                >
+                  Seat Number
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                >
+                  Name
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                >
+                  CID
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                >
+                  Contact
+                </td>
               </tr>
             </thead>
             <tbody class="overflow-y-scroll" style="50vh">
@@ -448,8 +463,12 @@
 
 
 <script>
-import { getPassengersOnBus } from "../../services/bookingServices";
+import {
+  getPassengerDetailsByScheduleHash,
+  getPassengersOnBus,
+} from "../../services/bookingServices";
 import { getAllBuses } from "../../services/busServices";
+import crypto from "crypto";
 
 import {
   createNewBusRoster,
@@ -542,19 +561,26 @@ export default {
       });
     },
     viewPassengers(schedule) {
-      this.selectedSchedule = schedule
+      this.selectedSchedule = schedule;
       this.passengersInSchedule = [];
       this.passengerDetailsModal = true;
-      getPassengersOnBus(schedule.id, this.selectedDate).then((res) => {
-        res.data.forEach((booking) => {
-          booking.passengers.forEach((passenger, index) => {
-            passenger.seatNumber = booking.bookedSeats[index].seatNumber;
-            this.passengersInSchedule.push(passenger);
-            this.seatsAvailable.splice(
-              this.seatsAvailable.indexOf(passenger.seatNumber),
-              1
-            );
-          });
+      this.seatsAvailable = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      ]
+
+      var plaintext = `${this.selectedSchedule.id}|${this.selectedDate}`;
+      var hash = crypto.createHash("sha1");
+      hash.update(plaintext);
+      var scheduleHash = hash.digest("hex");
+
+      getPassengerDetailsByScheduleHash(scheduleHash).then((res) => {
+        console.log(res.data)
+        this.passengersInSchedule = res.data;
+        res.data.forEach((passenger) => {
+          this.seatsAvailable.splice(
+            this.seatsAvailable.indexOf(passenger.seatNumber),
+            1
+          );
         });
       });
     },

@@ -504,7 +504,83 @@
                 </tr>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal__action">
+        <button
+          class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+          @click="confirmBooking()"
+        >
+          Confirm Booking
+        </button>
+        <button
+          class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+          @click="backToSeatSelection()"
+        >
+          Back
+        </button>
+      </div>
+    </vue-final-modal>
 
+    <vue-final-modal
+      v-model="confirmPaymentModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="modal__content text-center">
+        <div class="flex flex-col">
+          <div class="flex-1 text-center">
+            <p class="text-xl font-semibold text-gray-600">
+              Confirm Payment & Payment Details
+            </p>
+
+            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
+
+            <p class="text-xl my-1 font-semibold text-gray-600">
+              Payment Details
+            </p>
+            <div
+              class="
+                font-nunito
+                text-gray-200 text-left
+                bg-gray-600
+                rounded
+                shadow-md
+                p-2
+              "
+            >
+              <p>Billing</p>
+
+              <hr class="border-dashed w-full" />
+              <table class="table-auto">
+                <tr>
+                  <td>Base Fare :</td>
+                  <td>
+                    Nu
+                    {{ fare }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Seats Booked :</td>
+                  <td>{{ bookedSeats.length }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <hr class="w-full border-dashed" />
+                  </td>
+                  <td></td>
+                </tr>
+                <tr class="text-gray-100 font-bold text-xl">
+                  <td>Total :</td>
+                  <td>
+                    {{ total }}
+                  </td>
+                </tr>
+              </table>
+            </div>
             <div class="mt-4">
               <p class="text-xl font-semibold text-gray-600">
                 Select Payment Mode
@@ -530,9 +606,7 @@
                 v-if="paymentMode"
                 class="flex flex-col items-center justify-center"
               >
-                <p class="text-xl font-semibold text-gray-600">
-                  Select Mbob Bank
-                </p>
+                <p class="text-xl font-semibold text-gray-600">Select Bank</p>
                 <select
                   class="
                     w-full
@@ -559,7 +633,7 @@
 
                 <input
                   v-model="journalDetails.journalNumber"
-                  type="text"
+                  type="number"
                   placeholder="Journal Number"
                   class="
                     block
@@ -576,7 +650,7 @@
                 />
                 <input
                   v-model="journalDetails.contactNumber"
-                  type="text"
+                  type="number"
                   placeholder="Phone Number"
                   class="
                     block
@@ -599,15 +673,57 @@
       <div class="modal__action">
         <button
           class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-          @click="confirmBooking()"
+          @click="confirmPayment()"
         >
-          Confirm Booking
+          Confirm Payment
         </button>
         <button
           class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-          @click="cancelBooking()"
+          @click="deleteBooking()"
         >
-          cancel
+          Cancel Booking
+        </button>
+      </div>
+    </vue-final-modal>
+
+    <vue-final-modal
+      v-model="duplicateSeatsModal"
+      classes="modal-container"
+      content-class="modal-content"
+      class="w-max-screen"
+      :click-to-close="false"
+    >
+      <div class="modal__content text-center">
+        <div class="flex flex-col">
+          <div class="flex-1 text-center">
+            <p class="text-xl font-bold text-red-600">
+              Duplicate Seat Number!!
+            </p>
+
+            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
+
+            <p class="text-xl my-1 text-md font-semibold text-gray-500">
+              The Following Seat Number has been Booked!
+            </p>
+
+            <div>
+              <p
+                v-for="seat in duplicateSeats"
+                :key="seat"
+                class="text-2xl font-bold text-gray-800"
+              >
+                {{ seat.seatNumber }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal__action">
+        <button
+          class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+          @click="backToSeatSelection()"
+        >
+          Back to Seat Selection
         </button>
       </div>
     </vue-final-modal>
@@ -693,46 +809,62 @@
             </p>
           </div>
         </div>
-         <div v-if="passengersInSchedule.length">
-        <h3 class="text-xl px-6 font-thin">Passengers</h3>
+        <div v-if="passengersInSchedule.length">
+          <h3 class="text-xl px-6 font-thin">Passengers</h3>
 
-        <div class="p-2 flex overflow-scroll" style="height: 40vh">
-          <table
-            class="
-              min-w-full
-              divide-y divide-gray-200
-              text-gray-900
-              font-thin
-              bg-white
-            "
-          >
-            <thead>
-              <tr >
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Seat Number</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Name</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">CID</td>
-                <td class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap">Contact</td>
-              </tr>
-            </thead>
-            <tbody class="overflow-y-scroll" style="50vh">
-              <tr v-for="passenger in passengersInSchedule" :key="passenger">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ passenger.seatNumber }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ passenger.name }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ passenger.cid }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ passenger.contact }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="p-2 flex overflow-scroll" style="height: 40vh">
+            <table
+              class="
+                min-w-full
+                divide-y divide-gray-200
+                text-gray-900
+                font-thin
+                bg-white
+              "
+            >
+              <thead>
+                <tr>
+                  <td
+                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  >
+                    Seat Number
+                  </td>
+                  <td
+                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  >
+                    Name
+                  </td>
+                  <td
+                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  >
+                    CID
+                  </td>
+                  <td
+                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  >
+                    Contact
+                  </td>
+                </tr>
+              </thead>
+              <tbody class="overflow-y-scroll" style="50vh">
+                <tr v-for="passenger in passengersInSchedule" :key="passenger">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ passenger.seatNumber }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ passenger.name }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ passenger.cid }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ passenger.contact }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
       </div>
     </vue-final-modal>
   </div>
@@ -806,8 +938,12 @@ import crypto from "crypto";
 import { getRoutesByOriginDestination } from "../../../services/routeServices";
 import {
   addNewBooking,
+  deleteBookingwithPassengers,
   getPassengersOnBus,
+  publishConfirmedSeats,
+  updateBooking,
 } from "../../../services/bookingServices";
+import { updateBookingStatUsingBookingId } from "../../../services/bookingStatsService";
 
 export default {
   data() {
@@ -879,6 +1015,11 @@ export default {
         journalNumber: null,
         contactNumber: null,
       },
+      confirmPaymentModal: false,
+      newBookingId: null,
+      duplicateSeatsModal: false,
+      duplicateSeats: [],
+      newBooking: {},
     };
   },
   computed: {
@@ -891,7 +1032,6 @@ export default {
     },
   },
   created() {
-
     getAllStops()
       .then((res) => {
         this.stops = res;
@@ -904,7 +1044,11 @@ export default {
   },
   methods: {
     onDayClick(e) {
-      if (e.popovers[0] && e.popovers[0].label === "Bus Availble" && !e.isDisabled) {
+      if (
+        e.popovers[0] &&
+        e.popovers[0].label === "Bus Availble" &&
+        !e.isDisabled
+      ) {
         this.weekDay = e.weekday;
         this.departureDate = e.id;
         this.busAvailable = true;
@@ -1002,7 +1146,7 @@ export default {
         this.isConnected = false;
         if (!this.isConnected) {
           setTimeout(() => {
-            console.log("Connection Attempt",this.connectionAttempt);
+            console.log("Connection Attempt", this.connectionAttempt);
             if (this.connectionAttempt === 7) {
               this.errorModal = false;
               this.isLoader = false;
@@ -1016,11 +1160,10 @@ export default {
       this.conn.onmessage = (evt) => {
         let messageJson = JSON.parse(evt.data);
         if (messageJson.messageType === "LOCK") {
-          console.log("SEAT LOCKED");
           this.lockedSeats = messageJson.lockedList;
           this.changeSeatStatus();
         } else if (messageJson.messageType === "LOCK_LEAVE") {
-          console.log("SEAT LEFT");
+          
           this.reverSeatStatus(messageJson.leaveList);
         } else if (messageJson.messageType === "LOCK_CONFIRM") {
         }
@@ -1172,57 +1315,114 @@ export default {
 
     confirmBooking() {
       let detailsFilled = false;
-       this.passengers.forEach((passenger) => {
-        if(passenger.name && passenger.cid && passenger.contact ){
-          detailsFilled = true
-        }else{
-          detailsFilled = false
-        }
-      });
-      
-     if(detailsFilled){
-        let newBooking = {
-        booking: {
-          scheduleDate: this.departureDate,
-          scheduleHash: this.roomId,
-          modality: this.modality,
-          amount: this.total,
-          journalNumber: this.journalNumber,
-          routeId: this.routeId,
-          serviceCharge:0,
-          depositBank:this.journalDetails.bankName,
-          depositJournal:this.journalDetails.journalNumber,
-          depositContact:this.journalDetails.contactNumber,
-          operatorId:VueJwtDecode.decode( sessionStorage.getItem("token")).id
-        },
-        passengers: this.passengers,
-      };
-      addNewBooking(newBooking).then((res) => {
-        if (res.status === 201) {
-          this.$toast.show("Successful", {
-            position: "top",
-            type: "success",
-          });
-          this.seatSelectModal = false;
-          this.confirmSeatModal = false;
-          this.addPassengerDetailsModal = false;
-          this.$router.push(`/staff/ticket/${res.data.id}`);
+      this.passengers.forEach((passenger) => {
+        if (passenger.name && passenger.cid && passenger.contact) {
+          detailsFilled = true;
         } else {
-          this.$toast.show("Newtork Error..try again", {
-            position: "top",
-            type: "error",
-          });
+          detailsFilled = false;
         }
       });
-     }else{
-       this.$toast.show("Please fill in all the details",{
-          position:"top",
-          type:'error'
-        })
-     }
+      if (detailsFilled) {
+        let newBooking = {
+          booking: {
+            scheduleDate: this.departureDate,
+            scheduleHash: this.roomId,
+            amount: this.total,
+            routeId: this.routeId,
+            paymentStatus: "UNPAID",
+            serviceCharge: 0,
+            operatorId: VueJwtDecode.decode(sessionStorage.getItem("token")).id,
+          },
+          passengers: this.passengers,
+        };
+        this.newBooking = newBooking;
 
+        addNewBooking(newBooking)
+          .then((res) => {
+            if (res.status === 201) {
+              this.newBookingId = res.data.id;
+              this.$toast.show("Please confirm payment", {
+                position: "top",
+                type: "success",
+              });
+              this.confirmPaymentModal = true;
+            } else {
+              this.$toast.show("Newtork Error..try again", {
+                position: "top",
+                type: "error",
+              });
+            }
+          })
+          .catch((err) => {
+            this.duplicateSeats = err.response.data;
+            this.duplicateSeatsModal = true;
+          });
+      } else {
+        this.$toast.show("Please fill in all the details", {
+          position: "top",
+          type: "error",
+        });
+      }
     },
-    cancelBooking() {
+    deleteBooking() {
+      deleteBookingwithPassengers(this.newBookingId).then( res =>{
+        if(res.status === 200){
+          window.location.reload();
+        }else{
+          this.$toast.show("Network Error")
+        }
+      })
+    },
+    confirmPayment() {
+      let paymentDetails = {
+        modality: this.modality,
+        depositBank: this.journalDetails.bankName,
+        depositJournal: this.journalDetails.journalNumber,
+        depositContact: this.journalDetails.contactNumber,
+        paymentStatus: "PAID",
+      };
+
+      let bookingStatsUpdateObject = {
+        modality: this.modality,
+        depositBank: this.journalDetails.bankName,
+        depositJournal: this.journalDetails.journalNumber,
+        depositContact: this.journalDetails.contactNumber,
+        status: "FULFILLED",
+      };
+      let bookedSeats = [];
+      this.newBooking.passengers.forEach((passenger) => {
+        bookedSeats.push(passenger.seatNumber);
+      });
+
+      let publishSeatsData = {
+        scheduleHash: this.newBooking.scheduleHash,
+        seats: bookedSeats,
+      };
+
+      updateBooking(this.newBookingId, paymentDetails).then((res) => {
+        if (res.status === 200) {
+          updateBookingStatUsingBookingId(
+            this.newBookingId,
+            bookingStatsUpdateObject
+          ).then((res) => {
+            console.log("UPDATING",bookingStatsUpdateObject, res)
+            if (res.status === 200) {
+              publishConfirmedSeats(publishSeatsData).then((res) => {
+                if (res.status == 200) {
+                  this.$router.push(`/staff/ticket/${this.newBookingId}`);
+                } else {
+                  this.$toast.show("Network Error");
+                }
+              });
+            }
+          });
+        } else {
+          this.$toast.show("Network Error");
+        }
+      });
+    },
+    backToSeatSelection() {
+      this.duplicateSeatsModal = false;
       this.addPassengerDetailsModal = false;
     },
     closeSeatSelectModal() {

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
+    class="min-h-screen w-full flex flex-col items-center justify-center sm:ml2 sm:mr2"
   >
     <div>
       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {verfiyToken} from '../services/authServices'
-
+import { verfiyToken } from '../services/authServices'
+import VueJwtDecode from "vue-jwt-decode";
 
 const routes = [
   {
@@ -10,11 +10,11 @@ const routes = [
   },
   {
     path: '/login',
-   
+
     component: () => import('../views/Login.vue')
-  },{
-    path:'/service-down',
-    component:()=>import('../views/ServiceDown.vue')
+  }, {
+    path: '/service-down',
+    component: () => import('../views/ServiceDown.vue')
   },
   {
     path: '/policy/privacy',
@@ -26,13 +26,26 @@ const routes = [
   },
   {
     path: '/busDetails/:id',
-    name:'viewBusDetails',
+    name: 'viewBusDetails',
     component: () => import('../components/ScanToBookComponents/ViewBus.vue')
   },
   {
     path: '/cancel-ticket/:bookingId',
-    name:'cancelTicket',
+    name: 'cancelTicket',
     component: () => import('../components/ScanToBookComponents/CancelTicket.vue')
+  },
+
+  {
+    path: '/404', name: 'NotFound', component: () => import('../views/404.vue')
+  },
+  {
+    path: '/:catchAll(.*)', redirect: '404'
+  },
+
+  {
+    path: '/unathorized',
+    name: 'unathorized',
+    component: () => import('../views/Unathorized.vue')
   },
   {
     path: '/book',
@@ -67,10 +80,10 @@ const routes = [
         path: 'eticket/cancel/:bookingId', component: () => import('../components/ScanToBookComponents/ETicket.vue')
       },
       {
-        path: 'failticket/:bookingId',component:()=>  import('../components/ScanToBookComponents/FailTicket.vue')
+        path: 'failticket/:bookingId', component: () => import('../components/ScanToBookComponents/FailTicket.vue')
       },
       {
-        path: 'cancelpayment/:bookingId',component:()=>  import('../components/ScanToBookComponents/CancelPayment.vue')
+        path: 'cancelpayment/:bookingId', component: () => import('../components/ScanToBookComponents/CancelPayment.vue')
       }
     ]
   },
@@ -80,19 +93,19 @@ const routes = [
     component: () => import('../views/Admin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true }
+        path: '', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true }
+        path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true }
+        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true }
+        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true }
+        path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       // {
       //   path: 'view-passengers/:scheduleId', component: () => import('../components/Admin/ViewPassengers.vue'), meta: { requiresAuth: true }
@@ -101,7 +114,7 @@ const routes = [
       //   path: 'transfer-passengers/:scheduleId', component: () => import('../components/Admin/TransferPassenger.vue'), meta: { requiresAuth: true }
       // },
       {
-        path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true }
+        path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       }
 
     ]
@@ -112,14 +125,51 @@ const routes = [
     component: () => import('../views/FinanceAdmin.vue'),
     children: [
       {
-        path:'',component:()=>import('../components/FinanceAdmin/Today.vue'), meta:{ requiresAuth:true }
+        path: '', component: () => import('../components/FinanceAdmin/Today.vue'), meta: { requiresAuth: true, financeAdmin: true }
       },
       {
-        path: 'statistics', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true }
+        path: 'statistics', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true, financeAdmin: true }
       },
       {
-        path: 'data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true }
+        path: 'cancellations', component: () => import('../components/FinanceAdmin/Cancellations.vue'), meta: { requiresAuth: true, financeAdmin: true }
+      },
+      {
+        path: 'data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true, financeAdmin: true }
       }
+    ]
+  },
+  {
+    path: '/superadmin',
+    name: 'SuperAdmin',
+    component: () => import('../views/SuperAdmin.vue'),
+    children: [
+      {
+        path: '', component: () => import('../components/FinanceAdmin/Today.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'statistics', component: () => import('../components/FinanceAdmin/Monthly.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'cancellations', component: () => import('../components/FinanceAdmin/Cancellations.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'manage-users', component: () => import('../components/SuperAdmin/ManageUsers.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
     ]
   },
   {
@@ -129,10 +179,10 @@ const routes = [
     children: [
       {
         path: '', component: () => import('../components/Staff/BookTicket.vue'),
-       meta: { requiresAuth: true },
+        meta: { requiresAuth: true, staff: true },
         children: [
-          { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true } },
-          { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true } }
+          { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } }
         ]
       },
       // {
@@ -150,19 +200,50 @@ const router = createRouter({
 })
 
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(route => route.meta.requiresAuth)) {
     let verified = await verfiyToken();
-    if(verified){
-      next();
-    }else{
+    if (verified) {
+      let role = VueJwtDecode.decode(sessionStorage.getItem("token")).role;
+      //add role guard
+      if (to.matched.some(route => route.meta.financeAdmin)) {
+        if (role === 2) {
+          next();
+        } else {
+          next({ path: '/unathorized' })
+        }
+      } else if (to.matched.some(route => route.meta.scheduleAdmin)) {
+        if (role === 1) {
+          next()
+        } else {
+          next({ path: '/unathorized' })
+        }
+      } else if (to.matched.some(route => route.meta.superAdmin)) {
+        if (role === 4) {
+          next()
+        } else {
+          next({ path: '/unathorized' })
+        }
+      }
+      else if (to.matched.some(route => route.meta.staff)) {
+        if (role === 3) {
+          next()
+        } else {
+          next({ path: '/unathorized' })
+        }
+      }
+
+      else {
+        next();
+      }
+    } else {
       sessionStorage.clear("token")
-      next({path:'/login'})
+      next({ path: '/login' })
     }
-  }else{
+  } else {
     next();
   }
-  
+
 });
 
 export default router

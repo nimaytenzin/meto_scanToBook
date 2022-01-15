@@ -1,205 +1,200 @@
 <template>
-  <div
-    class="min-h-screen flex flex-col items-center justify-center sm:ml2 sm:mr2"
-  >
-    <div>
-      <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
-    </div>
-    <div class="flex flex-col justify-center items-center">
-      <h1 class="text-3xl text-gray-500 text-center font-nunito">
+  <div class="min-h-screen flex flex-col items-center">
+    <div class="flex flex-col justify-center items-center w-full">
+      <h1 class="text-3xl text-center text-gray-500 font-nunito mx-4 my-6">
         Cancellations
       </h1>
 
-      <!-- <div
-        class="
-          flex flex-col
-          m-auto
-          bg-indigo-900
-          text-blue-100
-          p-6
-          gap-8
-          rounded-lg
-          border-white
-          mt-4
-        "
-      >
-        <div class="flex justify-around">
-          <div class="my-auto">
-            <div class="text-lg">Refunds Pending</div>
-            <div class="text-4xl text-white font-bold text-center">
-              {{ cancelledBookings.length }}
-            </div>
-          </div>
+      <div v-if="cancelledBookings.length" class="w-11/12">
+        <table
+          class="border-l border-r divide-y divide-gray-200 table-auto w-full"
+        >
+          <thead class="">
+            <tr>
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Booking Details
+              </td>
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Passengers
+              </td>
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Refund Amount
+              </td>
+
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Action
+              </td>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="booking in cancelledBookings" :key="booking">
+              <td
+                class="
+                  px-6
+                  py-3
+                  whitespace-nowrap
+                  break-words
+                  font-light
+                  text-sm
+                "
+              >
+                <p class="text-sm text-center">
+                  BookingID: {{ booking.id }}
+                </p>
+                <p class="text-center">
+                  
+                  Thimphu - TrashiYangtse <br />
+                  on {{ parseDepartureDate(booking.scheduleDate) }} <br />
+                  at {{ booking.route.departureTime }}
+                </p>
+                <p
+                  v-if="booking.modality === 'ONLINE'"
+                  class="text-center text-blue-600 font-semibold"
+                >
+                  Online Booking
+                </p>
+                <p v-else class="text-center text-green-600 font-semibold">
+                  Counter Booking
+                </p>
+              </td>
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="
+                        p-2
+                        text-left text-xs
+                        font-medium
+                        text-gray-100
+                        bg-gray-600
+                        rounded-l
+                      "
+                    >
+                      Name
+                    </td>
+                    <td
+                      class="
+                        p-2
+                        text-left text-xs
+                        font-medium
+                        text-gray-100
+                        bg-gray-600
+                        rounded-r
+                      "
+                    >
+                      Contact
+                    </td>
+                  </tr>
+                  <tr v-for="passenger in booking.passengers" :key="passenger">
+                    <td class="pl-2">{{ passenger.name }}</td>
+                    <td class="pl-2">{{ passenger.contact }}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+                Nu.{{ booking.amount }}
+              </td>
+
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+                <button
+                  @click="showRefundModal(booking.id)"
+                  class="p-2 bg-gray-600 text-gray-100 rounded-sm"
+                >
+                  Confirm Refund
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="w-full">
+        <div class="text-gray-700 flex gap-2 items-center px-10 text-xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Hurray!! No Cancelled Tickets
         </div>
       </div>
     </div>
-
-    <div class="mt-5">
-      <table class="min-w-full divide-y divide-gray-200 table-auto">
-        <thead class="bg-gray-50">
-          <tr>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Customer Details
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Ticket Details
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Refund Account Details
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Amount Refundable
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Actions
-            </td>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr
-            v-for="booking in cancelledBookings"
-            :key="booking"
-            class="hover:bg-gray-200"
-          >
-            <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>Name: {{ booking.customerName }}</p>
-              <p>Contact: {{ booking.customerContact }}</p>
-              <p>ID: {{ booking.customerCid }}</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <p>
-                Origin: {{ booking.schedule.route?.routepath.origin?.name }}
-              </p>
-              <p>
-                Destination:
-                {{ booking.schedule.route?.routepath.destination?.name }}
-              </p>
-              <p>
-                Departure Date:{{
-                  formatDepartureDate(booking.schedule.dateId)
-                }}
-              </p>
-
-              <p>
-                Departure Time :
-                {{ getDeptTime(booking.schedule.route.departureTime) }}
-              </p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              Nu {{ booking.amount }}
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap font-light text-sm">
-              <div v-if="booking.accNo && booking.accName">
-                <p>Bank: {{ booking.bankName }}</p>
-                <p>Account Number: {{ booking.accNo }}</p>
-                <p>Account Name: {{ booking.accName }}</p>
-              </div>
-              <div v-else>
-                Account Details Not Provided
-              </div>
-            </td>
-
-            <td>
-              <button
-                @click="openConfirmModal(booking)"
-                class="
-                  h-10
-                  px-5
-                  text-indigo-100
-                  transition-colors
-                  duration-100
-                  bg-indigo-700
-                  rounded-lg
-                  focus:shadow-outline
-                  hover:bg-indigo-800
-                "
-              >
-                Confirm Refund
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
   </div>
-  </div>
-  <!-- <vue-final-modal
-    v-model="confirmModal"
+
+  <vue-final-modal
+    v-model="refundBookingModal"
     classes="modal-container"
     content-class="modal-content"
     class="w-max-screen"
   >
-    <div class="modal__content text-center mt-1 flex flex-col overflow-visible">
-      <h3 class="text-xl mb-5">Are you sure?</h3>
+    <div class="modal__content text-center mt-1 flex flex-col gap-2">
+      <h3 class="text-xl">Confirm Refund?</h3>
     </div>
-
     <div class="modal__action">
       <button
         class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
         @click="confirmRefund()"
       >
-        Confirm Refund
+        Confirm
       </button>
       <button
         class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-        @click="confirmModal = false"
+        @click="refundBookingModal = false"
       >
-        Cancel
+        cancel
       </button>
     </div>
-  </vue-final-modal> -->
+  </vue-final-modal>
 </template>
+
 
 <style scoped>
 ::v-deep .modal-container {
@@ -216,6 +211,17 @@
   margin: 0 1rem;
   padding: 1rem;
   border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+::v-deep .modal-content2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 90%;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
   border-radius: 0.25rem;
   background: #fff;
 }
@@ -251,72 +257,47 @@
 
 
 <script>
-import { getAllCanelled } from "../../services/bookingServices";
-import { cancelBooking } from "../../services/bookingServices";
+import {
+  getCancelledBooking,
+  updateBooking,
+} from "../../services/bookingServices";
+
 export default {
   created() {
-    // getAllCanelled().then((res) => {
-    //   this.cancelledBookings = res.data;
-    //   console.log(this.cancelledBookings);
-    //   console.log(res.data);
-    // });
+    this.fetchData();
   },
   data() {
     return {
-      // cancelledBookings: [],
-      // bookingSelected: {},
-      // confirmModal: false,
+      cancelledBookings: [],
+      refundBookingModal: false,
+      selectedBookingId: null,
     };
   },
   methods: {
-    // openConfirmModal(booking) {
-    //   this.bookingSelected = booking;
-    //   this.confirmModal = true;
-    // },
-    // formatDepartureDate(date) {
-    //   let options = {
-    //     weekday: "long",
-    //     year: "numeric",
-    //     month: "long",
-    //     day: "numeric",
-    //   };
-    //   return new Date(date).toLocaleDateString("en-US", options);
-    // },
-    // getDeptTime: function (time) {
-    //   let tissme = time.split(":");
-    //   let hrs = parseInt(tissme[0]);
-    //   let min = parseInt(tissme[1]).toLocaleString("en-US", {
-    //     minimumIntegerDigits: 2,
-    //     useGrouping: false,
-    //   });
-    //   let ampm = "am";
-    //   if (hrs > 12) {
-    //     hrs = hrs - 12;
-    //     ampm = "pm";
-    //   }
-    //   return `${hrs}:${min} ${ampm}`;
-    // },
-    // confirmRefund() {
-    //   console.log(this.bookingSelected)
-    //   let data = {
-    //     bookingStatus: "REFUNDED",
-    //   };
-    //   cancelBooking(this.bookingSelected.id, data).then((res) => {
-    //     if (res.status === 200) {
-    //       this.$toast.show("Amound Succefully Refunded", {
-    //         type: "success",
-    //         position: "top",
-    //       });
-    //       this.refreshData();
-    //       this.confirmModal = false;
-    //     }
-    //   });
-    // },
-    // refreshData() {
-    //   getAllCanelled().then((res) => {
-    //     this.cancelledBookings = res.data;
-    //   });
-    // },
+    fetchData() {
+      getCancelledBooking().then((res) => {
+        this.cancelledBookings = res.data;
+      });
+    },
+    showRefundModal(bookingId) {
+      this.selectedBookingId = bookingId;
+      this.refundBookingModal = true;
+    },
+    parseDepartureDate(date) {
+      let d = new Date(date);
+      return d.toDateString();
+    },
+    confirmRefund() {
+      updateBooking(this.selectedBookingId, {
+        bookingStatus: "REFUNDED",
+      }).then((res) => {
+        if (res.status === 200) {
+          this.$toast.show("Refund Successfull");
+          this.refundBookingModal = false;
+          this.fetchData();
+        }
+      });
+    },
   },
 };
 </script>

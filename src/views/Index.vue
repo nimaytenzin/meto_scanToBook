@@ -1390,7 +1390,7 @@
 import NavbarComponent from "../components/Landing/Navbar.vue";
 import FooterComponent from "../components/Landing/Footer.vue";
 import { getOverAllStats, regenerateTicket } from "../services/bookingServices";
-
+import { sendFeedback } from "../services/FeedbackServices"
 export default {
   name: "landing-page",
   components: {
