@@ -33,3 +33,13 @@ export async function verfiyToken(){
     // return verified;
 }
 
+export async function updateUser(id,data){
+    return await axios.put(`${devUrl}/auth/${id}`,data,{headers:authHeader()})
+}
+
+export async function changeUserPassword(id,data){
+    return await axios.put(`${devUrl}/auth/password/${id}`,data,{headers:authHeader()})
+}
+
+
+

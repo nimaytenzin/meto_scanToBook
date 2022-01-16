@@ -5,12 +5,12 @@ const devUrl = process.env.VUE_APP_DEV_API
 
 
 export async function addNewBooking(booking){
-    return await axios.post(`${devUrl}/bookings`,booking,{headers:authHeader()})
+    return await axios.post(`${devUrl}/bookings`,booking)
 
 }
 
 export async function getChecksum(bookingId){
-    return await axios.get(`${devUrl}/bookings/checksum/${bookingId}`,{headers:authHeader()})
+    return await axios.get(`${devUrl}/bookings/checksum/${bookingId}`)
 }
 
 
@@ -73,4 +73,14 @@ export async function publishConfirmedSeats(data){
 
 export async function deleteBookingwithPassengers(bookingID){
     return await axios.delete(`${devUrl}/bookings/${bookingID}`, {headers:authHeader()})
+}
+
+//counterbooking routes
+export async function addNewCounterBooking(booking){
+    return await axios.post(`${devUrl}/bookings/counter`,booking,{headers:authHeader()})
+
+}
+
+export async function counterConfirmPayment(bookingID,data){
+    return await axios.post(`${devUrl}/bookings/counterconfirm/${bookingID}`,data, {headers:authHeader()})
 }

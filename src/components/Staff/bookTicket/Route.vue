@@ -938,6 +938,8 @@ import crypto from "crypto";
 import { getRoutesByOriginDestination } from "../../../services/routeServices";
 import {
   addNewBooking,
+  addNewCounterBooking,
+  counterConfirmPayment,
   deleteBookingwithPassengers,
   getPassengersOnBus,
   publishConfirmedSeats,
@@ -1337,7 +1339,7 @@ export default {
         };
         this.newBooking = newBooking;
 
-        addNewBooking(newBooking)
+        addNewCounterBooking(newBooking)
           .then((res) => {
             if (res.status === 201) {
               this.newBookingId = res.data.id;
@@ -1374,52 +1376,24 @@ export default {
       })
     },
     confirmPayment() {
-      let paymentDetails = {
+      let updateObject = {
         modality: this.modality,
         depositBank: this.journalDetails.bankName,
         depositJournal: this.journalDetails.journalNumber,
         depositContact: this.journalDetails.contactNumber,
         paymentStatus: "PAID",
       };
-
-      let bookingStatsUpdateObject = {
-        modality: this.modality,
-        depositBank: this.journalDetails.bankName,
-        depositJournal: this.journalDetails.journalNumber,
-        depositContact: this.journalDetails.contactNumber,
-        status: "FULFILLED",
-      };
-      let bookedSeats = [];
-      this.newBooking.passengers.forEach((passenger) => {
-        bookedSeats.push(passenger.seatNumber);
-      });
-
-      let publishSeatsData = {
-        scheduleHash: this.newBooking.scheduleHash,
-        seats: bookedSeats,
-      };
-
-      updateBooking(this.newBookingId, paymentDetails).then((res) => {
-        if (res.status === 200) {
-          updateBookingStatUsingBookingId(
-            this.newBookingId,
-            bookingStatsUpdateObject
-          ).then((res) => {
-            console.log("UPDATING",bookingStatsUpdateObject, res)
-            if (res.status === 200) {
-              publishConfirmedSeats(publishSeatsData).then((res) => {
-                if (res.status == 200) {
-                  this.$router.push(`/staff/ticket/${this.newBookingId}`);
-                } else {
-                  this.$toast.show("Network Error");
-                }
-              });
-            }
-          });
-        } else {
-          this.$toast.show("Network Error");
+      counterConfirmPayment(this.newBookingId, updateObject).then(res =>{
+        if(res.status ===200){
+          this.$toast.show("Booking Successful", {
+            position:"top",
+            type:"success"
+          })
+           this.$router.push(`/staff/ticket/${this.newBookingId}`);
         }
-      });
+      })
+
+   
     },
     backToSeatSelection() {
       this.duplicateSeatsModal = false;
