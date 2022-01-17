@@ -103,6 +103,23 @@
              Statistics & Trends
           </p>
         </router-link>
+
+         <router-link to="/finance/journals">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Transcation Journals
+          </p>
+        </router-link>
         
 
          <router-link to="/finance/cancellations">

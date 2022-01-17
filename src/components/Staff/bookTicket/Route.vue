@@ -24,6 +24,7 @@
               focus:shadow-outline
             "
             v-model="originSelected"
+            @change="resetState"
           >
             <option
               v-for="stop in stops"
@@ -49,6 +50,7 @@
               focus:shadow-outline
             "
             v-model="destinationSelected"
+             @change="resetState"
           >
             <option
               v-for="stop in stops"
@@ -95,7 +97,7 @@
         </button>
       </div>
 
-      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0">
+      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0" v-if="attributes.length">
         <DatePicker
           v-model="date"
           :min-date="new Date()"
@@ -104,7 +106,7 @@
         />
       </div>
 
-      <div v-if="busAvailable">
+      <div v-if="busAvailable && attributes.length">
         <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
           Bus available
@@ -1045,6 +1047,13 @@ export default {
     DatePicker,
   },
   methods: {
+    resetState(){
+        this.schedules=[];
+        this.attributes =[];
+        this.date ="";
+        this.seatSelected={};
+        this.bookedSeats=[]
+    },
     onDayClick(e) {
       if (
         e.popovers[0] &&
@@ -1369,7 +1378,15 @@ export default {
     deleteBooking() {
       deleteBookingwithPassengers(this.newBookingId).then( res =>{
         if(res.status === 200){
-          window.location.reload();
+          this.resetState();
+          this.confirmPaymentModal=false;
+          this.addPassengerDetailsModal=false;
+          this.reverSeatModal=false;
+          this.seatSelectModal =false;
+          this.$toast.show("Booking Cancelled",{
+            position:"top",
+            type:"error"
+          })
         }else{
           this.$toast.show("Network Error")
         }
