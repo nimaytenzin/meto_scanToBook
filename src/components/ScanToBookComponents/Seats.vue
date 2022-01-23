@@ -602,7 +602,7 @@ export default {
         this.$store.state.selectedSeats.forEach((seat) => {
           this.conn.send(
             JSON.stringify({
-              roomId: this.roomId.toString(),
+              scheduleHash: this.roomId.toString(),
               messageType: "LOCK_CONFIRM",
               seatId: seat.number.toString(),
             })
@@ -628,7 +628,7 @@ export default {
     cancelSeat() {
       this.conn.send(
         JSON.stringify({
-          roomId: this.roomId.toString(),
+          scheduleHash: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.selectedSeat.number.toString(),
         })
@@ -638,7 +638,7 @@ export default {
     confirmRevert() {
       this.conn.send(
         JSON.stringify({
-          roomId: this.roomId.toString(),
+          scheduleHash: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.selectedSeat.number.toString(),
         })
@@ -665,7 +665,7 @@ export default {
         } else {
           this.conn.send(
             JSON.stringify({
-              roomId: this.roomId.toString(),
+              scheduleHash: this.roomId.toString(),
               messageType: "LOCK",
               seatId: this.selectedSeat.number.toString(),
             })
