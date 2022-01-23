@@ -135,6 +135,9 @@ const routes = [
       },
       {
         path: 'data', component: () => import('../components/FinanceAdmin/BookingData.vue'), meta: { requiresAuth: true, financeAdmin: true }
+      },
+      {
+        path: 'journals', component: () => import('../components/FinanceAdmin/Journals.vue'), meta: { requiresAuth: true, financeAdmin: true }
       }
     ]
   },
@@ -168,7 +171,11 @@ const routes = [
         path: 'feedbacks', component: () => import('../components/Admin/Feedbacks.vue'), meta: { requiresAuth: true, superAdmin: true }
       },
       {
-        path: 'manage-users', component: () => import('../components/SuperAdmin/ManageUsers.vue'), meta: { requiresAuth: true, superAdmin: true }
+        path: 'journals', component: () => import('../components/FinanceAdmin/Journals.vue'), meta: { requiresAuth: true, superAdmin: true }
+      },
+      {
+        path: 'manage-users', component: () => import('../components/SuperAdmin/ManageUsers.vue'), meta: { requiresAuth: true, superAdmin: true },
+        
       },
     ]
   },

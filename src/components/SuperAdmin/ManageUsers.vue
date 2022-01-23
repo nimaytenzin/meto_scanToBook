@@ -88,7 +88,19 @@
               {{ user.email }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ roleObject[user.role] }}
+              <p v-if="user.role === 4" class="text-md text-red-700 font-semibold">
+                {{ roleObject[user.role] }}
+              </p>
+              <p v-else-if="user.role === 2" class="text-md text-blue-700 font-semibold ">
+                {{ roleObject[user.role] }}
+              </p>
+               <p v-else-if="user.role === 1" class="text-md text-green-800  font-semibold ">
+                {{ roleObject[user.role] }}
+              </p>
+              <p v-else>
+                {{ roleObject[user.role] }}
+
+              </p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap flex gap-4">
               <button
