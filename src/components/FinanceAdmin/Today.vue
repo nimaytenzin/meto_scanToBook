@@ -39,7 +39,7 @@
           <div class="text-sm rounded-md shadow-lg">
             <div class="text-right">
               <p class="font-semibold text-3xl">
-                Nu {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount : 0 }}
+                Nu {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount.toFixed(1) : 0 }}
               </p>
               <span> Total Sale</span>
             </div>
