@@ -106,6 +106,41 @@
           </p>
         </router-link>
 
+
+         <router-link to="/superadmin/manage-routes">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Routes
+          </p>
+        </router-link>
+
+        <router-link to="/superadmin/schedules">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Schedules
+          </p>
+        </router-link>
+        
          <router-link to="/superadmin/statistics">
           <p
             class="
@@ -193,39 +228,6 @@
           </p>
         </router-link>
 
-         <router-link to="/superadmin/manage-routes">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-             Routes
-          </p>
-        </router-link>
-
-        <router-link to="/superadmin/schedules">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700
-              hover:text-white
-            "
-          >
-             Schedules
-          </p>
-        </router-link>
 
          <router-link to="/superadmin/feedbacks">
           <p
