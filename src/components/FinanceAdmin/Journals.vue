@@ -12,9 +12,9 @@
         </button>
       </div>
 
-      <div class="w-11/12">
+      <div class="w-11/12 p-2" v-if="journals.length !==0">
         <table
-          class="border-l border-r divide-y divide-gray-200 table-auto w-full"
+          class=" divide-y divide-gray-200 table-auto w-full mt-6"
         >
           <thead class="">
             <tr>
@@ -96,31 +96,37 @@
                   break-words
                   font-light
                   text-sm
+                  text-left
                 "
               >
-                <p class="text-sm text-center">Nu {{ journal.amount }}</p>
+                <p class="text-sm text-left">Nu {{ journal.amount }}</p>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-                <p class="text-sm text-center">
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm text-left" >
+                <p class="text-sm text-left">
                   {{ journal.depositBank }}
                 </p>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-                <p class="text-sm text-center">
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm text-left">
+                <p class="text-sm text-left">
                   {{ journal.depositJournal }}
                 </p>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-                <p class="text-sm text-center">
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm text-left">
+                <p class="text-sm text-left">
                   {{ journal.depositContact }}
                 </p>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm text-left">
                 {{ journal.user.name }}
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else class="w-11/12">
+        <p class="text-center my-10">
+          No Transaction Journals for {{date  }}
+        </p>
       </div>
     </div>
   </div>
@@ -130,11 +136,12 @@
 
 
 <script>
-import { getAllJournalsToday } from "../../services/journalService";
+import {
+  getJournalsByDate,
+} from "../../services/journalService";
 
 export default {
   created() {
-    this.fetchData();
     let date = new Date();
     var day = date.getDate();
     var month = date.getMonth() + 1;
@@ -145,7 +152,9 @@ export default {
     var today = year + "-" + month + "-" + day;
     this.date = today;
 
-    
+    getJournalsByDate(this.date).then(res=>{
+      this.journals = res.data
+    })
   },
   data() {
     return {
@@ -154,13 +163,11 @@ export default {
     };
   },
   methods: {
-    fetchData() {
-      getAllJournalsToday().then((res) => {
-        this.journals = res.data;
-      });
-    },
+ 
     fetchTranscationDetailsByDate() {
-      console.log(this.date);
+      getJournalsByDate(this.date).then((res) => {
+        this.journals = res.data
+      });
     },
   },
 };

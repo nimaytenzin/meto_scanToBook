@@ -7,5 +7,6 @@ export async function getAllJournalsToday() {
     return await axios.get(`${devUrl}/booking-stat/journals-today`,{headers:authHeader()})
 }
 
-
-          
+export async function getJournalsByDate(date) {
+    return await axios.get(`${devUrl}/booking-stat/journal/date/${date}`,{headers:authHeader()})
+}
