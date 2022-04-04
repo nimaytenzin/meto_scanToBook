@@ -64,4 +64,7 @@ export async function getBusByBookingId(bookingId){
     return await axios.get(`${devUrl}/bus-roster/get-bookingId/${bookingId}`)
  }
 
+ export async function getRouteDetailsByID(routeId){
+    return await axios.get(`${devUrl}/routes/${routeId}`)
+ }
 

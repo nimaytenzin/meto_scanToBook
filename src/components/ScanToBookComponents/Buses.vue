@@ -102,6 +102,15 @@
           <tr @click="commitToStore(route)" :class="tableRowColor(route)">
             <td class="px-6 py-4 whitespace-nowrap">
               {{ route.departureTime }}
+
+              <p v-if="route.parentRouteId">
+                This is a subroute, you will in  travelling in <br>
+                {{route.parentRoute?.routepath?.origin.name  }} -
+                {{route.parentRoute?.routepath?.destination.name  }}
+                <br>
+                Bus, please drop off at  {{ this.$store.state.destination.name }}
+
+              </p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               Nu. {{ route.fare }}  
@@ -186,7 +195,9 @@
 
 <script>
 import crypto from 'crypto';
-
+import {
+  getRouteDetailsByID
+} from "../../services/routeServices"
 export default {
   created() {
     console.log(this.$store.state.departureDate, "PKOKOKOKOK")
@@ -194,6 +205,16 @@ export default {
       this.$router.push("/book");
     }
     this.routes = this.$store.state.avaialableRoutes;
+
+    this.routes.forEach(route=>{
+      if(route.parentRouteId){
+        console.log("THIS ROUTE IS A SUBROUTE", route)
+        getRouteDetailsByID(route.parentRouteId).then(res=>{
+          console.log("Parent route", res.data)
+          route.parentRoute = res.data
+        })
+      }
+    })
   },
   data() {
     return {
@@ -224,18 +245,21 @@ export default {
       return "bg-white";
     },
     seatSelection() {
-      console.log(this.selectedSchedule)
-
-      var plaintext = `${this.selectedRoute.id}|${this.$store.state.departureDate}`
-      console.log("PLAINTEXT", plaintext);
-
+      let parentRouteId;
+      if(this.selectedRoute.parentRouteId){
+        parentRouteId = this.selectedRoute.parentRoute.id
+      }else{
+        parentRouteId = this.selectedRoute.id
+      }
+      var plaintext = `${parentRouteId}|${this.$store.state.departureDate}`
       var hash = crypto.createHash('sha1')
       hash.update(plaintext)
+
       var roomID = hash.digest('hex');
       this.$store.commit("commitSchedule",roomID);
       this.$store.commit("commitScanRoomId",roomID);
 
-      if ( Object.keys( this.selectedRoute).length && this.selected) {
+      if ( this.selected) {
         this.$router.push("/book/seats");
       } else {
         this.$toast.show("Please Select a departure time", {

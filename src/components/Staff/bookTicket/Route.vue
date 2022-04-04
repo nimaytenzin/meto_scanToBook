@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-full flex flex-col items-center justify-center">
     <div class="flex flex-col justify-center items-center">
-      <h1 class="text-3xl text-gray-500 text-center font-nunito">
+      <h1 class="text-3xl text-gray-500 text-center font-nunito font-bold">
         Book Ticket
       </h1>
     </div>
 
-    <div>
+    <div class="mt-10 w-full">
       <h2 class="text-xl mt-2">Route Details</h2>
-      <div class="flex flex-wrap -mx-2 space-y-4 md:space-y-0">
+      <div class="flex flex-wrap">
         <div class="w-full px-2 md:w-1/2">
           <label class="block mb-1" for="formGridCode_name">Origin</label>
 
@@ -30,7 +30,7 @@
               v-for="stop in stops"
               :value="stop"
               :key="stop"
-              class="bg-white"
+              class="bg-white text-xl"
             >
               {{ stop.name }}
             </option>
@@ -50,7 +50,7 @@
               focus:shadow-outline
             "
             v-model="destinationSelected"
-             @change="resetState"
+            @change="resetState"
           >
             <option
               v-for="stop in stops"
@@ -97,7 +97,10 @@
         </button>
       </div>
 
-      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0" v-if="attributes.length">
+      <div
+        class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0"
+        v-if="attributes.length"
+      >
         <DatePicker
           v-model="date"
           :min-date="new Date()"
@@ -145,105 +148,55 @@
       </div>
 
       <div class="flex flex-wrap mt-5" v-if="schedules.length !== 0">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Departure
-              </th>
-              <th
-                scope="col"
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Fare
-              </th>
-              <th
-                scope="col"
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody
-            class="bg-white divide-y divide-gray-200"
-            v-for="schedule in schedules"
-            :key="schedule"
+        <div v-for="schedule in schedules" :key="schedule">
+          <div
+            @click="commitSchedule(schedule)"
+            class="border-2 bg-white p-2 rounded text-gray-800"
           >
-            <tr
-              @click="commitSchedule(schedule)"
-              :class="tableRowColor(schedule)"
-            >
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ schedule.departureTime }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                Nu. {{ schedule.fare }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div>
-                  <button
-                    class="
-                      rounded-l
-                      py-1
-                      px-2
-                      font-medium
-                      text-gray-900
-                      bg-gray-200
-                      hover:bg-gray-300 hover:text-gray-900
-                      active:bg-grey-900
-                    "
-                    @click="openSeatSelect(schedule)"
-                  >
-                    Book
-                  </button>
-                  <button
-                    class="
-                      rounded-r
-                      py-1
-                      px-2
-                      font-medium
-                      text-gray-900
-                      bg-gray-200
-                      hover:bg-gray-300 hover:text-gray-900
-                      active:bg-grey-900
-                    "
-                    @click="viewPassengers(schedule)"
-                  >
-                    Passengers
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <p>Departure Time: {{ schedule.departureTime }}</p>
+            <p>Fare: Nu. {{ schedule.fare }}</p>
+
+            
+
+              <p v-if="schedule.parentRouteId">
+                This is a subroute, you will in  travelling in <br>
+                {{schedule.parentRoute?.routepath?.origin.name  }} -
+                {{schedule.parentRoute?.routepath?.destination.name  }}
+              </p>
+            <div class="flex jusitify-between mt-1">
+              <button
+                class="
+                  rounded-l
+                  py-1
+                  px-2
+                  font-medium
+                  text-gray-900
+                  bg-gray-200
+                  hover:bg-gray-300 hover:text-gray-900
+                  active:bg-grey-900
+                "
+                @click="openSeatSelect(schedule)"
+              >
+                Book
+              </button>
+              <button
+                class="
+                  rounded-r
+                  py-1
+                  px-2
+                  font-medium
+                  text-gray-900
+                  bg-gray-200
+                  hover:bg-gray-300 hover:text-gray-900
+                  active:bg-grey-900
+                "
+                @click="viewPassengers(schedule)"
+              >
+                View Passengers
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -937,7 +890,7 @@ import VueJwtDecode from "vue-jwt-decode";
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
 import crypto from "crypto";
-import { getRoutesByOriginDestination } from "../../../services/routeServices";
+import { getRouteDetailsByID, getRoutesByOriginDestination } from "../../../services/routeServices";
 import {
   addNewBooking,
   addNewCounterBooking,
@@ -1003,6 +956,7 @@ export default {
       attributes: [],
       days: [],
       routes: [],
+      subroutes: [],
       selectedSchedule: {},
       modality: "CASH",
       weekDay: null,
@@ -1047,12 +1001,12 @@ export default {
     DatePicker,
   },
   methods: {
-    resetState(){
-        this.schedules=[];
-        this.attributes =[];
-        this.date ="";
-        this.seatSelected={};
-        this.bookedSeats=[]
+    resetState() {
+      this.schedules = [];
+      this.attributes = [];
+      this.date = "";
+      this.seatSelected = {};
+      this.bookedSeats = [];
     },
     onDayClick(e) {
       if (
@@ -1060,6 +1014,7 @@ export default {
         e.popovers[0].label === "Bus Availble" &&
         !e.isDisabled
       ) {
+        this.schedules = [];
         this.weekDay = e.weekday;
         this.departureDate = e.id;
         this.busAvailable = true;
@@ -1102,12 +1057,26 @@ export default {
       )
         .then((res) => {
           if (res.data && res.status === 200) {
-            this.routes = res.data.routes;
-            res.data.routes.forEach((route) => {
-              if (this.days.indexOf(route.day) === -1) {
-                this.days.push(route.day);
-              }
-            });
+            console.log("ROUTES Search", res.data);
+
+            if (res.data.routes) {
+              this.routes = res.data.routes;
+              res.data.routes.forEach((route) => {
+                if (this.days.indexOf(route.day) === -1) {
+                  this.days.push(route.day);
+                }
+              });
+            }
+
+            if (res.data.subroutes) {
+              this.subroutes = res.data.subroutes;
+              this.subroutes.forEach((subroute) => {
+                if (this.days.indexOf(subroute.day) === -1) {
+                  this.days.push(subroute.day);
+                }
+              });
+            }
+
             if (this.days) {
               this.attributes = [
                 {
@@ -1130,7 +1099,10 @@ export default {
               ];
             }
           } else {
-            this.$toast.show("No Bus");
+            this.$toast.show(`No Bus Availble`, {
+              position: "top",
+              type: "error",
+            });
           }
         })
         .catch((err) => console.log(err));
@@ -1174,7 +1146,6 @@ export default {
           this.lockedSeats = messageJson.lockedList;
           this.changeSeatStatus();
         } else if (messageJson.messageType === "LOCK_LEAVE") {
-          
           this.reverSeatStatus(messageJson.leaveList);
         } else if (messageJson.messageType === "LOCK_CONFIRM") {
         }
@@ -1182,11 +1153,21 @@ export default {
     },
 
     openSeatSelect(route) {
+
+      console.log("INSERT CHECK FOR SUBROUTES", route)
       this.routeId = route.id;
+      let parentRouteId;
+
+      if(route.parentRouteId){
+        parentRouteId = route.parentRoute.id
+      }else{
+        parentRouteId = route.id
+      }
+
       this.fare = route.fare;
       this.errorModal = true;
       this.isLoader = true;
-      var plaintext = `${this.routeId}|${this.departureDate}`;
+      var plaintext = `${parentRouteId}|${this.departureDate}`;
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
       this.roomId = hash.digest("hex");
@@ -1376,21 +1357,21 @@ export default {
       }
     },
     deleteBooking() {
-      deleteBookingwithPassengers(this.newBookingId).then( res =>{
-        if(res.status === 200){
+      deleteBookingwithPassengers(this.newBookingId).then((res) => {
+        if (res.status === 200) {
           this.resetState();
-          this.confirmPaymentModal=false;
-          this.addPassengerDetailsModal=false;
-          this.reverSeatModal=false;
-          this.seatSelectModal =false;
-          this.$toast.show("Booking Cancelled",{
-            position:"top",
-            type:"error"
-          })
-        }else{
-          this.$toast.show("Network Error")
+          this.confirmPaymentModal = false;
+          this.addPassengerDetailsModal = false;
+          this.reverSeatModal = false;
+          this.seatSelectModal = false;
+          this.$toast.show("Booking Cancelled", {
+            position: "top",
+            type: "error",
+          });
+        } else {
+          this.$toast.show("Network Error");
         }
-      })
+      });
     },
     confirmPayment() {
       let updateObject = {
@@ -1400,17 +1381,15 @@ export default {
         depositContact: this.journalDetails.contactNumber,
         paymentStatus: "PAID",
       };
-      counterConfirmPayment(this.newBookingId, updateObject).then(res =>{
-        if(res.status ===200){
+      counterConfirmPayment(this.newBookingId, updateObject).then((res) => {
+        if (res.status === 200) {
           this.$toast.show("Booking Successful", {
-            position:"top",
-            type:"success"
-          })
-           this.$router.push(`/staff/ticket/${this.newBookingId}`);
+            position: "top",
+            type: "success",
+          });
+          this.$router.push(`/staff/ticket/${this.newBookingId}`);
         }
-      })
-
-   
+      });
     },
     backToSeatSelection() {
       this.duplicateSeatsModal = false;
@@ -1452,6 +1431,18 @@ export default {
           this.schedules.push(route);
         }
       });
+       this.subroutes.forEach((subroute) => {
+        if (subroute.day === this.weekDay) {
+           getRouteDetailsByID(subroute.parentRouteId).then(resp=>{
+            subroute.parentRoute = resp.data;
+            this.schedules.push(subroute);
+          })
+          
+        }
+      });
+
+      console.log("WITH PARENT ROUTES", this.schedules)
+
     },
   },
 };

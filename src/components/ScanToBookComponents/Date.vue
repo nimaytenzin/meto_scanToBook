@@ -9,7 +9,6 @@
       </h1>
       <h1 class="text-3xl text-gray-500 text-center mt-3">ནཱ་ནམ་འབྱོནམ་སྨོ?</h1>
     </div>
-
     <div
       class="
         flex flex-col
@@ -101,11 +100,20 @@ export default {
     )
       .then((res) => {
         console.log("ROUTES WITH DAYS", res);
-        this.routes = res.data.routes;
-        this.$store.commit("commitAvailableRoute", this.routes);
-        this.routes.forEach((route) => {
-          this.days.push(route.day);
-        });
+
+        if (res.data.routes) {
+          this.routes = res.data.routes;
+          this.$store.commit("commitAvailableRoute", this.routes);
+          this.routes.forEach((route) => {
+            this.days.push(route.day);
+          });
+        }
+        if (res.data.subroutes) {
+          this.subroutes = res.data.subroutes;
+          this.subroutes.forEach((subroute) => {
+            this.days.push(subroute.day);
+          });
+        }
 
         this.attributes = [
           {
@@ -119,7 +127,8 @@ export default {
       })
       .catch((err) => console.log(err));
 
-    this.$store.commit("addMatchedRoutes", this.routes);
+    // this.$store.commit("addMatchedRoutes", this.routes);
+    // console.log("SUb Routes array", this.subroutes)
   },
   data() {
     return {
@@ -130,7 +139,8 @@ export default {
       dateClicked: false,
       daySelected: null,
       invalidDateClicked: false,
-      dateSelected:null
+      dateSelected: null,
+      subroutes: [],
     };
   },
   methods: {
@@ -138,7 +148,7 @@ export default {
       this.$router.push("/book/destination");
     },
     onDayClick(e) {
-      this.invalidDateClicked =false;
+      this.invalidDateClicked = false;
 
       this.dateClicked = true;
       this.daySelected = e.weekday;
@@ -150,9 +160,8 @@ export default {
         let formattedDate = e.id;
         this.$store.commit("commitSelectedDate", formattedDate);
         this.dateSelected = e.ariaLabel;
-
       } else {
-        this.dateSelected =null
+        this.dateSelected = null;
         if (e.isDisabled) {
           this.$toast.show(`Select a valid Date`, {
             position: "top",
@@ -176,11 +185,21 @@ export default {
       } else {
         if (this.$store.getters.getDepartureDate) {
           let matchedRoutes = [];
-          this.routes.forEach((route) => {
-            if (route.day === this.daySelected) {
-              matchedRoutes.push(route);
+          if (this.routes.length !== 0) {
+            this.routes.forEach((route) => {
+              if (route.day === this.daySelected) {
+                matchedRoutes.push(route);
+              }
+            });
+          }
+          if(this.subroutes.length !== 0){
+            this.subroutes.forEach((subroute) => {
+            if (subroute.day === this.daySelected) {
+              matchedRoutes.push(subroute);
             }
           });
+          }
+          
           this.$store.commit("commitAvailableRoute", matchedRoutes);
           this.$router.push("/book/buses");
         } else {
