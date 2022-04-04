@@ -810,7 +810,7 @@
                 <option value="08">8</option>
                 <option value="09">9</option>
                 <option value="10">10</option>
-                <option value="11">10</option>
+                <option value="11">11</option>
                 <option value="12">12</option>
               </select>
               <span class="text-xl mr-3">:</span>
