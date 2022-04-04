@@ -1108,6 +1108,7 @@ export default {
         .catch((err) => console.log(err));
     },
     connectWs() {
+      console.log(this.roomId)
       this.conn = new WebSocket(`${process.env.VUE_APP_WSS}/${this.roomId}`);
       this.conn.onopen = (event) => {
         this.isConnected = true;
@@ -1226,7 +1227,7 @@ export default {
         } else {
           this.conn.send(
             JSON.stringify({
-              roomId: this.roomId.toString(),
+              scheduleHash: this.roomId.toString(),
               messageType: "LOCK",
               seatId: seat.number.toString(),
             })
@@ -1254,7 +1255,7 @@ export default {
     confirmRevert() {
       this.conn.send(
         JSON.stringify({
-          roomId: this.roomId.toString(),
+          scheduleHash: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.seatSelected.number.toString(),
         })
@@ -1287,7 +1288,7 @@ export default {
     cancelSeat() {
       this.conn.send(
         JSON.stringify({
-          roomId: this.roomId.toString(),
+          scheduleHash: this.roomId.toString(),
           messageType: "LOCK_LEAVE",
           seatId: this.seatSelected.number.toString(),
         })
