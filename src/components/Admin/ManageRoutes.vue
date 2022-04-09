@@ -421,11 +421,21 @@
                   :key="route"
                   class="flex justify-between"
                 >
-                  <div class="p-4 rounded bg-gray-100">
+                  <div
+                    :class="
+                      route.isActive
+                        ? ' p-4 rounded bg-gray-100'
+                        : 'p-4 rounded bg-red-100'
+                    "
+                  >
                     <div class="flex flex-col flex-wrap">
                       <p class="text-xl font-bold">
                         {{ week[route.day - 1] }}
                       </p>
+                      <p v-if="!route.isActive" class="font-bold text-red-600">
+                        Route Suspended
+                      </p>
+
                       <div>Departure Time: {{ route.departureTime }}</div>
                       <div>Fare: Nu {{ route.fare }}</div>
                       <div class="flex gap-2 my-1 bg-gray-200 justify-around">
@@ -496,11 +506,8 @@
                     ></div>
 
                     <div v-else>
-                      <p class="font-semibold mt-3">
-                        Sub Route
-                      </p>
+                      <p class="font-semibold mt-3">Sub Route</p>
                       <p class="text-xs">
-
                         (Sub Routes will Share the same bus as the Main route)
                       </p>
                       <table class="table-auto">
@@ -527,46 +534,58 @@
                             {{ subroute.departureTime }}
                           </td>
                           <td class="px-3 flex gap-2 items-center">
-                               <div
-                          @click="editSubRoute(subroute)"
-                          class="flex items-center rounded-full bg-gray-800 text-gray-300 p-1"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                            />
-                          </svg>
-                          
-                        </div>
-                        <div
-                          @click="deleteSubRoute(subroute)"
-                         class="flex items-center rounded-full bg-gray-800 text-gray-300 p-1"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                          
-                        </div>
+                            <div
+                              @click="editSubRoute(subroute)"
+                              class="
+                                flex
+                                items-center
+                                rounded-full
+                                bg-gray-800
+                                text-gray-300
+                                p-1
+                              "
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                            </div>
+                            <div
+                              @click="deleteSubRoute(subroute)"
+                              class="
+                                flex
+                                items-center
+                                rounded-full
+                                bg-gray-800
+                                text-gray-300
+                                p-1
+                              "
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </div>
                           </td>
                         </tr>
                       </table>
@@ -810,7 +829,7 @@
                 <option value="08">8</option>
                 <option value="09">9</option>
                 <option value="10">10</option>
-                <option value="11">10</option>
+                <option value="11">11</option>
                 <option value="12">12</option>
               </select>
               <span class="text-xl mr-3">:</span>
@@ -896,22 +915,7 @@
           </p>
 
           <div class="flex justify-center items-center text-xl gap-2 my-1">
-            Route Day :
-            <div>
-              <select
-                name="hours"
-                v-model="selectedRoute.day"
-                class="bg-transparent outline-none"
-              >
-                <option value="0">Sunday</option>
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4">Thrusday</option>
-                <option value="5">Friday</option>
-                <option value="6">Saturday</option>
-              </select>
-            </div>
+            Route Day : {{ week[selectedRoute.day - 1] }}
           </div>
 
           <div class="flex justify-center text-xl items-center gap-2 my-1">
@@ -1123,9 +1127,14 @@
               class="bg-gray-600 rounded text-gray-200"
             >
               <p>Booking ID: {{ booking.id }}</p>
-              <p>
+              <p v-if="!booking.subRouteId">
                 {{ selectedRoutepath.origin.name }} -
                 {{ selectedRoutepath.destination.name }}
+              </p>
+              <p v-else>
+                <span class="font-bold">SubRoute</span> <br>
+                {{ booking.subroute.routepath?.origin.name }} -
+                {{ booking.subroute.routepath?.destination.name }}
               </p>
               <p>
                 Departure Date : {{ parseDepartureDate(booking.scheduleDate) }}
@@ -1295,8 +1304,8 @@
           </button>
         </div>
       </vue-final-modal>
-      
-       <!-- Edit SUBROUTE Modal -->
+
+      <!-- Edit SUBROUTE Modal -->
       <vue-final-modal
         v-model="editSubRouteModal"
         classes="modal-container"
@@ -1312,8 +1321,6 @@
             {{ selectedSubRoute.routepath?.origin?.name }} -
             {{ selectedSubRoute.routepath?.destination?.name }}
           </p>
-
-       
 
           <div class="flex justify-center text-xl items-center gap-2 my-1">
             Sub Route Status :
@@ -1423,7 +1430,6 @@
         </div>
       </vue-final-modal>
 
-
       <!-- Delete Route Modal -->
       <vue-final-modal
         v-model="deleteSubrouteModal"
@@ -1435,7 +1441,7 @@
           <h3 class="text-xl mb-2">Delete SubRoute?</h3>
         </div>
 
-        <div class="modal__action" >
+        <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="confirmSubRouteDelete()"
@@ -1521,9 +1527,14 @@ import { getStaffs } from "../../services/authServices";
 import {
   getPendingBookingsByRouteId,
   cancelBooking,
+  getPendingBookingsByScheduleHash,
 } from "../../services/bookingServices";
 
-import { addNewSubRoute, editSubRoute, deleteSubRoute} from "../../services/subRoutesService";
+import {
+  addNewSubRoute,
+  editSubRoute,
+  deleteSubRoute,
+} from "../../services/subRoutesService";
 export default {
   components: {
     Multiselect,
@@ -1572,15 +1583,15 @@ export default {
       pendingBookings: [],
       selectedDepartureTimeArr: [],
       newDepartureTimeArr: ["07", "30", "AM"],
-      newSubRouteDepartureTime:["07","30","AM"],
+      newSubRouteDepartureTime: ["07", "30", "AM"],
       conflictingBookings: [],
       conflictingBookingsModal: false,
       addSubRoutesModal: false,
       newSubRoute: {},
-      selectedSubRoute:{},
-      editSubRouteModal:false,
-      selectedSubRouteDepartureTime:["06","30","PM"],
-      deleteSubrouteModal:false
+      selectedSubRoute: {},
+      editSubRouteModal: false,
+      selectedSubRouteDepartureTime: ["06", "30", "PM"],
+      deleteSubrouteModal: false,
     };
   },
   created() {
@@ -1816,29 +1827,45 @@ export default {
         ":" +
         this.selectedDepartureTimeArr[2];
 
-      getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
-        if (res.data.length === 0) {
-          editRoute(this.selectedRoute.id, this.selectedRoute).then((res) => {
-            if (res.status === 200) {
-              this.fetchRouteData();
-              this.editRouteModal = false;
+      console.log("EDITING THIS ROUTE", this.selectedRoute);
 
-              this.$toast.show("Route updated", {
-                position: "top",
-                type: "success",
+      getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
+    
+
+        if (res.data.length === 0) {
+          editRoute(this.selectedRoute.id, this.selectedRoute).then(
+            (response) => {
+              this.selectedRoute.subroutes.forEach((item) => {
+                editSubRoute(item.id, {
+                  isActive: this.selectedRoute.isActive,
+                }).then((resp) => {
+                  if (resp.status === 200) {
+                    this.fetchRouteData();
+                  }
+                });
               });
-            } else {
-              this.$toast.show("Network Error", {
-                position: "error",
-                type: "success",
-              });
+              if (response.status === 200) {
+                this.fetchRouteData();
+                this.editRouteModal = false;
+                this.$toast.show("Route updated", {
+                  position: "top",
+                  type: "success",
+                });
+              } else {
+                this.$toast.show("Network Error", {
+                  position: "error",
+                  type: "success",
+                });
+              }
             }
-          });
+          );
+  
         } else {
+          console.log("CONFLICTS",res.data)
           this.conflictingBookings = res.data;
           this.conflictingBookingsModal = true;
         }
-      }); 
+      });
     },
     createNewSubRoute(selectedRoutepath, selectedRoute) {
       this.selectedRoutepath = selectedRoutepath;
@@ -1858,47 +1885,48 @@ export default {
         this.newSubRouteDepartureTime[1] +
         ":" +
         this.newSubRouteDepartureTime[2];
- 
+
       addNewSubRoute(this.newSubRoute).then((res) => {
-        if(res.status === 201){
-          this.fetchRouteData()
+        if (res.status === 201) {
+          this.fetchRouteData();
           this.addSubRoutesModal = false;
         }
       });
     },
-    editSubRoute(subroute){
+    editSubRoute(subroute) {
       this.selectedSubRoute = subroute;
-       this.selectedSubRouteDepartureTime = subroute.departureTime.split(":");
-      this.editSubRouteModal = true
+      this.selectedSubRouteDepartureTime = subroute.departureTime.split(":");
+      this.editSubRouteModal = true;
     },
-    confirmEditSubRoute(){
-       this.selectedSubRoute.departureTime =
+    confirmEditSubRoute() {
+      this.selectedSubRoute.departureTime =
         this.selectedSubRouteDepartureTime[0] +
         ":" +
         this.selectedSubRouteDepartureTime[1] +
         ":" +
         this.selectedSubRouteDepartureTime[2];
-      
-      editSubRoute(this.selectedSubRoute.id, this.selectedSubRoute).then(res=>{
-        if(res.status === 200){
-          this.fetchRouteData()
-          this.editSubRouteModal = false
+
+      editSubRoute(this.selectedSubRoute.id, this.selectedSubRoute).then(
+        (res) => {
+          if (res.status === 200) {
+            this.fetchRouteData();
+            this.editSubRouteModal = false;
+          }
         }
-      })
+      );
     },
-    deleteSubRoute(subroute){
-      this.selectedSubRoute= subroute;
+    deleteSubRoute(subroute) {
+      this.selectedSubRoute = subroute;
       this.deleteSubrouteModal = true;
     },
-    confirmSubRouteDelete(){
-      deleteSubRoute(this.selectedSubRoute.id).then(res=>{
-        if(res.status === 200){
-          this.fetchRouteData()
+    confirmSubRouteDelete() {
+      deleteSubRoute(this.selectedSubRoute.id).then((res) => {
+        if (res.status === 200) {
+          this.fetchRouteData();
           this.deleteSubrouteModal = false;
         }
-      })
-    }
-
+      });
+    },
   },
 };
 </script>

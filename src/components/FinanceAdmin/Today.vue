@@ -445,7 +445,6 @@ import {
   getStaffStatsToday,
   getRouteStatsToday,
   getStatsByModalityToday,
-  getJournalDetailsbyStaff,
 } from "../../services/bookingStatsService";
 
 import domtoimage from "dom-to-image";
@@ -464,6 +463,7 @@ export default {
     });
     getRouteStatsToday().then((res) => {
       this.routeStats = res.data;
+      console.log(this.routeStats)
     });
     getStatsByModalityToday().then((res) => {
       let ticketsSold = 0;

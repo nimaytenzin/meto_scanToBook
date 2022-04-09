@@ -17,7 +17,7 @@
         <div
           class="absolute top-0 w-full h-full bg-center bg-cover"
           :style="{
-            'background-image': 'url(' + require('../assets/hero.png') + ')',
+            'background-image': 'url(' + require('../assets/bg.jpeg') + ')',
           }"
         >
           <span

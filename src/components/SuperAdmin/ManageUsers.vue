@@ -649,6 +649,11 @@ export default {
             this.$toast.show("Network Error");
           }
         });
+      }else{
+        this.$toast.show("One or more fields blank..please fill all details",{
+          position:"top",
+          type:"error"
+        })
       }
     },
 

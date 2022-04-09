@@ -51,6 +51,8 @@
                 Refund Amount
               </td>
 
+             
+
               <td
                 class="
                   px-6
@@ -84,29 +86,33 @@
                 <p class="text-center">
                   
                   Thimphu - TrashiYangtse <br />
-                  on {{ parseDepartureDate(booking.scheduleDate) }} <br />
-                  at {{ booking.route.departureTime }}
+                  on {{ booking.scheduleDate }} <br />
+                  <!-- at {{ booking.route.departureTime }} -->
+
+                  <br>
+                   Nu.{{ booking.amount }}
                 </p>
                 <p
                   v-if="booking.modality === 'ONLINE'"
                   class="text-center text-blue-600 font-semibold"
                 >
                   Online Booking
+
+                  
                 </p>
                 <p v-else class="text-center text-green-600 font-semibold">
                   Counter Booking
                 </p>
+                
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-                <table class="w-full">
+                <table class="w-full h-full">
                   <tr>
                     <td
                       class="
                         p-2
                         text-left text-xs
                         font-medium
-                        text-gray-100
-                        bg-gray-600
                         rounded-l
                       "
                     >
@@ -117,22 +123,35 @@
                         p-2
                         text-left text-xs
                         font-medium
-                        text-gray-100
-                        bg-gray-600
+                       
                         rounded-r
                       "
                     >
                       Contact
                     </td>
+                    <td
+                      class="
+                        p-2
+                        text-left text-xs
+                        font-medium
+                       
+                        rounded-r
+                      "
+                    >
+                      CID
+                    </td>
                   </tr>
                   <tr v-for="passenger in booking.passengers" :key="passenger">
                     <td class="pl-2">{{ passenger.name }}</td>
                     <td class="pl-2">{{ passenger.contact }}</td>
+                      <td class="pl-2">{{ passenger.cid }}</td>
                   </tr>
                 </table>
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-                Nu.{{ booking.amount }}
+               Booking Amount: Nu. {{booking.amount  }} <br>
+               Eligible for {{booking.refundPercentage  }} % refund <br>
+               Refund Amount: Nu. {{ Math.round(booking.amount * (booking.refundPercentage/100))  }}
               </td>
 
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
@@ -277,6 +296,7 @@ export default {
     fetchData() {
       getCancelledBooking().then((res) => {
         this.cancelledBookings = res.data;
+        console.log(res.data)
       });
     },
     showRefundModal(bookingId) {
