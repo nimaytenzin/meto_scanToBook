@@ -79,21 +79,21 @@
                 class="p-1 rounded-r text-gray-800"
                 type="text"
                 placeholder="Bank Name"
-                v-model="refundAccountDetails.bankName"
+                v-model="refundAccountDetails.refundBank"
               />
 
               <input
                 class="p-1 rounded-r text-gray-800"
                 type="number"
                 placeholder="Account Number"
-                v-model="refundAccountDetails.accNo"
+                v-model="refundAccountDetails.refundAcc"
               />
 
               <input
                 class="p-1 rounded-r text-gray-800"
                 type="text"
                 placeholder="Account Name"
-                v-model="refundAccountDetails.accName"
+                v-model="refundAccountDetails.refundAccName"
               />
              </div>
             </div>
@@ -158,8 +158,8 @@
       <div class="modal__content text-center mt-5">
         <h3 class="text-xl">Confirm Details</h3>
         <div>
-          <h2>Account Number: {{ refundAccountDetails.accNo }}</h2>
-          <h2>Account Name: {{ refundAccountDetails.accName }}</h2>
+          <h2>Account Number: {{ refundAccountDetails.refundAcc}}</h2>
+          <h2>Account Name: {{ refundAccountDetails.refundAccName}}</h2>
         </div>
         <div
           class="
@@ -299,9 +299,9 @@ export default {
       amount:"",
       seats:"",
       refundAccountDetails: {
-        accNo: "",
-        accName: "",
-        bankName: "",
+        refundAcc: "",
+        refundBank: "",
+        refundAccName: "",
         bookingStatus: "CANCELLED",
       },
       confirmDetailsModal: false,
@@ -324,6 +324,7 @@ export default {
           this.destination = this.bookingData.route.routepath.destination.name;
           this.departureTime = this.bookingData.route.departureTime;
           this.scheduleDate = this.bookingData.scheduleDate
+          this.amount = this.bookingData.amount
 
           let occupiedSeats = []
           this.bookingData.passengers.forEach((x)=>{
@@ -332,10 +333,10 @@ export default {
           this.seats = occupiedSeats.join(",")
           console.log("seats",occupiedSeats)
 
-          if (res.data.accNo) {
-            this.refundAccountDetails.bankName = res.data.bankName;
-            this.refundAccountDetails.accNo = res.data.accNo;
-            this.refundAccountDetails.accName = res.data.accName;
+          if (res.data.refundAcc) {
+            this.refundAccountDetails.refundBank= res.data.refundBank;
+            this.refundAccountDetails.refundAcc= res.data.refundAcc;
+            this.refundAccountDetails.refundAccName= res.data.refundAccName;
             this.update = true;
           }
           // this.socketConn = new WebSocket(
@@ -379,15 +380,6 @@ export default {
     confirmCancel() {
       cancelBooking(this.bookingId, this.refundAccountDetails).then((res) => {
         if (res.status === 200) {
-          this.bookingData.bookedSeats.forEach((element) => {
-            // this.socketConn.send(
-            //   JSON.stringify({
-            //     roomId: this.bookingData.scheduleId.toString(),
-            //     messageType: "LOCK_LEAVE",
-            //     seatId: element.seatNumber.toString(),
-            //   })
-            // );
-          });
           this.$toast.show("Successfull", {
             position: "top",
             type: "success",
@@ -403,9 +395,9 @@ export default {
     },
     updateDetails() {
       updateBooking(this.bookingData.id, {
-        bankName: this.refundAccountDetails.bankName,
-        accNo: this.refundAccountDetails.accNo,
-        accName: this.refundAccountDetails.accName,
+        bankName: this.refundAccountDetails.refundBank,
+        accNo: this.refundAccountDetails.refundAcc,
+        accName: this.refundAccountDetails.refundAccName,
         bookingStatus: "CANCELLED",
       }).then((res) => {
         if (res.status === 200) {
@@ -418,9 +410,9 @@ export default {
     },
     cancelTicket() {
       if (
-        this.refundAccountDetails.accNo &&
-        this.refundAccountDetails.bankName &&
-        this.refundAccountDetails.accName
+        this.refundAccountDetails.refundAcc&&
+        this.refundAccountDetails.refundAccName&&
+        this.refundAccountDetails.refundBank
       ) {
         this.confirmDetailsModal = true;
       } else {

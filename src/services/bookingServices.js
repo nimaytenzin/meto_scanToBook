@@ -27,7 +27,7 @@ export async function getBookingDetail(id){
 }
 
 export async function cancelBooking(id,data){
-    return await axios.put(`${devUrl}/bookings/cancel/${id}`,data,{headers:authHeader()})
+    return await axios.put(`${devUrl}/bookings/cancel/${id}`,data)
 }
 
 export async function updateBooking(id,data){
