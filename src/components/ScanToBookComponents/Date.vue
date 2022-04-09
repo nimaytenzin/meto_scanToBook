@@ -29,6 +29,7 @@
           :min-date="new Date()"
           @dayclick="onDayClick($event)"
           :attributes="attributes"
+          :disabled-dates="disabledDates"
         />
       </div>
 
@@ -84,6 +85,8 @@
 import { Calendar, DatePicker } from "v-calendar";
 import "vue3-loading-overlay/dist/vue3-loading-overlay.css";
 import { getRoutesByOriginDestination } from "../../services/routeServices";
+import { getCancelledRoutesByRouteId }from "../../services/cancelledRouteDateService"
+
 
 export default {
   components: {
@@ -105,6 +108,15 @@ export default {
           this.routes = res.data.routes;
           this.$store.commit("commitAvailableRoute", this.routes);
           this.routes.forEach((route) => {
+            getCancelledRoutesByRouteId(route.id).then(resp=>{
+              console.log(resp)
+              if(resp.data.length){
+                resp.data.forEach(item=>{
+                  this.disabledDates.push(item.date)
+                })
+                
+              }
+            })
             this.days.push(route.day);
           });
         }
@@ -114,16 +126,27 @@ export default {
             this.days.push(subroute.day);
           });
         }
-
-        this.attributes = [
+        
+          setTimeout(() => {
+              this.attributes = [
           {
             dot: "green",
             dates: { weekdays: this.days },
             popover: {
               label: "Bus Availble",
             },
+            excludeDates:this.disabledDates
+          },
+          {
+            key: "cancelled",
+            dates: this.disabledDates,
+            customData: {
+              status: "cancelled",
+            },
+            status: 1,
           },
         ];
+          }, 10);
       })
       .catch((err) => console.log(err));
 
@@ -141,6 +164,9 @@ export default {
       invalidDateClicked: false,
       dateSelected: null,
       subroutes: [],
+      disabledDates:[
+      
+      ]
     };
   },
   methods: {
@@ -149,7 +175,6 @@ export default {
     },
     onDayClick(e) {
       this.invalidDateClicked = false;
-
       this.dateClicked = true;
       this.daySelected = e.weekday;
       if (
@@ -163,10 +188,18 @@ export default {
       } else {
         this.dateSelected = null;
         if (e.isDisabled) {
-          this.$toast.show(`Select a valid Date`, {
-            position: "top",
-            type: "error",
-          });
+          if (!e.attributes[0]) {
+            this.$toast.show(`Date expired`, {
+              position: "top",
+              type: "error",
+            });
+          } else {
+            this.$toast.show(`Bus for the day has been cancelled`, {
+              position: "top",
+              type: "info",
+            });
+          }
+
           this.invalidDateClicked = true;
         } else {
           this.$toast.show(`No Bus Availble`, {
@@ -178,7 +211,7 @@ export default {
     },
     addDepartureDate() {
       if (this.dateClicked && this.invalidDateClicked) {
-        this.$toast.show(`Selected Date has passed`, {
+        this.$toast.show(`Please select a valid date`, {
           position: "top",
           type: "error",
         });
@@ -192,14 +225,14 @@ export default {
               }
             });
           }
-          if(this.subroutes.length !== 0){
+          if (this.subroutes.length !== 0) {
             this.subroutes.forEach((subroute) => {
-            if (subroute.day === this.daySelected) {
-              matchedRoutes.push(subroute);
-            }
-          });
+              if (subroute.day === this.daySelected) {
+                matchedRoutes.push(subroute);
+              }
+            });
           }
-          
+
           this.$store.commit("commitAvailableRoute", matchedRoutes);
           this.$router.push("/book/buses");
         } else {

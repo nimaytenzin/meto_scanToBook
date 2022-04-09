@@ -54,7 +54,7 @@ export async function getCancelCode(bookingId){
 }
 
 
-export async function getPassengersOnBus(routeId,departureDate){
+export async function getBookingsByRouteAndScheduleDate(routeId,departureDate){
     return await axios.get(`${devUrl}/bookings/get-route-date/${routeId}/${departureDate}`,{headers:authHeader()})
 }
 
@@ -64,8 +64,10 @@ export async function getPassengerDetailsByScheduleHash(scheduleHash){
 }
 
 export async function getPendingBookingsByRouteId(routeId){
-    return await axios.get(`${devUrl}/bookings/pending-bookings-routeId/${routeId}`)
+    return await axios.get(`${devUrl}/bookings/pending-bookings-routeId/${routeId}`,{headers:authHeader()})
 }
+
+
 
 export async function publishConfirmedSeats(data){
     return await axios.post(`${devUrl}/bookings/publishSeats`, data,{headers:authHeader()})
