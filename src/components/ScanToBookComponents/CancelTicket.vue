@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <div class="p-5 flex flex-col">
+        <!-- <div class="p-5 flex flex-col">
           <h1 class="text-2xl">Enter CancelCode Sent via SMS</h1>
           <input
             type="text"
@@ -47,26 +47,26 @@
           >
             Submit
           </button>
-        </div>
+        </div> -->
 
-        <div v-if="cancelAuthorized">
+        <div>
           <div v-if="!refunded">
             <div class="text-center font-light mt-4 mb-2">
               Ticket Details
               <p>Origin: {{ origin }}</p>
               <p>Destination: {{ destination }}</p>
               <p>
-                Departure Date:
-                {{ bookingData.schedule?.calendarDate?.Month_Name }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Year }}
+                Departure Date: {{ scheduleDate}}
               </p>
               <p>
-                Departure Time: {{ bookingData.schedule?.route?.departureTime }}
+                Departure Time: {{ departureTime }}
+              </p>
+              <p>
+                Seats: {{ seats }}
               </p>
 
               <h2 class="text-xl bg-white rounded-sm text-gray-500 my-2">
-                Refund Amount : Nu {{ bookingData.amount }}
+                Refund Amount : Nu {{ amount }}
               </h2>
             </div>
 
@@ -79,21 +79,21 @@
                 class="p-1 rounded-r text-gray-800"
                 type="text"
                 placeholder="Bank Name"
-                v-model="refundAccountDetails.bankName"
+                v-model="refundAccountDetails.refundBank"
               />
 
               <input
                 class="p-1 rounded-r text-gray-800"
                 type="number"
                 placeholder="Account Number"
-                v-model="refundAccountDetails.accNo"
+                v-model="refundAccountDetails.refundAcc"
               />
 
               <input
                 class="p-1 rounded-r text-gray-800"
                 type="text"
                 placeholder="Account Name"
-                v-model="refundAccountDetails.accName"
+                v-model="refundAccountDetails.refundAccName"
               />
              </div>
             </div>
@@ -158,8 +158,8 @@
       <div class="modal__content text-center mt-5">
         <h3 class="text-xl">Confirm Details</h3>
         <div>
-          <h2>Account Number: {{ refundAccountDetails.accNo }}</h2>
-          <h2>Account Name: {{ refundAccountDetails.accName }}</h2>
+          <h2>Account Number: {{ refundAccountDetails.refundAcc}}</h2>
+          <h2>Account Name: {{ refundAccountDetails.refundAccName}}</h2>
         </div>
         <div
           class="
@@ -181,7 +181,7 @@
 
           <p>
             Cancellation shall be allowed
-            <span class="text-md font-bold text-red-900">2hours before</span>
+            <span class="text-md font-bold text-red-900">30 minutes before</span>
             from the departure time reflected on the ticket.
           </p>
 
@@ -294,10 +294,14 @@ export default {
       origin: "",
       destintion: "",
       seatsBooked: "",
+      departureTime: '',
+      scheduleDate:"",
+      amount:"",
+      seats:"",
       refundAccountDetails: {
-        accNo: "",
-        accName: "",
-        bankName: "",
+        refundAcc: "",
+        refundBank: "",
+        refundAccName: "",
         bookingStatus: "CANCELLED",
       },
       confirmDetailsModal: false,
@@ -316,28 +320,38 @@ export default {
             this.refunded = true;
           }
           this.bookingData = res.data;
-          this.origin = this.bookingData.schedule.route.routepath.origin.name;
-          this.destination =
-            this.bookingData.schedule.route.routepath.destination.name;
-          if (res.data.accNo) {
-            this.refundAccountDetails.bankName = res.data.bankName;
-            this.refundAccountDetails.accNo = res.data.accNo;
-            this.refundAccountDetails.accName = res.data.accName;
+          this.origin = this.bookingData.route.routepath.origin.name;
+          this.destination = this.bookingData.route.routepath.destination.name;
+          this.departureTime = this.bookingData.route.departureTime;
+          this.scheduleDate = this.bookingData.scheduleDate
+          this.amount = this.bookingData.amount
+
+          let occupiedSeats = []
+          this.bookingData.passengers.forEach((x)=>{
+            occupiedSeats.push(x.seatNumber)
+          })
+          this.seats = occupiedSeats.join(",")
+          console.log("seats",occupiedSeats)
+
+          if (res.data.refundAcc) {
+            this.refundAccountDetails.refundBank= res.data.refundBank;
+            this.refundAccountDetails.refundAcc= res.data.refundAcc;
+            this.refundAccountDetails.refundAccName= res.data.refundAccName;
             this.update = true;
           }
-          this.socketConn = new WebSocket(
-            "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
-          );
-          this.socketConn.onopen = (event) => {
-            console.log("Successfully connected to the echo websocket server");
-          };
-          this.socketConn.onclose = (evt) => {
-            console.log("WSS CONNECTION closed");
-            console.log("RECONNECTING");
-            this.conn = new WebSocket(
-              "ws://" + "localhost:8081" + "/ws/" + roomId
-            );
-          };
+          // this.socketConn = new WebSocket(
+          //   "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
+          // );
+          // this.socketConn.onopen = (event) => {
+          //   console.log("Successfully connected to the echo websocket server");
+          // };
+          // this.socketConn.onclose = (evt) => {
+          //   console.log("WSS CONNECTION closed");
+          //   console.log("RECONNECTING");
+          //   this.conn = new WebSocket(
+          //     "ws://" + "localhost:8081" + "/ws/" + roomId
+          //   );
+          // };
         } else {
           this.$toast.show("network Error", {
             type: "error",
@@ -366,15 +380,6 @@ export default {
     confirmCancel() {
       cancelBooking(this.bookingId, this.refundAccountDetails).then((res) => {
         if (res.status === 200) {
-          this.bookingData.bookedSeats.forEach((element) => {
-            this.socketConn.send(
-              JSON.stringify({
-                roomId: this.bookingData.scheduleId.toString(),
-                messageType: "LOCK_LEAVE",
-                seatId: element.seatNumber.toString(),
-              })
-            );
-          });
           this.$toast.show("Successfull", {
             position: "top",
             type: "success",
@@ -390,9 +395,9 @@ export default {
     },
     updateDetails() {
       updateBooking(this.bookingData.id, {
-        bankName: this.refundAccountDetails.bankName,
-        accNo: this.refundAccountDetails.accNo,
-        accName: this.refundAccountDetails.accName,
+        bankName: this.refundAccountDetails.refundBank,
+        accNo: this.refundAccountDetails.refundAcc,
+        accName: this.refundAccountDetails.refundAccName,
         bookingStatus: "CANCELLED",
       }).then((res) => {
         if (res.status === 200) {
@@ -405,9 +410,9 @@ export default {
     },
     cancelTicket() {
       if (
-        this.refundAccountDetails.accNo &&
-        this.refundAccountDetails.bankName &&
-        this.refundAccountDetails.accName
+        this.refundAccountDetails.refundAcc&&
+        this.refundAccountDetails.refundAccName&&
+        this.refundAccountDetails.refundBank
       ) {
         this.confirmDetailsModal = true;
       } else {
