@@ -119,7 +119,7 @@
                     justify-items-center
                   "
                 >
-                  <p class="text-center mt-4 text-gray-500 italic">to</p>
+                  <p class="text-center mt-4 text-gray-500 italic">-</p>
                 </div>
                 <div class="flex flex-col">
                   <p class="text-sm text-center text-gray-600">(destination)</p>
@@ -128,14 +128,27 @@
                   </h1>
                 </div>
               </div>
-              <p class="text-center mt-4 text-gray-500 italic">on</p>
-              <h2 class="text-center text-2xl text-gray-700">
-                {{ parseDepartureDate(departureDate) }}
+             
+              <h2 class="text-center text-xl text-gray-700">
+               Departure Date: <span class="font-bold">
+                 {{ parseDepartureDate(departureDate) }}
+               </span>
               </h2>
             </div>
-              <h2 class="text-center text-xl text-red-700">
-                Please come to the Bus Stop 30 minutes before Departure!
+            <div class="text-center gap-2">
+              <p class="text-xl text-gray-700">
+                Departure Time:
+                <span class="font-bold"> {{ departureTime }}</span>
+              </p>
+              <h2 class="text-sm">
+                Contact
+                {{ bookingData.schedule?.route?.routepath?.origin }} for
+                assistance/query.
               </h2>
+            </div>
+            <h2 class="text-center text-xl text-red-700">
+              Please come to the Bus Stop 30 minutes before Departure!
+            </h2>
           </div>
 
           <div class="flex flex-row pt-3">
@@ -173,78 +186,7 @@
           </div>
           <hr class="border-dashed" />
 
-          <div class="text-center gap-2">
-            <p class="text-xl text-gray-700">
-              Boarding Time:
-              <span class="font-bold">
-                {{
-                 departureTime
-                }}</span
-              >
-            </p>
-            <h2 class="text-sm">
-              Contact
-              {{ bookingData.schedule?.route?.routepath?.origin.contact }} for
-              assistance/query.
-            </h2>
-          </div>
-
           <hr class="border-dashed" />
-          <div
-            class="pt-3 mt-0 rounded-b-3xl flex flex-col"
-            style="
-              box-shadow: 0 6px 6px -6px #333;
-              background-image: url(../../assets/meto.png);
-            "
-          >
-            <div class="flex justify-center items-center">
-              <QRCodeVue3
-                id="qrcode"
-                :width="300"
-                :height="300"
-                v-bind:value="qrDataString"
-                :qrOptions="{
-                  typeNumber: 0,
-                  mode: 'Byte',
-                  errorCorrectionLevel: 'H',
-                }"
-                :imageOptions="{
-                  crossOrigin: 'anonymous',
-                  hideBackgroundDots: true,
-                  imageSize: 0.4,
-                  margin: 0,
-                }"
-                :dotsOptions="{
-                  type: 'square',
-                  color: '#6a1a4c',
-
-                  gradient: {
-                    type: 'radial',
-                    rotation: 0,
-                    colorStops: [
-                      { offset: 0, color: '#e27a93' },
-                      { offset: 1, color: '#1d1b1c' },
-                    ],
-                  },
-                }"
-                :backgroundOptions="{
-                  color: '#ffffff',
-                }"
-                :cornersSquareOptions="{ type: 'square', color: '#000000' }"
-                :cornersDotOptions="{ type: undefined, color: '#000000' }"
-                fileExt="png"
-                :download="false"
-                myclass="my-qur"
-                image="/meto.png"
-                imgclass="img-qr"
-                downloadButton="my-button"
-                :downloadOptions="{ name: 'vqr', extension: 'png' }"
-              />
-            </div>
-            <p class="text-gray-500 text-center break-words p-3 text-sm">
-              Please Show the QR Code while boarding
-            </p>
-          </div>
 
           <div class="pt-4 pb-4 flex flex-row justify-between">
             <div class="p-2">
@@ -273,32 +215,22 @@
               </div>
             </div>
           </div>
-          <p class="text-center text-sm">
-            Click/visit the link below to check Bus Details : <br />
-            Your Bus Details will be uploaded 2 hours before departure <br />
-          </p>
-          <button
-            @click="openBusDetails"
-            class="text-black font-bold px-4 rounded"
-          >
-            {{ url }}{{ checkBusRouteData.href }}
-          </button>
+          <p class="text-center text-sm">Your Bus Details</p>
+          <p>Not Updated Yet</p>
 
           <hr class="mt-4 mb-4" />
 
-          <!-- <p class="text-center text-sm">
-            Click/visit the link below to cancel your ticket <br />
-            Cancellation will be allowed only before 2 hours from the departure
-            time.
-          </p> -->
+          <p class="text-center text-sm">
+            You are eligible for 75% refund for cancellations before 30
+          </p>
 
-          <!-- <button
+          <button
             @click="cancelTicket()"
             class="text-black font-bold py-2 px-4 rounded"
           >
             Click/visit this link Cancel Ticket: <br />
             {{ url }}{{ cancelTicketRouteData.href }}
-          </button> -->
+          </button>
 
           <hr class="border-dashed" />
           <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -376,7 +308,6 @@
 
 <script>
 import domtoimage from "dom-to-image";
-import QRCodeVue3 from "qrcode-vue3";
 import { useRoute } from "vue-router";
 import { getBookingDetail } from "../../services/bookingServices";
 
@@ -387,7 +318,6 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
-        this.qrDataString = res.data.checkSum;
         this.origin = res.data.route.routepath.origin.name;
         this.destination = res.data.route.routepath.destination.name;
         this.departureDate = res.data.scheduleDate;
@@ -399,7 +329,7 @@ export default {
           this.busStatus = false;
         }
         this.bookingData = res.data;
-        console.log(this.bookingData)
+        console.log(this.bookingData);
       } else {
         this.$router.push("/service-down");
       }
@@ -416,7 +346,7 @@ export default {
   data() {
     return {
       departureTime: null,
-      departureDate:null,
+      departureDate: null,
       qrData: {},
       fare: 0,
       busStatus: null,
@@ -425,7 +355,6 @@ export default {
       dataLoaded: false,
       destination: null,
       bookingData: {},
-      qrDataString: "",
       seatNumbers: "",
       cancelTicketRouteData: "",
       checkBusRouteData: "",
@@ -433,11 +362,9 @@ export default {
       url: process.env.VUE_APP_DEV_API,
     };
   },
-  components: {
-    QRCodeVue3,
-  },
+
   mounted: function () {
-     setTimeout(function () {
+    setTimeout(function () {
       this.document.getElementById("spinner").remove();
     }, 3000);
   },
@@ -455,7 +382,7 @@ export default {
     qrLoad() {
       alert("QR CODE LOADED");
     },
-     parseDepartureDate(dd) {
+    parseDepartureDate(dd) {
       let d = new Date(dd);
       return d.toDateString();
     },

@@ -66,7 +66,11 @@ export async function getPassengerDetailsByScheduleHash(scheduleHash){
 export async function getPendingBookingsByRouteId(routeId){
     return await axios.get(`${devUrl}/bookings/pending-bookings-routeId/${routeId}`,{headers:authHeader()})
 }
-
+export async function getPendingBookingsByScheduleHash(scheduleHash){
+    return await axios.get(`${devUrl}/bookings/pending-bookings-schedulehash/${scheduleHash}`,{
+        headers:authHeader()
+    })
+}
 
 
 export async function publishConfirmedSeats(data){

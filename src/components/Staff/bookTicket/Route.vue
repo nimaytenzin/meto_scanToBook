@@ -148,21 +148,25 @@
       </div>
 
       <div class="flex flex-wrap mt-5" v-if="schedules.length !== 0">
-        <div v-for="schedule in schedules" :key="schedule">
+        <div
+          v-for="schedule in schedules"
+          :key="schedule"
+          class="flex w-full flex-col"
+        >
           <div
             @click="commitSchedule(schedule)"
             class="border-2 bg-white p-2 rounded text-gray-800"
           >
+            <p v-if="schedule.parentRouteId" class="font-bold">Subroute</p>
+
             <p>Departure Time: {{ schedule.departureTime }}</p>
             <p>Fare: Nu. {{ schedule.fare }}</p>
 
-            
-
-              <p v-if="schedule.parentRouteId">
-                This is a subroute, you will in  travelling in <br>
-                {{schedule.parentRoute?.routepath?.origin.name  }} -
-                {{schedule.parentRoute?.routepath?.destination.name  }}
-              </p>
+            <p v-if="schedule.parentRouteId">
+              This is a subroute, you will in travelling in <br />
+              {{ schedule.parentRoute?.routepath?.origin.name }} -
+              {{ schedule.parentRoute?.routepath?.destination.name }}
+            </p>
             <div class="flex jusitify-between mt-1">
               <button
                 class="
@@ -890,7 +894,10 @@ import VueJwtDecode from "vue-jwt-decode";
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllStops } from "../../../services/stopServices";
 import crypto from "crypto";
-import { getRouteDetailsByID, getRoutesByOriginDestination } from "../../../services/routeServices";
+import {
+  getRouteDetailsByID,
+  getRoutesByOriginDestination,
+} from "../../../services/routeServices";
 import {
   addNewBooking,
   addNewCounterBooking,
@@ -1108,7 +1115,7 @@ export default {
         .catch((err) => console.log(err));
     },
     connectWs() {
-      console.log(this.roomId)
+      console.log(this.roomId);
       this.conn = new WebSocket(`${process.env.VUE_APP_WSS}/${this.roomId}`);
       this.conn.onopen = (event) => {
         this.isConnected = true;
@@ -1154,15 +1161,14 @@ export default {
     },
 
     openSeatSelect(route) {
-
-      console.log("INSERT CHECK FOR SUBROUTES", route)
+      console.log("INSERT CHECK FOR SUBROUTES", route);
       this.routeId = route.id;
       let parentRouteId;
 
-      if(route.parentRouteId){
-        parentRouteId = route.parentRoute.id
-      }else{
-        parentRouteId = route.id
+      if (route.parentRouteId) {
+        parentRouteId = route.parentRoute.id;
+      } else {
+        parentRouteId = route.id;
       }
 
       this.fare = route.fare;
@@ -1316,21 +1322,43 @@ export default {
         }
       });
       if (detailsFilled) {
-        let newBooking = {
-          booking: {
-            scheduleDate: this.departureDate,
-            scheduleHash: this.roomId,
-            amount: this.total,
-            routeId: this.routeId,
-            paymentStatus: "UNPAID",
-            serviceCharge: 0,
-            operatorId: VueJwtDecode.decode(sessionStorage.getItem("token")).id,
-          },
-          passengers: this.passengers,
-        };
-        this.newBooking = newBooking;
+        console.log("CREATING NEW BOOKING FOR SCHEDULE", this.selectedSchedule);
+        if (this.selectedSchedule.parentRouteId) {
+          let newBooking = {
+            booking: {
+              scheduleDate: this.departureDate,
+              scheduleHash: this.roomId,
+              amount: this.total,
+              routeId: this.selectedSchedule.parentRouteId,
+              subRouteId: this.routeId,
+              refundPercentage:0,
+              paymentStatus: "UNPAID",
+              serviceCharge: 0,
+              operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
+                .id,
+            },
+            passengers: this.passengers,
+          };
+          this.newBooking = newBooking;
+        } else {
+          let newBooking = {
+            booking: {
+              scheduleDate: this.departureDate,
+              scheduleHash: this.roomId,
+              amount: this.total,
+              refundPercentage:0,
+              routeId: this.routeId,
+              paymentStatus: "UNPAID",
+              serviceCharge: 0,
+              operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
+                .id,
+            },
+            passengers: this.passengers,
+          };
+          this.newBooking = newBooking;
+        }
 
-        addNewCounterBooking(newBooking)
+        addNewCounterBooking(this.newBooking)
           .then((res) => {
             if (res.status === 201) {
               this.newBookingId = res.data.id;
@@ -1432,18 +1460,16 @@ export default {
           this.schedules.push(route);
         }
       });
-       this.subroutes.forEach((subroute) => {
+      this.subroutes.forEach((subroute) => {
         if (subroute.day === this.weekDay) {
-           getRouteDetailsByID(subroute.parentRouteId).then(resp=>{
+          getRouteDetailsByID(subroute.parentRouteId).then((resp) => {
             subroute.parentRoute = resp.data;
             this.schedules.push(subroute);
-          })
-          
+          });
         }
       });
 
-      console.log("WITH PARENT ROUTES", this.schedules)
-
+      console.log("WITH PARENT ROUTES", this.schedules);
     },
   },
 };

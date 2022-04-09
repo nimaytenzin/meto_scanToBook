@@ -52,7 +52,7 @@
               tracking-wider
             "
           >
-            Fare
+            View Passengers
           </td>
           <td
             class="
@@ -65,7 +65,7 @@
               tracking-wider
             "
           >
-            Passengers
+            Assign Bus
           </td>
 
           <td
@@ -79,20 +79,7 @@
               tracking-wider
             "
           >
-            Bus
-          </td>
-          <td
-            class="
-              px-6
-              py-3
-              text-left text-xs
-              font-medium
-              text-gray-500
-              uppercase
-              tracking-wider
-            "
-          >
-            Suspend Route
+            Cancel Route
           </td>
         </tr>
       </thead>
@@ -104,7 +91,6 @@
             schedule.isActive ? 'hover:bg-gray-200' : 'bg-red-100 line-through'
           "
         >
-       
           <td
             :class="
               schedule.isCancelled
@@ -112,30 +98,44 @@
                 : 'px-6 py-3 whitespace-nowrap font-light text-sm'
             "
           >
-
-           <div v-if="schedule.isCancelled" class="font-bold">
-              Cancelled
-            </div>
+            <div v-if="schedule.isCancelled" class="font-bold">Cancelled</div>
             <div v-if="!schedule.isActive" class="font-bold">
               Route Suspended
             </div>
-            {{ schedule.routepath?.origin.name }} <br />
-            - <br />
+            {{ schedule.routepath?.origin.name }} -
             {{ schedule.routepath?.destination.name }}
 
-            <br>
-            Departure Time:   {{ schedule.departureTime }}
-            <br>
-            Fare:   Nu.{{ schedule.fare }}
+            <br />
+            Departure Time: {{ schedule.departureTime }}
+            <br />
+            Fare: Nu.{{ schedule.fare }}
+          </td>
+          <td
+            :class="
+              schedule.isCancelled
+                ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
+                : 'px-6 py-3 whitespace-nowrap font-light text-sm'
+            "
+          >
+            <div
+              class="flex flex-col w-full gap-2"
+              v-if="schedule.subroutes.length"
+            >
+              Subroutes
+              <div
+                v-for="(subroute, index) in schedule.subroutes"
+                :key="subroute"
+              >
+                <p>
+                  {{ index + 1 }}.{{ subroute.routepath?.origin.name }} -
+                  {{ subroute.routepath.destination?.name }}
+                </p>
+                Fare: Nu.{{ subroute.fare }}
+              </div>
+            </div>
+            <div v-else>No Subroutes</div>
+          </td>
 
-           
-          </td>
-          <td>
-            <p v-for="subroute in schedule.subroutes" :key="subroute">
-              {{subroute.routepath?.origin.name  }} - {{subroute.routepath.destination?.name  }}
-            </p>
-          </td>
-          
           <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
             <div v-if="schedule.isActive">
               <button
@@ -379,7 +379,6 @@
         <p>{{ parseDepartureDate(selectedDate) }} at</p>
         <p>{{ selectedSchedule.departureTime }}</p>
         <div class="text-xl">
-          Fare: Nu.{{ selectedSchedule.fare }} <br />
           <p>Seats Remaining: {{ seatsAvailable.length }}</p>
           <div class="flex gap-2 justify-center">
             <p v-for="seat in seatsAvailable" :key="seat">
@@ -395,11 +394,10 @@
         </div>
       </div>
 
-
       <div v-if="routeDateBookings.length">
-        <h3 class="text-xl px-6 font-thin">Bookings</h3>
+        <h3 class="text-xl p-2 font-thin">Bookings</h3>
 
-        <div class="p-2 flex overflow-scroll" style="height: 40vh">
+        <div class="overflow-y-scroll p-2" style="height: 50vh">
           <table
             class="
               min-w-full
@@ -412,40 +410,61 @@
             <thead>
               <tr>
                 <td
-                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
                 >
-                  Seat Number
+                  Booking Details
                 </td>
                 <td
-                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
                 >
-                  Name
+                  Passengers
                 </td>
                 <td
-                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
                 >
-                  CID
-                </td>
-                <td
-                  class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
-                >
-                  Contact
+                  Cancel Booking
                 </td>
               </tr>
             </thead>
-            <tbody class="overflow-y-scroll" style="50vh">
+            <tbody class="overflow-y-scroll p-2">
               <tr v-for="booking in routeDateBookings" :key="booking">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ booking.id }}
+                <td class="px-2 py-2 whitespace-nowrap">
+                  <p>BookingID: {{ booking.id }}</p>
+                  <p>Amount: Nu.{{ booking.amount }}</p>
+                  <p v-if="booking.subroute">
+                    Till {{ booking.subroute.routepath?.destination.name }}
+                  </p>
+                  <p v-else>
+                    Till {{ booking.route.routepath?.destination.name }}
+                  </p>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  Nu {{ booking.amount }}
+                  <table class="table-auto">
+                    <tr>
+                      <td class="px-2 border-b-2 border-gray-800">Seat</td>
+                      <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
+                    </tr>
+                    <tr
+                      v-for="passenger in booking.passengers"
+                      :key="passenger"
+                    >
+                      <td class="px-2">
+                        {{ passenger.seatNumber }}
+                      </td>
+                      <td class="px-2 text-sm">
+                        Name {{ passenger.name }} <br />
+                        Contact: {{ passenger.contact }}
+                        <br />
+                        CID: {{ passenger.cid }}
+                      </td>
+                    </tr>
+                  </table>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ booking.passengers[0].name }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  Cancel Booking
+                <td class="px-2 py-2 whitespace-nowrap">
+                  <p class="text-sm font-semibold">Eligible for 75% refund</p>
+                  <button class="bg-gray-600 text-gray-300 p-1 rounded" @click="cancelBookingThreeFourthRefund(booking)">
+                    Cancel Booking
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -462,7 +481,119 @@
     content-class="modal-content"
     class="w-max-screen text-gray-700"
   >
-    <div class="modal__content text-center mt-1 flex flex-col">
+    <div>
+      <div
+        class="
+          font-nunito
+          text-gray-200
+          bg-gray-600
+          rounded-t
+          shadow-md
+          p-6
+          text-center
+        "
+      >
+        <p>
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.origin.name }}</span
+          >
+          to
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.destination.name }}
+          </span>
+        </p>
+        <p>On</p>
+        <p>{{ parseDepartureDate(selectedDate) }} at</p>
+        <p>{{ selectedSchedule.departureTime }}</p>
+        <div class="text-xl">
+          <p>Seats Remaining: {{ seatsAvailable.length }}</p>
+          <div class="flex gap-2 justify-center">
+            <p v-for="seat in seatsAvailable" :key="seat">
+              {{ seat }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div >
+        <h3 class="text-xl p-2 font-thin">Please Cancel these bookings before cancelling the bus </h3>
+
+        <div class="overflow-y-scroll p-2" style="height: 50vh">
+          <table
+            class="
+              min-w-full
+              divide-y divide-gray-200
+              text-gray-900
+              font-thin
+              bg-white
+            "
+          >
+            <thead>
+              <tr>
+                <td
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                >
+                  Booking Details
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                >
+                  Passengers
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                >
+                  Cancel Booking
+                </td>
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll p-2">
+              <tr v-for="booking in conflictingBookings" :key="booking">
+                <td class="px-2 py-2 whitespace-nowrap">
+                  <p>BookingID: {{ booking.id }}</p>
+                  <p>Amount: Nu.{{ booking.amount }}</p>
+                  <p v-if="booking.subroute">
+                    Till {{ booking.subroute.routepath?.destination.name }}
+                  </p>
+                  <p v-else>
+                    Till {{ booking.route.routepath?.destination.name }}
+                  </p>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <table class="table-auto">
+                    <tr>
+                      <td class="px-2 border-b-2 border-gray-800">Seat</td>
+                      <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
+                    </tr>
+                    <tr
+                      v-for="passenger in booking.passengers"
+                      :key="passenger"
+                    >
+                      <td class="px-2">
+                        {{ passenger.seatNumber }}
+                      </td>
+                      <td class="px-2 text-sm">
+                        Name {{ passenger.name }} <br />
+                        Contact: {{ passenger.contact }}
+                        <br />
+                        CID: {{ passenger.cid }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap">
+                  <p class="text-sm font-semibold">Eligible for 100% refund</p>
+                  <button class="bg-gray-600 text-gray-300 p-1 rounded" @click="cancelBookingFullRefund(booking)">
+                    Cancel Booking
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="modal__content text-center mt-1 flex flex-col">
       <p class="text-center font-semibold">
         {{ selectedSchedule.routepath?.origin.name }} -
         {{ selectedSchedule.routepath?.destination.name }} Bus
@@ -524,7 +655,7 @@
           Cancel Bus
         </button>
       </div>
-    </div>
+    </div> -->
   </vue-final-modal>
 
   <!-- COnfirm Cancel Booking by date -->
@@ -569,9 +700,6 @@
   flex-direction: column;
   max-height: 90%;
   min-width: max-content;
-  margin: 0 1rem;
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
   border-radius: 0.25rem;
   background: #fff;
 }
@@ -663,8 +791,8 @@ export default {
       conflictingBookingsModal: false,
       confirmCancelBusModal: false,
       conflictingBookings: [],
-      routeDateBookings:[],
-      storedDateClickEvent:{}
+      routeDateBookings: [],
+      storedDateClickEvent: {},
     };
   },
   computed: {},
@@ -712,9 +840,9 @@ export default {
       this.selectedDate = e.id;
       this.selectedWeekdate = e.weekday;
       this.schedules = [];
-      this.storedDateClickEvent =e;
+      this.storedDateClickEvent = e;
       getRoutesByWeekday(e.weekday).then((res) => {
-        console.log("ROUTE WITH SUBROTES", res.data)
+        console.log("ROUTE WITH SUBROTES", res.data);
         res.data.forEach((route) => {
           let data = route;
           data.isCancelled = 0;
@@ -753,10 +881,12 @@ export default {
       hash.update(plaintext);
       var scheduleHash = hash.digest("hex");
 
-      getBookingsByRouteAndScheduleDate(schedule.id,this.selectedDate).then(res=>{
-        console.log("PAID Bookings", res.data)
-        this.routeDateBookings = res.data
-      })
+      getBookingsByRouteAndScheduleDate(schedule.id, this.selectedDate).then(
+        (res) => {
+          console.log("PAID Bookings", res.data);
+          this.routeDateBookings = res.data;
+        }
+      );
 
       getPassengerDetailsByScheduleHash(scheduleHash).then((res) => {
         console.log(res.data);
@@ -849,8 +979,7 @@ export default {
       }).then((res) => {
         console.log("OK", res);
         this.confirmCancelBusModal = false;
-        this.onDayClick(this.storedDateClickEvent)
-
+        this.onDayClick(this.storedDateClickEvent);
       });
     },
 
@@ -860,15 +989,48 @@ export default {
         routeId: schedule.id,
         date: this.selectedDate,
       }).then((res) => {
-        console.log("REOPEN",res)
-          if(res.status === 201){
-            this.onDayClick(this.storedDateClickEvent)
-          }
+        console.log("REOPEN", res);
+        if (res.status === 201) {
+          this.onDayClick(this.storedDateClickEvent);
+        }
       });
     },
     refreshData(date) {
       console.log(date);
     },
+
+    cancelBookingFullRefund(booking){
+      let seatNumbers=[]
+      booking.passengers.forEach(item=>{
+        seatNumbers.push(item.seatNumber)
+      })
+      let cancelBookingObject = {
+        scheduleHash: booking.scheduleHash,
+        refundPercentage:100,
+        bookingStatus:"CANCELLED",
+        bookingId:booking.id,
+        seats:seatNumbers
+      }
+
+      console.log(cancelBookingObject)
+
+     
+    },
+
+    cancelBookingThreeFourthRefund(booking){
+     let seatNumbers=[]
+      booking.passengers.forEach(item=>{
+        seatNumbers.push(item.seatNumber)
+      })
+      let cancelBookingObject = {
+        scheduleHash: booking.scheduleHash,
+        refundPercentage:75,
+        bookingStatus:"CANCELLED",
+        bookingId:booking.id,
+        seats:seatNumbers
+      }
+      console.log(cancelBookingObject)
+    }
   },
 };
 </script>

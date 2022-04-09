@@ -1127,9 +1127,14 @@
               class="bg-gray-600 rounded text-gray-200"
             >
               <p>Booking ID: {{ booking.id }}</p>
-              <p>
+              <p v-if="!booking.subRouteId">
                 {{ selectedRoutepath.origin.name }} -
                 {{ selectedRoutepath.destination.name }}
+              </p>
+              <p v-else>
+                <span class="font-bold">SubRoute</span> <br>
+                {{ booking.subroute.routepath?.origin.name }} -
+                {{ booking.subroute.routepath?.destination.name }}
               </p>
               <p>
                 Departure Date : {{ parseDepartureDate(booking.scheduleDate) }}
@@ -1522,6 +1527,7 @@ import { getStaffs } from "../../services/authServices";
 import {
   getPendingBookingsByRouteId,
   cancelBooking,
+  getPendingBookingsByScheduleHash,
 } from "../../services/bookingServices";
 
 import {
@@ -1824,48 +1830,38 @@ export default {
       console.log("EDITING THIS ROUTE", this.selectedRoute);
 
       getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
-        if (this.selectedRoute.subroutes.length) {
-          if (this.selectedRoute.isActive) {
-            this.selectedRoute.subroutes.forEach((item) => {
-              editSubRoute(item.id, {
-                isActive: 0,
-              }).then((res) => {
-                if (res.status === 200) {
-                  this.fetchRouteData();
-                }
-              });
-            });
-          } else {
-            this.selectedRoute.subroutes.forEach((item) => {
-              editSubRoute(item.id, {
-                isActive: 0,
-              }).then((res) => {
-                if (res.status === 200) {
-                  this.fetchRouteData();
-                }
-              });
-            });
-          }
-        }
+    
 
         if (res.data.length === 0) {
-          editRoute(this.selectedRoute.id, this.selectedRoute).then((res) => {
-            if (res.status === 200) {
-              this.fetchRouteData();
-              this.editRouteModal = false;
-
-              this.$toast.show("Route updated", {
-                position: "top",
-                type: "success",
+          editRoute(this.selectedRoute.id, this.selectedRoute).then(
+            (response) => {
+              this.selectedRoute.subroutes.forEach((item) => {
+                editSubRoute(item.id, {
+                  isActive: this.selectedRoute.isActive,
+                }).then((resp) => {
+                  if (resp.status === 200) {
+                    this.fetchRouteData();
+                  }
+                });
               });
-            } else {
-              this.$toast.show("Network Error", {
-                position: "error",
-                type: "success",
-              });
+              if (response.status === 200) {
+                this.fetchRouteData();
+                this.editRouteModal = false;
+                this.$toast.show("Route updated", {
+                  position: "top",
+                  type: "success",
+                });
+              } else {
+                this.$toast.show("Network Error", {
+                  position: "error",
+                  type: "success",
+                });
+              }
             }
-          });
+          );
+  
         } else {
+          console.log("CONFLICTS",res.data)
           this.conflictingBookings = res.data;
           this.conflictingBookingsModal = true;
         }
