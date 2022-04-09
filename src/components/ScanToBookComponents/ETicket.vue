@@ -285,7 +285,7 @@
 
           <p class="text-center text-sm">
             Click/visit the link below to cancel your ticket <br />
-            Cancellation will be allowed only before 2 hours from the departure
+            Cancellation will be allowed only before 30 minutes from the departure
             time.
           </p>
 

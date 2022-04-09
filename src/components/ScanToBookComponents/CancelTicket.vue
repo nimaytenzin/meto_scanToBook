@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <div class="p-5 flex flex-col">
+        <!-- <div class="p-5 flex flex-col">
           <h1 class="text-2xl">Enter CancelCode Sent via SMS</h1>
           <input
             type="text"
@@ -47,26 +47,26 @@
           >
             Submit
           </button>
-        </div>
+        </div> -->
 
-        <div v-if="cancelAuthorized">
+        <div>
           <div v-if="!refunded">
             <div class="text-center font-light mt-4 mb-2">
               Ticket Details
               <p>Origin: {{ origin }}</p>
               <p>Destination: {{ destination }}</p>
               <p>
-                Departure Date:
-                {{ bookingData.schedule?.calendarDate?.Month_Name }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Day }}
-                {{ bookingData.schedule?.calendarDate?.Calendar_Year }}
+                Departure Date: {{ scheduleDate}}
               </p>
               <p>
-                Departure Time: {{ bookingData.schedule?.route?.departureTime }}
+                Departure Time: {{ departureTime }}
+              </p>
+              <p>
+                Seats: {{ seats }}
               </p>
 
               <h2 class="text-xl bg-white rounded-sm text-gray-500 my-2">
-                Refund Amount : Nu {{ bookingData.amount }}
+                Refund Amount : Nu {{ amount }}
               </h2>
             </div>
 
@@ -181,7 +181,7 @@
 
           <p>
             Cancellation shall be allowed
-            <span class="text-md font-bold text-red-900">2hours before</span>
+            <span class="text-md font-bold text-red-900">30 minutes before</span>
             from the departure time reflected on the ticket.
           </p>
 
@@ -294,6 +294,10 @@ export default {
       origin: "",
       destintion: "",
       seatsBooked: "",
+      departureTime: '',
+      scheduleDate:"",
+      amount:"",
+      seats:"",
       refundAccountDetails: {
         accNo: "",
         accName: "",
@@ -316,28 +320,37 @@ export default {
             this.refunded = true;
           }
           this.bookingData = res.data;
-          this.origin = this.bookingData.schedule.route.routepath.origin.name;
-          this.destination =
-            this.bookingData.schedule.route.routepath.destination.name;
+          this.origin = this.bookingData.route.routepath.origin.name;
+          this.destination = this.bookingData.route.routepath.destination.name;
+          this.departureTime = this.bookingData.route.departureTime;
+          this.scheduleDate = this.bookingData.scheduleDate
+
+          let occupiedSeats = []
+          this.bookingData.passengers.forEach((x)=>{
+            occupiedSeats.push(x.seatNumber)
+          })
+          this.seats = occupiedSeats.join(",")
+          console.log("seats",occupiedSeats)
+
           if (res.data.accNo) {
             this.refundAccountDetails.bankName = res.data.bankName;
             this.refundAccountDetails.accNo = res.data.accNo;
             this.refundAccountDetails.accName = res.data.accName;
             this.update = true;
           }
-          this.socketConn = new WebSocket(
-            "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
-          );
-          this.socketConn.onopen = (event) => {
-            console.log("Successfully connected to the echo websocket server");
-          };
-          this.socketConn.onclose = (evt) => {
-            console.log("WSS CONNECTION closed");
-            console.log("RECONNECTING");
-            this.conn = new WebSocket(
-              "ws://" + "localhost:8081" + "/ws/" + roomId
-            );
-          };
+          // this.socketConn = new WebSocket(
+          //   "ws://" + "localhost:8081" + "/ws/" + res.data.scheduleId
+          // );
+          // this.socketConn.onopen = (event) => {
+          //   console.log("Successfully connected to the echo websocket server");
+          // };
+          // this.socketConn.onclose = (evt) => {
+          //   console.log("WSS CONNECTION closed");
+          //   console.log("RECONNECTING");
+          //   this.conn = new WebSocket(
+          //     "ws://" + "localhost:8081" + "/ws/" + roomId
+          //   );
+          // };
         } else {
           this.$toast.show("network Error", {
             type: "error",
@@ -367,13 +380,13 @@ export default {
       cancelBooking(this.bookingId, this.refundAccountDetails).then((res) => {
         if (res.status === 200) {
           this.bookingData.bookedSeats.forEach((element) => {
-            this.socketConn.send(
-              JSON.stringify({
-                roomId: this.bookingData.scheduleId.toString(),
-                messageType: "LOCK_LEAVE",
-                seatId: element.seatNumber.toString(),
-              })
-            );
+            // this.socketConn.send(
+            //   JSON.stringify({
+            //     roomId: this.bookingData.scheduleId.toString(),
+            //     messageType: "LOCK_LEAVE",
+            //     seatId: element.seatNumber.toString(),
+            //   })
+            // );
           });
           this.$toast.show("Successfull", {
             position: "top",
