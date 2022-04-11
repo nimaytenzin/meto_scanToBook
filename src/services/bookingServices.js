@@ -27,7 +27,7 @@ export async function getBookingDetail(id){
 }
 
 export async function cancelBooking(id,data){
-    return await axios.put(`${devUrl}/bookings/cancel/${id}`,data)
+    return await axios.put(`${devUrl}/bookings/cancel/${id}`,data, {headers:authHeader()})
 }
 
 export async function updateBooking(id,data){
@@ -89,4 +89,8 @@ export async function addNewCounterBooking(booking){
 
 export async function counterConfirmPayment(bookingID,data){
     return await axios.post(`${devUrl}/bookings/counterconfirm/${bookingID}`,data, {headers:authHeader()})
+}
+
+export async function getBookingsByBookingDate(date){
+    return await axios.get(`${devUrl}/bookings/getByDate/${date}`,{headers:authHeader()}) 
 }

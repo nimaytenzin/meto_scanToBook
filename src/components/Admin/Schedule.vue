@@ -4,12 +4,23 @@
 
     <Calendar :min-date="new Date()" @dayclick="onDayClick($event)" />
 
+<div class="text-sm p-2">
+        <p>
+          Definitions
+        </p>
+        <p>
+          CANCELLED: It means the bus has been cancelled for a particular date
+        </p>
+        <p>
+          SUSPENDED: The particular bus has been suspended for that particular day for all the dates.
+        </p>
+      </div>
     <p
-      class="text-3xl font-normal text-center text-gray-500"
+      class=" font-normal text-center text-gray-500 my-1"
       v-if="selectedDate"
     >
       Showing Schedules for
-      <span class="text-gray-800">{{ parseDepartureDate(selectedDate) }}</span>
+      <span class="text-gray-800 text-3xl font-semibold">{{ parseDepartureDate(selectedDate) }}</span>
     </p>
     <hr class="w-full my-2" />
     <table class="border-l border-r divide-y divide-gray-200 table-auto">
@@ -462,7 +473,10 @@
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap">
                   <p class="text-sm font-semibold">Eligible for 75% refund</p>
-                  <button class="bg-gray-600 text-gray-300 p-1 rounded" @click="cancelBookingThreeFourthRefund(booking)">
+                  <button
+                    class="bg-gray-600 text-gray-300 p-1 rounded"
+                    @click="cancelBookingThreeFourthRefund(booking)"
+                  >
                     Cancel Booking
                   </button>
                 </td>
@@ -515,8 +529,10 @@
         </div>
       </div>
 
-      <div >
-        <h3 class="text-xl p-2 font-thin">Please Cancel these bookings before cancelling the bus </h3>
+      <div>
+        <h3 class="text-xl p-2 font-thin">
+          Please Cancel these bookings before cancelling the bus
+        </h3>
 
         <div class="overflow-y-scroll p-2" style="height: 50vh">
           <table
@@ -583,7 +599,10 @@
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap">
                   <p class="text-sm font-semibold">Eligible for 100% refund</p>
-                  <button class="bg-gray-600 text-gray-300 p-1 rounded" @click="cancelBookingFullRefund(booking)">
+                  <button
+                    class="bg-gray-600 text-gray-300 p-1 rounded"
+                    @click="cancelBookingFullRefund(booking)"
+                  >
                     Cancel Booking
                   </button>
                 </td>
@@ -665,24 +684,53 @@
     content-class="modal-content"
     class="w-max-screen text-gray-700"
   >
-    <div class="modal__content text-center mt-1 flex flex-col">
-      <p class="text-center font-semibold">
-        {{ selectedSchedule.routepath?.origin.name }} -
-        {{ selectedSchedule.routepath?.destination.name }} Bus
-      </p>
-      <p class="text-center font-semibold">
-        Departs at {{ selectedSchedule.departureTime }} on <br />
-        {{ selectedDate }}
-      </p>
+    <div>
+      <div
+        class="
+          font-nunito
+          text-gray-200
+          bg-gray-600
+          rounded-t
+          shadow-md
+          p-6
+          text-center
+        "
+      >
+        <p>
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.origin.name }}</span
+          >
+          to
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.destination.name }}
+          </span>
+        </p>
+        <p>On</p>
+        <p>{{ parseDepartureDate(selectedDate) }} at</p>
+        <p>{{ selectedSchedule.departureTime }}</p>
+        <div class="text-xl">
+          <p>Seats Remaining: {{ seatsAvailable.length }}</p>
+          <div class="flex gap-2 justify-center">
+            <p v-for="seat in seatsAvailable" :key="seat">
+              {{ seat }}
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <p class="text-red-700 my-2">
-        Are you sure you want to cancel the Bus? <br />
-        The above schedule will be disabled on customer bookings page
-      </p>
+      <div class="flex flex-col items-center">
+        <p class="text-gray-600 my-2 text-center">
+          Are you sure you want to cancel the Bus? <br />
+          The above schedule will be disabled on customer bookings page
+        </p>
 
-      <button class="bg-red-200 p-1 rounded my-3" @click="confirmCancelBus()">
-        Cancel Bus
-      </button>
+        <button
+          class="bg-gray-600 px-2 text-gray-200 rounded my-3"
+          @click="confirmCancelBus()"
+        >
+          Cancel Bus
+        </button>
+      </div>
     </div>
   </vue-final-modal>
 </template>
@@ -764,6 +812,7 @@ import {
 import {
   addNewCancelledRouteDate,
   deleteByDateAndRoute,
+  deleteByDateAndSubRoute,
   getCancelledRoutesByDate,
 } from "../../services/cancelledRouteDateService";
 
@@ -973,22 +1022,41 @@ export default {
     },
 
     confirmCancelBus() {
+      console.log(this.selectedSchedule);
+
       addNewCancelledRouteDate({
         routeId: this.selectedSchedule.id,
         date: this.selectedDate,
       }).then((res) => {
-        console.log("OK", res);
+        if (res.status === 201) {
+          this.selectedSchedule.subroutes.forEach((item) => {
+            addNewCancelledRouteDate({
+              routeId: this.selectedSchedule.id,
+              date: this.selectedDate,
+              subRouteId: item.id,
+            }).then((res) => {
+              console.log(res);
+            });
+          });
+        }
         this.confirmCancelBusModal = false;
         this.onDayClick(this.storedDateClickEvent);
       });
     },
 
     reopenSchedule(schedule) {
-      console.log(schedule);
       deleteByDateAndRoute({
         routeId: schedule.id,
         date: this.selectedDate,
       }).then((res) => {
+        schedule.subroutes.forEach((item) => {
+          deleteByDateAndSubRoute({
+            date: this.selectedDate,
+            subRouteId: item.id,
+          }).then((resp) => {
+            console.log(resp);
+          });
+        });
         console.log("REOPEN", res);
         if (res.status === 201) {
           this.onDayClick(this.storedDateClickEvent);
@@ -999,38 +1067,40 @@ export default {
       console.log(date);
     },
 
-    cancelBookingFullRefund(booking){
-      let seatNumbers=[]
-      booking.passengers.forEach(item=>{
-        seatNumbers.push(item.seatNumber)
-      })
+    cancelBookingFullRefund(booking) {
+      let seatNumbers = [];
+      booking.passengers.forEach((item) => {
+        seatNumbers.push(item.seatNumber);
+      });
       let cancelBookingObject = {
         scheduleHash: booking.scheduleHash,
-        refundPercentage:100,
-        bookingStatus:"CANCELLED",
-        bookingId:booking.id,
-        seats:seatNumbers
-      }
+        refundPercentage: 100,
+        bookingStatus: "CANCELLED",
+        bookingId: booking.id,
+        seats: seatNumbers,
+      };
 
-      console.log(cancelBookingObject)
+      console.log(cancelBookingObject);
 
-     
+      cancelBooking(booking.id, cancelBookingObject).then((res) => {
+        console.log(res);
+      });
     },
 
-    cancelBookingThreeFourthRefund(booking){
-     let seatNumbers=[]
-      booking.passengers.forEach(item=>{
-        seatNumbers.push(item.seatNumber)
-      })
+    cancelBookingThreeFourthRefund(booking) {
+      let seatNumbers = [];
+      booking.passengers.forEach((item) => {
+        seatNumbers.push(item.seatNumber);
+      });
       let cancelBookingObject = {
         scheduleHash: booking.scheduleHash,
-        refundPercentage:75,
-        bookingStatus:"CANCELLED",
-        bookingId:booking.id,
-        seats:seatNumbers
-      }
-      console.log(cancelBookingObject)
-    }
+        refundPercentage: 75,
+        bookingStatus: "CANCELLED",
+        bookingId: booking.id,
+        seats: seatNumbers,
+      };
+      console.log(cancelBookingObject);
+    },
   },
 };
 </script>

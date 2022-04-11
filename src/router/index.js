@@ -106,6 +106,9 @@ const routes = [
         path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
+        path: 'bookings', component: () => import('../components/Admin/Bookings.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+      },
+      {
         path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       // {

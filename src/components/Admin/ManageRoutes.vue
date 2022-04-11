@@ -24,6 +24,8 @@
           <div class="text-lg">Stops</div>
           <div class="text-4xl text-white font-bold">{{ stops.length }}</div>
         </div>
+
+        <div></div>
       </div>
 
       <div class="space-y-2 flex-1">

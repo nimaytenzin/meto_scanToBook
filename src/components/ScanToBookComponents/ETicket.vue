@@ -28,7 +28,7 @@
       justify-center
     "
   >
-    <div v-if="busStatus">
+    <div v-if="bookingData.bookingStatus === 'PENDING'">
       <div class="flex flex-col items-center justify-center">
         <img src="../../assets/meto.png" alt="" width="50" />
 
@@ -142,12 +142,12 @@
               </p>
               <h2 class="text-sm">
                 Contact
-                {{ bookingData.schedule?.route?.routepath?.origin }} for
+                17728373 for
                 assistance/query.
               </h2>
             </div>
-            <h2 class="text-center text-xl text-red-700">
-              Please come to the Bus Stop 30 minutes before Departure!
+            <h2 class="text-center text-md text-red-800">
+              Please report to the Bus Stop 30 minutes before Departure!
             </h2>
           </div>
 
@@ -215,15 +215,15 @@
               </div>
             </div>
           </div>
-          <p class="text-center text-sm">Your Bus Details</p>
+          <p class="text-center text-sm">
+            Your Bus Details         
+          </p>
           <p>Not Updated Yet</p>
 
           <hr class="mt-4 mb-4" />
-
           <p class="text-center text-sm">
-            You are eligible for 75% refund for cancellations before 30
+            You are eligible for 75% refund for cancellations 30 Minutes before Departure
           </p>
-
           <button
             @click="cancelTicket()"
             class="text-black font-bold py-2 px-4 rounded"
@@ -240,7 +240,7 @@
       </div>
     </div>
 
-    <div v-else class="bg-gray-600 rounded-md flex flex-col justify-center">
+     <div v-if="bookingData.bookingStatus === 'CANCELLED' || bookingData.bookingStatus==='REFUNDED' " class="bg-gray-600 rounded-md flex flex-col justify-center">
       <div class="flex flex-row justify-between p-3">
         <div>
           <h1 class="text-left text-sm text-gray-200">Meto Transport</h1>
@@ -260,33 +260,90 @@
           text-gray-300
           p-10
           rounded-md
-          shadow-lg
+         
           text-center
         "
       >
-        Schedule Completed! <br />
-        Ticket Expired
+       Booking Cancelled
       </h2>
 
-      <button
+     <div class="flex justify-center">
+        <button
         class="
           bg-gray-100
           hover:bg-gray-400
           text-gray-500
           hover:text-white
           font-bold
-          py-2
+          py-1
+          rounded
           px-4
         "
         @click="bookAgain()"
       >
-        Book your next ride!
+        Book Again
       </button>
+     </div>
 
       <p class="text-center text-gray-200 text-xs px-3 m-4">
         Ensuring Safety, Reliability,Comfort till your destination.
       </p>
     </div>
+
+
+    <div v-if="bookingData.bookingStatus === 'FULFILLED'" class="bg-gray-600 rounded-md flex flex-col justify-center">
+      <div class="flex flex-row justify-between p-3">
+        <div>
+          <h1 class="text-left text-sm text-gray-200">Meto Transport</h1>
+          <h1 class="text-left text-sm text-gray-200">
+            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
+          </h1>
+        </div>
+
+        <div class="bg-white rounded-full">
+          <img src="../../assets/meto.png" alt="" class="h-10" />
+        </div>
+      </div>
+      <h2
+        class="
+          text-xl
+          font-nunito font-light
+          text-gray-300
+          p-10
+          rounded-md
+         
+          text-center
+        "
+      >
+        Journey Succefully Completed! <br> Ticket Expired.
+        <br>
+        Thank you for choosing Meto Transport Service
+      </h2>
+
+     <div class="flex justify-center">
+        <button
+        class="
+          bg-gray-100
+          hover:bg-gray-400
+          text-gray-500
+          hover:text-white
+          font-bold
+          py-1
+          rounded
+          px-4
+        "
+        @click="bookAgain()"
+      >
+        Book Again
+      </button>
+     </div>
+
+      <p class="text-center text-gray-200 text-xs px-3 m-4">
+        Ensuring Safety, Reliability,Comfort till your destination.
+      </p>
+    </div>
+
+ 
   </div>
 </template>
 
@@ -310,6 +367,7 @@
 import domtoimage from "dom-to-image";
 import { useRoute } from "vue-router";
 import { getBookingDetail } from "../../services/bookingServices";
+import { getBusByBookingId } from "../../services/routeServices"
 
 export default {
   created() {
@@ -318,25 +376,20 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
+        
+        getBusByBookingId(res.data.id).then(resp=>{
+          console.log(resp)
+        })
         this.origin = res.data.route.routepath.origin.name;
         this.destination = res.data.route.routepath.destination.name;
         this.departureDate = res.data.scheduleDate;
         this.departureTime = res.data.route.departureTime;
         this.fare = res.data.route.fare;
-        if (res.data.bookingStatus === "PENDING") {
-          this.busStatus = true;
-        } else {
-          this.busStatus = false;
-        }
         this.bookingData = res.data;
         console.log(this.bookingData);
       } else {
         this.$router.push("/service-down");
       }
-    });
-    this.checkBusRouteData = this.$router.resolve({
-      name: "viewBusDetails",
-      params: { id: bookingId },
     });
     this.cancelTicketRouteData = this.$router.resolve({
       name: "cancelTicket",
@@ -360,13 +413,14 @@ export default {
       checkBusRouteData: "",
       seatsBooked: 0,
       url: process.env.VUE_APP_DEV_API,
+      busDetails:{}
     };
   },
 
   mounted: function () {
     setTimeout(function () {
       this.document.getElementById("spinner").remove();
-    }, 3000);
+    }, 1000);
   },
   computed: {
     loadingClass() {
