@@ -1199,7 +1199,7 @@
           </p>
 
           <p>
-            {{ week[selectedRoute.day] }}
+            {{ week[selectedRoute.day-1] }}
           </p>
           <label class="text-sm text-left text-gray-400 italic"
             >Select Route Path</label

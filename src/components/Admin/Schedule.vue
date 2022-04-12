@@ -4,23 +4,21 @@
 
     <Calendar :min-date="new Date()" @dayclick="onDayClick($event)" />
 
-<div class="text-sm p-2">
-        <p>
-          Definitions
-        </p>
-        <p>
-          CANCELLED: It means the bus has been cancelled for a particular date
-        </p>
-        <p>
-          SUSPENDED: The particular bus has been suspended for that particular day for all the dates.
-        </p>
-      </div>
-    <p
-      class=" font-normal text-center text-gray-500 my-1"
-      v-if="selectedDate"
-    >
+    <div class="text-sm p-2">
+      <p>Definitions</p>
+      <p>
+        CANCELLED: It means the bus has been cancelled for a particular date
+      </p>
+      <p>
+        SUSPENDED: The particular bus has been suspended for that particular day
+        for all the dates.
+      </p>
+    </div>
+    <p class="font-normal text-center text-gray-500 my-1" v-if="selectedDate">
       Showing Schedules for
-      <span class="text-gray-800 text-3xl font-semibold">{{ parseDepartureDate(selectedDate) }}</span>
+      <span class="text-gray-800 text-3xl font-semibold">{{
+        parseDepartureDate(selectedDate)
+      }}</span>
     </p>
     <hr class="w-full my-2" />
     <table class="border-l border-r divide-y divide-gray-200 table-auto">
@@ -795,12 +793,11 @@
 
 <script>
 import {
-  getPassengerDetailsByScheduleHash,
   getBookingsByRouteAndScheduleDate,
   cancelBooking,
+  adminCancelBooking
 } from "../../services/bookingServices";
 import { getAllBuses } from "../../services/busServices";
-import crypto from "crypto";
 
 import {
   createNewBusRoster,
@@ -925,10 +922,6 @@ export default {
       this.seatsAvailable = [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
       ];
-      var plaintext = `${this.selectedSchedule.id}|${this.selectedDate}`;
-      var hash = crypto.createHash("sha1");
-      hash.update(plaintext);
-      var scheduleHash = hash.digest("hex");
 
       getBookingsByRouteAndScheduleDate(schedule.id, this.selectedDate).then(
         (res) => {
@@ -936,17 +929,6 @@ export default {
           this.routeDateBookings = res.data;
         }
       );
-
-      getPassengerDetailsByScheduleHash(scheduleHash).then((res) => {
-        console.log(res.data);
-        this.passengersInSchedule = res.data;
-        res.data.forEach((passenger) => {
-          this.seatsAvailable.splice(
-            this.seatsAvailable.indexOf(passenger.seatNumber),
-            1
-          );
-        });
-      });
     },
     reassignBus(schedule) {
       this.reassignBusModal = true;
@@ -992,7 +974,6 @@ export default {
     },
 
     confirmCancelBooking(booking) {
-      console.log("CANCEL THIS BOOKING", booking);
       let cancelBookingObject = {
         bookingId: booking.id,
         scheduleHash: booking.scheduleHash,
@@ -1011,7 +992,6 @@ export default {
               console.log(res);
               if (res.data) {
                 this.conflictingBookings = res.data;
-                console.log("CONFLICTS", res.data);
               }
             });
           } else {
@@ -1022,8 +1002,6 @@ export default {
     },
 
     confirmCancelBus() {
-      console.log(this.selectedSchedule);
-
       addNewCancelledRouteDate({
         routeId: this.selectedSchedule.id,
         date: this.selectedDate,
@@ -1080,10 +1058,21 @@ export default {
         seats: seatNumbers,
       };
 
-      console.log(cancelBookingObject);
-
-      cancelBooking(booking.id, cancelBookingObject).then((res) => {
-        console.log(res);
+      adminCancelBooking(booking.id, cancelBookingObject).then((res) => {
+        if (res.status === 200) {
+          getBookingsByRouteAndScheduleDate(
+            this.selectedSchedule.id,
+            this.selectedDate
+          ).then((resp) => {
+            if (resp.data.length) {
+              this.conflictingBookings = res.data;
+              this.conflictingBookingsModal = true;
+           } else {
+              this.confirmCancelBusModal = true;
+              this.conflictingBookingsModal = false;
+            }
+          });
+        }
       });
     },
 
@@ -1099,8 +1088,15 @@ export default {
         bookingId: booking.id,
         seats: seatNumbers,
       };
-       cancelBooking(booking.id, cancelBookingObject).then((res) => {
-        console.log(res);
+      cancelBooking(booking.id, cancelBookingObject).then((res) => {
+        if (res.status === 200) {
+          getBookingsByRouteAndScheduleDate(
+            this.selectedSchedule.id,
+            this.selectedDate
+          ).then((resp) => {
+            this.routeDateBookings = resp.data;
+          });
+        }
       });
     },
   },
