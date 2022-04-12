@@ -156,7 +156,7 @@ export default {
               status: 1,
             },
           ];
-        }, 10);
+        }, 1000);
       })
       .catch((err) => console.log(err));
 
