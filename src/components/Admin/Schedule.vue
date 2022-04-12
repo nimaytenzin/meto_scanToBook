@@ -1099,7 +1099,9 @@ export default {
         bookingId: booking.id,
         seats: seatNumbers,
       };
-      console.log(cancelBookingObject);
+       cancelBooking(booking.id, cancelBookingObject).then((res) => {
+        console.log(res);
+      });
     },
   },
 };

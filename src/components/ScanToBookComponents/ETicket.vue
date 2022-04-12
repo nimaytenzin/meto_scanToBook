@@ -129,22 +129,18 @@
                 </div>
               </div>
              
-              <h2 class="text-center text-xl text-gray-700">
+              <h2 class="text-center text-xl text-gray-700 my-1">
                Departure Date: <span class="font-bold">
                  {{ parseDepartureDate(departureDate) }}
                </span>
               </h2>
             </div>
             <div class="text-center gap-2">
-              <p class="text-xl text-gray-700">
+              <p class="text-xl text-gray-700 my-1">
                 Departure Time:
                 <span class="font-bold"> {{ departureTime }}</span>
               </p>
-              <h2 class="text-sm">
-                Contact
-                17728373 for
-                assistance/query.
-              </h2>
+             
             </div>
             <h2 class="text-center text-md text-red-800">
               Please report to the Bus Stop 30 minutes before Departure!
@@ -215,10 +211,15 @@
               </div>
             </div>
           </div>
-          <p class="text-center text-sm">
+          <div class="text-center text-sm">
+            <p>
             Your Bus Details         
           </p>
-          <p>Not Updated Yet</p>
+          <p v-if="busDetails"  >
+           Bus Number: <span class="text-xl">{{busDetails.vechileNumber  }}</span>
+          </p>
+          <p v-else>Not Updated Yet</p>
+          </div>
 
           <hr class="mt-4 mb-4" />
           <p class="text-center text-sm">
@@ -231,6 +232,12 @@
             Click/visit this link Cancel Ticket: <br />
             {{ url }}{{ cancelTicketRouteData.href }}
           </button>
+
+           <h2 class="text-sm text-center mt-2">
+                Contact
+                {{originContact  }} for
+                assistance/query.
+              </h2>
 
           <hr class="border-dashed" />
           <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -376,9 +383,10 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
-        
+        console.log("BOOKING DATA", res.data)
+        this.originContact = res.data.route?.routepath?.origin?.user.contact;
         getBusByBookingId(res.data.id).then(resp=>{
-          console.log(resp)
+          this.busDetails = resp.data.bus
         })
         this.origin = res.data.route.routepath.origin.name;
         this.destination = res.data.route.routepath.destination.name;
@@ -413,7 +421,8 @@ export default {
       checkBusRouteData: "",
       seatsBooked: 0,
       url: process.env.VUE_APP_DEV_API,
-      busDetails:{}
+      busDetails:{},
+      originContact:null
     };
   },
 

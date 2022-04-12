@@ -99,55 +99,24 @@
 
       <div
         class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0"
-        v-if="attributes.length"
       >
         <DatePicker
           v-model="date"
           :min-date="new Date()"
           @dayclick="onDayClick($event)"
           :attributes="attributes"
+          :disabled-dates="disabledDates"
         />
       </div>
 
-      <div v-if="busAvailable && attributes.length">
+      <div >
         <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
           Bus available
         </h2>
-
-        <button
-          class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded
-            flex
-          "
-          @click="viewSch()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          View Schedules
-        </button>
       </div>
 
-      <div class="flex flex-wrap mt-5" v-if="schedules.length !== 0">
+      <div class="flex flex-col" v-if="schedules.length !== 0">
         <div
           v-for="schedule in schedules"
           :key="schedule"
@@ -163,14 +132,14 @@
             <p>Fare: Nu. {{ schedule.fare }}</p>
 
             <p v-if="schedule.parentRouteId">
-              This is a subroute, you will in travelling in <br />
+              This is a subroute, you will in travelling in
               {{ schedule.parentRoute?.routepath?.origin.name }} -
               {{ schedule.parentRoute?.routepath?.destination.name }}
             </p>
-            <div class="flex jusitify-between mt-1">
+            <div class="flex jusitify-between gap-2 mt-1">
               <button
                 class="
-                  rounded-l
+                  rounded
                   py-1
                   px-2
                   font-medium
@@ -181,11 +150,11 @@
                 "
                 @click="openSeatSelect(schedule)"
               >
-                Book
+                Book Seat
               </button>
               <button
                 class="
-                  rounded-r
+                  rounded
                   py-1
                   px-2
                   font-medium
@@ -899,15 +868,13 @@ import {
   getRoutesByOriginDestination,
 } from "../../../services/routeServices";
 import {
-  addNewBooking,
   addNewCounterBooking,
   counterConfirmPayment,
   deleteBookingwithPassengers,
   getPassengersOnBus,
-  publishConfirmedSeats,
-  updateBooking,
 } from "../../../services/bookingServices";
 import { updateBookingStatUsingBookingId } from "../../../services/bookingStatsService";
+import { getCancelledRoutesByRouteId, getCancelledRoutesBySubRouteId } from "../../../services/cancelledRouteDateService";
 
 export default {
   data() {
@@ -952,6 +919,7 @@ export default {
         { id: 28, number: 19, type: "seat", status: "available" },
       ],
       bookedSeats: [],
+      disabledDates: [],
       seatSelected: {},
       confirmSeatModal: false,
       addPassengerDetailsModal: false,
@@ -1025,14 +993,23 @@ export default {
         this.weekDay = e.weekday;
         this.departureDate = e.id;
         this.busAvailable = true;
+        this.viewSch();
       } else {
         this.busAvailable = false;
         this.schedules = [];
+
         if (e.isDisabled) {
-          this.$toast.show(`Select a valid Date`, {
-            position: "top",
-            type: "error",
-          });
+          if (!e.attributes[0]) {
+            this.$toast.show(`Date expired`, {
+              position: "top",
+              type: "error",
+            });
+          } else {
+            this.$toast.show(`No Bus`, {
+              position: "top",
+              type: "info",
+            });
+          }
         } else {
           this.$toast.show(`No Bus Availble`, {
             position: "top",
@@ -1069,6 +1046,14 @@ export default {
             if (res.data.routes) {
               this.routes = res.data.routes;
               res.data.routes.forEach((route) => {
+                getCancelledRoutesByRouteId(route.id).then((resp) => {
+                  console.log(resp);
+                  if (resp.data.length) {
+                    resp.data.forEach((item) => {
+                      this.disabledDates.push(item.date);
+                    });
+                  }
+                });
                 if (this.days.indexOf(route.day) === -1) {
                   this.days.push(route.day);
                 }
@@ -1078,6 +1063,14 @@ export default {
             if (res.data.subroutes) {
               this.subroutes = res.data.subroutes;
               this.subroutes.forEach((subroute) => {
+                getCancelledRoutesBySubRouteId(subroute.id).then((resp) => {
+                  console.log(resp);
+                  if (resp.data.length) {
+                    resp.data.forEach((item) => {
+                      this.disabledDates.push(item.date);
+                    });
+                  }
+                });
                 if (this.days.indexOf(subroute.day) === -1) {
                   this.days.push(subroute.day);
                 }
@@ -1085,15 +1078,27 @@ export default {
             }
 
             if (this.days) {
-              this.attributes = [
-                {
-                  dot: "green",
-                  dates: { weekdays: this.days },
-                  popover: {
-                    label: "Bus Availble",
+              setTimeout(() => {
+                console.log(this.disabledDates);
+                this.attributes = [
+                  {
+                    dot: "green",
+                    dates: { weekdays: this.days },
+                    popover: {
+                      label: "Bus Availble",
+                    },
+                    excludeDates: this.disabledDates,
                   },
-                },
-              ];
+                  {
+                    key: "cancelled",
+                    dates: this.disabledDates,
+                    customData: {
+                      status: "cancelled",
+                    },
+                    status: 1,
+                  },
+                ];
+              }, 10);
             } else {
               this.attributes = [
                 {
@@ -1331,7 +1336,7 @@ export default {
               amount: this.total,
               routeId: this.selectedSchedule.parentRouteId,
               subRouteId: this.routeId,
-              refundPercentage:0,
+              refundPercentage: 0,
               paymentStatus: "UNPAID",
               serviceCharge: 0,
               operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
@@ -1346,7 +1351,7 @@ export default {
               scheduleDate: this.departureDate,
               scheduleHash: this.roomId,
               amount: this.total,
-              refundPercentage:0,
+              refundPercentage: 0,
               routeId: this.routeId,
               paymentStatus: "UNPAID",
               serviceCharge: 0,

@@ -204,19 +204,19 @@
                     {{
                       staffData.user?.name
                         ? staffData.user?.name
-                        : "Online Booking"
+                        : "Online "
                     }}
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Online Booking :
+                      Online  :
                       {{
                         staffData.onlineTickets ? staffData.onlineTickets : 0
                       }}
 
                       <hr class="w-full" />
 
-                      <p>Counter Booking</p>
+                      <p>Counter </p>
                       <hr class="w-full" />
                       <p class="text-center">
                          Cash:
@@ -235,10 +235,10 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div class="text-md text-gray-900">
-                      Online Booking : Nu
+                      Online  : Nu
                       {{ staffData.onlineAmount ? staffData.onlineAmount : 0 }}
                       <hr class="w-full" />
-                        <p>Counter Booking</p>
+                        <p>Counter </p>
                       <hr class="w-full" />
                      <p class="text-center">
                         Cash: Nu
@@ -357,12 +357,12 @@
 
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Online Booking : 
+                      Online  : 
                       {{
                         routeData.onlineTickets ? routeData.onlineTickets : 0
                       }}
                       <br />
-                      <p>Counter Booking</p>
+                      <p>Counter </p>
                       <hr class="w-full" />
 
                       <p class="text-center">
@@ -382,11 +382,11 @@
                   </td>
                   <td class="text-md text-gray-900 px-6 py-3 text-left">
                     <div>
-                      Online Booking : Nu
+                      Online  : Nu
                       {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
                       <br />
 
-                      <p>Counter Booking</p>
+                      <p>Counter </p>
                       <hr class="w-full" />
                       <p class="text-center">
                         Cash:Nu
