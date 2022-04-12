@@ -440,11 +440,11 @@
                 <td class="px-2 py-2 whitespace-nowrap">
                   <p>BookingID: {{ booking.id }}</p>
                   <p>Amount: Nu.{{ booking.amount }}</p>
-                  <p v-if="booking.subroute">
-                    Till {{ booking.subroute.routepath?.destination.name }}
+                  <p v-if="booking.subroute" class="font-semibold">
+                    Till {{ booking.subroute?.routepath?.destination.name }}
                   </p>
-                  <p v-else>
-                    Till {{ booking.route.routepath?.destination.name }}
+                  <p v-else >
+                    Till {{ booking.route?.routepath?.destination.name }}
                   </p>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -566,7 +566,7 @@
                 <td class="px-2 py-2 whitespace-nowrap">
                   <p>BookingID: {{ booking.id }}</p>
                   <p>Amount: Nu.{{ booking.amount }}</p>
-                  <p v-if="booking.subroute">
+                  <p v-if="booking.subroute" class="font-semibold">
                     Till {{ booking.subroute.routepath?.destination.name }}
                   </p>
                   <p v-else>
@@ -964,10 +964,10 @@ export default {
           if (res.data.length) {
             this.conflictingBookings = res.data;
             this.conflictingBookingsModal = true;
-            console.log("CONFLICTS", res.data);
+            
           } else {
             this.confirmCancelBusModal = true;
-            console.log("NO CONFLICTS SAFE TO CANCEL");
+            
           }
         }
       );
@@ -1065,7 +1065,7 @@ export default {
             this.selectedDate
           ).then((resp) => {
             if (resp.data.length) {
-              this.conflictingBookings = res.data;
+              this.conflictingBookings = resp.data;
               this.conflictingBookingsModal = true;
            } else {
               this.confirmCancelBusModal = true;
