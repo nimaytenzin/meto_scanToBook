@@ -1417,6 +1417,13 @@ export default {
       };
       counterConfirmPayment(this.newBookingId, updateObject).then((res) => {
         if (res.status === 200) {
+          this.conn.send(
+            JSON.stringify({
+              scheduleHash: this.roomId.toString(),
+              messageType: "LOCK_CONFIRM",
+              seatId: this.seatSelected.number.toString(),
+            })
+          );
           this.$toast.show("Booking Successful", {
             position: "top",
             type: "success",
