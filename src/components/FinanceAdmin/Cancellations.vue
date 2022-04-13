@@ -51,7 +51,19 @@
                 Refund Amount
               </td>
 
-             
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Refund Account Details
+              </td>
 
               <td
                 class="
@@ -80,78 +92,87 @@
                   text-sm
                 "
               >
-                <p class="text-sm text-center">
-                  BookingID: {{ booking.id }}
-                </p>
+                <p class="text-sm text-center">BookingID: {{ booking.id }}</p>
                 <p class="text-center">
-                  
                   Thimphu - TrashiYangtse <br />
-                  on {{ booking.scheduleDate }} <br />
-                  <!-- at {{ booking.route.departureTime }} -->
-
-                  <br>
-                   Nu.{{ booking.amount }}
+                  Departure Date:  {{ booking.scheduleDate }} <br />
+                  Departure Time: {{ booking.route.departureTime }}
+                  <br />
+                  Nu.{{ booking.amount }}
                 </p>
                 <p
                   v-if="booking.modality === 'ONLINE'"
                   class="text-center text-blue-600 font-semibold"
                 >
                   Online Booking
-
-                  
                 </p>
                 <p v-else class="text-center text-green-600 font-semibold">
                   Counter Booking
                 </p>
-                
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
                 <table class="w-full h-full">
                   <tr>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                        rounded-l
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-l">
                       Name
                     </td>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                       
-                        rounded-r
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-r">
                       Contact
                     </td>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                       
-                        rounded-r
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-r">
                       CID
                     </td>
                   </tr>
                   <tr v-for="passenger in booking.passengers" :key="passenger">
                     <td class="pl-2">{{ passenger.name }}</td>
                     <td class="pl-2">{{ passenger.contact }}</td>
-                      <td class="pl-2">{{ passenger.cid }}</td>
+                    <td class="pl-2">{{ passenger.cid }}</td>
                   </tr>
                 </table>
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-               Booking Amount: Nu. {{booking.amount  }} <br>
-               Eligible for {{booking.refundPercentage  }} % refund <br>
-               Refund Amount: Nu. {{ Math.round(booking.amount * (booking.refundPercentage/100))  }}
+                <div>
+                  <p>Booking Amount: Nu. {{ booking.amount }}</p>
+                  <p v-if="booking.cancelTime">
+                    Cancelled on: {{ parseCancelTime(booking.cancelTime) }} <br>
+                    <span class="text-xs text-gray-400 text-right"
+                      >(mm/dd/yyyy)</span
+                    >
+                    <br />
+                  </p>
+
+                  <!-- Eligible for {{ booking.refundPercentage }} % refund <br />
+                  Refund Amount: Nu.
+                  {{
+                    Math.round(
+                      booking.amount * (booking.refundPercentage / 100)
+                    )
+                  }} -->
+                </div>
+              </td>
+
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+                <div v-if="booking.refundAcc">
+                  <p>Refund Account Details</p>
+                  <p>
+                    Account Number: {{ booking.refundAcc }} <br />
+                    Bank: {{ booking.refundBank }} <br />
+                    Account Holder: {{ booking.refundAccName }}
+                  </p>
+                  <p>
+                    Agreed to refund Policy? :
+                    {{ booking.isAgreed ? "Yes" : "No" }}
+                  </p>
+                </div>
+                <div v-else>
+                  <button
+                    @click="showAddRefundAccountDetailsModal(booking.id)"
+                    class="p-2 bg-gray-600 text-gray-100 rounded-sm"
+                  >
+                    add Refund <br />
+                    Account Details
+                  </button>
+                </div>
               </td>
 
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
@@ -203,6 +224,93 @@
         @click="confirmRefund()"
       >
         Confirm
+      </button>
+      <button
+        class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
+        @click="refundBookingModal = false"
+      >
+        cancel
+      </button>
+    </div>
+  </vue-final-modal>
+
+  <vue-final-modal
+    v-model="addRefundAccountDetailsModal"
+    classes="modal-container"
+    content-class="modal-content"
+    class="w-max-screen"
+  >
+    <div class="modal__content text-center mt-1 flex flex-col gap-2">
+      <h3 class="text-xl">Add Account Details</h3>
+    </div>
+    <div class="w-full mt-4 mb-2 rounded-sm bg-white">
+      <div class="p-4 gap-2 flex flex-col">
+        <p class="text-xs text-gray-500">Select Bank</p>
+        <select
+          class="
+            w-full
+            block
+            h-10
+            px-3
+            text-base
+            placeholder-gray-600
+            border
+            rounded-lg
+            focus:shadow-outline
+          "
+          v-model="newRefundAccountDetails.refundBank"
+        >
+          <option
+            v-for="bank in banks"
+            :key="bank"
+            :value="bank"
+            class="bg-white"
+          >
+            {{ bank }}
+          </option>
+        </select>
+
+        <p class="text-xs text-gray-500">Account Number</p>
+        <input
+          class="
+            w-full
+            block
+            h-10
+            px-3
+            text-base
+            placeholder-gray-600
+            border
+            rounded-lg
+            focus:shadow-outline
+          "
+          type="number"
+          v-model="newRefundAccountDetails.refundAcc"
+        />
+        <p class="text-xs text-gray-500">Account Name</p>
+        <input
+          class="
+            w-full
+            block
+            h-10
+            px-3
+            text-base
+            placeholder-gray-600
+            border
+            rounded-lg
+            focus:shadow-outline
+          "
+          type="text"
+          v-model="newRefundAccountDetails.refundAccName"
+        />
+      </div>
+    </div>
+
+    <div class="modal__action">
+      <button
+        class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
+        @click="addAccountDetails()"
+      >
+        Update
       </button>
       <button
         class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
@@ -290,18 +398,29 @@ export default {
       cancelledBookings: [],
       refundBookingModal: false,
       selectedBookingId: null,
+      addRefundAccountDetailsModal: false,
+      newRefundAccountDetails: {},
+      banks: ["BOB", "BNB", "PNBL", "BDBL", "TBank"],
     };
   },
   methods: {
     fetchData() {
       getCancelledBooking().then((res) => {
         this.cancelledBookings = res.data;
-        console.log(res.data)
+        console.log("cancel booking", this.cancelledBookings);
       });
+    },
+
+    parseCancelTime(timeString) {
+      return new Date(timeString).toLocaleString();
     },
     showRefundModal(bookingId) {
       this.selectedBookingId = bookingId;
       this.refundBookingModal = true;
+    },
+    showAddRefundAccountDetailsModal(bookingId) {
+      this.selectedBookingId = bookingId;
+      this.addRefundAccountDetailsModal = true;
     },
     parseDepartureDate(date) {
       let d = new Date(date);
@@ -317,6 +436,35 @@ export default {
           this.fetchData();
         }
       });
+    },
+    addAccountDetails() {
+      this.newRefundAccountDetails.isAgreed = 0;
+      if (
+        this.newRefundAccountDetails.refundBank &&
+        this.newRefundAccountDetails.refundAcc &&
+        this.newRefundAccountDetails.refundAccName
+      ) {
+        console.log("NEW REFUND ACCOUNT DETAILS", this.newRefundAccountDetails);
+        updateBooking(
+          this.selectedBookingId,
+          this.newRefundAccountDetails
+        ).then((res) => {
+          if (res.status === 200) {
+            this.addRefundAccountDetailsModal = false;
+            this.fetchData();
+          } else {
+            this.$toast.show("Network Error", {
+              position: "top",
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.$toast.show("Please enter all the details", {
+          position: "top",
+          type: "error",
+        });
+      }
     },
   },
 };

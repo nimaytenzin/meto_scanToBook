@@ -103,3 +103,10 @@ export async function counterConfirmPayment(bookingID,data){
 export async function getBookingsByBookingDate(date){
     return await axios.get(`${devUrl}/bookings/getByDate/${date}`,{headers:authHeader()}) 
 }
+
+
+
+
+export async function staffIndividualCancelBooking(id,data){
+    return await axios.put(`${devUrl}/bookings/staff-cancel/${id}`,data)
+}

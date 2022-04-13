@@ -470,7 +470,6 @@
                   </table>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap">
-                  <p class="text-sm font-semibold">Eligible for 75% refund</p>
                   <button
                     class="bg-gray-600 text-gray-300 p-1 rounded"
                     @click="cancelBookingThreeFourthRefund(booking)"
@@ -795,7 +794,8 @@
 import {
   getBookingsByRouteAndScheduleDate,
   cancelBooking,
-  adminCancelBooking
+  adminCancelBooking,
+  staffIndividualCancelBooking
 } from "../../services/bookingServices";
 import { getAllBuses } from "../../services/busServices";
 
@@ -1083,12 +1083,12 @@ export default {
       });
       let cancelBookingObject = {
         scheduleHash: booking.scheduleHash,
-        refundPercentage: 75,
         bookingStatus: "CANCELLED",
         bookingId: booking.id,
         seats: seatNumbers,
+        isAgreed:0
       };
-      cancelBooking(booking.id, cancelBookingObject).then((res) => {
+      staffIndividualCancelBooking(booking.id, cancelBookingObject).then((res) => {
         if (res.status === 200) {
           getBookingsByRouteAndScheduleDate(
             this.selectedSchedule.id,

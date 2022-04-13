@@ -7,7 +7,7 @@
 
       <div v-if="cancelledBookings.length" class="w-11/12">
         <table
-          class=" divide-y divide-gray-200 table-auto w-full"
+          class="border-l border-r divide-y divide-gray-200 table-auto w-full"
         >
           <thead class="">
             <tr>
@@ -50,8 +50,20 @@
               >
                 Refund Amount
               </td>
+              <td
+                class="
+                  px-6
+                  py-3
+                  text-left text-xs
+                  font-medium
+                  text-gray-500
+                  uppercase
+                  tracking-wider
+                "
+              >
+                Refund Account Details
+              </td>
 
-           
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -66,81 +78,82 @@
                   text-sm
                 "
               >
-                <p class="text-sm text-center">
-                  BookingID: {{ booking.id }}
-                </p>
+                <p class="text-sm text-center">BookingID: {{ booking.id }}</p>
                 <p class="text-center">
-                  
                   Thimphu - TrashiYangtse <br />
-                  on {{ booking.scheduleDate }} <br />
-                  <!-- at {{ booking.route.departureTime }} -->
-
-                  <br>
-                   Nu.{{ booking.amount }}
+                  Departure Date:  {{ booking.scheduleDate }} <br />
+                  Departure Time: {{ booking.route.departureTime }}
+                  <br />
+                  Nu.{{ booking.amount }}
                 </p>
                 <p
                   v-if="booking.modality === 'ONLINE'"
                   class="text-center text-blue-600 font-semibold"
                 >
                   Online Booking
-
-                  
                 </p>
                 <p v-else class="text-center text-green-600 font-semibold">
                   Counter Booking
                 </p>
-                
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
                 <table class="w-full h-full">
                   <tr>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                        rounded-l
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-l">
                       Name
                     </td>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                       
-                        rounded-r
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-r">
                       Contact
                     </td>
-                    <td
-                      class="
-                        p-2
-                        text-left text-xs
-                        font-medium
-                       
-                        rounded-r
-                      "
-                    >
+                    <td class="p-2 text-left text-xs font-medium rounded-r">
                       CID
                     </td>
                   </tr>
                   <tr v-for="passenger in booking.passengers" :key="passenger">
                     <td class="pl-2">{{ passenger.name }}</td>
                     <td class="pl-2">{{ passenger.contact }}</td>
-                      <td class="pl-2">{{ passenger.cid }}</td>
+                    <td class="pl-2">{{ passenger.cid }}</td>
                   </tr>
                 </table>
               </td>
               <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-               Booking Amount: Nu. {{booking.amount  }} <br>
-               Eligible for {{booking.refundPercentage  }} % refund <br>
-               Refund Amount: Nu. {{ Math.round(booking.amount * (booking.refundPercentage/100))  }}
+                <div>
+                  <p>Booking Amount: Nu. {{ booking.amount }}</p>
+                  <p v-if="booking.cancelTime">
+                    Cancelled on: {{ parseCancelTime(booking.cancelTime) }} <br>
+                    <span class="text-xs text-gray-400 text-right"
+                      >(mm/dd/yyyy)</span
+                    >
+                    <br />
+                  </p>
+
+                  <!-- Eligible for {{ booking.refundPercentage }} % refund <br />
+                  Refund Amount: Nu.
+                  {{
+                    Math.round(
+                      booking.amount * (booking.refundPercentage / 100)
+                    )
+                  }} -->
+                </div>
               </td>
 
-            
+              <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
+                <div v-if="booking.refundAcc">
+                  <p>Refund Account Details</p>
+                  <p>
+                    Account Number: {{ booking.refundAcc }} <br />
+                    Bank: {{ booking.refundBank }} <br />
+                    Account Holder: {{ booking.refundAccName }}
+                  </p>
+                  <p>
+                    Agreed to refund Policy? :
+                    {{ booking.isAgreed ? "Yes" : "No" }}
+                  </p>
+                </div>
+                <div v-else>
+                 Refund Account Details Not Added 
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -161,14 +174,16 @@
               d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          No Cancelled Tickets
+          Hurray!! No Cancelled Tickets
         </div>
       </div>
     </div>
   </div>
 
   
+  
 </template>
+
 
 <style scoped>
 ::v-deep .modal-container {
@@ -233,6 +248,7 @@
 <script>
 import {
   getCancelledBooking,
+  updateBooking,
 } from "../../services/bookingServices";
 
 export default {
@@ -242,26 +258,19 @@ export default {
   data() {
     return {
       cancelledBookings: [],
-      refundBookingModal: false,
-      selectedBookingId: null,
     };
   },
   methods: {
     fetchData() {
       getCancelledBooking().then((res) => {
         this.cancelledBookings = res.data;
-        console.log(res.data)
+        console.log("cancel booking", this.cancelledBookings);
       });
     },
-    showRefundModal(bookingId) {
-      this.selectedBookingId = bookingId;
-      this.refundBookingModal = true;
+
+    parseCancelTime(timeString) {
+      return new Date(timeString).toLocaleString();
     },
-    parseDepartureDate(date) {
-      let d = new Date(date);
-      return d.toDateString();
-    },
-   
   },
 };
 </script>
