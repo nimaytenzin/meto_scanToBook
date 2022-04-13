@@ -30,6 +30,10 @@ export async function cancelBooking(id,data){
     return await axios.put(`${devUrl}/bookings/cancel/${id}`,data)
 }
 
+export async function updateBankDetails(id,data){
+    return await axios.put(`${devUrl}/bookings/update-bank/${id}`,data)
+}
+
 
 export async function adminCancelBooking(id,data){
     return await axios.put(`${devUrl}/bookings/admin-cancel/${id}`,data, {headers:authHeader()})

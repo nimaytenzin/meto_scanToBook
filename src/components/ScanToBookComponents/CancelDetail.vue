@@ -101,17 +101,9 @@
             <div class="flex justify-center">
               <button
                 @click="cancelTicket()"
-                v-if="!update"
                 class="bg-gray-600  text-white mt-4 ml-5 p-2 rounded"
               >
-                Cancel Ticket
-              </button>
-              <button
-                v-else
-                @click="updateDetails()"
-                class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-              >
-                Update Details
+               Update Details 
               </button>
             </div>
 
@@ -282,6 +274,7 @@ import {
   getBookingDetail,
   cancelBooking,
   updateBooking,
+  updateBankDetails,
 } from "../../services/bookingServices";
 export default {
   data() {
@@ -367,31 +360,15 @@ export default {
   },
 
   methods: {
-    verifyCancelCode() {
-      if (this.cancelcode === this.realCancelCode) {
-        this.cancelAuthorized = true;
-      } else {
-        this.cancelAuthorized = false;
-        this.$toast.show("CancelCode Doesnot Match, Unathorized", {
-          position: "top",
-          type: "error",
-        });
-      }
-    },
     confirmCancel() {
-      cancelBooking(this.bookingId, this.refundAccountDetails).then((res) => {
+      updateBankDetails(this.bookingId, this.refundAccountDetails).then((res) => {
         if (res.status === 200) {
           this.$toast.show("Successfull", {
             position: "top",
             type: "success",
           });
           this.$router.go();
-        }else if (res.status === 204){
-          this.$toast.show("Not eligible for Cancellation. Time limit exceeded.", {
-            position: "top",
-            type: "error",
-          });
-        } else {
+        }else {
           this.$toast.show("Network Error", {
             position: "top",
             type: "error",
