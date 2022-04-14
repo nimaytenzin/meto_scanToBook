@@ -113,6 +113,9 @@ const routes = [
         path: 'bookings', component: () => import('../components/Admin/Bookings.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
+        path: 'challan', component: () => import('../components/FinanceAdmin/Challan.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+      },
+      {
         path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       // {
@@ -146,7 +149,11 @@ const routes = [
       },
       {
         path: 'journals', component: () => import('../components/FinanceAdmin/Journals.vue'), meta: { requiresAuth: true, financeAdmin: true }
+      },
+      {
+        path: 'challan', component: () => import('../components/FinanceAdmin/Challan.vue'), meta: { requiresAuth: true, financeAdmin: true }
       }
+
     ]
   },
   {
