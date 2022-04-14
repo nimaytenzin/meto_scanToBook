@@ -1,7 +1,7 @@
 <template>
   <div class="relative min-h-screen md:flex">
     <!-- mobile menu bar -->
-    <div class="bg-gray-800 text-gray-100 flex justify-between md:hidden">
+    <div class="bg-gray-800 text-gray-100 flex justify-between md:hidden z-40">
       <!-- logo -->
       <a href="" class="block p-4 text-white font-bold">Meto Transport</a>
 
@@ -47,6 +47,7 @@
         ease-in-out
         md:relative
         md:translate-x-0
+        z-40
       "
     >
       <!-- logo -->
@@ -84,6 +85,24 @@
             "
           >
             Book Tickets
+          </p>
+        </router-link>
+
+
+         <router-link to="/staff/daily-closings">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+            Daily Closings
           </p>
         </router-link>
 
@@ -125,7 +144,7 @@
 
     <!---- COntent -->
 
-    <div class="flex-1">
+    <div class="flex-1 z-0">
       <router-view> </router-view>
     </div>
   </div>

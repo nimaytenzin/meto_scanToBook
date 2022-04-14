@@ -197,7 +197,8 @@ const routes = [
         meta: { requiresAuth: true, staff: true },
         children: [
           { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true, staff: true } },
-          { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } }
+          { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'daily-closings', component: () => import('../components/Staff/DailyClosings.vue'), meta: { requiresAuth: true, staff: true } }
         ]
       },
       // {
