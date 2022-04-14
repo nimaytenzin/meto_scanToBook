@@ -765,6 +765,7 @@
           >
             <thead>
               <tr>
+                
                 <td
                   class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
                 >
@@ -782,7 +783,18 @@
               <tr v-for="booking in passengersInSchedule" :key="booking">
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <div>
+                    
+                    <p v-if="booking.modality === 'ONLINE'" class="font-semibold"> 
+                        Online Booking
+                    </p>
+                    <p v-else class="font-semibold">
+                      Counter Booking <br>
+                      {{booking.user.name  }}
+                    </p>
+
+                      <hr class="w-full"> 
                     <p>BookingID: {{ booking.id }}</p>
+                    
                     <p>Amount: Nu.{{ booking.amount }}</p>
                     <p v-if="booking.subroute" class="font-semibold">
                       Till {{ booking.subroute?.routepath?.destination.name }}
@@ -1179,6 +1191,9 @@ export default {
       getBookingsByRouteAndScheduleDate(schedule.id, this.departureDate).then(
         (res) => {
           this.passengersInSchedule = res.data
+
+
+          console.log("PASSENGERS in SCHEDULE", res.data)
           res.data.forEach((booking) => {
             booking.passengers.forEach((passenger) => {
               let searchIndex = this.seatsAvailable.indexOf(

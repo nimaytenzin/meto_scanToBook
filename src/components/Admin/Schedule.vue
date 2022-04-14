@@ -366,6 +366,7 @@
     </div>
   </vue-final-modal>
 
+  <!-- View passengers Modal -->
   <vue-final-modal
     v-model="passengerDetailsModal"
     classes="modal-container"
@@ -448,6 +449,12 @@
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <div>
                     <p>BookingID: {{ booking.id }}</p>
+                      <p v-if="booking.modality !=='ONLINE'">
+                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
+                      </p>
+                      <p v-else>
+                        Online Booking
+                      </p>
                     <p>Amount: Nu.{{ booking.amount }}</p>
                     <p v-if="booking.subroute" class="font-semibold">
                       Till {{ booking.subroute?.routepath?.destination.name }}
@@ -573,14 +580,20 @@
             <tbody class="overflow-y-scroll p-2 divide-y">
               <tr v-for="booking in conflictingBookings" :key="booking">
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
-                  <div>
+                 <div>
                     <p>BookingID: {{ booking.id }}</p>
+                      <p v-if="booking.modality !=='ONLINE'">
+                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
+                      </p>
+                      <p v-else>
+                        Online Booking
+                      </p>
                     <p>Amount: Nu.{{ booking.amount }}</p>
                     <p v-if="booking.subroute" class="font-semibold">
-                      Till {{ booking.subroute.routepath?.destination.name }}
+                      Till {{ booking.subroute?.routepath?.destination.name }}
                     </p>
                     <p v-else>
-                      Till {{ booking.route.routepath?.destination.name }}
+                      Till {{ booking.route?.routepath?.destination.name }}
                     </p>
                   </div>
                 </td>
