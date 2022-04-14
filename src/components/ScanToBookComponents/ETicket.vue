@@ -222,17 +222,7 @@
           </div>
 
           <hr class="mt-4 mb-4" />
-          <p class="text-center text-sm">
-            You are eligible for 75% refund for cancellations 30 Minutes before Departure
-          </p>
-          <button
-            @click="cancelTicket()"
-            class="text-black font-bold py-2 px-4 rounded"
-          >
-            Click/visit this link Cancel Ticket: <br />
-            {{ url }}{{ cancelTicketRouteData.href }}
-          </button>
-
+         
            <h2 class="text-sm text-center mt-2">
                 Contact
                 {{originContact  }} for
