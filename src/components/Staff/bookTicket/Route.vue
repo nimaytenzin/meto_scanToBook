@@ -725,15 +725,15 @@
           "
         >
           <p>
-            <span class="text-2xl font-bold">{{ originSelected.name }}</span> to
-            <span class="text-2xl font-bold">{{
+            <span class="font-bold">{{ originSelected.name }}</span> to
+            <span class=" font-bold">{{
               destinationSelected.name
             }}</span>
           </p>
           <p>On</p>
           <p>{{ parseDepartureDate(departureDate) }} at</p>
           <p>{{ selectedSchedule.departureTime }}</p>
-          <div class="text-xl">
+          <div >
             Fare: Nu.{{ selectedSchedule.fare }} <br />
             <p>Seats Remaining: {{ seatsAvailable.length }}</p>
             <div class="flex gap-2 justify-center">
@@ -751,15 +751,15 @@
           </div>
         </div>
         <div v-if="passengersInSchedule.length">
-        <h3 class="text-xl p-2 font-thin">Bookings</h3>
+        <h3 class="text-center p-2 font-thin">Bookings</h3>
 
-        <div class="overflow-y-scroll p-2" style="height: 50vh">
+        <div class="overflow-y-scroll p-4 text-xs"  style="height: 50vh">
           <table
             class="
-              min-w-full
               divide-y divide-gray-200
               text-gray-900
               font-thin
+              text-sm
               bg-white
             "
           >
@@ -767,19 +767,19 @@
               <tr>
                 
                 <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                  class=" bg-gray-100 px-2 py-2 whitespace-nowrap"
                 >
                   Booking Details
                 </td>
                 <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                  class=" bg-gray-100 py-2 whitespace-nowrap"
                 >
                   Passengers
                 </td>
                
               </tr>
             </thead>
-            <tbody class="overflow-y-scroll p-2 divide-y">
+            <tbody class="overflow-y-scroll p-2 divide-y text-xs">
               <tr v-for="booking in passengersInSchedule" :key="booking">
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <div>
@@ -804,8 +804,8 @@
                     </p>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <table class="table-auto divide-y">
+                <td class=" py-4 whitespace-nowrap">
+                  <table class="table-auto divide-y text-xs">
                     <tr>
                       <td class="px-2 border-b-2 border-gray-800">Seat</td>
                       <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
@@ -813,6 +813,7 @@
                     <tr
                       v-for="passenger in booking.passengers"
                       :key="passenger"
+                      class="text-xs"
                     >
                       <td class="px-2">
                         {{ passenger.seatNumber }}
@@ -849,7 +850,6 @@
   display: flex;
   flex-direction: column;
   max-height: 90%;
-  min-width: max-content;
   margin: 0 1rem;
   padding: 1rem;
   border: 1px solid #e2e8f0;
