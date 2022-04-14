@@ -88,7 +88,7 @@
         </p>
 
         <p>Amount: Nu.{{ booking.amount }}</p>
-        <p>Seat Numbers: {{ booking.passengers.length }}</p>
+        <p>Seats: {{ booking.passengers.length }}</p>
       </div>
     </div>
   </div>
