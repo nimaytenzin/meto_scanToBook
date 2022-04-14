@@ -196,7 +196,208 @@
         </button>
       </div>
 
-      <table class="min-w-full divide-y divide-gray-200">
+      <div class="flex flex-wrap w-full gap-6 text-gray-700">
+        <div
+          v-for="routepath in routepaths"
+          :key="routepath.id"
+          class="border p-4"
+        >
+          <p class="font-semibold">
+            {{ routepath.origin.name }} - {{ routepath.destination.name }}
+          </p>
+
+          <div v-if="routepath.routes.length">
+            <p class="text-sm">Routes</p>
+            <table class="table-auto divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <td class="px-12 py-2 text-left text-gray-500">Day</td>
+                  <td class="px-12 py-2 text-left text-gray-500">Details</td>
+
+                  <td class="px-12 py-2 text-left text-gray-500">Actions</td>
+                  <td class="px-12 py-2 text-left text-gray-500">SubRoutes</td>
+                </tr>
+              </thead>
+              <tr
+                v-for="route in routepath.routes"
+                :key="route"
+                class="text-gray-500"
+              >
+                <td class="px-12 py-2 text-left text-gray-500">
+                  {{ week[route.day - 1] }}
+                </td>
+                <td class="px-12 py-2 text-left text-gray-500">
+                  Departure: {{ route.departureTime }}
+                  <br />
+                  Fare: Nu {{ route.fare }}
+
+                  <p v-if="!route.isActive" class="text-red-800 text-md font-semibold">
+                    Route Suspended
+                  </p>
+                  <p v-else class="text-green-800 text-md font-semibold">Route Active</p>
+                </td>
+                <td class="px-12 py-2 text-left text-gray-500">
+                  <div class="flex flex-col gap-2 justify-around">
+                    <button
+                      @click="createNewSubRoute(routepath, route)"
+                      class="flex items-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Add Sub Route
+                    </button>
+                    <div
+                      @click="editRoute(routepath, route)"
+                      class="flex items-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                      Edit
+                    </div>
+                    <div
+                      @click="showDeleteRouteModal(route, routepath)"
+                      class="flex items-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                      Delete
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div v-if="route.subroutes.length">
+                    <table>
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <td class="px-6 py-2 text-left text-gray-500">
+                            Destination
+                          </td>
+                          <td class="px-6 py-2 text-left text-gray-500">
+                            Fare
+                          </td>
+
+                          <td class="px-6 py-2 text-left text-gray-500">
+                            Departure
+                          </td>
+                          <td class="px-6 py-2 text-left text-gray-500">
+                            Action
+                          </td>
+                        </tr>
+                      </thead>
+
+                      <tr v-for="subroute in route.subroutes" :key="subroute">
+                        <td class="px-6 py-2 text-left text-gray-500">
+                          {{ subroute.routepath.destination.name }}
+                        </td>
+                        <td class="px-6 py-2 text-left text-gray-500">
+                          {{ subroute.fare }}
+                        </td>
+                        <td class="px-6 py-2 text-left text-gray-500">
+                          {{ subroute.departureTime }}
+                        </td>
+                        <td>
+                          <div
+                            @click="editSubRoute(subroute)"
+                            class="
+                              flex
+                              items-center
+                              rounded-full
+                              text-gray-500
+                              p-1
+                            "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                            Edit
+                          </div>
+                          <div
+                            @click="deleteSubRoute(subroute)"
+                            class="
+                              flex
+                              items-center
+                              rounded-full
+                              text-gray-500
+                              p-1
+                            "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                            Delete
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div v-else>No Subroutes</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div v-else>No routes</div>
+        </div>
+      </div>
+
+      <!-- <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <td
@@ -238,19 +439,7 @@
             >
               Routes
             </td>
-            <!-- <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Edit
-            </td>-->
+        
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -262,162 +451,9 @@
               {{ routepath.destination.name }}
             </td>
             <td class="px-6 whitespace-nowrap">
-              <!-- <table class="w-full table-auto divide-y divide-gray-200">
-                <tr class="bg-gray-50">
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">
-                    Status
-                  </td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">
-                    Day
-                  </td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">
-                    departureTime
-                  </td>
-                  <td class="px-3 py-1 text-left font-medium text-gray-500">
-                    Fare
-                  </td>
-                  <td
-                    class="
-                      px-3
-                      py-1
-                      text-left text-xs
-                      font-medium
-                      text-gray-500
-                    "
-                  >
-                    Action
-                  </td>
-                </tr>
-                <tr
-                  v-for="route in routepath.routes"
-                  :key="route"
-                  class="text-gray-500"
-                >
-                  <td class="px-2 py-1">
-                    <div
-                      v-if="route.isActive"
-                      class="text-center p-1 bg-green-400 text-green-50 rounded"
-                    >
-                      Active
-                    </div>
-                    <div
-                      v-else
-                      class="text-center bg-red-400 text-red-50 p-1 rounded"
-                    >
-                      Suspended
-                    </div>
-                  </td>
-                  <td class="text-center px-2">{{ week[route.day - 1] }}</td>
-                  <td class="px-2">{{ route.departureTime }}</td>
-                  <td class="text-center px-2">Nu.{{ route.fare }}</td>
-                  <td class="px-2">
-                    <div class="flex gap-2">
-                      <button @click="createNewSubRoute(routepath, route)">
-                        Add Sub Route
-                      </button>
-                      <div
-                        @click="editRoute(routepath, route)"
-                        class="flex items-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                        Edit
-                      </div>
-                      <div
-                        @click="showDeleteRouteModal(route, routepath)"
-                        class="flex items-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                        Delete
-                      </div>
-                    </div>
-                  </td>
-
-                  <td>
-                    <table>
-                      <tr>
-                        <td
-                          class="
-                            px-6
-                            py-3
-                            text-left text-xs
-                            font-medium
-                            text-gray-500
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Origin
-                        </td>
-                        <td
-                          class="
-                            px-6
-                            py-3
-                            text-left text-xs
-                            font-medium
-                            text-gray-500
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Destination
-                        </td>
-                        <td
-                          class="
-                            px-6
-                            py-3
-                            text-left text-xs
-                            font-medium
-                            text-gray-500
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Routes
-                        </td>
-                      </tr>
-                      <tr v-for="subroute in route.subroutes" :key="subroute">
-                        <td>
-                          {{ week[subroute.day - 1] }}
-                        </td>
-                        <td>
-                          {{ subroute.fare }}
-                        </td>
-                        <td>
-                          {{ subroute.departureTime }}
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table> -->
-
               <div class="flex flex-wrap gap-2 w-full my-2">
+                
+
                 <div
                   v-for="route in routepath.routes"
                   :key="route"
@@ -598,7 +634,7 @@
             </td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
     <div>
       <!-- Add Stops Modal -->
@@ -1134,7 +1170,7 @@
                 {{ selectedRoutepath.destination.name }}
               </p>
               <p v-else>
-                <span class="font-bold">SubRoute</span> <br>
+                <span class="font-bold">SubRoute</span> <br />
                 {{ booking.subroute.routepath?.origin.name }} -
                 {{ booking.subroute.routepath?.destination.name }}
               </p>
@@ -1199,7 +1235,7 @@
           </p>
 
           <p>
-            {{ week[selectedRoute.day-1] }}
+            {{ week[selectedRoute.day - 1] }}
           </p>
           <label class="text-sm text-left text-gray-400 italic"
             >Select Route Path</label
@@ -1832,8 +1868,6 @@ export default {
       console.log("EDITING THIS ROUTE", this.selectedRoute);
 
       getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
-    
-
         if (res.data.length === 0) {
           editRoute(this.selectedRoute.id, this.selectedRoute).then(
             (response) => {
@@ -1861,9 +1895,8 @@ export default {
               }
             }
           );
-  
         } else {
-          console.log("CONFLICTS",res.data)
+          console.log("CONFLICTS", res.data);
           this.conflictingBookings = res.data;
           this.conflictingBookingsModal = true;
         }

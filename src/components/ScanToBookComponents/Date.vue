@@ -29,7 +29,6 @@
           :min-date="new Date()"
           @dayclick="onDayClick($event)"
           :attributes="attributes"
-          :disabled-dates="disabledDates"
         />
       </div>
 
@@ -109,59 +108,27 @@ export default {
           this.routes = res.data.routes;
           this.$store.commit("commitAvailableRoute", this.routes);
           this.routes.forEach((route) => {
-            getCancelledRoutesByRouteId(route.id).then((resp) => {
-              console.log(resp);
-              if (resp.data.length) {
-                resp.data.forEach((item) => {
-                  this.disabledDates.push(item.date);
-                });
-              }
-            });
             this.days.push(route.day);
           });
         }
         if (res.data.subroutes) {
           this.subroutes = res.data.subroutes;
           this.subroutes.forEach((subroute) => {
-            getCancelledRoutesBySubRouteId(subroute.id).then((resp) => {
-              console.log(resp);
-              if (resp.data.length) {
-                resp.data.forEach((item) => {
-                  this.disabledDates.push(item.date);
-                });
-              }
-            });
-
             this.days.push(subroute.day);
           });
         }
-
-        setTimeout(() => {
-          console.log(this.disabledDates);
-          this.attributes = [
-            {
-              dot: "green",
-              dates: { weekdays: this.days },
-              popover: {
-                label: "Bus Availble",
-              },
-              excludeDates: this.disabledDates,
+        this.attributes = [
+          {
+            dot: "green",
+            dates: { weekdays: this.days },
+            popover: {
+              label: "Bus Availble",
             },
-            {
-              key: "cancelled",
-              dates: this.disabledDates,
-              customData: {
-                status: "cancelled",
-              },
-              status: 1,
-            },
-          ];
-        }, 1000);
+            excludeDates: this.disabledDates,
+          },
+        ];
       })
       .catch((err) => console.log(err));
-
-    // this.$store.commit("addMatchedRoutes", this.routes);
-    // console.log("SUb Routes array", this.subroutes)
   },
   data() {
     return {
@@ -196,18 +163,10 @@ export default {
       } else {
         this.dateSelected = null;
         if (e.isDisabled) {
-          if (!e.attributes[0]) {
-            this.$toast.show(`Date expired`, {
-              position: "top",
-              type: "error",
-            });
-          } else {
-            this.$toast.show(`No Bus`, {
-              position: "top",
-              type: "info",
-            });
-          }
-
+          this.$toast.show(`Date expired`, {
+            position: "top",
+            type: "error",
+          });
           this.invalidDateClicked = true;
         } else {
           this.$toast.show(`No Bus Availble`, {

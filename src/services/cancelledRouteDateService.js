@@ -28,4 +28,12 @@ export async function deleteByDateAndRoute(data) {
 export async function deleteByDateAndSubRoute(data) {
     return await axios.post(`${devUrl}/cancelled-route-date/delete-by-subrouteDate`,data,{headers:authHeader()})
 }
+
+
+export async function getCancelledRoutesBySubRouteDate(subRouteId,date){
+    return await axios.get(`${devUrl}/cancelled-route-date/subroute-dateId/${subRouteId}/${date}`) 
+}
           
+export async function getCancelledROutesbyRouteDate(routeId,date){
+    return await axios.get(`${devUrl}/cancelled-route-date/route-dateId/${routeId}/${date}`) 
+}

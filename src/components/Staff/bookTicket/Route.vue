@@ -97,26 +97,23 @@
         </button>
       </div>
 
-      <div
-        class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0"
-      >
+      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0">
         <DatePicker
           v-model="date"
           :min-date="new Date()"
           @dayclick="onDayClick($event)"
           :attributes="attributes"
-          :disabled-dates="disabledDates"
         />
       </div>
 
-      <div >
+      <div>
         <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
           <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
           Bus available
         </h2>
       </div>
 
-      <div class="flex flex-col" v-if="schedules.length !== 0">
+      <div class="flex flex-col gap-2" v-if="schedules.length !== 0">
         <div
           v-for="schedule in schedules"
           :key="schedule"
@@ -130,49 +127,60 @@
 
             <p>Departure Time: {{ schedule.departureTime }}</p>
             <p>Fare: Nu. {{ schedule.fare }}</p>
-
-            <p v-if="schedule.parentRouteId">
+            <p v-if="schedule.parentRouteId" class="text-sm">
               This is a subroute, you will in travelling in
-              {{ schedule.parentRoute?.routepath?.origin.name }} -
-              {{ schedule.parentRoute?.routepath?.destination.name }}
+              <span class="font-semibold"
+                >{{ schedule.parentRoute?.routepath?.origin.name }} -
+                {{ schedule.parentRoute?.routepath?.destination.name }}</span
+              >
+              Bus
             </p>
-            <div class="flex jusitify-between gap-2 mt-1">
-              <button
-                class="
-                  rounded
-                  py-1
-                  px-2
-                  font-medium
-                  text-gray-900
-                  bg-gray-200
-                  hover:bg-gray-300 hover:text-gray-900
-                  active:bg-grey-900
-                "
-                @click="openSeatSelect(schedule)"
+            <div>
+              <div
+                v-if="!schedule.isCancelled"
+                class="flex justify-start gap-2 flex-wrap"
               >
-                Book Seat
-              </button>
-              <button
-                class="
-                  rounded
-                  py-1
-                  px-2
-                  font-medium
-                  text-gray-900
-                  bg-gray-200
-                  hover:bg-gray-300 hover:text-gray-900
-                  active:bg-grey-900
-                "
-                @click="viewPassengers(schedule)"
-              >
-                View Passengers
-              </button>
+                <button
+                  class="
+                    rounded
+                    py-1
+                    px-2
+                    font-medium
+                    text-gray-900
+                    bg-gray-200
+                    hover:bg-gray-300 hover:text-gray-900
+                    active:bg-grey-900
+                  "
+                  @click="openSeatSelect(schedule)"
+                >
+                  Book Seat
+                </button>
+                <button
+                  class="
+                    rounded
+                    py-1
+                    px-2
+                    font-medium
+                    text-gray-900
+                    bg-gray-200
+                    hover:bg-gray-300 hover:text-gray-900
+                    active:bg-grey-900
+                  "
+                  @click="viewPassengers(schedule)"
+                >
+                  View Passengers
+                </button>
+              </div>
+              <div v-else class="text-red-800 font-semibold">Bus Cancelled</div>
             </div>
           </div>
         </div>
       </div>
+
+      <div v-else>Sorry! No Bus available</div>
     </div>
 
+    <!-- SEATS SELECTION MODAL -->
     <vue-final-modal
       v-model="seatSelectModal"
       classes="modal-container"
@@ -260,6 +268,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- CONFIRM SEATS MODAL -->
     <vue-final-modal
       v-model="confirmSeatModal"
       classes="modal-container"
@@ -286,6 +295,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- ADD PASSENGER DETAILS MODAL -->
     <vue-final-modal
       v-model="addPassengerDetailsModal"
       classes="modal-container"
@@ -334,10 +344,7 @@
                   <p class="my-1 text-gray-800 font-thin">
                     Passenger {{ index + 1 }}
                   </p>
-                  <!-- <select v-model="passengers[index].seatNumber">
-                    <option
-                     :value="item.number">{{ item.number }}</option>
-                  </select> -->
+
                   <input
                     v-model="passengers[index].name"
                     placeholder="Name"
@@ -451,6 +458,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- CONFIRM PAYMENT MODAL -->
     <vue-final-modal
       v-model="confirmPaymentModal"
       classes="modal-container"
@@ -614,6 +622,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- DUPLICATE SEATS MODAL -->
     <vue-final-modal
       v-model="duplicateSeatsModal"
       classes="modal-container"
@@ -656,6 +665,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- REVERT SEATS MODAL -->
     <vue-final-modal
       v-model="reverSeatModal"
       classes="modal-container"
@@ -681,6 +691,8 @@
         </button>
       </div>
     </vue-final-modal>
+
+    <!-- SOCKET ERROR MODAL -->
     <vue-final-modal
       v-model="errorModal"
       classes="modal-container"
@@ -693,6 +705,7 @@
       </div>
     </vue-final-modal>
 
+    <!-- PASSENGER DETAILS MODAL -->
     <vue-final-modal
       v-model="passengerDetailsModal"
       classes="modal-container"
@@ -738,65 +751,81 @@
           </div>
         </div>
         <div v-if="passengersInSchedule.length">
-          <h3 class="text-xl px-6 font-thin">Passengers</h3>
+        <h3 class="text-xl p-2 font-thin">Bookings</h3>
 
-          <div class="p-2 flex overflow-scroll" style="height: 40vh">
-            <table
-              class="
-                min-w-full
-                divide-y divide-gray-200
-                text-gray-900
-                font-thin
-                bg-white
-              "
-            >
-              <thead>
-                <tr>
-                  <td
-                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
-                  >
-                    Seat Number
-                  </td>
-                  <td
-                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
-                  >
-                    Name
-                  </td>
-                  <td
-                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
-                  >
-                    CID
-                  </td>
-                  <td
-                    class="sticky bg-gray-100 top-0 px-6 py-4 whitespace-nowrap"
-                  >
-                    Contact
-                  </td>
-                </tr>
-              </thead>
-              <tbody class="overflow-y-scroll" style="50vh">
-                <tr v-for="passenger in passengersInSchedule" :key="passenger">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.seatNumber }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.name }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.cid }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ passenger.contact }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="overflow-y-scroll p-2" style="height: 50vh">
+          <table
+            class="
+              min-w-full
+              divide-y divide-gray-200
+              text-gray-900
+              font-thin
+              bg-white
+            "
+          >
+            <thead>
+              <tr>
+                <td
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                >
+                  Booking Details
+                </td>
+                <td
+                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
+                >
+                  Passengers
+                </td>
+               
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll p-2 divide-y">
+              <tr v-for="booking in passengersInSchedule" :key="booking">
+                <td class="px-2 py-2 whitespace-nowrap flex items-start">
+                  <div>
+                    <p>BookingID: {{ booking.id }}</p>
+                    <p>Amount: Nu.{{ booking.amount }}</p>
+                    <p v-if="booking.subroute" class="font-semibold">
+                      Till {{ booking.subroute?.routepath?.destination.name }}
+                    </p>
+                    <p v-else>
+                      Till {{ booking.route?.routepath?.destination.name }}
+                    </p>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <table class="table-auto divide-y">
+                    <tr>
+                      <td class="px-2 border-b-2 border-gray-800">Seat</td>
+                      <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
+                    </tr>
+                    <tr
+                      v-for="passenger in booking.passengers"
+                      :key="passenger"
+                    >
+                      <td class="px-2">
+                        {{ passenger.seatNumber }}
+                      </td>
+                      <td class="px-2 text-sm">
+                        Name :{{ passenger.name }} <br />
+                        Contact: {{ passenger.contact }}
+                        <br />
+                        CID: {{ passenger.cid }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              
+              </tr>
+            </tbody>
+          </table>
+      </div>
         </div>
       </div>
     </vue-final-modal>
   </div>
 </template>
+
+
 <style scoped>
 ::v-deep .modal-container {
   display: flex;
@@ -871,10 +900,12 @@ import {
   addNewCounterBooking,
   counterConfirmPayment,
   deleteBookingwithPassengers,
-  getPassengersOnBus,
+  getBookingsByRouteAndScheduleDate,
 } from "../../../services/bookingServices";
-import { updateBookingStatUsingBookingId } from "../../../services/bookingStatsService";
-import { getCancelledRoutesByRouteId, getCancelledRoutesBySubRouteId } from "../../../services/cancelledRouteDateService";
+import {
+  getCancelledROutesbyRouteDate,
+  getCancelledRoutesBySubRouteDate,
+} from "../../../services/cancelledRouteDateService";
 
 export default {
   data() {
@@ -999,17 +1030,10 @@ export default {
         this.schedules = [];
 
         if (e.isDisabled) {
-          if (!e.attributes[0]) {
-            this.$toast.show(`Date expired`, {
-              position: "top",
-              type: "error",
-            });
-          } else {
-            this.$toast.show(`No Bus`, {
-              position: "top",
-              type: "info",
-            });
-          }
+          this.$toast.show(`No Bus`, {
+            position: "top",
+            type: "info",
+          });
         } else {
           this.$toast.show(`No Bus Availble`, {
             position: "top",
@@ -1042,18 +1066,9 @@ export default {
         .then((res) => {
           if (res.data && res.status === 200) {
             console.log("ROUTES Search", res.data);
-
             if (res.data.routes) {
               this.routes = res.data.routes;
               res.data.routes.forEach((route) => {
-                getCancelledRoutesByRouteId(route.id).then((resp) => {
-                  console.log(resp);
-                  if (resp.data.length) {
-                    resp.data.forEach((item) => {
-                      this.disabledDates.push(item.date);
-                    });
-                  }
-                });
                 if (this.days.indexOf(route.day) === -1) {
                   this.days.push(route.day);
                 }
@@ -1063,53 +1078,21 @@ export default {
             if (res.data.subroutes) {
               this.subroutes = res.data.subroutes;
               this.subroutes.forEach((subroute) => {
-                getCancelledRoutesBySubRouteId(subroute.id).then((resp) => {
-                  console.log(resp);
-                  if (resp.data.length) {
-                    resp.data.forEach((item) => {
-                      this.disabledDates.push(item.date);
-                    });
-                  }
-                });
                 if (this.days.indexOf(subroute.day) === -1) {
                   this.days.push(subroute.day);
                 }
               });
             }
 
-            if (this.days) {
-              setTimeout(() => {
-                console.log(this.disabledDates);
-                this.attributes = [
-                  {
-                    dot: "green",
-                    dates: { weekdays: this.days },
-                    popover: {
-                      label: "Bus Availble",
-                    },
-                    excludeDates: this.disabledDates,
-                  },
-                  {
-                    key: "cancelled",
-                    dates: this.disabledDates,
-                    customData: {
-                      status: "cancelled",
-                    },
-                    status: 1,
-                  },
-                ];
-              }, 1000);
-            } else {
-              this.attributes = [
-                {
-                  dot: "green",
-                  dates: [],
-                  popover: {
-                    label: "Bus Availble",
-                  },
+            this.attributes = [
+              {
+                dot: "green",
+                dates: { weekdays: this.days },
+                popover: {
+                  label: "Bus Availble",
                 },
-              ];
-            }
+              },
+            ];
           } else {
             this.$toast.show(`No Bus Availble`, {
               position: "top",
@@ -1189,18 +1172,27 @@ export default {
     viewPassengers(schedule) {
       this.passengersInSchedule = [];
       this.passengerDetailsModal = true;
-      getPassengersOnBus(schedule.id, this.departureDate).then((res) => {
-        res.data.forEach((booking) => {
-          booking.passengers.forEach((passenger, index) => {
-            passenger.seatNumber = booking.bookedSeats[index].seatNumber;
-            this.passengersInSchedule.push(passenger);
-            this.seatsAvailable.splice(
-              this.seatsAvailable.indexOf(passenger.seatNumber),
-              1
-            );
+      this.seatsAvailable = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      ];
+
+      getBookingsByRouteAndScheduleDate(schedule.id, this.departureDate).then(
+        (res) => {
+          this.passengersInSchedule = res.data
+          res.data.forEach((booking) => {
+            booking.passengers.forEach((passenger) => {
+              let searchIndex = this.seatsAvailable.indexOf(
+                passenger.seatNumber
+              );
+              if (searchIndex !== -1) {
+                console.log("Seat Booked", passenger);
+                this.seatsAvailable.splice(searchIndex, 1);
+              }
+            });
           });
-        });
-      });
+        }
+      );
+
     },
     bindImage(seat) {
       if (seat.type === "seat") {
@@ -1336,7 +1328,7 @@ export default {
             seatId: this.seatSelected.number.toString(),
           })
         );
-        
+
         if (this.selectedSchedule.parentRouteId) {
           let newBooking = {
             booking: {
@@ -1471,11 +1463,28 @@ export default {
       this.schedules = [];
       this.routes.forEach((route) => {
         if (route.day === this.weekDay) {
+          route.isCancelled = 0;
+          getCancelledROutesbyRouteDate(route.id, this.departureDate).then(
+            (resp) => {
+              if (resp.data.length) {
+                route.isCancelled = 1;
+              }
+            }
+          );
           this.schedules.push(route);
         }
       });
       this.subroutes.forEach((subroute) => {
         if (subroute.day === this.weekDay) {
+          subroute.isCancelled = 0;
+          getCancelledRoutesBySubRouteDate(
+            subroute.id,
+            this.departureDate
+          ).then((resp) => {
+            if (resp.data.length) {
+              subroute.isCancelled = 1;
+            }
+          });
           getRouteDetailsByID(subroute.parentRouteId).then((resp) => {
             subroute.parentRoute = resp.data;
             this.schedules.push(subroute);

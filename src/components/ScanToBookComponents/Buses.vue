@@ -91,7 +91,6 @@
             >
               Click to Select
             </th>
-            
           </tr>
         </thead>
         <tbody
@@ -100,57 +99,71 @@
           :key="route"
         >
           <tr @click="commitToStore(route)" :class="tableRowColor(route)">
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td
+              :class="
+                route.isCancelled
+                  ? 'px-6 py-4 whitespace-nowrap line-through'
+                  : 'px-6 py-4 whitespace-nowrap'
+              "
+            >
               {{ route.departureTime }}
 
               <p v-if="route.parentRouteId">
-                This is a subroute, you will in  travelling in <br>
-                {{route.parentRoute?.routepath?.origin.name  }} -
-                {{route.parentRoute?.routepath?.destination.name  }}
-                <br>
-                Bus, please drop off at  {{ this.$store.state.destination.name }}
-
+                This is a subroute, you will in travelling in <br />
+                {{ route.parentRoute?.routepath?.origin.name }} -
+                {{ route.parentRoute?.routepath?.destination.name }}
+                <br />
+                Bus, please drop off at {{ this.$store.state.destination.name }}
               </p>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              Nu. {{ route.fare }}  
+            <td
+              :class="
+                route.isCancelled
+                  ? 'px-6 py-4 whitespace-nowrap line-through'
+                  : 'px-6 py-4 whitespace-nowrap'
+              "
+            >
+              Nu. {{ route.fare }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                v-if="!displayIcon(route)"
-                class="
-                  rounded
-                  w-full
-                  py-1
-                  px-2
-                  font-medium
-                  text-gray-900
-                  bg-gray-200
-                  hover:bg-gray-300 hover:text-gray-900
-                  active:bg-grey-900
-                "
-              >
-                Select Bus
-              </button>
-              <div v-else>
-                <div v-if="displayIcon(route)" class="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  Bus Selected
+              <div v-if="!route.isCancelled">
+                <button
+                  v-if="!displayIcon(route)"
+                  class="
+                    rounded
+                    w-full
+                    py-1
+                    px-2
+                    font-medium
+                    text-gray-900
+                    bg-gray-200
+                    hover:bg-gray-300 hover:text-gray-900
+                    active:bg-grey-900
+                  "
+                >
+                  Select Bus
+                </button>
+                <div v-else>
+                  <div v-if="displayIcon(route)" class="flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Bus Selected
+                  </div>
                 </div>
               </div>
+              <div v-else>Bus Cancelled</div>
             </td>
           </tr>
         </tbody>
@@ -194,32 +207,51 @@
 </template>
 
 <script>
-import crypto from 'crypto';
+import crypto from "crypto";
+import { getRouteDetailsByID } from "../../services/routeServices";
 import {
-  getRouteDetailsByID
-} from "../../services/routeServices"
+  getCancelledROutesbyRouteDate,
+  getCancelledRoutesBySubRouteDate,
+} from "../../services/cancelledRouteDateService";
 export default {
   created() {
-    console.log(this.$store.state.departureDate, "PKOKOKOKOK")
-    if (this.$store.state.origin === "" && this.$store.state.avaialableRoutes.length === 0) {
+    if (
+      this.$store.state.origin === "" &&
+      this.$store.state.avaialableRoutes.length === 0
+    ) {
       this.$router.push("/book");
     }
     this.routes = this.$store.state.avaialableRoutes;
-
-    this.routes.forEach(route=>{
-      if(route.parentRouteId){
-        console.log("THIS ROUTE IS A SUBROUTE", route)
-        getRouteDetailsByID(route.parentRouteId).then(res=>{
-          console.log("Parent route", res.data)
-          route.parentRoute = res.data
-        })
+    this.routes.forEach((route) => {
+      route.isCancelled = 0;
+      if (route.parentRouteId) {
+        getRouteDetailsByID(route.parentRouteId).then((res) => {
+          route.parentRoute = res.data;
+        });
+        getCancelledRoutesBySubRouteDate(
+          route.id,
+          this.$store.state.departureDate
+        ).then((resp) => {
+          if (resp.data.length) {
+            route.isCancelled = 1;
+          }
+        });
+      } else {
+        getCancelledROutesbyRouteDate(
+          route.id,
+          this.$store.state.departureDate
+        ).then((resp) => {
+          if (resp.data.length) {
+            route.isCancelled = 1;
+          }
+        });
       }
-    })
+    });
   },
   data() {
     return {
       routes: [],
-      selectedRoute:{},
+      selectedRoute: {},
       date: new Date(),
       selected: false,
       selectedSchedule: {},
@@ -246,23 +278,23 @@ export default {
     },
     seatSelection() {
       let parentRouteId;
-      if(this.selectedRoute.parentRouteId){
-        parentRouteId = this.selectedRoute.parentRoute.id
-      }else{
-        parentRouteId = this.selectedRoute.id
+      if (this.selectedRoute.parentRouteId) {
+        parentRouteId = this.selectedRoute.parentRoute.id;
+      } else {
+        parentRouteId = this.selectedRoute.id;
       }
-      var plaintext = `${parentRouteId}|${this.$store.state.departureDate}`
-      var hash = crypto.createHash('sha1')
-      hash.update(plaintext)
+      var plaintext = `${parentRouteId}|${this.$store.state.departureDate}`;
+      var hash = crypto.createHash("sha1");
+      hash.update(plaintext);
 
-      var roomID = hash.digest('hex');
-      this.$store.commit("commitSchedule",roomID);
-      this.$store.commit("commitScanRoomId",roomID);
+      var roomID = hash.digest("hex");
+      this.$store.commit("commitSchedule", roomID);
+      this.$store.commit("commitScanRoomId", roomID);
 
-      if ( this.selected) {
+      if (this.selected) {
         this.$router.push("/book/seats");
       } else {
-        this.$toast.show("Please Select a departure time", {
+        this.$toast.show("Please Select a bus", {
           position: "top",
           type: "error",
         });
@@ -270,10 +302,11 @@ export default {
     },
 
     commitToStore(e) {
-      this.selected = true;
-      this.selectedRoute = e;
-      console.log(e, "Selected Schedule");
-      this.$store.commit("addSelectedSchedule", e);
+      if (!e.isCancelled) {
+        this.selected = true;
+        this.selectedRoute = e;
+        this.$store.commit("addSelectedSchedule", e);
+      }
     },
     prev() {
       this.$router.push("/book/destination");

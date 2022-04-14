@@ -458,7 +458,7 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <table class="table-auto">
+                  <table class="table-auto divide-y">
                     <tr>
                       <td class="px-2 border-b-2 border-gray-800">Seat</td>
                       <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
@@ -471,7 +471,7 @@
                         {{ passenger.seatNumber }}
                       </td>
                       <td class="px-2 text-sm">
-                        Name {{ passenger.name }} <br />
+                        Name:{{ passenger.name }} <br />
                         Contact: {{ passenger.contact }}
                         <br />
                         CID: {{ passenger.cid }}
