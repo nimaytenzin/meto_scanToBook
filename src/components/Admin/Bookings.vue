@@ -141,11 +141,13 @@
                     <td class="px-2">Name</td>
                     <td class="px-2">CID</td>
                     <td class="px-2">Contact</td>
+                    <td class="px-2">Seat Number</td>
                   </tr>
                   <tr v-for="passenger in booking.passengers" :key="passenger">
                     <td class="px-2">{{ passenger.name }}</td>
                     <td class="px-2">{{ passenger.cid }}</td>
                     <td class="px-2">{{ passenger.contact }}</td>
+                    <td class="px-2"> {{ passenger.seatNumber  }} </td>
                   </tr>
                 </table>
               </td>
