@@ -176,7 +176,7 @@
               <tr class="bg-gray-100 text-gray-700 ">
                 <td class="px-2">Booking ID</td>
                 <td class="px-2">Mode</td>
-                <td class="px-2">Seats Booked</td>
+                <td class="px-2">Seats</td>
                 <td class="px-2">Fare (per seat)</td>
                 <td class="px-2">Service Charge (per seat)</td>
                 <td class="px-2">Amount</td>
@@ -210,8 +210,8 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2">
-                  <div class="flex gap-4 flex-wrap w-full">
+                <td class="px-2 w-1/6">
+                  <div class="flex gap-4 flex-wrap items-start ">
                     <p v-for="passenger in booking.passengers" :key="passenger">
                       {{ passenger.seatNumber }}
                     </p>

@@ -22,7 +22,7 @@
       Statistics & Trends
     </h1>
 
-    <div class="flex gap-6">
+    <div class="flex gap-6 h-96 overflow-y-scroll">
       <div class="mx-10 ">
         <p class="text-gray-700 font-bold">
           Top Routes (Number of tickets Sold)
