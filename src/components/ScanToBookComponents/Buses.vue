@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center p-2">
+  <div
+    class="min-h-screen w-full flex flex-col items-center justify-center p-2"
+  >
     <div>
       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
     </div>
@@ -9,30 +11,16 @@
         འགྲུལ་འཁོར་ གདམ་ཁ་རྐྱབ་གནང་།
       </h1>
     </div>
-    <div
-      class="mx-auto bg-white rounded-xl shadow-md min-w-6/12 mt-7 items-center"
-    >
-      <div class="flex p-3 flex-col">
-        <div class="flex flex-row justify-around items-center">
+    <div class="mx-auto bg-white rounded-xl shadow-md mt-7 items-center p-1">
+      <div class="flex flex-col">
+        <div class="flex flex-row justify-center items-center">
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(origin)</p>
             <h1 class="text-center text-3xl text-blue-900">
               {{ this.$store.state.origin.name }}
             </h1>
           </div>
-          <div
-            class="
-              flex flex-col
-              mt-3
-              mr-7
-              ml-7
-              justify-center
-              items-center
-              justify-items-center
-            "
-          >
-            <p class="text-center mt-4 text-gray-500 italic">to</p>
-          </div>
+          <div class="w-full flex justify-center">to</div>
           <div class="flex flex-col">
             <p class="text-sm text-center text-gray-600">(destination)</p>
             <h1 class="text-center text-3xl text-blue-900">
@@ -40,18 +28,18 @@
             </h1>
           </div>
         </div>
-        <p class="text-center mt-4 text-gray-500 italic">on</p>
+        <p class="text-center text-gray-500 italic">on</p>
         <h2 class="text-center text-2xl text-gray-500">
           {{ departureDate }}
         </h2>
       </div>
 
-      <table class="divide-y divide-gray-200 w-full">
+      <table class="divide-y divide-gray-200 w-full mt-4">
         <thead class="bg-gray-50">
           <tr>
             <th
               scope="col"
-              class="px-2 text-left text-xs font-medium text-gray-500"
+              class="px-2 py-2 text-left text-xs font-medium text-gray-500"
             >
               Departure
             </th>
@@ -75,7 +63,7 @@
           :key="route"
         >
           <tr @click="commitToStore(route)" :class="tableRowColor(route)">
-            <td :class="route.isCancelled ? 'px-2  line-through' : 'px-2 '">
+            <td :class="route.isCancelled ? 'px-2 py-2 line-through' : 'px-2 py-2'">
               {{ route.departureTime }}
 
               <p v-if="route.parentRouteId" class="text-xs">
