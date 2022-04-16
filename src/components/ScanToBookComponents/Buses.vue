@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center">
+  <div class="min-h-screen flex flex-col items-center justify-center p-2">
     <div>
       <img src="../../assets/meto.png" alt="Meto Transport" width="100" />
     </div>
@@ -46,48 +46,24 @@
         </h2>
       </div>
 
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="divide-y divide-gray-200 w-full">
         <thead class="bg-gray-50">
           <tr>
             <th
               scope="col"
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
+              class="px-2 text-left text-xs font-medium text-gray-500"
             >
               Departure
             </th>
             <th
               scope="col"
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
+              class="px-2 text-left text-xs font-medium text-gray-500"
             >
               Fare
             </th>
             <th
               scope="col"
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
+              class="px-2 text-left text-xs font-medium text-gray-500"
             >
               Click to Select
             </th>
@@ -99,41 +75,29 @@
           :key="route"
         >
           <tr @click="commitToStore(route)" :class="tableRowColor(route)">
-            <td
-              :class="
-                route.isCancelled
-                  ? 'px-6 py-4 whitespace-nowrap line-through'
-                  : 'px-6 py-4 whitespace-nowrap'
-              "
-            >
+            <td :class="route.isCancelled ? 'px-2  line-through' : 'px-2 '">
               {{ route.departureTime }}
 
-              <p v-if="route.parentRouteId">
+              <p v-if="route.parentRouteId" class="text-xs">
                 This is a subroute, you will in travelling in <br />
-                {{ route.parentRoute?.routepath?.origin.name }} -
-                {{ route.parentRoute?.routepath?.destination.name }}
-                <br />
-                Bus, please drop off at {{ this.$store.state.destination.name }}
+                <span class="font-semibold">
+                  {{ route.parentRoute?.routepath?.origin.name }} -
+                  {{ route.parentRoute?.routepath?.destination.name }}
+                </span>
               </p>
             </td>
-            <td
-              :class="
-                route.isCancelled
-                  ? 'px-6 py-4 whitespace-nowrap line-through'
-                  : 'px-6 py-4 whitespace-nowrap'
-              "
-            >
+            <td :class="route.isCancelled ? 'px-2 line-through' : 'px-2'">
               Nu. {{ route.fare }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-2 whitespace-nowrap">
               <div v-if="!route.isCancelled">
                 <button
                   v-if="!displayIcon(route)"
                   class="
                     rounded
                     w-full
-                    py-1
-                    px-2
+                    px-1
+                    m-1
                     font-medium
                     text-gray-900
                     bg-gray-200
