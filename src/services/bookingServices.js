@@ -110,3 +110,8 @@ export async function getBookingsByBookingDate(date){
 export async function staffIndividualCancelBooking(id,data){
     return await axios.put(`${devUrl}/bookings/staff-cancel/${id}`,data)
 }
+
+
+export async function getPaidBookingsByOperatorAndDate(operatorId,date){
+    return await axios.get(`${devUrl}/bookings/getbookings-by-date-operaterId/${operatorId}/${date}'`, {headers:authHeader()})
+}

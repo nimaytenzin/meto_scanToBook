@@ -87,6 +87,22 @@
           </p>
         </router-link>
 
+  <router-link to="/finance/challan">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+             Challan Closings
+          </p>
+        </router-link>
          <router-link to="/finance/statistics">
           <p
             class="

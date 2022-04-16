@@ -233,33 +233,36 @@
     content-class="modal-content"
     class="w-max-screen"
   >
-    <div class="modal__content text-center mt-1 flex flex-col">
-      <h3 class="text-xl">Assign Bus</h3>
-      <p class="text-center text-sm text-gray-600">(for)</p>
+    <div class="modal__content text-center flex flex-col">
+      <div
+        class="
+          font-nunito
+          text-gray-200
+          bg-gray-600
+          rounded-t
+          shadow-md
+          p-6
+          text-center
+        "
+      >
       <p>
-        <span class="text-xl font-semibold text-gray-700">
-          {{ selectedSchedule.routepath?.origin.name }}</span
-        >
-        -
-        <span class="text-xl font-semibold text-gray-700">
-          {{ selectedSchedule.routepath?.destination.name }}
-        </span>
+        Assign Bus
       </p>
-      <p>
-        Departure Time:
-        <span class="text-xl font-semibold text-gray-700"
-          >{{ selectedSchedule.departureTime }}
-        </span>
-      </p>
-      <p>
-        Departure Date:
-        <span class="text-xl font-semibold text-gray-700">{{
-          parseDepartureDate(selectedDate)
-        }}</span>
-      </p>
-      <hr class="my-2" />
-
-      <label class="text-sm text-left text-gray-400 italic"
+        <p>
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.origin.name }}</span
+          >
+          to
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.destination.name }}
+          </span>
+        </p>
+        <p>On</p>
+        <p>{{ parseDepartureDate(selectedDate) }} at</p>
+        <p>{{ selectedSchedule.departureTime }}</p>
+      </div>
+      <div class="px-6 flex flex-col">
+        <label class="text-sm text-left text-gray-400 italic"
         >Select Bus to assign</label
       >
       <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
@@ -272,8 +275,9 @@
           {{ bus.vechileNumber }}
         </option>
       </select>
+      </div>
     </div>
-    <div class="modal__action">
+    <div class="flex justify-center px-6 pb-2">
       <button
         class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
         @click="assignBus()"
@@ -295,39 +299,43 @@
     content-class="modal-content"
     class="w-max-screen"
   >
-    <div class="modal__content text-center mt-1 flex flex-col">
-      <h3 class="text-xl">Re-assign Bus</h3>
-      <p class="text-center text-sm text-gray-600">(for)</p>
+    <div class="modal__content text-center flex flex-col">
+       <div
+        class="
+          font-nunito
+          text-gray-200
+          bg-gray-600
+          rounded-t
+          shadow-md
+          p-6
+          text-center
+        "
+      >
       <p>
-        <span class="text-xl font-semibold text-gray-700">
-          {{ selectedSchedule.routepath?.origin.name }}</span
-        >
-        -
-        <span class="text-xl font-semibold text-gray-700">
-          {{ selectedSchedule.routepath?.destination.name }}
-        </span>
+        Reassign Bus
       </p>
-      <p>
-        Departure Time:
-        <span class="text-xl font-semibold text-gray-700"
-          >{{ selectedSchedule.departureTime }}
-        </span>
-      </p>
-      <p>
-        Departure Date:
-        <span class="text-xl font-semibold text-gray-700">{{
-          parseDepartureDate(selectedDate)
-        }}</span>
-      </p>
-      <hr class="my-2" />
-      <p class="p-1 rounded bg-green-100 text-green-900">
+        <p>
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.origin.name }}</span
+          >
+          to
+          <span class="text-2xl font-bold">
+            {{ selectedSchedule.routepath?.destination.name }}
+          </span>
+        </p>
+        <p>On</p>
+        <p>{{ parseDepartureDate(selectedDate) }} at</p>
+        <p>{{ selectedSchedule.departureTime }}</p>
+      </div>
+      <p class="px-6 rounded bg-green-50 text-green-900">
         Current Bus:
         <span class="text-xl font-semibold leading-relaxed">
           {{ selectedSchedule.bus?.vechileNumber }}
         </span>
       </p>
 
-      <label class="text-sm mt-2 text-left text-gray-400"
+    <div class="px-6 flex flex-col">
+        <label class="text-sm mt-2 text-left text-gray-400"
         >Select a new Bus to reassign</label
       >
       <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
@@ -341,7 +349,8 @@
         </option>
       </select>
     </div>
-    <div class="modal__action">
+    </div>
+    <div class="px-6 flex justify-center pb-2">
       <button
         class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
         @click="confirmReassignBus()"
@@ -357,6 +366,7 @@
     </div>
   </vue-final-modal>
 
+  <!-- View passengers Modal -->
   <vue-final-modal
     v-model="passengerDetailsModal"
     classes="modal-container"
@@ -384,10 +394,9 @@
             {{ selectedSchedule.routepath?.destination.name }}
           </span>
         </p>
-        <p>On</p>
-        <p>{{ parseDepartureDate(selectedDate) }} at</p>
-        <p>{{ selectedSchedule.departureTime }}</p>
-        <div class="text-xl">
+        <p>Date: {{ parseDepartureDate(selectedDate) }}</p>
+        <p>Time: {{ selectedSchedule.departureTime }}</p>
+        <div class="text-xl mt-2">
           <p>Seats Remaining: {{ seatsAvailable.length }}</p>
           <div class="flex gap-2 justify-center">
             <p v-for="seat in seatsAvailable" :key="seat">
@@ -435,20 +444,28 @@
                 </td>
               </tr>
             </thead>
-            <tbody class="overflow-y-scroll p-2">
+            <tbody class="overflow-y-scroll p-2 divide-y">
               <tr v-for="booking in routeDateBookings" :key="booking">
-                <td class="px-2 py-2 whitespace-nowrap">
-                  <p>BookingID: {{ booking.id }}</p>
-                  <p>Amount: Nu.{{ booking.amount }}</p>
-                  <p v-if="booking.subroute" class="font-semibold">
-                    Till {{ booking.subroute?.routepath?.destination.name }}
-                  </p>
-                  <p v-else >
-                    Till {{ booking.route?.routepath?.destination.name }}
-                  </p>
+                <td class="px-2 py-2 whitespace-nowrap flex items-start">
+                  <div>
+                    <p>BookingID: {{ booking.id }}</p>
+                      <p v-if="booking.modality !=='ONLINE'">
+                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
+                      </p>
+                      <p v-else>
+                        Online Booking
+                      </p>
+                    <p>Amount: Nu.{{ booking.amount }}</p>
+                    <p v-if="booking.subroute" class="font-semibold">
+                      Till {{ booking.subroute?.routepath?.destination.name }}
+                    </p>
+                    <p v-else>
+                      Till {{ booking.route?.routepath?.destination.name }}
+                    </p>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <table class="table-auto">
+                  <table class="table-auto divide-y">
                     <tr>
                       <td class="px-2 border-b-2 border-gray-800">Seat</td>
                       <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
@@ -461,7 +478,7 @@
                         {{ passenger.seatNumber }}
                       </td>
                       <td class="px-2 text-sm">
-                        Name {{ passenger.name }} <br />
+                        Name:{{ passenger.name }} <br />
                         Contact: {{ passenger.contact }}
                         <br />
                         CID: {{ passenger.cid }}
@@ -469,7 +486,7 @@
                     </tr>
                   </table>
                 </td>
-                <td class="px-2 py-2 whitespace-nowrap">
+                <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <button
                     class="bg-gray-600 text-gray-300 p-1 rounded"
                     @click="cancelBookingThreeFourthRefund(booking)"
@@ -513,10 +530,10 @@
             {{ selectedSchedule.routepath?.destination.name }}
           </span>
         </p>
-        <p>On</p>
-        <p>{{ parseDepartureDate(selectedDate) }} at</p>
-        <p>{{ selectedSchedule.departureTime }}</p>
-        <div class="text-xl">
+
+        <p>Date: {{ parseDepartureDate(selectedDate) }} at</p>
+        <p>Time: {{ selectedSchedule.departureTime }}</p>
+        <div>
           <p>Seats Remaining: {{ seatsAvailable.length }}</p>
           <div class="flex gap-2 justify-center">
             <p v-for="seat in seatsAvailable" :key="seat">
@@ -560,17 +577,25 @@
                 </td>
               </tr>
             </thead>
-            <tbody class="overflow-y-scroll p-2">
+            <tbody class="overflow-y-scroll p-2 divide-y">
               <tr v-for="booking in conflictingBookings" :key="booking">
-                <td class="px-2 py-2 whitespace-nowrap">
-                  <p>BookingID: {{ booking.id }}</p>
-                  <p>Amount: Nu.{{ booking.amount }}</p>
-                  <p v-if="booking.subroute" class="font-semibold">
-                    Till {{ booking.subroute.routepath?.destination.name }}
-                  </p>
-                  <p v-else>
-                    Till {{ booking.route.routepath?.destination.name }}
-                  </p>
+                <td class="px-2 py-2 whitespace-nowrap flex items-start">
+                 <div>
+                    <p>BookingID: {{ booking.id }}</p>
+                      <p v-if="booking.modality !=='ONLINE'">
+                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
+                      </p>
+                      <p v-else>
+                        Online Booking
+                      </p>
+                    <p>Amount: Nu.{{ booking.amount }}</p>
+                    <p v-if="booking.subroute" class="font-semibold">
+                      Till {{ booking.subroute?.routepath?.destination.name }}
+                    </p>
+                    <p v-else>
+                      Till {{ booking.route?.routepath?.destination.name }}
+                    </p>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <table class="table-auto">
@@ -594,14 +619,18 @@
                     </tr>
                   </table>
                 </td>
-                <td class="px-2 py-2 whitespace-nowrap">
-                  <p class="text-sm font-semibold">Eligible for 100% refund</p>
-                  <button
-                    class="bg-gray-600 text-gray-300 p-1 rounded"
-                    @click="cancelBookingFullRefund(booking)"
-                  >
-                    Cancel Booking
-                  </button>
+                <td class="px-2 py-2 whitespace-nowrap flex items-start">
+                  <div>
+                    <button
+                      class="bg-gray-600 text-gray-300 p-1 rounded"
+                      @click="cancelBookingFullRefund(booking)"
+                    >
+                      Cancel Booking
+                    </button>
+                    <p class="text-xs font-semibold break-words p-1">
+                      Eligible for 100% refund
+                    </p>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -705,7 +734,7 @@
         <p>On</p>
         <p>{{ parseDepartureDate(selectedDate) }} at</p>
         <p>{{ selectedSchedule.departureTime }}</p>
-        <div class="text-xl">
+        <div>
           <p>Seats Remaining: {{ seatsAvailable.length }}</p>
           <div class="flex gap-2 justify-center">
             <p v-for="seat in seatsAvailable" :key="seat">
@@ -795,7 +824,7 @@ import {
   getBookingsByRouteAndScheduleDate,
   cancelBooking,
   adminCancelBooking,
-  staffIndividualCancelBooking
+  staffIndividualCancelBooking,
 } from "../../services/bookingServices";
 import { getAllBuses } from "../../services/busServices";
 
@@ -927,6 +956,18 @@ export default {
         (res) => {
           console.log("PAID Bookings", res.data);
           this.routeDateBookings = res.data;
+
+          res.data.forEach((booking) => {
+            booking.passengers.forEach((passenger) => {
+              let searchIndex = this.seatsAvailable.indexOf(
+                passenger.seatNumber
+              );
+              if (searchIndex !== -1) {
+                console.log("Seat Booked", passenger);
+                this.seatsAvailable.splice(searchIndex, 1);
+              }
+            });
+          });
         }
       );
     },
@@ -958,16 +999,28 @@ export default {
     },
     cancelSpecificRoute(schedule) {
       this.selectedSchedule = schedule;
-
+      this.seatsAvailable = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      ];
       getBookingsByRouteAndScheduleDate(schedule.id, this.selectedDate).then(
         (res) => {
           if (res.data.length) {
             this.conflictingBookings = res.data;
+
+            res.data.forEach((booking) => {
+              booking.passengers.forEach((passenger) => {
+                let searchIndex = this.seatsAvailable.indexOf(
+                  passenger.seatNumber
+                );
+                if (searchIndex !== -1) {
+                  console.log("Seat Booked", passenger);
+                  this.seatsAvailable.splice(searchIndex, 1);
+                }
+              });
+            });
             this.conflictingBookingsModal = true;
-            
           } else {
             this.confirmCancelBusModal = true;
-            
           }
         }
       );
@@ -1067,7 +1120,7 @@ export default {
             if (resp.data.length) {
               this.conflictingBookings = resp.data;
               this.conflictingBookingsModal = true;
-           } else {
+            } else {
               this.confirmCancelBusModal = true;
               this.conflictingBookingsModal = false;
             }
@@ -1086,18 +1139,20 @@ export default {
         bookingStatus: "CANCELLED",
         bookingId: booking.id,
         seats: seatNumbers,
-        isAgreed:0
+        isAgreed: 0,
       };
-      staffIndividualCancelBooking(booking.id, cancelBookingObject).then((res) => {
-        if (res.status === 200) {
-          getBookingsByRouteAndScheduleDate(
-            this.selectedSchedule.id,
-            this.selectedDate
-          ).then((resp) => {
-            this.routeDateBookings = resp.data;
-          });
+      staffIndividualCancelBooking(booking.id, cancelBookingObject).then(
+        (res) => {
+          if (res.status === 200) {
+            getBookingsByRouteAndScheduleDate(
+              this.selectedSchedule.id,
+              this.selectedDate
+            ).then((resp) => {
+              this.routeDateBookings = resp.data;
+            });
+          }
         }
-      });
+      );
     },
   },
 };

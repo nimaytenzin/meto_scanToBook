@@ -95,6 +95,13 @@
                  <p class="text-sm font-semibold">
                    Status: {{booking.bookingStatus  }}
                 </p>
+                <p v-if="booking.modality !=='ONLINE'">
+                  CounterBooking <br>
+                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
+                      </p>
+                      <p v-else>
+                        Online Booking
+                      </p>
               </td>
               <td
                 class="
@@ -141,11 +148,13 @@
                     <td class="px-2">Name</td>
                     <td class="px-2">CID</td>
                     <td class="px-2">Contact</td>
+                    <td class="px-2">Seat Number</td>
                   </tr>
                   <tr v-for="passenger in booking.passengers" :key="passenger">
                     <td class="px-2">{{ passenger.name }}</td>
                     <td class="px-2">{{ passenger.cid }}</td>
                     <td class="px-2">{{ passenger.contact }}</td>
+                    <td class="px-2"> {{ passenger.seatNumber  }} </td>
                   </tr>
                 </table>
               </td>
@@ -195,6 +204,14 @@
           Booking Status :
           <span class="capitalize">{{ searchedBooking.bookingStatus }}</span>
         </p>
+        <p class="text-gray-50" v-if="searchedBooking.modality === 'ONLINE'">
+            Onine Booking
+        </p>
+        <p class="text-gray-50" v-else>
+           Counter Booking <br>
+           Booked by {{searchedBooking.user?.name  }}/ {{searchedBooking.user.email  }}
+        </p>
+        
 
         <hr class="w-full border border-gray-500 my-1" />
         <p>
