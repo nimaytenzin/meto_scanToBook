@@ -1329,13 +1329,17 @@ export default {
       if (detailsFilled) {
         console.log("CREATING NEW BOOKING FOR SCHEDULE", this.selectedSchedule);
         //locking seat
-        this.conn.send(
-          JSON.stringify({
-            scheduleHash: this.roomId.toString(),
-            messageType: "LOCK_CONFIRM",
-            seatId: this.seatSelected.number.toString(),
-          })
-        );
+        console.log("dsf:",this.passengers)
+        this.passengers.forEach((passenger)=>{
+          console.log(passenger)
+          this.conn.send(
+            JSON.stringify({
+              scheduleHash: this.roomId.toString(),
+              messageType: "LOCK_CONFIRM",
+              seatId: passenger.seatNumber,
+            })
+          );
+        })
         
         if (this.selectedSchedule.parentRouteId) {
           let newBooking = {
@@ -1426,6 +1430,7 @@ export default {
       };
       counterConfirmPayment(this.newBookingId, updateObject).then((res) => {
         if (res.status === 200) {
+          this.conn.close();
           this.$toast.show("Booking Successful", {
             position: "top",
             type: "success",
