@@ -51,7 +51,6 @@
           >
             View Challan
           </td>
-          
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -118,15 +117,10 @@
             </div>
             <div v-else>Suspended</div>
           </td>
-     
         </tr>
       </tbody>
     </table>
   </div>
-
- 
-
-  
 
   <!-- View passengers Modal -->
   <vue-final-modal
@@ -147,9 +141,7 @@
           text-center
         "
       >
-      <p class="text-gray-300">
-        Challan for
-      </p>
+        <p class="text-gray-300">Challan for</p>
         <p>
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.origin.name }}</span
@@ -177,98 +169,91 @@
         </div>
       </div>
 
-      <div v-if="routeDateBookings.length" class="p-6">
+      <div v-if="routeDateBookings.length" class="">
         <div>
           <table class="w-full table-auto divide-y">
             <thead>
-              <tr>
-                <td>Booking ID</td>
-                <td>Mode</td>
-                <td>Seats Booked</td>
-                <td>Fare (per seat) </td>
-                <td>Service Charge (per seat) </td>
-                <td>Amount</td>
+              <tr class="bg-gray-100 text-gray-700 ">
+                <td class="px-2">Booking ID</td>
+                <td class="px-2">Mode</td>
+                <td class="px-2">Seats Booked</td>
+                <td class="px-2">Fare (per seat)</td>
+                <td class="px-2">Service Charge (per seat)</td>
+                <td class="px-2">Amount</td>
               </tr>
             </thead>
             <tbody class="divide-y">
               <tr v-for="booking in routeDateBookings" :key="booking">
-                <td>
-                  {{booking.id  }}
+                <td class="px-4 flex items-start">
+                  {{ booking.id }}
                 </td>
-                <td>
-                  <div v-if="booking.modality==='ONLINE'" class="font-semibold">
+                <td class="px-2">
+                  <div
+                    v-if="booking.modality === 'ONLINE'"
+                    class="font-semibold"
+                  >
                     Online Booking
                   </div>
                   <div v-else class="text-sm">
+                    <p class="font-semibold">Counter Booking</p>
+                    <p>Booked by {{ booking.user.name }}</p>
                     <p class="font-semibold">
-                      Counter Booking
+                      Payment:
+                      {{ booking.modality === "CASH" ? "Cash" : "Epayment" }}
                     </p>
-                    <p>
-                      Booked by {{ booking.user.name  }}
-                    </p>
-                    <p class="font-semibold">
-                      Payment: {{booking.modality==='CASH'?"Cash":"Epayment"  }}
-                    </p>
-                    <div v-if="booking.modality==='MBOB'" class="pl-6">
+                    <div v-if="booking.modality === 'MBOB'" class="pl-6">
                       Journal Details
-                      <br>
-                      Bank: {{booking.depositBank  }}
-                      <br>
-                      Jrl No: {{booking.depositJournal  }}
+                      <br />
+                      Bank: {{ booking.depositBank }}
+                      <br />
+                      Jrl No: {{ booking.depositJournal }}
                     </div>
-                    
-                  </div>
-                   
-                   
-                 
-                </td>
-                <td>
-                  <div class="flex gap-4">
-                    <p v-for="passenger in booking.passengers" :key="passenger" class="bg-green-600 py-1 px-2 text-center rounded text-green-100">
-                    {{ passenger.seatNumber  }}
-                  </p>
                   </div>
                 </td>
-                <td>
-                  Nu.{{selectedSchedule.fare  }}
+                <td class="px-2">
+                  <div class="flex gap-4 flex-wrap w-full">
+                    <p v-for="passenger in booking.passengers" :key="passenger">
+                      {{ passenger.seatNumber }}
+                    </p>
+                  </div>
                 </td>
-                <td>
-                  <p v-if="booking.modality === 'ONLINE'"> Nu.35</p>
-                  <p v-else>
-                    Nu.0
-                  </p>
+                <td class="px-2">Nu.{{ selectedSchedule.fare }}</td>
+                <td class="px-2">
+                  <p v-if="booking.modality === 'ONLINE'">Nu.35</p>
+                  <p v-else>Nu.0</p>
                 </td>
-                <td>
-                  Nu. {{booking.amount  }}
-                </td>
+                <td class="px-2">Nu. {{ booking.amount }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="flex justify-end mt-10">
+        <div class="flex justify-end mt-10 p-4">
           <table class="text-md">
-            <tr>
-              <td>Grand Total: </td> <td>Nu. {{grandTotal  }} </td>
+            <tr class="font-bold">
+              <td >Grand Total:</td>
+              <td>Nu. {{ grandTotal }}</td>
             </tr>
             <tr>
-              <td class="col-span-2"> <hr class="w-full"> </td>
+              <td class="col-span-2"><hr class="w-full" /></td>
             </tr>
             <tr>
-              <td class="pl-6">Cash: </td> <td> Nu. {{ cashTotal  }} </td>
+              <td class="pl-6">Cash:</td>
+              <td>Nu. {{ cashTotal }}</td>
             </tr>
             <tr>
-              <td class="pl-6">Epayment: </td> <td> Nu. {{ epaymentTotal  }} </td>
+              <td class="pl-6">Epayment:</td>
+              <td>Nu. {{ epaymentTotal }}</td>
             </tr>
-             <tr>
-              <td class="pl-6">Online: </td> <td> Nu. {{ onlineTotal  }} </td>
+            <tr>
+              <td class="pl-6">Online:</td>
+              <td>Nu. {{ onlineTotal }}</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
   </vue-final-modal>
-
 </template>
 
 
@@ -283,7 +268,6 @@
   display: flex;
   flex-direction: column;
   max-height: 90%;
-  min-width: 90%;
   border-radius: 0.25rem;
   background: #fff;
 }
@@ -292,7 +276,6 @@
   display: flex;
   flex-direction: column;
   max-height: 90%;
-  min-width: 90%;
   margin: 0;
   padding: 0;
   border-radius: 0.25rem;
@@ -330,24 +313,15 @@
 
 
 <script>
-import {
-  getBookingsByRouteAndScheduleDate,
-  cancelBooking,
-  adminCancelBooking,
-  staffIndividualCancelBooking,
-} from "../../services/bookingServices";
+import { getBookingsByRouteAndScheduleDate } from "../../services/bookingServices";
 import { getAllBuses } from "../../services/busServices";
 
 import {
-  createNewBusRoster,
   getBusbyRouteAndDate,
   getRoutesByWeekday,
-  updateBusRoster,
 } from "../../services/routeServices";
 
-import {
-  getCancelledRoutesByDate,
-} from "../../services/cancelledRouteDateService";
+import { getCancelledRoutesByDate } from "../../services/cancelledRouteDateService";
 
 export default {
   data() {
@@ -375,10 +349,10 @@ export default {
       conflictingBookings: [],
       routeDateBookings: [],
       storedDateClickEvent: {},
-      grandTotal:0,
-      cashTotal:0,
-      epaymentTotal:0,
-      onlineTotal:0
+      grandTotal: 0,
+      cashTotal: 0,
+      epaymentTotal: 0,
+      onlineTotal: 0,
     };
   },
   computed: {},
@@ -393,8 +367,7 @@ export default {
       let d = new Date(date);
       return d.toDateString();
     },
-   
-  
+
     onDayClick(e) {
       this.selectedDate = e.id;
       this.selectedWeekdate = e.weekday;
@@ -446,14 +419,14 @@ export default {
 
           res.data.forEach((booking) => {
             this.grandTotal += booking.amount;
-            if(booking.modality === 'CASH'){
-              this.cashTotal += booking.amount
+            if (booking.modality === "CASH") {
+              this.cashTotal += booking.amount;
             }
-            if(booking.modality === 'MBOB'){
-              this.epaymentTotal += booking.amount
+            if (booking.modality === "MBOB") {
+              this.epaymentTotal += booking.amount;
             }
-            if(booking.modality === 'ONLINE'){
-              this.onlineTotal += booking.amount
+            if (booking.modality === "ONLINE") {
+              this.onlineTotal += booking.amount;
             }
             booking.passengers.forEach((passenger) => {
               let searchIndex = this.seatsAvailable.indexOf(
@@ -468,11 +441,6 @@ export default {
         }
       );
     },
-   
-   
-   
-
-
   },
 };
 </script>

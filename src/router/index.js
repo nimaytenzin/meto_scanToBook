@@ -98,7 +98,7 @@ const routes = [
     component: () => import('../views/Admin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+        path: '', component: () => import('../components/Admin/Today.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
         path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
@@ -113,7 +113,7 @@ const routes = [
         path: 'bookings', component: () => import('../components/Admin/Bookings.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'challan', component: () => import('../components/FinanceAdmin/Challan.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+        path: 'challan', component: () => import('../components/Admin/Challan.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
         path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
@@ -152,7 +152,10 @@ const routes = [
       },
       {
         path: 'challan', component: () => import('../components/FinanceAdmin/Challan.vue'), meta: { requiresAuth: true, financeAdmin: true }
-      }
+      },
+      {
+        path: 'bookings', component: () => import('../components/FinanceAdmin/Bookings.vue'), meta: { requiresAuth: true, financeAdmin: true }
+      },
 
     ]
   },

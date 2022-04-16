@@ -154,6 +154,22 @@
              Cancellations
           </p>
         </router-link>
+         <router-link to="/finance/bookings">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+            Bookings
+          </p>
+        </router-link>
 
         <a href="https://bfssecure.rma.org.bt/BFSSecure/login" target="_blank">
 

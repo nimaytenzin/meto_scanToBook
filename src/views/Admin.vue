@@ -70,6 +70,22 @@
       </a>
 
       <nav>
+         <router-link to="/admin/">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-indigo-700
+              hover:text-white
+            "
+          >
+            Dashboard
+          </p>
+        </router-link>
         <router-link to="/admin/manage-buses">
           <p
             class="
