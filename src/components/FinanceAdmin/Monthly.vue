@@ -101,7 +101,6 @@
     
 
        <line-chart
-        prefix="Nu "
         :discrete="false"
         loading="Fetching Data..."
         :data="data"
