@@ -39,7 +39,12 @@
           <div class="text-sm rounded-md shadow-lg">
             <div class="text-right">
               <p class="font-semibold text-3xl">
-                Nu {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount.toFixed(1) : 0 }}
+                Nu
+                {{
+                  statsToday.TOTAL?.amount
+                    ? statsToday.TOTAL.amount.toFixed(1)
+                    : 0
+                }}
               </p>
               <span> Total Sale</span>
             </div>
@@ -142,47 +147,26 @@
             <h1 class="text-xl font-bold text-gray-700">
               StaffWise Statistics
             </h1>
-            <table class="table-auto w-full">
+            <table class="table-auto w-full text-sm">
               <thead class="bg-gray-200 border-b">
                 <tr>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
                     Staff
                   </th>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left py-2"
                   >
-                    Tickets Sold
+                    Counter Cash
                   </th>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Total Revenue
+                    Counter Epayment
                   </th>
                 </tr>
               </thead>
@@ -196,62 +180,35 @@
                     transition
                     duration-300
                     ease-in-out
-                    mb-2
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
+                  <td class="text-gray-900 px-3 text-left">
                     {{
-                      staffData.user?.name
-                        ? staffData.user?.name
-                        : "Online "
+                      staffData.user?.name ? staffData.user?.name : "Online "
                     }}
                   </td>
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
-                    <div class="text-md text-gray-900">
-                      Online  :
-                      {{
-                        staffData.onlineTickets ? staffData.onlineTickets : 0
+                  <td class="text-gray-900 px-3 text-left py-2">
+                    <div v-if="staffData.cashTickets">
+                      Bookings:{{
+                        staffData.cashTickets ? staffData.cashTickets : 0
                       }}
+                      <br />
+                      Amount: Nu.
+                      {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
+                    </div>
+                    <div v-else>
 
-                      <hr class="w-full" />
-
-                      <p>Counter </p>
-                      <hr class="w-full" />
-                      <p class="text-center">
-                         Cash:
-                      {{ staffData.cashTickets ? staffData.cashTickets : 0 }}
-                      </p>
-                      
-                      <p class="text-center">
-                         Mbob:
-                      {{ staffData.scanTickets ? staffData.scanTickets : 0 }}
-                      </p>
-
-                      <hr class="w-full" />
-                      Total:
-                      {{ staffData.ticketsSold ? staffData.ticketsSold : 0 }}
                     </div>
                   </td>
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
-                    <div class="text-md text-gray-900">
-                      Online  : Nu
-                      {{ staffData.onlineAmount ? staffData.onlineAmount : 0 }}
-                      <hr class="w-full" />
-                        <p>Counter </p>
-                      <hr class="w-full" />
-                     <p class="text-center">
-                        Cash: Nu
-                      {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
-                     </p>
-                      
-                    <p class="text-center">
-                        Mbob: Nu
+                  <td class="text-gray-900 px-3 text-left">
+                    <div>
+                      Bookings:{{
+                        staffData.scanTickets ? staffData.scanTickets : 0
+                      }}
+                      <br />
+                      Amount: Nu.
                       {{ staffData.scanAmount ? staffData.scanAmount : 0 }}
-                    </p>
-                      <hr class="w-full" />
-                      Total: Nu
-                      {{ staffData.amountSold ? staffData.amountSold : 0 }}
                     </div>
                   </td>
                 </tr>
@@ -265,14 +222,16 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 font-semibold px-6 py-4 text-left">
+                  <td
+                    class="text-md text-gray-900 font-semibold px-3 text-left"
+                  >
                     Total Revenue: Nu.
                     {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount : 0 }}
                     <br />
                   </td>
                   <td
                     colspan="2"
-                    class="text-md text-gray-900 font-semibold px-6 py-4 text-left"
+                    class="text-md text-gray-900 font-semibold px-3 text-left"
                   >
                     Total Tickets Sold:
                     {{
@@ -290,47 +249,39 @@
         <div class="m-2" id="routewise data">
           <h1 class="text-xl font-bold text-gray-700">RouteWise Statistics</h1>
           <div>
-            <table class="table-auto w-full">
+            <table class="table-auto w-full text-sm">
               <thead class="bg-gray-200 border-b">
                 <tr>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
                     Route
                   </th>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Tickets Sold
+                    Total
+                  </th>
+
+                  <th
+                    scope="col"
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
+                  >
+                    Online
                   </th>
                   <th
                     scope="col"
-                    class="
-                      text-sm
-                      font-medium
-                      text-gray-900
-                      px-6
-                      py-4
-                      text-left
-                    "
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Total Revenue
+                    Counter Cash
+                  </th>
+                  <th
+                    scope="col"
+                    class="text-sm font-medium text-gray-900 px-3 text-left"
+                  >
+                    Counter Epayment
                   </th>
                 </tr>
               </thead>
@@ -344,62 +295,65 @@
                     transition
                     duration-300
                     ease-in-out
-                    mb-2
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
+                  <td class="text-gray-900 px-3 text-left my-2">
                     {{ routeData.origin?.name }} -
                     {{ routeData.destination?.name }}
                     <br />
                     {{ routeData.route?.departureTime }}
                   </td>
 
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
+                  <td class="text-gray-900 px-3 text-left my-2">
                     <div>
-                      Online  : 
+                      Bookings:
+                      {{
+                        routeData.ticketsSold ? routeData.ticketsSold : 0
+                      }}
+                      <br />
+                      Amount:
+                      {{ routeData.amountSold ? routeData.amountSold : 0 }}
+                    </div>
+                  </td>
+                  <td class="text-gray-900 px-3 text-left my-2">
+                    <div v-if="routeData.onlineTickets">
+                      Bookings:
                       {{
                         routeData.onlineTickets ? routeData.onlineTickets : 0
                       }}
                       <br />
-                      <p>Counter </p>
-                      <hr class="w-full" />
-
-                      <p class="text-center">
-                        Cash:
-                        {{ routeData.cashTickets ? routeData.cashTickets : 0 }}
-                      </p>
-
-                      <p class="text-center">
-                        Mbob:
-                        {{ routeData.scanTickets ? routeData.scanTickets : 0 }}
-                      </p>
-
-                      <hr class="w-full" />
-                      Total:
-                      {{ routeData.ticketsSold ? routeData.ticketsSold : 0 }}
+                      Amount:
+                      {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
+                    </div>
+                    <div v-else>
+                      -
                     </div>
                   </td>
-                  <td class="text-md text-gray-900 px-6 py-3 text-left">
-                    <div>
-                      Online  : Nu
-                      {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
+                  <td class="text-gray-900 px-3 text-left py-2">
+                    <div v-if="routeData.cashTickets">
+                      Bookings:{{
+                        routeData.cashTickets ? routeData.cashTickets : 0
+                      }}
                       <br />
-
-                      <p>Counter </p>
-                      <hr class="w-full" />
-                      <p class="text-center">
-                        Cash:Nu
-                        {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
-                      </p>
-
-                      <p class="text-center">
-                        Mbob:Nu
-                        {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
-                      </p>
-                      <hr class="w-full" />
-                      Total: Nu
-                      {{ routeData.amountSold ? routeData.amountSold : 0 }}
+                      Amount: Nu.
+                      {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
+                    </div>
+                    <div v-else>
+                      -
+                    </div>
+                  </td>
+                  <td class="text-gray-900 px-3 text-left my-2">
+                    <div v-if="routeData.scanTickets">
+                      Bookings:{{
+                        routeData.scanTickets ? routeData.scanTickets : 0
+                      }}
+                      <br />
+                      Amount: Nu.
+                      {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
+                    </div>
+                    <div v-else>
+                      -
                     </div>
                   </td>
                 </tr>
@@ -413,14 +367,28 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-md text-gray-900 font-semibold px-6 py-4 text-left">
+                  <td
+                    class="
+                      text-md text-gray-900
+                      font-semibold
+                      px-3
+                      my-2
+                      text-left
+                    "
+                  >
                     Total Revenue: Nu.
                     {{ statsToday.TOTAL?.amount ? statsToday.TOTAL.amount : 0 }}
                     <br />
                   </td>
                   <td
                     colspan="2"
-                    class="text-md text-gray-900 font-semibold px-6 py-4 text-left"
+                    class="
+                      text-md text-gray-900
+                      font-semibold
+                      px-3
+                      my-2
+                      text-left
+                    "
                   >
                     Total Tickets Sold:
                     {{
@@ -459,11 +427,12 @@ export default {
   },
   created() {
     getStaffStatsToday().then((res) => {
+      console.log("STAFF STATS", res.data);
       this.staffStats = res.data;
     });
     getRouteStatsToday().then((res) => {
       this.routeStats = res.data;
-      console.log(this.routeStats)
+      console.log(this.routeStats);
     });
     getStatsByModalityToday().then((res) => {
       let ticketsSold = 0;
