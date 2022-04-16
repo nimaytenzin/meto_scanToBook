@@ -1343,7 +1343,7 @@ export default {
             JSON.stringify({
               scheduleHash: this.roomId.toString(),
               messageType: "LOCK_CONFIRM",
-              seatId: passenger.seatNumber,
+              seatId: passenger.seatNumber.toString(),
             })
           );
         })
