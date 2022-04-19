@@ -62,8 +62,7 @@
                 >Contact Us</span
               >
               <ul class="list-unstyled">
-                <li>Contact : +975 17178282</li>
-                <li>Email: kamari2010@hotmail.com</li>
+                <li>Contact : +975 17766997</li>
 
                 <!-- <li>
                   <a

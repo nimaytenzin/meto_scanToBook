@@ -34,8 +34,7 @@
               <li>Name</li>
               <li>Contact</li>
               <li>CID/EID/Kasho Number</li>
-              <li>Bank Account Number</li>
-              <li>Bank Account Name</li>
+            
             </ol>
         </li>
         <li class="m-1">
@@ -54,9 +53,6 @@
             <li>a.Customer Number</li>
             <li>b.Customer Contact Number</li>
             <li>c.Customer CID</li>
-            <li>d.Bank Account Number</li>
-            <li>e.Bank Name</li>
-            <li>f.Bank Account Name</li>
           </ul>
         </li>
         <li class="m-1">
