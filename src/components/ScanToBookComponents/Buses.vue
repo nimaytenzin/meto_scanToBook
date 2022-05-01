@@ -71,6 +71,7 @@
                 <span class="font-semibold">
                   {{ route.parentRoute?.routepath?.origin.name }} -
                   {{ route.parentRoute?.routepath?.destination.name }}
+                  bus
                 </span>
               </p>
             </td>
