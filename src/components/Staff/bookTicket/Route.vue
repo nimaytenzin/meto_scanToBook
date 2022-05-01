@@ -1010,7 +1010,7 @@ export default {
   created() {
     getAllStops()
       .then((res) => {
-        this.stops = res;
+        this.stops = res.data;
       })
       .catch((err) => console.log(err));
   },
