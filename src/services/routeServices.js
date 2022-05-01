@@ -35,6 +35,10 @@ export async function getAllRoutePaths(){
     return await axios.get(`${devUrl}/route-path`)
 }
 
+export async function findAllRoutesByRoutepath(id){
+    return await axios.get(`${devUrl}/routes/routepath/${id}`,{headers:authHeader()})
+}
+
 export async function createNewRoutePath(data){
     return await axios.post(`${devUrl}/route-path`,data,{headers:authHeader()})
 }

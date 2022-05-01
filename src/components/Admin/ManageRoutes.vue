@@ -3,32 +3,8 @@
     <h2 class="bg-gray-300 w-full text-gray-800 text-left p-4 rounded">
       Routes and Stop Management
     </h2>
-    <div class="flex flex-row gap-7">
-      <div
-        class="
-          flex flex-row
-          m-auto
-          bg-indigo-900
-          text-blue-100
-          p-6
-          gap-8
-          rounded-lg
-          border-white
-        "
-      >
-        <div class="my-auto">
-          <div class="text-lg">Routes</div>
-          <div class="text-4xl text-white font-bold">{{ routes.length }}</div>
-        </div>
-        <div class="my-auto">
-          <div class="text-lg">Stops</div>
-          <div class="text-4xl text-white font-bold">{{ stops.length }}</div>
-        </div>
-
-        <div></div>
-      </div>
-
-      <div class="space-y-2 flex-1">
+    <div class="">
+      <div class="flex">
         <button
           class="p-4 flex items-center gap-2"
           @click="addStopsModal = true"
@@ -49,110 +25,6 @@
           </svg>
           <p>Add Stops</p>
         </button>
-
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50 flex">
-            <tr>
-              <th
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Name
-              </th>
-              <th
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Focal Staff
-              </th>
-              <th
-                class="
-                  px-6
-                  py-3
-                  text-left text-xs
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Edit
-              </th>
-            </tr>
-          </thead>
-          <tbody
-            class="
-              bg-white
-              divide-y divide-gray-200
-              overflow-y-scroll
-              flex flex-col
-            "
-            style="height: 30vh"
-          >
-            <tr
-              v-for="stop in stops"
-              :key="stop"
-              class="hover:bg-gray-200 flex flex-row items-stretch"
-            >
-              <td class="px-6 py-4 whitespace-nowrap">{{ stop.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{ stop.user?.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap flex gap-4">
-                <button @click="editStop(stop)" class="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Edit
-                </button>
-                <!-- <button @click="deleteStop(stop)" class="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                  Delete
-                </button>-->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div>
-      <div class="flex gap-2">
         <button
           class="p-4 flex items-center gap-2"
           @click="addRoutePathModal = true"
@@ -195,20 +67,89 @@
           <p>Add Bus Routes</p>
         </button>
       </div>
+      <div class="w-full overflow-y-scroll" style="height: 40vh">
+        <table class="w-full divide-y divide-gray-200">
+          <tr>
+            <td class="px-6 py-3 text-left text-xs font-medium text-gray-500">
+              Stop Details
+            </td>
+            <td class="px-6 py-3 text-left text-xs font-medium text-gray-500">
+              Routes
+            </td>
+          </tr>
+
+          <tr v-for="stop in stops" :key="stop" class="w-full">
+            <td
+              class="
+                px-6
+                py-3
+                text-left
+                whitespace-nowrap
+                flex flex-col
+                justify-start
+              "
+            >
+              {{ stop.name }} <br />
+              <p class="text-sm">Managed by {{ stop.user?.name }}</p>
+
+              <button @click="editStop(stop)" class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+                Edit Stop
+              </button>
+            </td>
+            <td class="px-6 py-3 text-left whitespace-nowrap">
+              <div v-if="stop.routepaths.length" class="flex flex-col gap-1">
+                <div
+                  v-for="routepath in stop.routepaths"
+                  :key="routepath"
+                  class="flex justify-between hover:bg-gray-200"
+                >
+                  <div>
+                    {{ routepath.origin.name }} -
+                    {{ routepath.destination.name }}
+                  </div>
+                  <div>
+                    <button
+                      class="border p-2"
+                      @click="loadSchedules(routepath)"
+                    >
+                      Load Schedules
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div v-else>No Outgoing Routes</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr class="w-full my-3 border-2 border-gray-400" />
+    <div>
+      <div class="flex gap-2"></div>
 
       <div class="flex flex-wrap w-full gap-6 text-gray-700">
-        <div
-          v-for="routepath in routepaths"
-          :key="routepath.id"
-          class="border p-4"
-        >
-          <p class="font-semibold">
-            {{ routepath.origin.name }} - {{ routepath.destination.name }}
+        <div class="border p-4 w-full">
+          <p class="text-2xl text-center my-2" v-if="selectedRoutepath.origin">
+            Showing Schedule for {{ selectedRoutepath.origin?.name }} -
+            {{ selectedRoutepath.destination?.name }}
           </p>
-
-          <div v-if="routepath.routes.length">
-            <p class="text-sm">Routes</p>
-            <table class="table-auto divide-y divide-gray-200">
+          <div v-if="schedules.length">
+            <table class="table-auto w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
                   <td class="px-12 py-2 text-left text-gray-500">Day</td>
@@ -219,27 +160,32 @@
                 </tr>
               </thead>
               <tr
-                v-for="route in routepath.routes"
-                :key="route"
+                v-for="schedule in schedules"
+                :key="schedule"
                 class="text-gray-500"
               >
                 <td class="px-12 py-2 text-left text-gray-500">
-                  {{ week[route.day - 1] }}
+                  {{ week[schedule.day - 1] }}
                 </td>
                 <td class="px-12 py-2 text-left text-gray-500">
-                  Departure: {{ route.departureTime }}
+                  Departure: {{ schedule.departureTime }}
                   <br />
-                  Fare: Nu {{ route.fare }}
+                  Fare: Nu {{ schedule.fare }}
 
-                  <p v-if="!route.isActive" class="text-red-800 text-md font-semibold">
+                  <p
+                    v-if="!schedule.isActive"
+                    class="text-red-800 text-md font-semibold"
+                  >
                     Route Suspended
                   </p>
-                  <p v-else class="text-green-800 text-md font-semibold">Route Active</p>
+                  <p v-else class="text-green-800 text-md font-semibold">
+                    Route Active
+                  </p>
                 </td>
                 <td class="px-12 py-2 text-left text-gray-500">
                   <div class="flex flex-col gap-2 justify-around">
                     <button
-                      @click="createNewSubRoute(routepath, route)"
+                      @click="createNewSubRoute(schedule)"
                       class="flex items-center"
                     >
                       <svg
@@ -258,10 +204,7 @@
                       </svg>
                       Add Sub Route
                     </button>
-                    <div
-                      @click="editRoute(routepath, route)"
-                      class="flex items-center"
-                    >
+                    <div @click="editRoute(schedule)" class="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-4 w-4"
@@ -279,7 +222,7 @@
                       Edit
                     </div>
                     <div
-                      @click="showDeleteRouteModal(route, routepath)"
+                      @click="showDeleteRouteModal(schedule)"
                       class="flex items-center"
                     >
                       <svg
@@ -301,7 +244,7 @@
                   </div>
                 </td>
                 <td>
-                  <div v-if="route.subroutes.length">
+                  <div v-if="schedule.subroutes?.length">
                     <table>
                       <thead class="bg-gray-50">
                         <tr>
@@ -321,7 +264,10 @@
                         </tr>
                       </thead>
 
-                      <tr v-for="subroute in route.subroutes" :key="subroute">
+                      <tr
+                        v-for="subroute in schedule.subroutes"
+                        :key="subroute"
+                      >
                         <td class="px-6 py-2 text-left text-gray-500">
                           {{ subroute.routepath.destination.name }}
                         </td>
@@ -388,253 +334,15 @@
                       </tr>
                     </table>
                   </div>
+
                   <div v-else>No Subroutes</div>
                 </td>
               </tr>
             </table>
           </div>
-          <div v-else>No routes</div>
+          <div v-if="!schedules.length">No Schedules</div>
         </div>
       </div>
-
-      <!-- <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Origin
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Destination
-            </td>
-            <td
-              class="
-                px-6
-                py-3
-                text-left text-xs
-                font-medium
-                text-gray-500
-                uppercase
-                tracking-wider
-              "
-            >
-              Routes
-            </td>
-        
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="routepath in routepaths" :key="routepath.id" class="mt-2">
-            <td class="text-md px-6 py-4 whitespace-nowrap">
-              {{ routepath.origin.name }}
-            </td>
-            <td class="text-md px-6 py-4 whitespace-nowrap">
-              {{ routepath.destination.name }}
-            </td>
-            <td class="px-6 whitespace-nowrap">
-              <div class="flex flex-wrap gap-2 w-full my-2">
-                
-
-                <div
-                  v-for="route in routepath.routes"
-                  :key="route"
-                  class="flex justify-between"
-                >
-                  <div
-                    :class="
-                      route.isActive
-                        ? ' p-4 rounded bg-gray-100'
-                        : 'p-4 rounded bg-red-100'
-                    "
-                  >
-                    <div class="flex flex-col flex-wrap">
-                      <p class="text-xl font-bold">
-                        {{ week[route.day - 1] }}
-                      </p>
-                      <p v-if="!route.isActive" class="font-bold text-red-600">
-                        Route Suspended
-                      </p>
-
-                      <div>Departure Time: {{ route.departureTime }}</div>
-                      <div>Fare: Nu {{ route.fare }}</div>
-                      <div class="flex gap-2 my-1 bg-gray-200 justify-around">
-                        <button
-                          @click="createNewSubRoute(routepath, route)"
-                          class="flex items-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          Add Sub Route
-                        </button>
-                        <div
-                          @click="editRoute(routepath, route)"
-                          class="flex items-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                            />
-                          </svg>
-                          Edit
-                        </div>
-                        <div
-                          @click="showDeleteRouteModal(route, routepath)"
-                          class="flex items-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                          Delete
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      v-if="!route.subroutes || !route.subroutes.length"
-                    ></div>
-
-                    <div v-else>
-                      <p class="font-semibold mt-3">Sub Route</p>
-                      <p class="text-xs">
-                        (Sub Routes will Share the same bus as the Main route)
-                      </p>
-                      <table class="table-auto">
-                        <tr class="bg-gray-200 p-1">
-                          <td class="px-2">Origin</td>
-                          <td class="px-2">Destination</td>
-                          <td class="px-2">Fare</td>
-                          <td class="px-2">Departure Time</td>
-                          <td class="px-2">Action</td>
-                        </tr>
-                        <tr
-                          v-for="subroute in route.subroutes"
-                          :key="subroute"
-                          class="p-1"
-                        >
-                          <td class="px-2">
-                            {{ subroute.routepath.origin.name }}
-                          </td>
-                          <td class="px-2">
-                            {{ subroute.routepath.destination.name }}
-                          </td>
-                          <td class="px-2">Nu {{ subroute.fare }}</td>
-                          <td class="px-2">
-                            {{ subroute.departureTime }}
-                          </td>
-                          <td class="px-3 flex gap-2 items-center">
-                            <div
-                              @click="editSubRoute(subroute)"
-                              class="
-                                flex
-                                items-center
-                                rounded-full
-                                bg-gray-800
-                                text-gray-300
-                                p-1
-                              "
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                />
-                              </svg>
-                            </div>
-                            <div
-                              @click="deleteSubRoute(subroute)"
-                              class="
-                                flex
-                                items-center
-                                rounded-full
-                                bg-gray-800
-                                text-gray-300
-                                p-1
-                              "
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                />
-                              </svg>
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table> -->
     </div>
     <div>
       <!-- Add Stops Modal -->
@@ -1071,10 +779,13 @@
         content-class="modal-content"
         class="w-max-screen text-gray-700"
       >
-        <div class="modal__content text-center mt-1 flex flex-col">
+        <div
+          class="modal__content text-center mt-1 flex flex-col"
+          style="width: 30vw"
+        >
           <h3 class="text-xl mb-2">Delete Route?</h3>
           <p class="text-red-500 my-2" v-if="pendingBookings.length !== 0">
-            Please resolve these pending Bookings before deleting the route
+            These bookings will be affected
           </p>
           <div class="flex flex-col gap-2 overflow-x-scroll">
             <div
@@ -1121,7 +832,7 @@
           </div>
         </div>
 
-        <div class="modal__action" v-if="pendingBookings.length === 0">
+        <div class="modal__action">
           <button
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="confirmRouteDelete()"
@@ -1145,20 +856,10 @@
         content-class="modal-content"
         class="w-max-screen text-gray-700"
       >
-        <div class="modal__content text-center mt-1 flex flex-col">
-          <p class="text-red-400 my-2">
-            Please resolve these pending Bookings before Editing the Route
-          </p>
-          <div>
-            <button
-              class="bg-gray-600 text-gray-100 mb-4 p-1 rounded-md"
-              @click="conflictingBookingsModal = false"
-            >
-              Go back
-            </button>
-          </div>
+        <div class="modal__content text-center mt-1 flex flex-col" style="width:40vw">
+          <p class="text-red-400 my-2">These Bookings will be affected</p>
 
-          <div class="flex flex-col gap-2 overflow-x-scroll">
+          <div class="flex flex-col gap-2  overflow-y-scroll " style="height:40vh">
             <div
               v-for="booking in conflictingBookings"
               :key="booking"
@@ -1204,6 +905,25 @@
                   Cancel Booking
                 </button>
               </div>
+            </div>
+          </div>
+
+          <div class="my-2 flex justify-center gap-4">
+            <div>
+              <button
+                class="bg-gray-600 text-gray-100 mb-4 py-1 px-2 rounded-md"
+                @click="conflictingBookingsModal = false"
+              >
+                Go back
+              </button>
+              
+            </div>
+            <div>
+              <button @click="editRouteAnyway()"
+               class="bg-red-500 text-red-100 mb-4 py-1 px-2 rounded-md"
+              >
+                Edit Route anyways
+              </button>
             </div>
           </div>
         </div>
@@ -1484,7 +1204,7 @@
             class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
             @click="confirmSubRouteDelete()"
           >
-            Delete Route
+            Delete Sub Route
           </button>
           <button
             class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
@@ -1560,6 +1280,7 @@ import {
   getAllRoutePaths,
   createNewRoutePath,
   editRoute,
+  findAllRoutesByRoutepath,
 } from "../../services/routeServices";
 import { getStaffs } from "../../services/authServices";
 import {
@@ -1630,6 +1351,7 @@ export default {
       editSubRouteModal: false,
       selectedSubRouteDepartureTime: ["06", "30", "PM"],
       deleteSubrouteModal: false,
+      schedules: [],
     };
   },
   created() {
@@ -1655,7 +1377,7 @@ export default {
     fetchStopData() {
       getAllStops()
         .then((res) => {
-          this.stops = res;
+          this.stops = res.data;
         })
         .catch((err) => console.log(err));
     },
@@ -1673,9 +1395,8 @@ export default {
       return matched;
     },
 
-    showDeleteRouteModal(route, routepath) {
+    showDeleteRouteModal(route) {
       this.selectedRoute = route;
-      this.selectedRoutepath = routepath;
       getPendingBookingsByRouteId(route.id).then((res) => {
         this.pendingBookings = res.data;
         this.deleteRouteModal = true;
@@ -1684,7 +1405,7 @@ export default {
     confirmRouteDelete() {
       deleteRoute(this.selectedRoute.id).then((res) => {
         if (res.status === 200) {
-          this.fetchRouteData();
+          this.loadSchedules(this.selectedRoutepath);
           this.deleteRouteModal = false;
         } else {
           this.$toast.show("Cannot Delete", {
@@ -1850,8 +1571,7 @@ export default {
       });
     },
 
-    editRoute(selectedRoutepath, selectedRoute) {
-      this.selectedRoutepath = selectedRoutepath;
+    editRoute(selectedRoute) {
       this.selectedRoute = selectedRoute;
       this.editRouteModal = true;
       this.selectedDepartureTimeArr = selectedRoute.departureTime.split(":");
@@ -1864,9 +1584,6 @@ export default {
         this.selectedDepartureTimeArr[1] +
         ":" +
         this.selectedDepartureTimeArr[2];
-
-      console.log("EDITING THIS ROUTE", this.selectedRoute);
-
       getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
         if (res.data.length === 0) {
           editRoute(this.selectedRoute.id, this.selectedRoute).then(
@@ -1876,12 +1593,12 @@ export default {
                   isActive: this.selectedRoute.isActive,
                 }).then((resp) => {
                   if (resp.status === 200) {
-                    this.fetchRouteData();
+                    this.loadSchedules(this.selectedRoutepath);
                   }
                 });
               });
               if (response.status === 200) {
-                this.fetchRouteData();
+                this.loadSchedules(this.selectedRoutepath);
                 this.editRouteModal = false;
                 this.$toast.show("Route updated", {
                   position: "top",
@@ -1895,25 +1612,53 @@ export default {
               }
             }
           );
+
+
         } else {
-          console.log("CONFLICTS", res.data);
           this.conflictingBookings = res.data;
           this.conflictingBookingsModal = true;
         }
       });
     },
-    createNewSubRoute(selectedRoutepath, selectedRoute) {
-      this.selectedRoutepath = selectedRoutepath;
+    editRouteAnyway(){
+      editRoute(this.selectedRoute.id, this.selectedRoute).then(
+            (response) => {
+              this.selectedRoute.subroutes.forEach((item) => {
+                editSubRoute(item.id, {
+                  isActive: this.selectedRoute.isActive,
+                }).then((resp) => {
+                  if (resp.status === 200) {
+                    this.loadSchedules(this.selectedRoutepath);
+                  }
+                });
+              });
+              if (response.status === 200) {
+                this.loadSchedules(this.selectedRoutepath);
+                this.editRouteModal = false;
+                this.conflictingBookingsModal= false
+                this.$toast.show("Route updated", {
+                  position: "top",
+                  type: "success",
+                });
+              } else {
+                this.$toast.show("Network Error", {
+                  position: "error",
+                  type: "success",
+                });
+              }
+            }
+      )
+
+    },
+
+    createNewSubRoute(selectedRoute) {
       this.selectedRoute = selectedRoute;
       this.newSubRoute.day = selectedRoute.day;
       this.newSubRoute.parentRouteId = selectedRoute.id;
       this.newSubRoute.isActive = true;
-      console.log(this.selectedRoute);
       this.addSubRoutesModal = true;
     },
     addSubRoute() {
-      console.log("CREATING NEW SUB ROUTE", this.newSubRoute);
-      this.newSubRoute.departureTime = "07:30:AM";
       this.newSubRoute.departureTime =
         this.newSubRouteDepartureTime[0] +
         ":" +
@@ -1923,7 +1668,7 @@ export default {
 
       addNewSubRoute(this.newSubRoute).then((res) => {
         if (res.status === 201) {
-          this.fetchRouteData();
+          this.loadSchedules(this.selectedRoutepath);
           this.addSubRoutesModal = false;
         }
       });
@@ -1957,9 +1702,19 @@ export default {
     confirmSubRouteDelete() {
       deleteSubRoute(this.selectedSubRoute.id).then((res) => {
         if (res.status === 200) {
-          this.fetchRouteData();
+          console.log("REFERSHING DATA", this.selectedRoutepath);
+          this.loadSchedules(this.selectedRoutepath);
           this.deleteSubrouteModal = false;
         }
+      });
+    },
+
+    loadSchedules(routepath) {
+      this.selectedRoutepath = routepath;
+      console.log("SELECTION", this.selectedRoutepath);
+      findAllRoutesByRoutepath(routepath.id).then((res) => {
+        console.log(res.data);
+        this.schedules = res.data;
       });
     },
   },

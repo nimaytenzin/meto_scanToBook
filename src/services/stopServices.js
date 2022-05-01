@@ -4,13 +4,7 @@ const devUrl = process.env.VUE_APP_DEV_API
 
 
 export async function getAllStops() {
-    let stops = [];
-    await axios.get(`${devUrl}/stops`,{headers:authHeader()})
-        .then(res => {
-            stops = res.data
-        })
-        .catch(err => console.log(err))
-    return stops
+    return  await axios.get(`${devUrl}/stops`,{headers:authHeader()})
 }
 
 export async function addNewStop(data) {

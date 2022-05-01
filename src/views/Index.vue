@@ -357,8 +357,7 @@
                   </div>
                   <h6 class="text-xl font-semibold">Reliability</h6>
                   <p class="mt-2 mb-4 text-gray-600">
-                    Write a few lines about each one. A paragraph describing a
-                    feature will be enough. Keep you user engaged!
+                   We ensure that the bus service is reliable in terms of timing and operations. 
                   </p>
                 </div>
               </div>
@@ -522,8 +521,7 @@
                   </div>
                   <h6 class="text-xl font-semibold">Efficiency</h6>
                   <p class="mt-2 mb-4 text-gray-600">
-                    Write a few lines about each one. A paragraph describing a
-                    feature will be enough. Keep you user engaged!
+                   With the introduction of the online booking we strive to ensure that our service is delivered efficiently.
                   </p>
                 </div>
               </div>
