@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col p-4 justify-start items-center">
     <h2 class="text-xl m-2">Click on a date to view Schedules</h2>
-    <Calendar :min-date="new Date()" @dayclick="onDayClick($event)" />
+    <Calendar @dayclick="onDayClick($event)" />
     <p class="font-normal text-center text-gray-500 my-1" v-if="selectedDate">
       Showing Schedules for
       <span class="text-gray-800 text-3xl font-semibold">{{

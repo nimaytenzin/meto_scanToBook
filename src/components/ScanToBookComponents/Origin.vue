@@ -79,9 +79,10 @@ export default {
         this.$store.commit("addServiceCharge",res.data.serviceCharge)
     })
     getAllStops().then((res) => {
-      this.$store.commit("commitStops",res)
-      this.origins = res;
-      this.originSelected = res[0];
+      console.log(res.data)
+      this.$store.commit("commitStops",res.data)
+      this.origins = res.data;
+      this.originSelected = res.data[0];
     });
     this.$store.commit('resetStoreState')
     if(this.$store.state.origin){
