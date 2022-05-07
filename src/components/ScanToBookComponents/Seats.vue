@@ -184,7 +184,7 @@
           <tr class="text-gray-100 font-bold">
             <td>Total :</td>
             <td>
-              {{ (total+serviceCharge) * bookedSeats.length }}
+              {{ (total + serviceCharge) * bookedSeats.length }}
             </td>
           </tr>
         </table>
@@ -386,17 +386,16 @@
 }
 </style>
 <script>
-
 export default {
   created() {
-
-    if (
-      this.$store.state.origin === ""
-    ) {
+    if (this.$store.state.origin === "") {
       this.$router.push("/book");
     } else {
       this.fare = this.$store.state.selectedSchedule?.fare;
       this.roomId = this.$store.state.scanRoomID;
+      this.inactiveTimeOut = setTimeout(() => {
+          window.location.reload();
+      }, 90000);
       if (this.$store.state.scanRoomID) {
         this.errorModal = true;
         this.isLoader = true;
@@ -419,7 +418,7 @@ export default {
       origin: this.$store.state.origin?.name,
       destination: this.$store.state.destination?.name,
       serviceCharge: this.$store.state.serviceCharge,
-      departureTime:this.$store.state.selectedSchedule?.departureTime,
+      departureTime: this.$store.state.selectedSchedule?.departureTime,
       isConnected: false,
       errorModal: true,
       connectionAttempt: 0,
@@ -430,6 +429,7 @@ export default {
       conn: null,
       showModal: false,
       reverSeatModal: false,
+      inactiveTimeOut:null,
       seats: [
         { id: 1, number: 1, type: "seat", status: "available" },
         { id: 2, number: 0, type: "notSeat", status: "available" },
@@ -478,9 +478,7 @@ export default {
   },
   methods: {
     connectWs() {
-      this.conn = new WebSocket(
-        `${process.env.VUE_APP_WSS}/${this.roomId}`
-      );
+      this.conn = new WebSocket(`${process.env.VUE_APP_WSS}/${this.roomId}`);
       this.conn.onopen = (event) => {
         this.isConnected = true;
         this.connectionAttempt = 0;
@@ -562,10 +560,10 @@ export default {
           matchedSeat.status = "locked";
         }
       });
-       this.$store.state.selectedSeats.forEach(seat =>{
+      this.$store.state.selectedSeats.forEach((seat) => {
         let matchedSeat = this.getSeats(seat.number);
-        matchedSeat.status = "booked"
-      })
+        matchedSeat.status = "booked";
+      });
     },
     reverSeatStatus(arr) {
       arr.forEach((element) => {
@@ -609,6 +607,7 @@ export default {
           );
         });
 
+        clearTimeout(this.inactiveTimeOut);
         this.$router.push("/book/bookings");
       } else {
         this.$toast.show("Please select a seat", {
@@ -670,7 +669,7 @@ export default {
               seatId: this.selectedSeat.number.toString(),
             })
           );
-          this.showModal = true
+          this.showModal = true;
         }
       }
     },
