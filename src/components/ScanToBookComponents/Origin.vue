@@ -70,8 +70,16 @@ import { getServiceCharge } from "../../services/paymentServices";
 export default {
   data() {
     return {
-      origins: [],
-      originSelected: {},
+      origins: [
+       {
+        name:"loading..",
+        id:0
+      }, 
+      ],
+      originSelected: {
+        name:"loading..",
+        id:0
+      },
     };
   },
   created() {
@@ -81,7 +89,6 @@ export default {
 
 
     getActiveStops().then(resp=>{
-      console.log(resp)
       this.origins = resp.data;
       this.originSelected = resp.data[0]
 

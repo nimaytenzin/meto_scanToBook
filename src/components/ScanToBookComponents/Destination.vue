@@ -80,8 +80,12 @@ import { getActiveDestinationByOrigin } from '../../services/stopServices';
 export default {
   data() {
     return {
-      destinations: [],
-      destinationSelected: {},
+      destinations: [
+        {name:"loading....", id:0}
+      ],
+      destinationSelected: {
+        name:"loading....",id:0
+      },
     };
   },
 
