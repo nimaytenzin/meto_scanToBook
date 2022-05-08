@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { getAllStops } from "../../services/stopServices";
+import { getActiveStops } from "../../services/stopServices";
 import { getServiceCharge } from "../../services/paymentServices";
 
 export default {
@@ -78,12 +78,15 @@ export default {
     getServiceCharge().then(res =>{
         this.$store.commit("addServiceCharge",res.data.serviceCharge)
     })
-    getAllStops().then((res) => {
-      console.log(res.data)
-      this.$store.commit("commitStops",res.data)
-      this.origins = res.data;
-      this.originSelected = res.data[0];
-    });
+
+
+    getActiveStops().then(resp=>{
+      console.log(resp)
+      this.origins = resp.data;
+      this.originSelected = resp.data[0]
+
+    })
+
     this.$store.commit('resetStoreState')
     if(this.$store.state.origin){
       this.originSelected = this.$store.state.origin

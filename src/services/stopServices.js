@@ -18,3 +18,11 @@ export async function deleteStop(id) {
 export async function editStop(id, data) {
     return await axios.put(`${devUrl}/stops/${id}`, data,{headers:authHeader()})
 }
+
+export async function getActiveStops() {
+    return  await axios.get(`${devUrl}/route-path/active-stops`)
+}
+export async function getActiveDestinationByOrigin(originId){
+    return  await axios.get(`${devUrl}/route-path/active/destination/${originId}`)
+}
+

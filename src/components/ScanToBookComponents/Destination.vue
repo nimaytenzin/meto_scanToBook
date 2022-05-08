@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import { getActiveDestinationByOrigin } from '../../services/stopServices';
 export default {
   data() {
     return {
@@ -88,12 +89,18 @@ export default {
     if (this.$store.state.origin === "") {
       this.$router.push("/book");
     } else {
-      this.$store.state.stops.forEach((stop) => {
-        if (stop.id !== this.$store.state.origin.id) {
-          this.destinations.push(stop);
-        }
-      });
-      this.destinationSelected = this.destinations[0];
+
+      getActiveDestinationByOrigin(this.$store.state.origin.id).then(res=>{
+        this.destinations = res.data;
+        this.destinationSelected = res.data[0]
+      })
+
+      // this.$store.state.stops.forEach((stop) => {
+      //   if (stop.id !== this.$store.state.origin.id) {
+      //     this.destinations.push(stop);
+      //   }
+      // });
+      // this.destinationSelected = this.destinations[0];
     }
   },
   methods: {
