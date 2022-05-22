@@ -133,7 +133,7 @@
       <div
         class="
           flex flex-col
-          p-6
+          px-6
           md:p-6
           h-screen
           items-center
@@ -148,18 +148,18 @@
           class="
             text-sm
             md:text-2xl
-            font-thin
-            text-metoPrimary-900 text-left
+            text-metoPrimary-900 md:text-left
             w-full
             mt-4
+            text-center
           "
         >
-          Select your departure Bus from
-          <span class="text-3xl font-semibold">
+         
+          <span class="text-2xl font-bold">
             {{ originSelected?.name }}
           </span>
-          to
-          <span class="text-3xl font-semibold">
+           -
+          <span class="text-2xl font-bold">
             {{ destinationSelected?.name }}
           </span>
         </p>
@@ -167,9 +167,10 @@
           class="
             text-xl
             font-semibold
-            text-metoPrimary-900 text-left
+            text-metoPrimary-900 
             w-full
             mb-4
+            text-center md:text-left
           "
         >
           {{ formattedDepartureDate }}

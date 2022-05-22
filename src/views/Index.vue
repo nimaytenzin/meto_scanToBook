@@ -205,7 +205,7 @@
             </li>
           </ul>
 
-          <div style="min-height: 20vh" class="bg-white w-full">
+          <div style="min-height: 20vh" class="bg-white w-full rounded-b-lg">
             <div v-if="bookTicketTabSelected" class="w-full">
               <div
                 class="
@@ -335,10 +335,12 @@
                 <button
                   class="
                     py-1
+                    w-full
+                    md:w-max
                     md:py-2
                     rounded
                     text-white
-                    bg-metoContrast
+                    bg-red-500
                     px-2
                     md:px-6
                     flex
