@@ -579,9 +579,9 @@ export default {
   created() {
     this.fare = this.$store.state.selectedSchedule?.fare;
     this.roomId = this.$store.state.selectedScheduleHash;
-    // this.inactiveTimeOut = setTimeout(() => {
-    //     window.location.reload();
-    // }, 90000);
+    this.inactiveTimeOut = setTimeout(() => {
+        window.location.reload();
+    }, 90000);
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
     });
@@ -868,7 +868,26 @@ export default {
     },
 
     goToPassengerDetailsPage() {
-      this.$router.push("/passengerDetails");
+       if (this.$store.state.selectedSeats) {
+        this.$store.state.selectedSeats.forEach((seat) => {
+          this.conn.send(
+            JSON.stringify({
+              scheduleHash: this.roomId.toString(),
+              messageType: "LOCK_CONFIRM",
+              seatId: seat.number.toString(),
+            })
+          );
+        });
+
+        clearTimeout(this.inactiveTimeOut);
+        this.$router.push("/passengerDetails");
+      } else {
+        this.$toast.show("Please select a seat", {
+          position: "top",
+          type: "error",
+        });
+      }
+     
     },
   },
 };
