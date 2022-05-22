@@ -609,9 +609,8 @@ export default {
           }
         );
       } else {
-      
-        if (this.detailsFilled) {
-          let booking = {
+
+        let booking = {
             booking: {
               routeId: this.$store.state.selectedSchedule.id,
               modality: "Online",
@@ -624,8 +623,9 @@ export default {
             },
             passengers: this.passengers,
           };
-          console.log("ADDING NEW BOKING", booking)
-          addNewBooking(booking)
+          
+
+        addNewBooking(booking)
             .then((res) => {
               if (res.status === 201) {
                 this.$store.commit("addScanBookingId", res.data.id);
@@ -633,7 +633,7 @@ export default {
                   position: "top",
                   type: "info",
                 });
-                this.$router.push(`/book/loadPayment`);
+                 this.$router.push(`/book/loadPayment`);
               } else {
                 this.$toast.show("Newtork Error..try again", {
                   position: "top",
@@ -665,8 +665,7 @@ export default {
                 });
               }
             });
-        } else {
-        }
+        
       }
     },
   },

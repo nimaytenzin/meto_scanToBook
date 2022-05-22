@@ -106,6 +106,7 @@ export default {
     // if (this.$store.state.origin === "") {
     //   this.$router.push("/book");
     // }
+    console.log(this.$store.state.scanBookingId, "SCAN BOOKING ID")
     getChecksum(this.$store.state.scanBookingId).then((res) => {
       if (res.status === 200) {
         console.log(res)
