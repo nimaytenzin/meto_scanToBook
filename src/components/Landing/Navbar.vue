@@ -1,8 +1,7 @@
 <template>
   <nav
+    id="navBar"
     class="
-      top-0
-      absolute
       z-50
       w-full
       flex flex-wrap
@@ -10,195 +9,95 @@
       justify-between
       px-2
       py-3
+      fixed
+      top-0
     "
   >
     <div
-      class="container px-4 mx-auto flex flex-wrap items-center justify-between"
+     class="container px-4 mx-auto flex  items-center justify-between"
     >
       <div
         class="
-          w-full
+       
           relative
           flex
           justify-between
-          lg:w-auto
-          lg:static
-          lg:block
-          lg:justify-start
+          gap-2
+         
         "
       >
-        <a
-          class="
-            text-sm
-            font-bold
-            leading-relaxed
-            inline-block
-            mr-4
-            py-1
-            whitespace-nowrap
-            uppercase
-            text-white
-            
-          "
-          href="#"
-          >Meto Transport</a
-        >
-          <p class="text-sm text-white font-light ">
-                   ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
-                </p>
-        <button
-          class="
-            cursor-pointer
-            text-xl
-            leading-none
-            px-3
-            py-1
-            border border-solid border-transparent
-            rounded
-            bg-transparent
-            block
-            lg:hidden
-            outline-none
-            focus:outline-none
-          "
-          type="button"
-          v-on:click="toggleNavbar()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+       
+        <div class="text-white">
+          <a
+            class="
+              text-xs
+              md:text-sm
+              leading-relaxed
+              inline-block
+              mr-4
+              py-1
+              whitespace-nowrap
+              uppercase
+              font-light
+            "
+            href="/"
+            >Meto Transport</a
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
+          <p class="text-xs md:text-sm font-light">
+            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
+          </p>
+        </div>
+       
       </div>
+
       <div
         class="
-          lg:flex
-          flex-grow
+          text-white
+          flex
+          gap-4
           items-center
-          bg-white
-          lg:bg-transparent
-          lg:shadow-none
+          text-xs
+          md:text-sm
+          leading-relaxed
+          mr-4
+          py-1
+          whitespace-nowrap
+          uppercase
+          font-light
         "
-        v-bind:class="{ hidden: !showMenu, block: showMenu }"
       >
-    
-        <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
-          <li class="flex items-center">
-            <a
-              class="
-                lg:text-white
-                lg:hover:text-gray-300
-                text-gray-800
-                px-3
-                py-4
-                lg:py-2
-                flex
-                items-center
-                text-xs
-                uppercase
-                font-bold
-              "
-              href="/policy/privacy"
-              ><i
-                class="
-                  lg:text-gray-300
-                  text-gray-500
-                  fab
-                  fa-facebook
-                  text-lg
-                  leading-lg
-                "
-              ></i
-              ><span class="lg:hidden inline-block ml-2">Privacy Policy</span></a
-            >
-          </li>
-          <!-- <li class="flex items-center">
-            <a
-              class="
-                lg:text-white
-                lg:hover:text-gray-300
-                text-gray-800
-                px-3
-                py-4
-                lg:py-2
-                flex
-                items-center
-                text-xs
-                uppercase
-                font-bold
-              "
-              href="/policy/refund"
-              ><i
-                class="
-                  lg:text-gray-300
-                  text-gray-500
-                  fab
-                  fa-twitter
-                  text-lg
-                  leading-lg
-                "
-              ></i
-              ><span class="lg:hidden inline-block ml-2">Refund Policy</span></a
-            >
-          </li> -->
-        
-          <li class="flex items-center">
-            <button
-              class="
-                bg-white
-                text-gray-800
-                active:bg-gray-100
-                text-xs
-                font-bold
-                uppercase
-                px-4
-                py-2
-                rounded
-                shadow
-                hover:shadow-md
-                outline-none
-                focus:outline-none
-                lg:mr-1
-                lg:mb-0
-                ml-3
-                mb-3
-              "
-              type="button"
-              style="transition: all 0.15s ease 0s"
-              @click="login()"
-            >
-              <i class="fas fa-arrow-alt-circle-down"></i> Login
-            </button>
-          </li>
-        </ul>
+        <!-- <div class="hidden md:block">About Us</div>
+        <div class="hidden md:block">Policies</div> -->
+        <div class="flex gap-1 items-center" @click="login()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Login
+        </div>
       </div>
     </div>
   </nav>
+  
 </template>
+
 <script>
 export default {
   data() {
-    return {
-      showMenu: false,
-    };
+    return {};
   },
   methods: {
-    toggleNavbar: function () {
-      this.showMenu = !this.showMenu;
+    login() {
+      this.$router.push("/login");
     },
-    login(){
-        this.$router.push('/login')
-    }
   },
 };
 </script>

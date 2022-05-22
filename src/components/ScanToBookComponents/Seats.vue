@@ -184,7 +184,7 @@
           <tr class="text-gray-100 font-bold">
             <td>Total :</td>
             <td>
-              {{ (total + serviceCharge) * bookedSeats.length }}
+              {{ (fare + serviceCharge) * bookedSeats.length }}
             </td>
           </tr>
         </table>

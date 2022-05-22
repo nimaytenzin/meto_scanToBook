@@ -70,3 +70,9 @@ export async function updateSchedule(scheduleId,data){
 export async function getScheduleDetailsById(scheduleId){
     return await axios.get(`${devUrl}/schedules/${scheduleId}`)
 }
+
+
+export async function getPassengersByScheduleHash(hash){
+
+    return await axios.get(`${devUrl}/passenger/psch/${hash}`)
+}

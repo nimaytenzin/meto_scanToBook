@@ -4,9 +4,15 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     origin:"",
-    scanBookingId:null,
     destination:"",
     departureDate:'',
+    indexMatchedRoutes:[],
+    formattedDepartureDate:"",
+    selectedSchedule:null,
+    selectedScheduleHash:null,
+
+    // unused
+    scanBookingId:null,
     selectedBus:'',
     selectedSeats:[],
     selectedDate:"",
@@ -14,7 +20,7 @@ export default createStore({
     stops:null,
     scanRoomID:null,
     serviceCharge:null,
-    selectedSchedule:null,
+   
     avaialableRoutes:[],
     bookedBy:{},
     authToken:'',
@@ -33,28 +39,80 @@ export default createStore({
     tokenVerified:false,
   },
   mutations: {
-    resetStoreState(state){
-      state.selectedSeats =[]
-      state.origin = ""
-      state.destination= ""
-      state.selectedSchedule =""
-      
+
+    //Matched Routes == on day click ..if day.weekday == route/subroute.weekday = push to mattchedroutes
+    commitIndexMatchedRoutes(state,matchedRoutes){
+      state.indexMatchedRoutes = matchedRoutes
+    },
+    commitSelectedDate(state,data){
+      state.departureDate = data
+    },  
+    commitFormattedDepartureDate(state,date){
+      state.formattedDepartureDate = date
     },
     addOrigin(state,origin){
       state.origin = origin;
-    },  //used
-    commitStops(state,stopData){
-      state.stops  = stopData
-    }, //used
+    }, 
     addDestination(state,destination){
       state.destination = destination
-    },  //used
-    addDepartureDate(state,date){
-      state.departureDate = date
+    }, 
+
+    clearStoreMatchedRoutes(state){
+      console.log("CLEARED STORE MATCHED ROUTES")
+      state.indexMatchedRoutes = []
+      console.log(state.indexMatchedRoutes)
     },
+    resetStoreState(state){
+      state.indexMatchedRoutes =[]
+      state.origin = ""
+      state.destination= ""
+      state.indexMatchedRoutes =[]
+      state.departureDate = '';
+      state.formattedDepartureDate =''
+      state.selectedSchedule = null
+      state.selectedScheduleHash = null
+      state.selectedSeats = []
+      console.log("STORE STATE HARD RESET")
+    },
+
     addSelectedSchedule(state,data){
       state.selectedSchedule = data
     },
+    commitSelectedScheduleHash(state, data){
+      state.selectedScheduleHash = data
+    },
+
+
+
+    addScanBookingId(state, id){
+      state.scanBookingId = id
+    },
+
+
+    // END OF USED COMMITS//
+
+
+  
+
+
+    addDepartureDate(state,date){
+      state.departureDate = date
+    },
+   
+    
+  
+
+
+    //UNUsed
+
+
+    
+    
+    commitStops(state,stopData){
+      state.stops  = stopData
+    }, //used
+   
+   
     addSeats(state,seats){
      state.selectedSeats.push(seats);
     },
@@ -89,17 +147,13 @@ export default createStore({
     addSchedules(state, schedules){
       state.schedules = schedules
     },
-    addScanBookingId(state, id){
-      state.scanBookingId = id
-    },
+  
 
     //book from the frontend
     commitSchedule(state,schedule){
       state.customerBooking.schedule = schedule
     },
-    commitSelectedDate(state,data){
-      state.departureDate = data
-    },   
+    
     commitRemoveCustomerSeat(state,selectedSeat){
       state.customerBooking.seats.forEach((seat,index) =>{
         if(selectedSeat.id === seat.id){

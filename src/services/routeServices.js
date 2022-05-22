@@ -72,3 +72,6 @@ export async function getBusByBookingId(bookingId){
     return await axios.get(`${devUrl}/routes/${routeId}`)
  }
 
+export async function getMatchedRoutesbyODW(data){
+    return await axios.post(`${devUrl}/routes/matched-routes`,data)
+}

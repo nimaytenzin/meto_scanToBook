@@ -26,3 +26,25 @@ export async function getActiveDestinationByOrigin(originId){
     return  await axios.get(`${devUrl}/route-path/active/destination/${originId}`)
 }
 
+
+export let dzongkhags = [
+    {name: "Thimphu"},
+    {name: "Bumthang"},
+    {name: "Chhukha"},
+    {name: "Dagana"},
+    {name: "Gasa"},
+    {name: "Haa"},
+    {name: "Lhuentse"},
+    {name: "Mongar"},
+    {name: "Paro"},
+    {name: "PemaGatshel"},
+    {name: "Punakha"},
+    {name: "SamdrupJongkhar"},
+    {name: "Samtse"},
+    {name: "Sarpang"},
+    {name: "Trashigang"},
+    {name: "TrashiYangtse"},
+    {name: "Tsirang"},
+    {name: "WangduePhodrang"},
+    {name: "Zhemgang"}
+]

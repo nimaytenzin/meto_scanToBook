@@ -211,15 +211,7 @@
               </div>
             </div>
           </div>
-          <div class="text-center text-sm">
-            <p>
-            Your Bus Details         
-          </p>
-          <p v-if="busDetails"  >
-           Bus Number: <span class="text-xl">{{busDetails.vechileNumber  }}</span>
-          </p>
-          <p v-else>Not Updated Yet</p>
-          </div>
+         
 
           <hr class="mt-4 mb-4" />
          
@@ -486,14 +478,8 @@ export default {
       window.open(this.cancelTicketRouteData.href, "_blank");
     },
     bookAgain() {
-      this.$store.state.origin = "";
-      this.$store.state.destination = "";
-      this.$store.state.departureDate = "";
-      this.$store.state.selectedBus = "";
-      this.$store.state.selectedSeats = [];
-      this.$store.state.total = 0;
-      this.$store.state.bookedBy = {};
-      this.$router.push("/book");
+      this.$store.commit("resetStoreState")
+      this.$router.push("/");
     },
   },
 };
