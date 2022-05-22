@@ -65,21 +65,23 @@ const routes = [
   {
     path: '/book',
     name: 'Book',
-    component: () => import('../views/Index.vue'),
+    component: () => import('../views/ScanToBook.vue'),
     children: [
-      
-      // {
-      //   path: 'destination', component: () => import('../components/ScanToBookComponents/Destination.vue')
-      // },
-      // {
-      //   path: 'date', component: () => import('../components/ScanToBookComponents/Date.vue')
-      // },
-      // {
-      //   path: 'buses', component: () => import('../components/ScanToBookComponents/Buses.vue')
-      // },
-      // {
-      //   path: 'seats', component: () => import('../components/ScanToBookComponents/Seats.vue')
-      // },
+      {
+        path: '', component: () => import('../components/ScanToBookComponents/Origin.vue')
+      },
+      {
+        path: 'destination', component: () => import('../components/ScanToBookComponents/Destination.vue')
+      },
+      {
+        path: 'date', component: () => import('../components/ScanToBookComponents/Date.vue')
+      },
+      {
+        path: 'buses', component: () => import('../components/ScanToBookComponents/Buses.vue')
+      },
+      {
+        path: 'seats', component: () => import('../components/ScanToBookComponents/Seats.vue')
+      },
       {
         path: 'bookings', component: () => import('../components/ScanToBookComponents/Bookings.vue')
       },
