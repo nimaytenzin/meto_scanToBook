@@ -633,7 +633,7 @@ export default {
                   position: "top",
                   type: "info",
                 });
-                 this.$router.push(`/book/loadPayment`);
+                //  this.$router.push(`/book/loadPayment`);
               } else {
                 this.$toast.show("Newtork Error..try again", {
                   position: "top",
