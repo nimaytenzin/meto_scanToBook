@@ -544,9 +544,6 @@ export default {
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });
       });
-
-
-     
       this.destinationSelected = this.$store.state.destination;
       this.originSelected = this.$store.state.origin;
       this.formattedDepartureDate = this.$store.state.formattedDepartureDate;
@@ -622,7 +619,7 @@ export default {
               scheduleHash: this.$store.state.selectedScheduleHash,
               scheduleDate: this.$store.state.departureDate,
               operatorId: null,
-              serviceCharge:this.serviceCharge,
+              serviceCharge:this.serviceCharge * this.passengers.length,
               refundPercentage:0
             },
             passengers: this.passengers,
