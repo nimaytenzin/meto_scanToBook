@@ -63,6 +63,11 @@ const routes = [
     component: () => import('../views/Unathorized.vue')
   },
   {
+    path: '/loadpayment',
+    name: 'unathorized',
+    component: () => import('../views/LoadPayment.vue')
+  },
+  {
     path: '/book',
     name: 'Book',
     component: () => import('../views/Index.vue'),

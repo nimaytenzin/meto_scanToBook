@@ -1512,7 +1512,7 @@ export default {
   },
 
   created() {
-    this.$store.commit("resetStoreState")
+    // this.$store.commit("resetStoreState")
     this.dzongkhags = dzongkhags;
     // getOverAllStats().then((res) => {
     //   this.bookingsCount = Number(res.data.bookings);

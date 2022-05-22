@@ -632,11 +632,8 @@ export default {
               console.log("CREATED NEW", res)
               if (res.status === 201) {
                 this.$store.commit("addScanBookingId", res.data.id);
-                this.$toast.show("loading RMA payment gateway", {
-                  position: "top",
-                  type: "info",
-                });
-                 this.$router.push(`/book/loadPayment`);
+              
+                 this.$router.push(`/loadPayment`);
               } else {
                 this.$toast.show("Newtork Error..try again", {
                   position: "top",

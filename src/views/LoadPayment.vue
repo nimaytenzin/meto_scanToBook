@@ -1,9 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center">
     <div>
-      <img src="../../assets/meto.png" alt="" width="100" />
-    </div>
-    <div>
       <h1 class="text-3xl text-gray-500 text-center">
         Redirecting to RMA Secured Payment Gateway
       </h1>
@@ -99,8 +96,7 @@
 </template>
 
 <script>
-import { getChecksum } from "../../services/bookingServices";
-import { confirmPayment } from "../../services/paymentServices";
+import { getChecksum } from "../services/bookingServices";
 export default {
   created() {
     console.log("REACHED AT LOAD PAYMENT")

@@ -338,7 +338,7 @@ export default {
     if (this.matchedRoutes.length === 0) {
 
       this.$router.push("/");
-      this.$store.commit("resetStoreState")
+      // this.$store.commit("resetStoreState")
     }
     this.originSelected = this.$store.state.origin;
     this.destinationSelected = this.$store.state.destination;
