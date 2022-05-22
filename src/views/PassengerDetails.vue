@@ -534,11 +534,9 @@ export default {
   created() {
     if (
       !this.$store.state.selectedSchedule &&
-      !this.$store.state.selectedScheduleHash &&
-      !this.$store.state.selectedSeats.length
+      !this.$store.state.selectedScheduleHash 
     ) {
       this.$router.push("/");
-      this.$store.commit("resetStoreState");
     } else {
       getServiceCharge().then((res) => {
         this.serviceCharge = res.data.serviceCharge;
