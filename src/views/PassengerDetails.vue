@@ -560,7 +560,7 @@ export default {
       originSelected: {},
       formattedDepartureDate: "",
       selectedSchedule: {},
-      serviceCharge: 35,
+      serviceCharge: null,
       lockedSeats: [],
       roomId: null,
       passengers: [],
