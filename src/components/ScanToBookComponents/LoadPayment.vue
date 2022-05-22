@@ -103,11 +103,12 @@ import { getChecksum } from "../../services/bookingServices";
 import { confirmPayment } from "../../services/paymentServices";
 export default {
   created() {
-    if (this.$store.state.origin === "") {
-      this.$router.push("/book");
-    }
+    // if (this.$store.state.origin === "") {
+    //   this.$router.push("/book");
+    // }
     getChecksum(this.$store.state.scanBookingId).then((res) => {
       if (res.status === 200) {
+        console.log(res)
         this.booking = res.data.booking;
         this.hiddenFormVal.bfs_msgType = "AR";
         this.hiddenFormVal.bfs_debitAuthCode = "00";
