@@ -103,6 +103,7 @@ import { getChecksum } from "../../services/bookingServices";
 import { confirmPayment } from "../../services/paymentServices";
 export default {
   created() {
+    console.log("REACHED AT LOAD PAYMENT")
     // if (this.$store.state.origin === "") {
     //   this.$router.push("/book");
     // }
@@ -124,8 +125,8 @@ export default {
         this.hiddenFormVal.bfs_version = "1.0";
         this.hiddenFormVal.bfs_checkSum = res.data.checksum;
           setTimeout(() => {
-          // this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
-          document.getElementById("submitBtn").click();
+          this.$router.push(`/book/eticket/${this.hiddenFormVal.bfs_orderNo}`)
+          // document.getElementById("submitBtn").click();
         }, 1000);
       } else {
         this.$toast.show("Network Error", {
