@@ -38,7 +38,7 @@
     >
       <div class="w-full md:w-1/2 flex-col">
         <h1 class="font-semibold text-xl md:text-5xl">
-          Your Journey starts with us.
+          Your Journey starts with us. {{ total  }}
         </h1>
         <div class="flex flex-col text-sm mt-4">
           <div class="flex text-sm md:text-xl gap-2 items-center">
@@ -538,9 +538,11 @@ export default {
     ) {
       this.$router.push("/");
     } else {
-      getServiceCharge().then((res) => {
-        this.serviceCharge = res.data.serviceCharge;
-      });
+      this.serviceCharge = this.$store.state.serviceCharge
+      console.log("service Charge", this.serviceCharge)
+
+      this.total = this.$store.state.selectedSeats.length * ( + this.$store.state.selectedSchedule.fare)
+      console.log("TOTAL AMOUNT", this.total)
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });
       });

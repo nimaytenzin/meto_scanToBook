@@ -584,8 +584,9 @@ export default {
     }, 90000);
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
+      this.$store.commit('addServiceCharge', res.data.serviceCharge)
     });
-
+    
     if (
       this.roomId &&
       this.$store.state.selectedSchedule &&
