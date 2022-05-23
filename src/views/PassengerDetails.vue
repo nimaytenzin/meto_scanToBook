@@ -38,7 +38,7 @@
     >
       <div class="w-full md:w-1/2 flex-col">
         <h1 class="font-semibold text-xl md:text-5xl">
-          Your Journey starts with us. {{ total  }}
+          Your Journey starts with us.
         </h1>
         <div class="flex flex-col text-sm mt-4">
           <div class="flex text-sm md:text-xl gap-2 items-center">
