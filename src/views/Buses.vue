@@ -218,7 +218,7 @@
             <div class="w-full md:w-1/3 flex flex-col justify-between">
               <div class="my-2" v-if="!route.isCancelled">
                 <p class="text-xl font-bold text-metoPrimary-900">
-                  {{ 19 - route.passengers }}
+                  {{ 19 - route.passengers  < 0 ? 0: 19- route.passengers }}
                 </p>
                 <p class="text-metoPrimary-800 text-sm">(Seats Available)</p>
               </div>

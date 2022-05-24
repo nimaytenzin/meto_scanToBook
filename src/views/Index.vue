@@ -1,11 +1,11 @@
 <template>
   <div>
-    <navbar-component></navbar-component>
     <main class="z-0">
       <div
         class="relative z-1 flex justify-center items-center"
         id="heroSection"
       >
+        <navbar-component></navbar-component>
         <div
           class="absolute top-0 w-full h-full bg-center bg-cover z-0"
           :style="{
@@ -53,8 +53,8 @@
             text-gray-200
           "
         >
-          <div class="w-full md:w-1/2 flex-col">
-            <h1 class="font-semibold text-xl md:text-5xl">
+          <div class="w-full flex-col">
+            <h1 class="font-semibold text-xl md:text-5xl uppercase">
               Your Journey starts with us.
             </h1>
             <div class="flex flex-col text-sm mt-4">
@@ -77,8 +77,7 @@
             z-50
             bg-white
             rounded-lg
-            border-t
-            border-metoPrimary-600
+            border-t border-metoPrimary-600
             shadow-xl
           "
         >
@@ -146,7 +145,6 @@
               <div class="flex">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                 
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -188,7 +186,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-auto "
+                class="h-6 w-auto"
                 viewBox="0 0 35 35"
                 fill="currentColor"
                 stroke-width="1"
@@ -336,8 +334,7 @@
                   class="
                     py-1
                     w-full
-                    md:w-max
-                    md:py-2
+                    md:w-max md:py-2
                     rounded
                     text-white
                     bg-red-500
@@ -523,7 +520,7 @@
                   <p class="text-sm">Your Name</p>
                   <input
                     class="p-1 bg-transparent w-full"
-                    type="tel"
+                    type="text"
                     v-model="busHireRequestData.name"
                   />
                 </div>
@@ -546,7 +543,7 @@
                   <p class="text-sm">Your Contact</p>
                   <input
                     class="p-1 bg-transparent w-full"
-                    type="text"
+                    type="tel"
                     v-model="busHireRequestData.contact"
                   />
                 </div>
@@ -675,12 +672,33 @@
                   "
                 >
                   <p class="text-sm">From Date</p>
-                  <div
-                    class="cursor-pointer w-full p-1"
+                
+                   <div
+                    class="
+                      cursor-pointer
+                      w-full
+                      p-1
+                      flex
+                      items-center
+                      text-red-400
+                      animate-pulse
+                    "
                     @click="selectBusHiringFromDate()"
                     v-if="!busHireRequestData.fromDate"
                   >
-                    From Date
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Select From Date
                   </div>
                   <div
                     class="cursor-pointer w-full p-1"
@@ -707,13 +725,36 @@
                   "
                 >
                   <p class="text-sm">To Date</p>
-                  <div
-                    class="cursor-pointer w-full p-1"
+               
+
+                       <div
+                    class="
+                      cursor-pointer
+                      w-full
+                      p-1
+                      flex
+                      items-center
+                      text-red-400
+                      animate-pulse
+                    "
                     @click="selectToDateHiring()"
                     v-if="!busHireRequestData.toDate"
                   >
-                    Till Date
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Select To Date
                   </div>
+
                   <div
                     class="cursor-pointer w-full p-1"
                     v-else
@@ -775,7 +816,7 @@
           </div>
         </div>
       </div>
-  <div id="aboutMeto" class="w-full flex flex-col items-center my-20 z-50">
+      <div id="aboutMeto" class="w-full flex flex-col items-center my-20 z-50">
         <!-- <div class="w-full lg:w-10/12 xl:w-8/12 2xl:w-1/2">
           <marquee
             behavior=""
@@ -1003,8 +1044,9 @@
               </svg>
               <h6 class="text-xl font-semibold">Safety</h6>
               <p class="mt-2 mb-4">
-                We ensure that the bus service is reliable in terms of timing
-                and operations.
+               Your safety is our highest priority. 
+              Our Buses are regularly Serviced  to ensure your safety.
+              Moreover our Bus Drivers are highly Professional just so you can reach your destination Safely. 
               </p>
             </div>
             <div
@@ -1061,8 +1103,7 @@
               </svg>
               <h6 class="text-xl font-semibold">Comfort</h6>
               <p class="mt-2 mb-4">
-                We ensure that the bus service is reliable in terms of timing
-                and operations.
+                With our Fleet of Toyata Coaster, comfort on bumpy long drive is ensured.
               </p>
             </div>
             <div
@@ -1103,8 +1144,7 @@
               </svg>
               <h6 class="text-xl font-semibold">Affordability</h6>
               <p class="mt-2 mb-4">
-                We ensure that the bus service is reliable in terms of timing
-                and operations.
+                Our prices are best in the market to ensure all group of income can access our services.
               </p>
             </div>
 
@@ -1173,9 +1213,17 @@
           </p>
         </div>
         <div class="flex flex-col gap-2 justify-center items-center">
-          <p class="w-11/12 break-words">
-            Bus Available on Monday, Tuesday, Wednesday
-          </p>
+          <div class="w-11/12 break-words">
+            <p v-if="days.length === 7">
+              Bus Available <span class="font-bold">Daily</span>
+            </p>
+            <p v-else class="mt-2">
+              Bus Available on
+              <span v-for="day in days" :key="day" class="pl-1 font-bold">
+                {{ weekLabels[day] }}
+              </span>
+            </p>
+          </div>
           <div class="flex flex-col px-2 py-1">
             <div class="flex flex-col justify-center mt-2">
               <h2 class="flex gap-2 text-sm font-light items-center">
@@ -1429,7 +1477,7 @@ a {
 </style>
 <script>
 import NavbarComponent from "../components/Landing/Navbar.vue";
-import {  regenerateTicket } from "../services/bookingServices";
+import { regenerateTicket } from "../services/bookingServices";
 
 import {
   dzongkhags,
@@ -1437,11 +1485,8 @@ import {
   getActiveStops,
 } from "../services/stopServices";
 
-
 import { Calendar, DatePicker } from "v-calendar";
-import {
-  getRoutesByOriginDestination,
-} from "../services/routeServices";
+import { getRoutesByOriginDestination } from "../services/routeServices";
 
 import { postBusHireRequest } from "../services/busHiringServices";
 
@@ -1508,6 +1553,15 @@ export default {
       toDateSelectModal: false,
       date: new Date(),
       dzongkhags: [],
+      weekLabels: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thrusday",
+        "Friday",
+        "Saturday",
+      ],
     };
   },
 
@@ -1558,21 +1612,24 @@ export default {
         this.destinationSelected.id
       )
         .then((res) => {
-
           if (res.data.routes) {
             this.routes = res.data.routes;
-            console.log("PARENT ROUTES", res.data.routes)
+            console.log("PARENT ROUTES", res.data.routes);
             this.routes.forEach((route) => {
-              this.days.push(route.day);
+              if (!this.days.includes(route.day)) {
+                this.days.push(route.day);
+              }
             });
           }
           if (res.data.subroutes) {
-            console.log("SUBROUTES", res.data.subroutes)
             this.subroutes = res.data.subroutes;
             this.subroutes.forEach((subroute) => {
-              this.days.push(subroute.day);
+              if (!this.days.includes(subroute.day)) {
+                this.days.push(subroute.day);
+              }
             });
           }
+          this.days.sort();
           this.attributes = [
             {
               dot: "green",
@@ -1604,8 +1661,8 @@ export default {
         this.matchedRoutes = [];
         this.$store.commit("commitSelectedDate", formattedDate);
         this.$store.commit("commitFormattedDepartureDate", e.ariaLabel);
-       
-       this.routes.forEach((route) => {
+
+        this.routes.forEach((route) => {
           if (route.day === e.weekday) {
             this.matchedRoutes.push(route);
           }
@@ -1625,14 +1682,16 @@ export default {
           this.$toast.show(`Date expired`, {
             position: "top",
             type: "error",
+            duration:200
           });
           this.invalidDateClicked = true;
         } else {
           this.matchedRoutes = [];
-           this.$store.commit("clearStoreMatchedRoutes");
+          this.$store.commit("clearStoreMatchedRoutes");
           this.$toast.show(`No Bus Availble`, {
             position: "top",
             type: "error",
+            duration:200
           });
         }
       }
@@ -1653,8 +1712,6 @@ export default {
         });
       }
     },
-
-  
 
     openBookTicketTab() {
       this.bookTicketTabSelected = true;

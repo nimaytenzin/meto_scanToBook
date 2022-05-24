@@ -99,7 +99,9 @@ export default createStore({
       state.departureDate = date
     },
    
-    
+    addServiceCharge(state,serviccharge){
+      state.serviceCharge = serviccharge
+    }, 
   
 
 
@@ -132,9 +134,7 @@ export default createStore({
     commitAvailableRoute(state,routes){
       state.avaialableRoutes = routes
     },
-    addServiceCharge(state,serviccharge){
-      state.serviceCharge = serviccharge
-    }, //used
+    //used
     addMatchedRoutes(state, data){
       state.selectedRoutes = data
     }, //used

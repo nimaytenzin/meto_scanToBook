@@ -7,10 +7,9 @@
       flex flex-wrap
       items-center
       justify-between
-      px-2
-      py-3
-      fixed
+      absolute
       top-0
+      my-4 
     "
   >
     <div
@@ -18,7 +17,6 @@
     >
       <div
         class="
-       
           relative
           flex
           justify-between
@@ -27,7 +25,11 @@
         "
       >
        
-        <div class="text-white">
+      <div class="flex gap-2 items-center">
+        <div>
+          <img src="../../assets/meto.png" alt="" class="w-12 bg-white rounded-full">
+        </div>
+          <div class="text-white">
           <a
             class="
               text-xs
@@ -47,6 +49,7 @@
             ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
           </p>
         </div>
+      </div>
        
       </div>
 
