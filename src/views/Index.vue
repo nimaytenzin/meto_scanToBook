@@ -1213,17 +1213,7 @@
           </p>
         </div>
         <div class="flex flex-col gap-2 justify-center items-center">
-          <div class="w-11/12 break-words">
-            <p v-if="days.length === 7">
-              Bus Available <span class="font-bold">Daily</span>
-            </p>
-            <p v-else class="mt-2">
-              Bus Available on
-              <span v-for="day in days" :key="day" class="pl-1 font-bold">
-                {{ weekLabels[day] }}
-              </span>
-            </p>
-          </div>
+         
           <div class="flex flex-col px-2 py-1">
             <div class="flex flex-col justify-center mt-2">
               <h2 class="flex gap-2 text-sm font-light items-center">
@@ -1616,20 +1606,16 @@ export default {
             this.routes = res.data.routes;
             console.log("PARENT ROUTES", res.data.routes);
             this.routes.forEach((route) => {
-              if (!this.days.includes(route.day)) {
+              
                 this.days.push(route.day);
-              }
             });
           }
           if (res.data.subroutes) {
             this.subroutes = res.data.subroutes;
             this.subroutes.forEach((subroute) => {
-              if (!this.days.includes(subroute.day)) {
                 this.days.push(subroute.day);
-              }
             });
           }
-          this.days.sort();
           this.attributes = [
             {
               dot: "green",
