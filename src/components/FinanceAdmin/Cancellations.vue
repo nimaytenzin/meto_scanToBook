@@ -5,6 +5,7 @@
         Cancellations
       </h1>
 
+
       <div v-if="cancelledBookings.length" class="w-11/12">
         <table
           class="border-l border-r divide-y divide-gray-200 table-auto w-full"
@@ -96,7 +97,7 @@
                 <p class="text-center">
                   Thimphu - TrashiYangtse <br />
                   Departure Date:  {{ booking.scheduleDate }} <br />
-                  Departure Time: {{ booking.route.departureTime }}
+                  Departure Time: {{ booking.route?.departureTime }}
                   <br />
                   Nu.{{ booking.amount }}
                 </p>
@@ -187,6 +188,8 @@
           </tbody>
         </table>
       </div>
+
+     
       <div v-else class="w-full">
         <div class="text-gray-700 flex gap-2 items-center px-10 text-xl">
           <svg
