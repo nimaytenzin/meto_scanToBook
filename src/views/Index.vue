@@ -563,6 +563,7 @@
                   "
                 >
                   <p class="text-sm">Number of Bus</p>
+                <p class="text-sm">(Toyota Coaster 19 Seats)</p>
                   <input
                     class="p-1 bg-transparent w-full"
                     type="number"
