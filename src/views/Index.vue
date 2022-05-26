@@ -226,7 +226,7 @@
                     w-full
                     md:w-1/3
                     flex flex-col
-                    border
+                  
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
                     items-start
@@ -234,9 +234,9 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">Travelling From</p>
+                  <p class="text-sm text-gray-500 mb-2">Travelling From</p>
                   <select
-                    class="bg- w-full p-1"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="originSelected"
                     @change="onOriginSelect($event)"
                   >
@@ -257,15 +257,15 @@
                     flex flex-col
                     rounded-lg
                     md:rounded-none
-                    border
+                    
                     items-start
                     justify-center
                     p-2
                   "
                 >
-                  <p class="text-sm">Travelling To</p>
+                 <p class="text-sm text-gray-500 mb-2">Travelling To</p>
                   <select
-                    class="bg-transparent w-full p-1"
+                     class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="destinationSelected"
                     @change="onDestinationChange"
                   >
@@ -284,7 +284,7 @@
                     w-full
                     md:w-1/3
                     flex flex-col
-                    border
+                    
                     items-start
                     justify-center
                     p-2
@@ -292,16 +292,18 @@
                     md:rounded-none md:rounded-r-lg
                   "
                 >
-                  <p class="text-sm">Travelling On</p>
+                 <p class="text-sm text-gray-500 mb-2">Travelling On</p>
                   <div
                     class="
                       cursor-pointer
                       w-full
-                      p-1
+                      p-2
                       flex
                       items-center
                       text-red-400
                       animate-pulse
+                      bg-gray-100
+                      border
                     "
                     @click="checkAvailableDates()"
                     v-if="!dateSelected"
@@ -321,7 +323,7 @@
                     Select Departure Date
                   </div>
                   <div
-                    class="cursor-pointer w-full p-1"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-else
                     @click="checkAvailableDates()"
                   >
@@ -509,7 +511,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
                     items-start
@@ -517,10 +518,11 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">Your Name</p>
+                  <p class="text-sm text-gray-500 mb-2">Name</p>
                   <input
-                    class="p-1 bg-transparent w-full"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     type="text"
+                    placeholder="Your Name"
                     v-model="busHireRequestData.name"
                   />
                 </div>
@@ -532,7 +534,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none
                     items-start
@@ -540,10 +541,11 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">Your Contact</p>
+                  <p class="text-sm text-gray-500 mb-2">Phone Number</p>
                   <input
-                    class="p-1 bg-transparent w-full"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     type="tel"
+                    placeholder="Your Phone Number"
                     v-model="busHireRequestData.contact"
                   />
                 </div>
@@ -554,7 +556,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none md:rounded-r-lg
                     items-start
@@ -562,14 +563,15 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">
+                  <p class="text-sm text-gray-500 mb-2">
                     Number of Bus
                     <span class="text-xs">(Toyota Coaster 19 Seats)</span>
                   </p>
 
                   <input
-                    class="p-1 bg-transparent w-full"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     type="number"
+                    placeholder="Number of Bus"
                     v-model="busHireRequestData.noOfBus"
                   />
                 </div>
@@ -593,7 +595,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
                     items-start
@@ -601,11 +602,12 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">From Origin</p>
+                  <p class="text-sm text-gray-500 mb-2">From</p>
                   <select
-                    class="bg-transparent w-full p-1 text-sm md:text-xl"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="busHireRequestData.origin"
                   >
+                  <option :value="null" disabled selected>Select Age</option>
                     <option
                       v-for="dzongkhag in dzongkhags"
                       :value="dzongkhag.name"
@@ -624,7 +626,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     items-start
                     rounded-lg
                     md:rounded-none md:rounded-r-lg
@@ -632,9 +633,9 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">To Destination</p>
+                  <p class="text-sm text-gray-500 mb-2">To</p>
                   <select
-                    class="bg-transparent w-full p-1 text-sm md:text-xl"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="busHireRequestData.destination"
                   >
                     <option
@@ -667,7 +668,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
                     items-start
@@ -675,16 +675,18 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">From Date</p>
+                  <p class="text-sm text-gray-500 mb-2">From Date</p>
 
                   <div
                     class="
                       cursor-pointer
                       w-full
-                      p-1
+                      p-2
+                      border
                       flex
                       items-center
                       text-red-400
+                      bg-gray-100
                       animate-pulse
                     "
                     @click="selectBusHiringFromDate()"
@@ -705,7 +707,7 @@
                     Select From Date
                   </div>
                   <div
-                    class="cursor-pointer w-full p-1"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-else
                     @click="selectBusHiringFromDate()"
                   >
@@ -720,7 +722,6 @@
                     flex flex-col
                     text-sm
                     md:text-xl
-                    border
                     rounded-lg
                     md:rounded-none md:rounded-r-lg
                     items-start
@@ -728,16 +729,18 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">To Date</p>
+                  <p class="text-sm text-gray-500 mb-2">To Date</p>
 
                   <div
                     class="
                       cursor-pointer
                       w-full
-                      p-1
+                      p-2
+                      border
                       flex
                       items-center
                       text-red-400
+                      bg-gray-100
                       animate-pulse
                     "
                     @click="selectToDateHiring()"
@@ -759,7 +762,7 @@
                   </div>
 
                   <div
-                    class="cursor-pointer w-full p-1"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-else
                     @click="selectToDateHiring()"
                   >
@@ -1268,7 +1271,17 @@
       class="w-max-screen"
     >
       <div
-        class="bg-gray-100 p-6 flex rounded text-metoPrimary-900 flex-col gap-2 items-center text-xl"
+        class="
+          bg-gray-100
+          p-6
+          flex
+          rounded
+          text-metoPrimary-900
+          flex-col
+          gap-2
+          items-center
+          text-xl
+        "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
