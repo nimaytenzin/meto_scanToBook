@@ -40,12 +40,12 @@
               py-1
               whitespace-nowrap
               uppercase
-              font-light
+              font-bold
             "
             href="/"
             >Meto Transport</a
           >
-          <p class="text-xs md:text-sm font-light">
+          <p class="text-xs md:text-sm font-bold">
             ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
           </p>
         </div>

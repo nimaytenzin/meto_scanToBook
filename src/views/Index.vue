@@ -236,7 +236,7 @@
                 >
                   <p class="text-sm">Travelling From</p>
                   <select
-                    class="bg-transparent w-full p-1"
+                    class="bg- w-full p-1"
                     v-model="originSelected"
                     @change="onOriginSelect($event)"
                   >
@@ -562,8 +562,11 @@
                     p-2
                   "
                 >
-                  <p class="text-sm">Number of Bus</p>
-                <p class="text-sm">(Toyota Coaster 19 Seats)</p>
+                  <p class="text-sm">
+                    Number of Bus
+                    <span class="text-xs">(Toyota Coaster 19 Seats)</span>
+                  </p>
+
                   <input
                     class="p-1 bg-transparent w-full"
                     type="number"
@@ -673,8 +676,8 @@
                   "
                 >
                   <p class="text-sm">From Date</p>
-                
-                   <div
+
+                  <div
                     class="
                       cursor-pointer
                       w-full
@@ -726,9 +729,8 @@
                   "
                 >
                   <p class="text-sm">To Date</p>
-               
 
-                       <div
+                  <div
                     class="
                       cursor-pointer
                       w-full
@@ -759,7 +761,7 @@
                   <div
                     class="cursor-pointer w-full p-1"
                     v-else
-                    @click="selectBusHiringToDate()"
+                    @click="selectToDateHiring()"
                   >
                     {{ busHireRequestData.toDate }}
                   </div>
@@ -1045,9 +1047,10 @@
               </svg>
               <h6 class="text-xl font-semibold">Safety</h6>
               <p class="mt-2 mb-4">
-               Your safety is our highest priority. 
-              Our Buses are regularly Serviced  to ensure your safety.
-              Moreover our Bus Drivers are highly Professional just so you can reach your destination Safely. 
+                Your safety is our highest priority. Our Buses are regularly
+                Serviced to ensure your safety. Moreover our Bus Drivers are
+                highly Professional just so you can reach your destination
+                Safely.
               </p>
             </div>
             <div
@@ -1104,7 +1107,8 @@
               </svg>
               <h6 class="text-xl font-semibold">Comfort</h6>
               <p class="mt-2 mb-4">
-                With our Fleet of Toyata Coaster, comfort on bumpy long drive is ensured.
+                With our Fleet of Toyata Coaster, comfort on bumpy long drive is
+                ensured.
               </p>
             </div>
             <div
@@ -1145,7 +1149,8 @@
               </svg>
               <h6 class="text-xl font-semibold">Affordability</h6>
               <p class="mt-2 mb-4">
-                Our prices are best in the market to ensure all group of income can access our services.
+                Our prices are best in the market to ensure all group of income
+                can access our services.
               </p>
             </div>
 
@@ -1214,7 +1219,6 @@
           </p>
         </div>
         <div class="flex flex-col gap-2 justify-center items-center">
-         
           <div class="flex flex-col px-2 py-1">
             <div class="flex flex-col justify-center mt-2">
               <h2 class="flex gap-2 text-sm font-light items-center">
@@ -1257,6 +1261,33 @@
         "
         @dayclick="selectBusHiringToDate($event)"
       />
+    </vue-final-modal>
+    <vue-final-modal
+      v-model="busHireRequestSuccessModal"
+      classes="flex justify-center items-center bg-black bg-opacity-50"
+      class="w-max-screen"
+    >
+      <div
+        class="bg-gray-100 p-6 flex rounded text-metoPrimary-900 flex-col gap-2 items-center text-xl"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <p class="">
+          Your Bus Hire Request has been successfully received. We will get back
+          to you Shortly.
+        </p>
+        <p>Thank you for choosing Meto Transport Service.</p>
+      </div>
     </vue-final-modal>
 
     <vue-final-modal
@@ -1503,27 +1534,14 @@ export default {
       searchedBookings: [],
       validSearch: false,
 
-      origins: [
-        {
-          name: "loading..",
-          id: 0,
-        },
-      ],
-      originSelected: {
-        name: "loading.....",
-        id: 0,
-      },
-      destinations: [{ name: "Select Destination", id: 0 }],
-      destinationSelected: {
-        name: "Select Destination",
-        id: 0,
-      },
-
+      origins: [],
+      originSelected: {},
+      destinations: [],
+      destinationSelected: {},
       bookTicketTabSelected: true,
       regenerateTicketTabSelected: false,
       hireBusTabSelected: false,
       availableDatesPopulated: false,
-
       availableDatesModal: false,
       routes: [],
       subroutes: [],
@@ -1553,6 +1571,7 @@ export default {
         "Friday",
         "Saturday",
       ],
+      busHireRequestSuccessModal: false,
     };
   },
 
@@ -1567,11 +1586,11 @@ export default {
 
     getActiveStops().then((res) => {
       this.origins = res.data;
-      this.originSelected = res.data[0];
-      getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
-        this.destinations = res.data;
-        this.destinationSelected = res.data[0];
-      });
+      // this.originSelected = res.data[0];
+      // getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
+      //   this.destinations = res.data;
+      //   this.destinationSelected = res.data[0];
+      // });
     });
   },
   methods: {
@@ -1607,14 +1626,13 @@ export default {
             this.routes = res.data.routes;
             console.log("PARENT ROUTES", res.data.routes);
             this.routes.forEach((route) => {
-              
-                this.days.push(route.day);
+              this.days.push(route.day);
             });
           }
           if (res.data.subroutes) {
             this.subroutes = res.data.subroutes;
             this.subroutes.forEach((subroute) => {
-                this.days.push(subroute.day);
+              this.days.push(subroute.day);
             });
           }
           this.attributes = [
@@ -1669,7 +1687,7 @@ export default {
           this.$toast.show(`Date expired`, {
             position: "top",
             type: "error",
-            duration:200
+            duration: 200,
           });
           this.invalidDateClicked = true;
         } else {
@@ -1678,7 +1696,7 @@ export default {
           this.$toast.show(`No Bus Availble`, {
             position: "top",
             type: "error",
-            duration:200
+            duration: 200,
           });
         }
       }
@@ -1766,12 +1784,7 @@ export default {
       ) {
         postBusHireRequest(this.busHireRequestData).then((res) => {
           if (res.status === 201) {
-            this.$toast.show(
-              "Bus Hiring Request has been sent! You will be contacted Shortly",
-              {
-                position: "top",
-              }
-            );
+            this.busHireRequestSuccessModal = true;
             this.busHireRequestData = {
               dismissed: 0,
             };
