@@ -777,7 +777,7 @@ export default {
             return require("../assets/steeringwheel.png");
             break;
           case "locked":
-            return require("../assets/seatSelected.png");
+            return require("../assets/seatUnavailable.png");
             break;
           default:
             return require("../assets/seatAvailable.png");
