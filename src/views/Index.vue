@@ -226,7 +226,6 @@
                     w-full
                     md:w-1/3
                     flex flex-col
-                  
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
                     items-start
@@ -257,15 +256,14 @@
                     flex flex-col
                     rounded-lg
                     md:rounded-none
-                    
                     items-start
                     justify-center
                     p-2
                   "
                 >
-                 <p class="text-sm text-gray-500 mb-2">Travelling To</p>
+                  <p class="text-sm text-gray-500 mb-2">Travelling To</p>
                   <select
-                     class="w-full bg-gray-100 rounded-sm p-2 border"
+                    class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="destinationSelected"
                     @change="onDestinationChange"
                   >
@@ -284,7 +282,6 @@
                     w-full
                     md:w-1/3
                     flex flex-col
-                    
                     items-start
                     justify-center
                     p-2
@@ -292,7 +289,7 @@
                     md:rounded-none md:rounded-r-lg
                   "
                 >
-                 <p class="text-sm text-gray-500 mb-2">Travelling On</p>
+                  <p class="text-sm text-gray-500 mb-2">Travelling On</p>
                   <div
                     class="
                       cursor-pointer
@@ -607,7 +604,7 @@
                     class="w-full bg-gray-100 rounded-sm p-2 border"
                     v-model="busHireRequestData.origin"
                   >
-                  <option :value="null" disabled selected>Select Age</option>
+                    <option :value="null" disabled selected>Select Age</option>
                     <option
                       v-for="dzongkhag in dzongkhags"
                       :value="dzongkhag.name"
@@ -1221,6 +1218,50 @@
             {{ destinationSelected.name }}
           </p>
         </div>
+
+        <div
+          v-if="errorMessage"
+          class="
+            flex
+            gap-2
+            items-center
+            justify-center
+            border
+            px-2
+            text-red-500
+            mt-3
+            animate-bounce
+            rounded
+            text-sm
+            
+          "
+        >
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div>
+            <p>
+              {{ errorMessage }}
+            </p>
+            
+          </div>
+        </div>
+          <p class="text-metoPrimary-800">
+            <p v-if="instructionMessage" class="text-xs">
+              {{ instructionMessage  }}
+            </p>
+          </p>
         <div class="flex flex-col gap-2 justify-center items-center">
           <div class="flex flex-col px-2 py-1">
             <div class="flex flex-col justify-center mt-2">
@@ -1585,6 +1626,8 @@ export default {
         "Saturday",
       ],
       busHireRequestSuccessModal: false,
+      errorMessage: null,
+      instructionMessage:null
     };
   },
 
@@ -1692,25 +1735,32 @@ export default {
         });
         this.$store.commit("commitIndexMatchedRoutes", this.matchedRoutes);
         this.availableDatesModal = false;
+        this.errorMessage = null;
+        this.instructionMessage = null;
       } else {
         this.dateSelected = null;
         this.matchedRoutes = [];
         this.$store.commit("clearStoreMatchedRoutes");
         if (e.isDisabled) {
-          this.$toast.show(`Date expired`, {
-            position: "top",
-            type: "error",
-            duration: 200,
-          });
+          this.errorMessage = "Please select a valid Date";
+          this.instructionMessage = null
+          // this.$toast.show(`Date expired`, {
+          //   position: "top",
+          //   type: "error",
+          //   duration: 200,
+          // });
           this.invalidDateClicked = true;
         } else {
           this.matchedRoutes = [];
           this.$store.commit("clearStoreMatchedRoutes");
-          this.$toast.show(`No Bus Availble`, {
-            position: "top",
-            type: "error",
-            duration: 200,
-          });
+          this.errorMessage = `No Bus on ${e.ariaLabel}`;
+          this.instructionMessage = "Buses are available on days marked with green dots below."
+          
+          // this.$toast.show(`No Bus Availble`, {
+          //   position: "top",
+          //   type: "error",
+          //   duration: 200,
+          // });
         }
       }
     },
