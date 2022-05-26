@@ -1257,10 +1257,10 @@
             
           </div>
         </div>
-          <p class="text-metoPrimary-800">
-            <p v-if="instructionMessage" class="text-xs">
+          <p class="text-metoPrimary-800 text-xs" v-if="instructionMessage">
+           
               {{ instructionMessage  }}
-            </p>
+            
           </p>
         <div class="flex flex-col gap-2 justify-center items-center">
           <div class="flex flex-col px-2 py-1">
