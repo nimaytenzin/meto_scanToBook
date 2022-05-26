@@ -57,7 +57,7 @@ const routes = [
     path: '/:catchAll(.*)', redirect: '404'
   },
   {
-    path: 'eticket/:bookingId', component: () => import('../views/ETicket.vue')
+    path: '/eticket/:bookingId', component: () => import('../views/ETicket.vue')
   },
   {
     path: '/unathorized',
