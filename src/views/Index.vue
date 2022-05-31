@@ -224,7 +224,7 @@
                 <div
                   class="
                     w-full
-                    md:w-1/3
+                    md:w-1/4
                     flex flex-col
                     rounded-lg
                     md:rounded-none md:rounded-l-lg
@@ -235,7 +235,7 @@
                 >
                   <p class="text-sm text-gray-500 mb-2">Travelling From</p>
                   <select
-                    class="w-full bg-gray-100 rounded-sm p-2 border"
+                    class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
                     v-model="originSelected"
                     @change="onOriginSelect($event)"
                   >
@@ -252,7 +252,7 @@
                 <div
                   class="
                     w-full
-                    md:w-1/3
+                    md:w-1/4
                     flex flex-col
                     rounded-lg
                     md:rounded-none
@@ -263,7 +263,7 @@
                 >
                   <p class="text-sm text-gray-500 mb-2">Travelling To</p>
                   <select
-                    class="w-full bg-gray-100 rounded-sm p-2 border"
+                    class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
                     v-model="destinationSelected"
                     @change="onDestinationChange"
                   >
@@ -280,7 +280,7 @@
                 <div
                   class="
                     w-full
-                    md:w-1/3
+                    md:w-1/4
                     flex flex-col
                     items-start
                     justify-center
@@ -301,6 +301,7 @@
                       animate-pulse
                       bg-gray-100
                       border
+                      text-sm
                     "
                     @click="checkAvailableDates()"
                     v-if="!dateSelected"
@@ -320,14 +321,39 @@
                     Select Departure Date
                   </div>
                   <div
-                    class="w-full bg-gray-100 rounded-sm p-2 border"
+                    class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
                     v-else
                     @click="checkAvailableDates()"
                   >
                     {{ dateSelected }}
                   </div>
                 </div>
+
+                   <div
+                  class="
+                    w-full
+                    md:w-1/4
+                    flex flex-col
+                    rounded-lg
+                    md:rounded-none md:rounded-l-lg
+                    items-start
+                    justify-center
+                    p-2
+                  "
+                >
+                  <p class="text-sm text-gray-500 mb-2">Number of Passengers</p>
+                  <input
+                    v-model="numberOfPassengers"
+                    class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
+                    placeholder="Number of Passengers"
+                    type="number"
+                    min="1"
+                    max="19"
+                    step="1"
+                  />
+                </div>
               </div>
+             
               <div class="flex p-6 text-sm md:text-xl justify-end">
                 <button
                   class="
@@ -367,7 +393,7 @@
                       </g>
                     </g>
                   </svg>
-                  Show Buses
+                  Search Buses
                 </button>
               </div>
             </div>
@@ -1627,7 +1653,9 @@ export default {
       ],
       busHireRequestSuccessModal: false,
       errorMessage: null,
-      instructionMessage:null
+      instructionMessage:null,
+      numberOfPassengers:null
+
     };
   },
 
@@ -1656,6 +1684,7 @@ export default {
 
     onOriginSelect(e) {
       this.dateSelected = null;
+      this.errorMessage = null;
       getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
         this.destinations = res.data;
         this.destinationSelected = res.data[0];
@@ -1768,10 +1797,12 @@ export default {
       if (
         this.originSelected &&
         this.destinationSelected &&
-        this.dateSelected
+        this.dateSelected &&
+        this.numberOfPassengers 
       ) {
         this.$store.commit("addOrigin", this.originSelected);
         this.$store.commit("addDestination", this.destinationSelected);
+        this.$store.commit("addNumberOfPassengers", this.numberOfPassengers)
         this.$router.push("/buses");
       } else {
         this.$toast.show("Please Select departure Date", {

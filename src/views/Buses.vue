@@ -40,7 +40,7 @@
       >
         <div class="w-full md:w-1/2 flex-col">
           <h1 class="font-semibold text-xl md:text-5xl">
-            Your Journey starts with us.
+           Meto Transport Service 
           </h1>
           <div class="flex flex-col text-sm mt-4">
             <div class="flex text-sm md:text-xl gap-2 items-center">
@@ -144,37 +144,80 @@
           z-50
         "
       >
-        <p
+        <div
           class="
+            flex
+            gap-2
             text-sm
+            items-start
+            justify-center
             md:text-2xl
-            text-metoPrimary-900 md:text-left
+            text-metoPrimary-900
+            md:text-left
             w-full
             mt-4
             text-center
           "
         >
-         
-          <span class="text-2xl font-bold">
-            {{ originSelected?.name }}
-          </span>
-           -
-          <span class="text-2xl font-bold">
-            {{ destinationSelected?.name }}
-          </span>
-        </p>
-        <p
-          class="
-            text-xl
-            font-semibold
-            text-metoPrimary-900 
-            w-full
-            mb-4
-            text-center md:text-left
-          "
-        >
-          {{ formattedDepartureDate }}
-        </p>
+          <div>
+            <p class="text-xs text-gray-700">From</p>
+            <p class="font-bold text-2xl">
+              {{ originSelected?.name }}
+            </p>
+          </div>
+          <div class="flex justify-center h-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mb-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-700">To</p>
+            <p class="text-2xl font-bold">
+              {{ destinationSelected?.name }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center my-2">
+          <p class="text-xs text-gray-700">Departure</p>
+          <p
+            class="
+              text-xl
+              font-semibold
+              text-metoPrimary-900
+              w-full
+              text-center
+              md:text-left
+            "
+          >
+            {{ formattedDepartureDate }}
+          </p>
+        </div>
+        <div class="flex mb-2 flex-col items-end justify-start">
+          <p class="text-xs text-gray-700">Passengers</p>
+
+          <p
+            class="
+              text-xl
+              font-semibold
+              text-metoPrimary-900
+              w-full
+              text-center
+              md:text-left
+            "
+          >
+            {{ numberOfPassengers }}
+          </p>
+        </div>
         <div class="flex flex-col gap-4 w-full">
           <div
             class="
@@ -218,7 +261,7 @@
             <div class="w-full md:w-1/3 flex flex-col justify-between">
               <div class="my-2" v-if="!route.isCancelled">
                 <p class="text-xl font-bold text-metoPrimary-900">
-                  {{ 19 - route.passengers  < 0 ? 0: 19- route.passengers }}
+                  {{ 19 - route.passengers < 0 ? 0 : 19 - route.passengers }}
                 </p>
                 <p class="text-metoPrimary-800 text-sm">(Seats Available)</p>
               </div>
@@ -336,7 +379,6 @@ export default {
   created() {
     this.matchedRoutes = this.$store.state.indexMatchedRoutes;
     if (this.matchedRoutes.length === 0) {
-
       this.$router.push("/");
       // this.$store.commit("resetStoreState")
     }
@@ -344,7 +386,7 @@ export default {
     this.destinationSelected = this.$store.state.destination;
     this.dateSelected = this.$store.state.departureDate;
     this.formattedDepartureDate = this.$store.state.formattedDepartureDate;
-
+    this.numberOfPassengers = this.$store.state.numberOfPassengers;
     this.matchedRoutes.forEach((route) => {
       route.isCancelled = 0;
       route.passengers = 0;
@@ -363,7 +405,7 @@ export default {
           route.parentRoute.scheduleHash = parentScheduleHash;
           getPassengersByScheduleHash(parentScheduleHash).then((res) => {
             route.passengers = res.data.length;
-          }); 
+          });
         });
       } else {
         getPassengersByScheduleHash(scheduleHash).then((res) => {
@@ -386,6 +428,7 @@ export default {
       destinationSelected: {},
       dateSelected: "",
       formattedDepartureDate: "",
+      numberOfPassengers: 0,
     };
   },
   computed: {
@@ -393,7 +436,8 @@ export default {
   },
   methods: {
     proceedToSeatSelection(route) {
-      this.$store.commit("addSelectedSchedule", route);
+     if( this.numberOfPassengers <= (19-route.passengers) ){
+       this.$store.commit("addSelectedSchedule", route);
       if (route.parentRouteId) {
         console.log("SUB ROUTE HASH-Parent Route", route.parentRoute);
         this.$store.commit(
@@ -406,6 +450,11 @@ export default {
       }
 
       this.$router.push("/selectseats");
+     } else{
+       this.$toast.show(`Sorry! Only ${19 - route.passengers} Seats available`,{
+         position:"top"
+       })
+     }
     },
   },
 };

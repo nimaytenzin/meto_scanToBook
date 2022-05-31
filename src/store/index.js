@@ -37,6 +37,7 @@ export default createStore({
       }
     },
     tokenVerified:false,
+    numberOfPassengers:null
   },
   mutations: {
 
@@ -88,6 +89,10 @@ export default createStore({
       state.scanBookingId = id
     },
 
+    addNumberOfPassengers(state, data){
+      state.numberOfPassengers = data;
+    },
+
 
     // END OF USED COMMITS//
 
@@ -130,6 +135,9 @@ export default createStore({
             state.selectedSeats.splice(index,1)
         }
       })
+    },
+    clearSelectedSeats(state){
+      state.selectedSeats =[]
     },
     commitAvailableRoute(state,routes){
       state.avaialableRoutes = routes

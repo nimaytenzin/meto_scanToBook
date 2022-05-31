@@ -38,7 +38,7 @@
     >
       <div class="w-full md:w-1/2 flex-col">
         <h1 class="font-semibold text-xl md:text-5xl">
-          Your Journey starts with us.
+          Meto Transport Service
         </h1>
         <div class="flex flex-col text-sm mt-4">
           <div class="flex text-sm md:text-xl gap-2 items-center">
@@ -50,43 +50,96 @@
   </div>
   <div
     id="scheduleRouteDetails"
-    class="
-      w-full
-      md:flex
-      justify-center
-      overflow-scroll
-
-    "
+    class="w-full md:flex justify-center overflow-scroll"
   >
     <div
       class="
-        p-6
-        bg-white
-        rounded-lg
+        flex
+        gap-2
+        text-sm
+        items-end
+        justify-center
+        md:text-2xl
+        text-metoPrimary-900
+        md:text-left
+        w-full
+        mt-4
+        text-center
       "
     >
+      <div>
+        <p class="text-xs text-gray-700">From</p>
+        <p class="font-bold text-2xl">
+          {{ originSelected?.name }}
+        </p>
+      </div>
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mb-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-700">To</p>
+        <p class="text-2xl font-bold">
+          {{ destinationSelected?.name }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center my-2">
+      <p class="text-xs text-gray-700">Departure</p>
       <p
         class="
-          text-sm
-          md:text-2xl
-          font-thin
-          text-metoPrimary-900 text-left
+          text-xl
+          font-semibold
+          text-metoPrimary-900
           w-full
-          mt-4
+          text-center
+          md:text-left
         "
       >
-        <span class="text-xl md:text-3xl font-semibold">
-          {{ originSelected?.name }}
-        </span>
-        to
-        <span class="text-xl md:text-3xl font-semibold">
-          {{ destinationSelected?.name }}
-        </span>
-      </p>
-      <p
-        class="text-xl font-semibold text-metoPrimary-900 text-left w-full mb-4"
-      >
         {{ formattedDepartureDate }}
+      </p>
+    </div>
+
+    <div class="flex flex-col items-center my-2">
+      <p class="text-xs text-gray-700">Time</p>
+      <p
+        class="
+          text-xl
+          font-semibold
+          text-metoPrimary-900
+          w-full
+          text-center
+          md:text-left
+        "
+      >
+        {{ departureTime }}
+      </p>
+    </div>
+
+    <div class="flex flex-col items-center my-2">
+      <p class="text-xs text-gray-700">Passengers</p>
+      <p
+        class="
+          text-xl
+          font-semibold
+          text-metoPrimary-900
+          w-full
+          text-center
+          md:text-left
+        "
+      >
+        {{ numberOfPassengers }}
       </p>
     </div>
   </div>
@@ -132,12 +185,12 @@
         >
           <p class="px-2 text-xs">Origin</p>
           <p class="px-2 py-1 bg-transparent w-full">
-            {{ originSelected.name }}
+            {{ originSelected?.name }}
           </p>
 
           <p class="px-2 pt-2 text-xs">Destination</p>
           <p class="px-2 py-1 bg-transparent w-full">
-            {{ destinationSelected.name }}
+            {{ destinationSelected?.name }}
           </p>
         </div>
         <div
@@ -159,7 +212,7 @@
 
           <p class="px-2 text-xs pt-2">Departure Time</p>
           <p class="px-2 py-1 bg-transparent w-full">
-            {{ selectedSchedule.departureTime }}
+            {{ selectedSchedule?.departureTime }}
           </p>
         </div>
         <div
@@ -177,7 +230,7 @@
         >
           <p class="px-2 text-xs">Fare(Per Seat)</p>
           <p class="px-2 py-1 bg-transparent w-full">
-            Nu. {{ selectedSchedule.fare }}
+            Nu. {{ selectedSchedule?.fare }}
           </p>
 
           <p class="px-2 text-xs pt-2">Service Charge (Per Seat)</p>
@@ -191,41 +244,54 @@
     <div
       class="w-11/12 lg:w-10/12 xl:w-8/12 2xl:w-1/2 flex flex-col md:flex-row"
     >
-      <div id="seatLayout" class="w-full md:w-1/2">
+      <div id="seatLayout">
         <div
           class="md:hidden flex flex-col gap-2 px-6 py-3 shadow-lg rounded-lg"
         >
-          <p class="text-xl mb-2 text-metoPrimary-900">Your Seats</p>
+          <p
+            class="mb-2 text-metoPrimary-900 animate-pulse"
+            v-if="Number(numberOfPassengers) !== Number(bookedSeats.length)"
+          >
+            Select
+            <strong class="text-2xl"> {{ numberOfPassengers }} </strong> Seats
+          </p>
+          <div class="flex justify-between mb-2 text-metoPrimary-900" v-else>
+            <p>Your Seats</p>
+          </div>
 
-          <div class="flex justify-start flex-wrap" v-if="bookedSeats.length">
-            <div v-for="item in bookedSeats" :key="item" class="m-1 p-1">
-              <div class="relative">
-                <img
-                  src="../assets/yourseats.png"
-                  width="46"
-                  alt=""
-                  rel="preload"
-                />
-                <p
-                  class="
-                    absolute
-                    top-1/2
-                    left-1/2
-                    rounded-sm
-                    text-gray-50
-                    transform
-                    -translate-x-1/2 -translate-y-1/2
-                  "
-                >
-                  {{ item.number }}
-                </p>
+          <div v-if="bookedSeats.length">
+            <div class="flex justify-start flex-wrap">
+              <div v-for="item in bookedSeats" :key="item" class="m-1 p-1">
+                <div class="relative" @click="reselectSeats(item)">
+                  <img
+                    src="../assets/yourseats.png"
+                    width="46"
+                    alt=""
+                    rel="preload"
+                  />
+                  <p
+                    class="
+                      absolute
+                      top-1/2
+                      left-1/2
+                      rounded-sm
+                      text-gray-50
+                      transform
+                      -translate-x-1/2 -translate-y-1/2
+                    "
+                  >
+                    {{ item.number }}
+                  </p>
+                </div>
               </div>
             </div>
+            <p class="text-sm text-metoPrimary-800">
+              Click on the seat to reselect Seat
+            </p>
           </div>
 
           <div v-else class="text-metoPrimary-800">
-            <p class="text-red-400
-                      animate-pulse">No Seats Selected</p>
+            <p class="text-red-400 animate-pulse">No Seats Selected</p>
             <p>Please click on any available seat to book.</p>
           </div>
         </div>
@@ -238,72 +304,92 @@
             >
             to book.
           </p>
-          <div class="flex mt-5 justify-evenly">
-            <div
-              class="text-center flex flex-col justify-center items-center m-2"
-            >
-              <img src="../assets/seatAvailable.png" width="25" alt="" />
-              <p class="text-sm text-gray-600">Available</p>
-            </div>
-            <div
-              class="text-center flex flex-col justify-center items-center m-2"
-            >
-              <img src="../assets/seatUnavailable.png" width="25" alt="" />
-              <p class="text-sm text-gray-600">Booked</p>
+          <div v-if="Number(numberOfPassengers) !== Number(bookedSeats.length)">
+            <div class="flex mt-5 justify-evenly">
+              <div
+                class="
+                  text-center
+                  flex flex-col
+                  justify-center
+                  items-center
+                  m-2
+                "
+              >
+                <img src="../assets/seatAvailable.png" width="25" alt="" />
+                <p class="text-sm text-gray-600">Available</p>
+              </div>
+              <div
+                class="
+                  text-center
+                  flex flex-col
+                  justify-center
+                  items-center
+                  m-2
+                "
+              >
+                <img src="../assets/seatUnavailable.png" width="25" alt="" />
+                <p class="text-sm text-gray-600">Booked</p>
+              </div>
+
+              <div
+                class="
+                  text-center
+                  flex flex-col
+                  justify-center
+                  items-center
+                  m-2
+                "
+              >
+                <img src="../assets/yourseats.png" width="25" alt="" />
+                <p class="text-sm text-gray-600">Your Bookings</p>
+              </div>
             </div>
 
             <div
-              class="text-center flex flex-col justify-center items-center m-2"
-            >
-              <img src="../assets/yourseats.png" width="25" alt="" />
-              <p class="text-sm text-gray-600">Your Bookings</p>
-            </div>
-          </div>
-
-          <div
-            class="
-              p-1
-              mx-auto
-              bg-white
-              rounded-md
-              shadow-md
-              mt-1
-              items-center
-              space-x-4
-            "
-          >
-            <div
-              class="bg-white grid grid-cols-4 gap-2 p-3 m-3"
-              style="z-index: 99999"
+              class="
+                p-1
+                mx-auto
+                bg-white
+                rounded-md
+                shadow-md
+                mt-1
+                items-center
+                space-x-4
+              "
             >
               <div
-                v-for="item in seats"
-                :key="item"
-                class="rounded relative"
-                @click="addSeat(item)"
+                class="bg-white grid grid-cols-4 gap-2 p-3 m-3"
+                style="z-index: 99999"
               >
-                <img
-                  :src="bindImage(item)"
-                  alt="Seat "
-                  class="object-contain w-14 z-0 cursor-pointer"
-                  v-if="item.type == 'seat' || item.type === 'driver'"
-                />
-                <p
-                  class="
-                    absolute
-                    top-1/2
-                    left-1/2
-                    bg-white bg-opacity-60
-                    rounded-sm
-                    pl-1
-                    pr-1
-                    transform
-                    -translate-x-1/2 -translate-y-1/2
-                    cursor-pointer
-                  "
+                <div
+                  v-for="item in seats"
+                  :key="item"
+                  class="rounded relative"
+                  @click="addSeat(item)"
                 >
-                  {{ item.number ? item.number : "" }}
-                </p>
+                  <img
+                    :src="bindImage(item)"
+                    alt="Seat "
+                    class="object-contain w-14 z-0 cursor-pointer"
+                    v-if="item.type == 'seat' || item.type === 'driver'"
+                  />
+                  <p
+                    class="
+                      absolute
+                      top-1/2
+                      left-1/2
+                      bg-white bg-opacity-60
+                      rounded-sm
+                      pl-1
+                      pr-1
+                      transform
+                      -translate-x-1/2 -translate-y-1/2
+                      cursor-pointer
+                    "
+                  >
+                    {{ item.number ? item.number : "" }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -403,7 +489,7 @@
           </div>
         </div>
         <button
-          v-if="bookedSeats.length"
+         v-if="Number(numberOfPassengers) === Number(bookedSeats.length)"
           class="
             l
             px-1
@@ -570,7 +656,7 @@
 
 <style>
 #heroSection3 {
-  height: 29vh;
+  height: 20vh;
 }
 </style>
 <script>
@@ -579,14 +665,15 @@ export default {
   created() {
     this.fare = this.$store.state.selectedSchedule?.fare;
     this.roomId = this.$store.state.selectedScheduleHash;
+    this.numberOfPassengers = this.$store.state.numberOfPassengers;
     this.inactiveTimeOut = setTimeout(() => {
-        window.location.reload();
+      window.location.reload();
     }, 90000);
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
-      this.$store.commit('addServiceCharge', res.data.serviceCharge)
+      this.$store.commit("addServiceCharge", res.data.serviceCharge);
     });
-    
+
     if (
       this.roomId &&
       this.$store.state.selectedSchedule &&
@@ -630,7 +717,7 @@ export default {
         { id: 1, number: 1, type: "seat", status: "available" },
         { id: 2, number: 0, type: "notSeat", status: "available" },
         { id: 3, number: 0, type: "notSeat", status: "available" },
-        { id: 4, number: 0, type: "notseat", status: "available" },
+        { id: 4, number: 0, type: "driver", status: "driver" },
         { id: 5, number: 2, type: "seat", status: "available" },
         { id: 6, number: 0, type: "notSeat", status: "available" },
         { id: 7, number: 3, type: "seat", status: "available" },
@@ -661,6 +748,7 @@ export default {
         id: 0,
       },
       tempStatus: null,
+      numberOfPassengers: 0,
     };
   },
   computed: {
@@ -706,7 +794,7 @@ export default {
           this.lockedSeats = messageJson.lockedList;
           this.changeSeatStatus();
         } else if (messageJson.messageType === "LOCK_LEAVE") {
-          console.log("LOCK LEAVE RECIEVED");
+          console.log("LOCK LEAVE RECIEVED", messageJson.leaveList);
           this.reverSeatStatus(messageJson.leaveList);
         } else if (messageJson.messageType === "LOCK_ACK") {
           console.log("Lock Acknowledged by the server");
@@ -765,10 +853,13 @@ export default {
       });
     },
     bindImage(seat) {
-      if (seat.type === "seat") {
+      if (seat.type === "seat" || seat.type === "driver") {
         switch (seat.status) {
           case "available":
             return require("../assets/seatAvailable.png");
+            break;
+          case "entrance":
+            return require("../assets/entrance.png");
             break;
           case "booked":
             return require("../assets/yourseats.png");
@@ -868,8 +959,25 @@ export default {
       }
     },
 
+    reselectSeats(seat) {
+      console.log("RESELECT SEAT", seat.number);
+      let ss = seat.number;
+      this.conn.send(
+        JSON.stringify({
+          scheduleHash: this.roomId.toString(),
+          messageType: "LOCK_LEAVE",
+          seatId: ss.toString(),
+        })
+      );
+
+      let matchedSeat = this.getSeats(ss);
+      matchedSeat.status = "available";
+      this.total -= this.fare;
+      this.$store.commit("removeSeat", seat);
+    },
+
     goToPassengerDetailsPage() {
-       if (this.$store.state.selectedSeats) {
+      if (this.$store.state.selectedSeats) {
         this.$store.state.selectedSeats.forEach((seat) => {
           this.conn.send(
             JSON.stringify({
@@ -888,7 +996,6 @@ export default {
           type: "error",
         });
       }
-     
     },
   },
 };
