@@ -116,18 +116,18 @@
                
                 <div v-if="booking.subroute">
                   <p>
-                    {{ booking.subroute.routepath?.origin.name }} -
-                    {{ booking.subroute.routepath?.destination.name }}
+                    {{ booking?.subroute?.routepath?.origin.name }} -
+                    {{ booking?.subroute?.routepath?.destination.name }}
                   </p>
                   <p class="text-xs leading-tight">
                     * SubRoute <br />
-                    Travelling in {{ booking.route.routepath?.origin.name }} -
-                    {{ booking.route.routepath?.destination.name }} Bus
+                    Travelling in {{ booking?.route?.routepath?.origin.name }} -
+                    {{ booking.route?.routepath?.destination.name }} Bus
                   </p>
                 </div>
                 <div v-else>
-                  {{ booking.route.routepath.origin.name }} -
-                  {{ booking.route.routepath.destination.name }}
+                  {{ booking.route?.routepath?.origin.name }} -
+                  {{ booking.route?.routepath?.destination.name }}
                 </div>
 
                 <p>
@@ -137,7 +137,7 @@
                   Departure Date: {{booking.scheduleDate  }}
                 </p>
                 <p>
-                  Departure Time: {{booking.route.departureTime  }}
+                  Departure Time: {{booking.route?.departureTime  }}
                 </p>
               </td>
               <td
