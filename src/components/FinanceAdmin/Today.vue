@@ -61,19 +61,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Counter | Mbob</td>
+                  <td>Counter</td>
                   <td>
                     Nu
-                    {{ statsToday.MBOB?.amount ? statsToday.MBOB.amount : 0 }}
+                    {{ statsToday.MBOB?.amount ? statsToday.MBOB.amount : 0 + statsToday.CASH?.amount ? statsToday.CASH.amount : 0  }}
                   </td>
                 </tr>
-                <tr>
-                  <td>Counter | Cash</td>
-                  <td>
-                    Nu
-                    {{ statsToday.CASH?.amount ? statsToday.CASH.amount : 0 }}
-                  </td>
-                </tr>
+               
               </table>
             </div>
           </div>
@@ -116,25 +110,18 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Counter | Cash</td>
+                  <td>Counter </td>
                   <td>
                     {{
                       statsToday.CASH?.ticketsSold
                         ? statsToday.CASH.ticketsSold
-                        : 0
-                    }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Counter | Mbob</td>
-                  <td>
-                    {{
-                      statsToday.MBOB?.ticketsSold
+                        : 0 + statsToday.MBOB?.ticketsSold
                         ? statsToday.MBOB.ticketsSold
                         : 0
                     }}
                   </td>
                 </tr>
+                
               </table>
             </div>
           </div>
