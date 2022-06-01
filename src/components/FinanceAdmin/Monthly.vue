@@ -38,6 +38,7 @@
             class="text-gray-700 border-b"
           >
             <td>
+              {{ route.routeId}}
               <p>{{ route?.origin?.name }} - {{ route?.destination?.name }}</p>
               <p class="text-sm">({{ route?.route?.departureTime }})</p>
             </td>
