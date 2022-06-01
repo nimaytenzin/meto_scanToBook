@@ -92,8 +92,14 @@
               >
                  
                  BookingID: {{ booking.id }}
-                 <p class="text-sm font-semibold">
-                   Status: {{booking.bookingStatus  }}
+                 <p class="text-sm font-bold text-green-500" v-if="booking.bookingStatus === 'PENDING' ">
+                   Active
+                </p>
+                 <p class="text-sm font-bold text-gray-500" v-if="booking.bookingStatus === 'FULFILLED' ">
+                   Completed
+                </p>
+                 <p class="text-sm font-bold text-red-500" v-if="booking.bookingStatus === 'CANCELLED' ||booking.bookingStatus === 'REFUNDED'  ">
+                   Cancelled
                 </p>
                 <p v-if="booking.modality !=='ONLINE'">
                   CounterBooking <br>

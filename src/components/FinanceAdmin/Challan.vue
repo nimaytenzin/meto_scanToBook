@@ -445,10 +445,6 @@
     <div
       class="modal__content text-center mt-1 flex flex-col text-metoPrimary-700"
     >
-      
-
-      
-
       <div class="flex flex-col gap-2 justify-center items-center">
         <div class="flex flex-col px-2 py-1">
           <div class="flex flex-col justify-center mt-2">
