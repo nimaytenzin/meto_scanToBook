@@ -160,13 +160,13 @@
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-3 text-left py-2"
                   >
-                    Counter Cash
+                    Tickets Sold
                   </th>
                   <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Counter Epayment
+                    Amount Sold
                   </th>
                 </tr>
               </thead>
@@ -183,32 +183,25 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-gray-900 px-3 text-left">
+                  <td class="text-gray-900 px-3 text-left" v-if="staffData.ticketsSold">
                     {{
                       staffData.user?.name ? staffData.user?.name : "Online "
                     }}
                   </td>
-                  <td class="text-gray-900 px-3 text-left py-2">
-                    <div v-if="staffData.cashTickets">
-                      Bookings:{{
-                        staffData.cashTickets ? staffData.cashTickets : 0
+                  <td class="text-gray-900 px-3 text-left py-2" v-if="staffData.ticketsSold">
+                  
+                    <div >
+                     {{
+                        staffData.ticketsSold ? staffData.ticketsSold : 0 
                       }}
-                      <br />
-                      Amount: Nu.
-                      {{ staffData.cashAmount ? staffData.cashAmount : 0 }}
+                     
                     </div>
-                    <div v-else>
-
-                    </div>
+                  
                   </td>
-                  <td class="text-gray-900 px-3 text-left">
+                  <td class="text-gray-900 px-3 text-left" v-if="staffData.ticketsSold">
                     <div>
-                      Bookings:{{
-                        staffData.scanTickets ? staffData.scanTickets : 0
-                      }}
-                      <br />
-                      Amount: Nu.
-                      {{ staffData.scanAmount ? staffData.scanAmount : 0 }}
+
+                       Nu.{{ staffData.amountSold ? staffData.amountSold : 0  }}
                     </div>
                   </td>
                 </tr>
@@ -262,27 +255,16 @@
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Total
+                    Tickets Sold
                   </th>
 
                   <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-3 text-left"
                   >
-                    Online
+                    Amounts Sold
                   </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-3 text-left"
-                  >
-                    Counter Cash
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-3 text-left"
-                  >
-                    Counter Epayment
-                  </th>
+              
                 </tr>
               </thead>
               <tbody>
@@ -298,64 +280,29 @@
                     hover:bg-gray-100
                   "
                 >
-                  <td class="text-gray-900 px-3 text-left my-2">
+                  <td class="text-gray-900 px-3 text-left my-2" v-if="routeData.ticketsSold">
                     {{ routeData.origin?.name }} -
                     {{ routeData.destination?.name }}
                     <br />
                     {{ routeData.route?.departureTime }}
                   </td>
 
-                  <td class="text-gray-900 px-3 text-left my-2">
+                  <td class="text-gray-900 px-3 text-left my-2" v-if="routeData.ticketsSold">
                     <div>
-                      Bookings:
                       {{
-                        routeData.ticketsSold ? routeData.ticketsSold : 0
+                        routeData.ticketsSold ? routeData.ticketsSold : 0 
                       }}
-                      <br />
-                      Amount:
-                      {{ routeData.amountSold ? routeData.amountSold : 0 }}
                     </div>
                   </td>
-                  <td class="text-gray-900 px-3 text-left my-2">
-                    <div v-if="routeData.onlineTickets">
-                      Bookings:
-                      {{
-                        routeData.onlineTickets ? routeData.onlineTickets : 0
-                      }}
-                      <br />
-                      Amount:
-                      {{ routeData.onlineAmount ? routeData.onlineAmount : 0 }}
+                  <td class="text-gray-900 px-3 text-left my-2" v-if="routeData.ticketsSold">
+                    <div >
+                      Nu.
+                      {{routeData.amountSold ? routeData.amountSold : 0  }}
                     </div>
-                    <div v-else>
-                      -
-                    </div>
+                   
                   </td>
-                  <td class="text-gray-900 px-3 text-left py-2">
-                    <div v-if="routeData.cashTickets">
-                      Bookings:{{
-                        routeData.cashTickets ? routeData.cashTickets : 0
-                      }}
-                      <br />
-                      Amount: Nu.
-                      {{ routeData.cashAmount ? routeData.cashAmount : 0 }}
-                    </div>
-                    <div v-else>
-                      -
-                    </div>
-                  </td>
-                  <td class="text-gray-900 px-3 text-left my-2">
-                    <div v-if="routeData.scanTickets">
-                      Bookings:{{
-                        routeData.scanTickets ? routeData.scanTickets : 0
-                      }}
-                      <br />
-                      Amount: Nu.
-                      {{ routeData.scanAmount ? routeData.scanAmount : 0 }}
-                    </div>
-                    <div v-else>
-                      -
-                    </div>
-                  </td>
+                 
+
                 </tr>
                 <tr
                   class="
@@ -432,7 +379,7 @@ export default {
     });
     getRouteStatsToday().then((res) => {
       this.routeStats = res.data;
-      console.log(this.routeStats);
+      console.log("Route STats", this.routeStats);
     });
     getStatsByModalityToday().then((res) => {
       let ticketsSold = 0;
