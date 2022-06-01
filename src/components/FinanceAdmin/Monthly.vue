@@ -38,12 +38,12 @@
             class="text-gray-700 border-b"
           >
             <td>
-              <p>{{ route.origin.name }} - {{ route.destination.name }}</p>
-              <p class="text-sm">({{ route.route.departureTime }})</p>
+              <p>{{ route?.origin?.name }} - {{ route?.destination?.name }}</p>
+              <p class="text-sm">({{ route?.route?.departureTime }})</p>
             </td>
             <td>
               <p class="text-green-700 mx-4 font-bold">
-                {{ route.ticketsSold }}
+                {{ route?.ticketsSold }}
               </p>
             </td>
           </tr>
@@ -70,7 +70,7 @@
             </td>
             <td>
               <p class="text-green-700 mx-4 my-1 font-bold">
-                {{ staff.ticketsSold }}
+                {{ staff?.ticketsSold }}
               </p>
             </td>
           </tr>
