@@ -445,58 +445,9 @@
     <div
       class="modal__content text-center mt-1 flex flex-col text-metoPrimary-700"
     >
-      <div class="flex flex-col justify-center items-center text-xl">
-        <p>
-          {{ originSelected.name }}
-        </p>
-        <table class="w-full">
-          <tr>
-            <td class="w-1/3">
-              <hr class="w-full border-dashed" />
-            </td>
-            <td class="w-1/3 text-sm">to</td>
-            <td class="w-1/3">
-              <hr class="w-full border-dashed" />
-            </td>
-          </tr>
-        </table>
-        <p>
-          {{ destinationSelected.name }}
-        </p>
-      </div>
+      
 
-      <div
-        v-if="errorMessage"
-        class="
-          flex
-          gap-2
-          items-center
-          justify-center
-          border
-          px-2
-          text-red-500
-          mt-3
-          animate-bounce
-          rounded
-          text-sm
-        "
-      >
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
-        <div></div>
-      </div>
+      
 
       <div class="flex flex-col gap-2 justify-center items-center">
         <div class="flex flex-col px-2 py-1">
@@ -508,7 +459,6 @@
           </div>
           <DatePicker
             v-model="date"
-            :min-date="new Date()"
             @dayclick="onDayClick($event)"
             :attributes="attributes"
           />
