@@ -391,8 +391,19 @@ export default {
       route.isCancelled = 0;
       route.passengers = 0;
       var plaintext = `${route.id}|${this.dateSelected}`;
+
+      console.log(this.dateSelected)
+
+      let ok ="286|2022-06-08"
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
+
+      let ok2= crypto.createHash("sha1")
+      ok2.update(ok)
+
+      let ok3 = ok2.digest("hex")
+
+      console.log("NEW SCHEDULE HASH",ok3)
       var scheduleHash = hash.digest("hex");
       route.scheduleHash = scheduleHash;
       if (route.parentRouteId) {

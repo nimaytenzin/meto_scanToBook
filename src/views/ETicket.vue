@@ -128,11 +128,12 @@
                   </h1>
                 </div>
               </div>
-             
+
               <h2 class="text-center text-xl text-gray-700 my-1">
-               Departure Date: <span class="font-bold">
-                 {{ parseDepartureDate(departureDate) }}
-               </span>
+                Departure Date:
+                <span class="font-bold">
+                  {{ parseDepartureDate(departureDate) }}
+                </span>
               </h2>
             </div>
             <div class="text-center gap-2">
@@ -140,7 +141,6 @@
                 Departure Time:
                 <span class="font-bold"> {{ departureTime }}</span>
               </p>
-             
             </div>
             <h2 class="text-center text-md text-red-800">
               Please report to the Bus Stop 30 minutes before Departure!
@@ -156,11 +156,7 @@
                   :key="item"
                   class="m-1 p-1 rounded relative"
                 >
-                  <img
-                    src="../assets/seatUnavailable.png"
-                    width="50"
-                    alt=""
-                  />
+                  <img src="../assets/seatUnavailable.png" width="50" alt="" />
                   <p
                     class="
                       absolute
@@ -211,15 +207,13 @@
               </div>
             </div>
           </div>
-         
 
           <hr class="mt-4 mb-4" />
-         
-           <h2 class="text-sm text-center mt-2">
-                Contact
-                {{originContact  }} for
-                assistance/query.
-              </h2>
+
+          <h2 class="text-sm text-center mt-2">
+            Contact
+            {{ originContact }} for assistance/query.
+          </h2>
 
           <hr class="border-dashed" />
           <p class="text-center text-gray-500 text-sm mt-4 mb-4">
@@ -229,7 +223,13 @@
       </div>
     </div>
 
-     <div v-if="bookingData.bookingStatus === 'CANCELLED' || bookingData.bookingStatus==='REFUNDED' " class="bg-gray-600 rounded-md flex flex-col justify-center">
+    <div
+      v-if="
+        bookingData.bookingStatus === 'CANCELLED' ||
+        bookingData.bookingStatus === 'REFUNDED'
+      "
+      class="bg-gray-600 rounded-md flex flex-col justify-center"
+    >
       <div class="flex flex-row justify-between p-3">
         <div>
           <h1 class="text-left text-sm text-gray-200">Meto Transport</h1>
@@ -249,38 +249,39 @@
           text-gray-300
           p-10
           rounded-md
-         
           text-center
         "
       >
-       Booking Cancelled
+        Booking Cancelled
       </h2>
 
-     <div class="flex justify-center">
+      <div class="flex justify-center">
         <button
-        class="
-          bg-gray-100
-          hover:bg-gray-400
-          text-gray-500
-          hover:text-white
-          font-bold
-          py-1
-          rounded
-          px-4
-        "
-        @click="bookAgain()"
-      >
-        Book Again
-      </button>
-     </div>
+          class="
+            bg-gray-100
+            hover:bg-gray-400
+            text-gray-500
+            hover:text-white
+            font-bold
+            py-1
+            rounded
+            px-4
+          "
+          @click="bookAgain()"
+        >
+          Book Again
+        </button>
+      </div>
 
       <p class="text-center text-gray-200 text-xs px-3 m-4">
         Ensuring Safety, Reliability,Comfort till your destination.
       </p>
     </div>
 
-
-    <div v-if="bookingData.bookingStatus === 'FULFILLED'" class="bg-gray-600 rounded-md flex flex-col justify-center">
+    <div
+      v-if="bookingData.bookingStatus === 'FULFILLED'"
+      class="bg-gray-600 rounded-md flex flex-col justify-center"
+    >
       <div class="flex flex-row justify-between p-3">
         <div>
           <h1 class="text-left text-sm text-gray-200">Meto Transport</h1>
@@ -300,39 +301,37 @@
           text-gray-300
           p-10
           rounded-md
-         
           text-center
         "
       >
-        Journey Succefully Completed! <br> Ticket Expired.
-        <br>
+        Journey Succefully Completed! <br />
+        Ticket Expired.
+        <br />
         Thank you for choosing Meto Transport Service
       </h2>
 
-     <div class="flex justify-center">
+      <div class="flex justify-center">
         <button
-        class="
-          bg-gray-100
-          hover:bg-gray-400
-          text-gray-500
-          hover:text-white
-          font-bold
-          py-1
-          rounded
-          px-4
-        "
-        @click="bookAgain()"
-      >
-        Book Again
-      </button>
-     </div>
+          class="
+            bg-gray-100
+            hover:bg-gray-400
+            text-gray-500
+            hover:text-white
+            font-bold
+            py-1
+            rounded
+            px-4
+          "
+          @click="bookAgain()"
+        >
+          Book Again
+        </button>
+      </div>
 
       <p class="text-center text-gray-200 text-xs px-3 m-4">
         Ensuring Safety, Reliability,Comfort till your destination.
       </p>
     </div>
-
- 
   </div>
 </template>
 
@@ -356,7 +355,7 @@
 import domtoimage from "dom-to-image";
 import { useRoute } from "vue-router";
 import { getBookingDetail } from "../services/bookingServices";
-import { getBusByBookingId } from "../services/routeServices"
+import { getBusByBookingId } from "../services/routeServices";
 
 export default {
   created() {
@@ -365,16 +364,26 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
-        console.log("BOOKING DATA", res.data)
+        console.log("BOOKING DATA", res.data);
         this.originContact = res.data.route?.routepath?.origin?.user.contact;
-        getBusByBookingId(res.data.id).then(resp=>{
-          this.busDetails = resp.data.bus
-        })
-        this.origin = res.data.route.routepath.origin.name;
-        this.destination = res.data.route.routepath.destination.name;
+        getBusByBookingId(res.data.id).then((resp) => {
+          this.busDetails = resp.data.bus;
+        });
+
+        if (res.data.subroute) {
+          this.origin = res.data.subroute.routepath.origin.name;
+          this.destination = res.data.subroute.routepath.destination.name;
+          this.fare = res.data.subroute.fare;
+          this.departureTime = res.data.subroute.departureTime;
+        } else {
+          this.origin = res.data.route.routepath.origin.name;
+          this.destination = res.data.route.routepath.destination.name;
+          this.fare = res.data.route.fare;
+          this.departureTime = res.data.route.departureTime;
+        }
         this.departureDate = res.data.scheduleDate;
-        this.departureTime = res.data.route.departureTime;
-        this.fare = res.data.route.fare;
+        
+
         this.bookingData = res.data;
         console.log(this.bookingData);
       } else {
@@ -403,8 +412,8 @@ export default {
       checkBusRouteData: "",
       seatsBooked: 0,
       url: process.env.VUE_APP_DEV_API,
-      busDetails:{},
-      originContact:null
+      busDetails: {},
+      originContact: null,
     };
   },
 
@@ -478,7 +487,7 @@ export default {
       window.open(this.cancelTicketRouteData.href, "_blank");
     },
     bookAgain() {
-      this.$store.commit("resetStoreState")
+      this.$store.commit("resetStoreState");
       this.$router.push("/");
     },
   },
