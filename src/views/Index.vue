@@ -329,7 +329,7 @@
                   </div>
                 </div>
 
-                   <div
+                <div
                   class="
                     w-full
                     md:w-1/4
@@ -353,7 +353,7 @@
                   />
                 </div>
               </div>
-             
+
               <div class="flex p-6 text-sm md:text-xl justify-end">
                 <button
                   class="
@@ -476,6 +476,7 @@
                   your Ticket.
                 </p>
                 <button
+                  @click="searchBookings()"
                   class="
                     order-1
                     md:order-2
@@ -511,6 +512,57 @@
                   Regenerate Ticket
                 </button>
               </div>
+              <!-- start result table -->
+              <table v-if="validSearch" class="table-auto mx-auto my-5 w-3/4 px-4">
+                <tr>
+                  <td class="text-xs font-medium text-gray-500">BookingID</td>
+                  <td class="text-xs font-medium text-gray-500">Route</td>
+                  <td class="text-xs font-medium text-gray-500">
+                    Departure Date
+                  </td>
+                  <td class="text-xs font-medium text-gray-500">
+                    Departure Time
+                  </td>
+                  <td class="text-xs font-medium text-gray-500">Action</td>
+                </tr>
+                <tr
+                  v-for="validbooking in searchedBookings"
+                  :key="validbooking"
+                  class="text-sm md:text-md border-b-2 text-gray-600"
+                >
+                  <td>
+                    {{ validbooking.booking.id }}
+                  </td>
+                  <td>
+                    {{ validbooking.booking.route.routepath.origin.name }} to
+                    {{ validbooking.booking.route.routepath.destination.name }}
+                  </td>
+                  <td>
+                    {{ validbooking.booking.route.departureTime }}
+                  </td>
+                  <td>
+                    {{ formatDepartureDate(validbooking.booking.scheduleDate) }}
+                  </td>
+                  <td>
+                    <button
+                      @click="generateTicket(validbooking.booking.id)"
+                      class="
+                  bg-gray-100
+                  hover:bg-gray-400
+                  text-gray-500
+                  hover:text-white
+                  font-bold
+                  p-2
+                  rounded-r
+                "
+                    >
+                      Generate
+                    </button>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- end result table -->
             </div>
 
             <div v-if="hireBusTabSelected" class="w-full">
@@ -1240,6 +1292,7 @@
               </td>
             </tr>
           </table>
+
           <p>
             {{ destinationSelected.name }}
           </p>
@@ -1280,14 +1333,11 @@
             <p>
               {{ errorMessage }}
             </p>
-            
           </div>
         </div>
-          <p class="text-metoPrimary-800 text-xs" v-if="instructionMessage">
-           
-              {{ instructionMessage  }}
-            
-          </p>
+        <p class="text-metoPrimary-800 text-xs" v-if="instructionMessage">
+          {{ instructionMessage }}
+        </p>
         <div class="flex flex-col gap-2 justify-center items-center">
           <div class="flex flex-col px-2 py-1">
             <div class="flex flex-col justify-center mt-2">
@@ -1436,7 +1486,7 @@
           </button>
         </div>
 
-        <table v-if="validSearch" class="table-auto mt-4">
+        <table v-if="validSearch" class="table-auto mt-4 w-full">
           <tr>
             <td class="text-xs font-medium text-gray-500">BookingID</td>
             <td class="text-xs font-medium text-gray-500">Route</td>
@@ -1485,8 +1535,6 @@
   </div>
 </template>
 
-
-
 <style>
 #heroSection {
   height: 50vh;
@@ -1498,7 +1546,6 @@
   }
 }
 </style>
-
 
 <style scoped>
 ::v-deep .modal-container {
@@ -1653,9 +1700,8 @@ export default {
       ],
       busHireRequestSuccessModal: false,
       errorMessage: null,
-      instructionMessage:null,
-      numberOfPassengers:null
-
+      instructionMessage: null,
+      numberOfPassengers: null,
     };
   },
 
@@ -1772,7 +1818,7 @@ export default {
         this.$store.commit("clearStoreMatchedRoutes");
         if (e.isDisabled) {
           this.errorMessage = "Please select a valid Date";
-          this.instructionMessage = null
+          this.instructionMessage = null;
           // this.$toast.show(`Date expired`, {
           //   position: "top",
           //   type: "error",
@@ -1783,8 +1829,9 @@ export default {
           this.matchedRoutes = [];
           this.$store.commit("clearStoreMatchedRoutes");
           this.errorMessage = `No Bus on ${e.ariaLabel}`;
-          this.instructionMessage = "Buses are available on days marked with green dots below."
-          
+          this.instructionMessage =
+            "Buses are available on days marked with green dots below.";
+
           // this.$toast.show(`No Bus Availble`, {
           //   position: "top",
           //   type: "error",
@@ -1798,11 +1845,11 @@ export default {
         this.originSelected &&
         this.destinationSelected &&
         this.dateSelected &&
-        this.numberOfPassengers 
+        this.numberOfPassengers
       ) {
         this.$store.commit("addOrigin", this.originSelected);
         this.$store.commit("addDestination", this.destinationSelected);
-        this.$store.commit("addNumberOfPassengers", this.numberOfPassengers)
+        this.$store.commit("addNumberOfPassengers", this.numberOfPassengers);
         this.$router.push("/buses");
       } else {
         this.$toast.show("Please Select departure Date", {
@@ -1840,7 +1887,7 @@ export default {
       this.$router.push("/book");
     },
     generateTicket(bookingId) {
-      this.$router.push(`/book/eticket/${bookingId}`);
+      this.$router.push(`/eticket/${bookingId}`);
     },
     searchBookings() {
       if (this.ticket.cid && this.ticket.contact) {
@@ -1929,3 +1976,4 @@ export default {
   },
 };
 </script>
+
