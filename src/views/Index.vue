@@ -399,6 +399,10 @@
             </div>
 
             <div v-if="regenerateTicketTabSelected" class="w-full">
+
+              <p v-if="!searchBookingsFound" class="text-red-500 animate-pulse px-6 mt-2">
+                No Bookings found with the entered CID and Contact.
+              </p>
               <div
                 class="
                   flex flex-col
@@ -512,6 +516,9 @@
                   Regenerate Ticket
                 </button>
               </div>
+
+              
+
               <!-- start result table -->
               <table v-if="validSearch" class="table-auto mx-auto my-5 w-3/4 px-4">
                 <tr>
@@ -1660,7 +1667,7 @@ export default {
       },
       searchedBookings: [],
       validSearch: false,
-
+      searchBookingsFound:false,
       origins: [],
       originSelected: {},
       destinations: [],
@@ -1895,8 +1902,10 @@ export default {
           if (res.status === 200 && res.data.length !== 0) {
             this.searchedBookings = res.data;
             this.validSearch = true;
+            this.searchBookingsFound = true;
           } else {
             this.validSearch = false;
+            this.searchBookingsFound = false
             this.$toast.show("No Matching Records", {
               position: "top",
               type: "error",
