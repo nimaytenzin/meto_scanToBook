@@ -394,7 +394,7 @@ export default {
 
       console.log(this.dateSelected)
 
-      let ok ="286|2022-06-08"
+      let ok ="279|2022-07-01"
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
 
