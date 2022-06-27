@@ -127,7 +127,7 @@ const routes = [
         path: 'manage-routes', component: () => import('../components/Admin/ManageRoutes.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
-        path: 'schedules', component: () => import('../components/Admin/Schedule.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+        path: 'schedules', component: () => import('../components/Admin/SchedulePro.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
         path: 'bookings', component: () => import('../components/Admin/Bookings.vue'), meta: { requiresAuth: true, scheduleAdmin: true }

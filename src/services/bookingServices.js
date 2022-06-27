@@ -68,6 +68,11 @@ export async function getBookingsByRouteAndScheduleDate(routeId,departureDate){
 }
 
 
+export async function getAllBookingsByScheduleHash(scheduleHash){
+    return await axios.get(`${devUrl}/bookings/all/schedule-hash/${scheduleHash}`,{headers:authHeader()})
+}
+
+
 export async function getPassengerDetailsByScheduleHash(scheduleHash){
     return await axios.get(`${devUrl}/passenger/schedule/${scheduleHash}`,{headers:authHeader()})
 }

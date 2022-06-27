@@ -31,7 +31,7 @@
     <div
       class="
         side-bar
-        bg-indigo-900
+        bg-metoPrimary-900
         text-blue-100
         w-64
         space-y-6
@@ -79,7 +79,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -95,7 +95,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -112,7 +112,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -128,7 +128,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -144,7 +144,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -160,7 +160,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -177,7 +177,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
             "
           >
@@ -192,7 +192,7 @@
               rounded
               transistion
               duration-200
-              hover:bg-indigo-700
+              hover:bg-metoPrimary-700
               hover:text-white
               flex
               items-center
