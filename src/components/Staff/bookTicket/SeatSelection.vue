@@ -45,23 +45,7 @@
           </select>
         </div>
       </div>
-      <div class="w-full px-2 md:w-1/2">
-        <label class="block mb-1" for="formGridCode_last">Number of Passengers</label>
-        <input class="
-              w-full
-              h-10
-              px-3
-              text-base
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            " min="1" type="number" />
-      </div>
 
-      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0">
-        <DatePicker v-model="date" :min-date="new Date()" @dayclick="onDayClick($event)" :attributes="attributes" />
-      </div>
       <div class="inline-flex mt-8">
         <button class="
             bg-gray-100
@@ -82,7 +66,9 @@
         </button>
       </div>
 
-
+      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0">
+        <DatePicker v-model="date" :min-date="new Date()" @dayclick="onDayClick($event)" :attributes="attributes" />
+      </div>
 
       <div>
         <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
@@ -1016,15 +1002,15 @@ export default {
             position: "top",
             type: "error",
           });
-        } else if (seat.status === "INPROGRESS") {
-          this.$toast.show("Someone is booking this seat!", {
+        } else if(seat.status === "INPROGRESS"){
+            this.$toast.show("Someone is booking this seat!", {
             position: "top"
           });
         }
         else if (seat.status === "BOOKED") {
           this.reverSeatModal = true;
         } else {
-
+          
           this.confirmSeatModal = true;
         }
       }

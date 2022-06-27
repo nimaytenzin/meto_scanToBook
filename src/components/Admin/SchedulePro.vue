@@ -766,6 +766,7 @@ export default {
       var scheduleHash = hash.digest("hex");
       this.selectedScheduleHash = scheduleHash;
 
+      console.log("PLAIN TEXT",plaintext)
       getCancelledROutesbyRouteDate(this.selectedDepartureTime.id, this.dateSelected).then(res => {
         if (res.data.id) {
           this.isBusCancelled = true;

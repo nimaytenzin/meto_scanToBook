@@ -931,11 +931,11 @@ export default {
     addSeat(seat) {
       if (seat.type === "seat") {
         this.selectedSeat = seat;
-        if (seat.status === "booked") {
+        if (seat.status === "BOOKED") {
           this.$toast.show("The seat is already booked", {
             position: "top"
           });
-        } else if (seat.status === "inProgress") {
+        } else if (seat.status === "INPROGRESS") {
           this.$toast.show("Someone is booking this seat!", {
             position: "top"
           });

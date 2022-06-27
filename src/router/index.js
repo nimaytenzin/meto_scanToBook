@@ -227,8 +227,12 @@ const routes = [
         meta: { requiresAuth: true, staff: true },
         children: [
           { path: '', component: () => import('../components/Staff/bookTicket/Route.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'passengerDetails', component: () => import('../components/Staff/bookTicket/PassengerDetails.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'seatSelection', component: () => import('../components/Staff/bookTicket/SeatSelection.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'payment', component: () => import('../components/Staff/bookTicket/Payment.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } },
-          { path: 'daily-closings', component: () => import('../components/Staff/DailyClosings.vue'), meta: { requiresAuth: true, staff: true } }
+          { path: 'daily-closings', component: () => import('../components/Staff/DailyClosings.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'cancelled-buses', component: () => import('../components/Staff/CancelledBus.vue'), meta: { requiresAuth: true, staff: true } },
         ]
       },
       // {
