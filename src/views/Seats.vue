@@ -241,7 +241,7 @@
         </div>
         <div class="flex justify-center text-sm">
 
-          {{ selectedSchedule.departureTime }}
+          {{ selectedSchedule?.departureTime }}
 
         </div>
         <div class="flex justify-center items-center gap-2 text-sm">
@@ -623,9 +623,27 @@ export default {
     this.seatsLoadingModal = false;
   },
   created() {
+     if (
+
+      this.$store.state.selectedSchedule &&
+      this.$store.state.origin &&
+      this.$store.state.destination &&
+     this.$store.state.formattedDepartureDate &&
+      this.$store.state.selectedSchedule
+    ) {
+      this.seatsLoadingModal = true;
+
+    } else {
+      this.$router.push("/");
+    }
+
     this.fare = this.$store.state.selectedSchedule?.fare;
     this.roomId = this.$store.state.selectedScheduleHash;
     this.numberOfPassengers = this.$store.state.numberOfPassengers;
+
+    this.inactiveTimeout = setTimeout(()=>{
+      window.location.reload()
+    }, 170000);
 
     getServiceCharge().then((res) => {
       this.serviceCharge = res.data.serviceCharge;
@@ -644,17 +662,7 @@ export default {
       }
     })
 
-    if (
-
-      this.$store.state.selectedSchedule &&
-      this.$store.state.origin &&
-      this.$store.state.destination
-    ) {
-      this.seatsLoadingModal = true;
-
-    } else {
-      this.$router.push("/");
-    }
+   
   },
 
   data() {
@@ -721,7 +729,8 @@ export default {
       seatsLoadingModal: false,
       bookedSeats: [],
       inProgressSeats: [],
-      yourSeats: []
+      yourSeats: [],
+      inactiveTimeout:null
     };
   },
   computed: {
@@ -988,6 +997,8 @@ export default {
     },
 
     goToPaymentPage() {
+
+      clearTimeout(this.inactiveTimeOut);
       this.$router.push(`/loadPayment`);
 
     },
