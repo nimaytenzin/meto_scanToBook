@@ -1,643 +1,236 @@
 <template>
-  <div class="min-h-full flex flex-col items-center justify-center">
-    <div class="flex flex-col justify-center items-center">
-      <h1 class="text-3xl text-gray-500 text-center font-nunito font-bold">
-        Book Ticket
-      </h1>
-    </div>
-
-    <div class="mt-10 w-full">
-      <h2 class="text-xl mt-2">Route Details</h2>
-      <div class="flex flex-wrap">
-        <div class="w-full px-2 md:w-1/2">
-          <label class="block mb-1" for="formGridCode_name">Origin</label>
-
-          <select class="
-              w-full
-              h-10
-              px-3
-              text-base
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            " v-model="originSelected" @change="resetState">
-            <option v-for="stop in stops" :value="stop" :key="stop" class="bg-white text-xl">
-              {{ stop.name }}
-            </option>
-          </select>
-        </div>
-        <div class="w-full px-2 md:w-1/2">
-          <label class="block mb-1" for="formGridCode_last">Destination</label>
-          <select class="
-              w-full
-              h-10
-              px-3
-              text-base
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            " v-model="destinationSelected" @change="resetState">
-            <option v-for="stop in stops" :value="stop" :key="stop" class="bg-white">
-              {{ stop.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="w-full px-2 md:w-1/2">
-        <label class="block mb-1" for="formGridCode_last">Number of Passengers</label>
-        <input class="
-              w-full
-              h-10
-              px-3
-              text-base
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            " min="1" type="number" />
-      </div>
-
-      <div class="flex justify-center mt-5 -mx-2 space-y-4 md:space-y-0">
-        <DatePicker v-model="date" :min-date="new Date()" @dayclick="onDayClick($event)" :attributes="attributes" />
-      </div>
-      <div class="inline-flex mt-8">
-        <button class="
-            bg-gray-100
-            hover:bg-gray-400
-            text-gray-500
-            hover:text-white
-            font-bold
-            py-2
-            px-4
-            rounded
-            flex
-          " @click="searchBus()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          Search for bus
-        </button>
-      </div>
-
-
-
-      <div>
-        <h2 class="mb-4 flex gap-2 text-sm font-light items-center">
-          <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
-          Bus available
-        </h2>
-      </div>
-
-      <div class="flex flex-col gap-2" v-if="schedules.length !== 0">
-        <div v-for="schedule in schedules" :key="schedule" class="flex w-full flex-col">
-          <div @click="commitSchedule(schedule)" class="border-2 bg-white p-2 rounded text-gray-800">
-            <p v-if="schedule.parentRouteId" class="font-bold">Subroute</p>
-
-            <p>Departure Time: {{ schedule.departureTime }}</p>
-            <p>Fare: Nu. {{ schedule.fare }}</p>
-            <p v-if="schedule.parentRouteId" class="text-sm">
-              This is a subroute, you will in travelling in
-              <span class="font-semibold">{{ schedule.parentRoute?.routepath?.origin.name }} -
-                {{ schedule.parentRoute?.routepath?.destination.name }}</span>
-              Bus
-            </p>
-            <div>
-              <div v-if="!schedule.isCancelled" class="flex justify-start gap-2 flex-wrap">
-                <button class="
-                    rounded
-                    py-1
-                    px-2
-                    font-medium
-                    text-gray-900
-                    bg-gray-200
-                    hover:bg-gray-300 hover:text-gray-900
-                    active:bg-grey-900
-                  " @click="openSeatSelect(schedule)">
-                  Book Seat
-                </button>
-                <button class="
-                    rounded
-                    py-1
-                    px-2
-                    font-medium
-                    text-gray-900
-                    bg-gray-200
-                    hover:bg-gray-300 hover:text-gray-900
-                    active:bg-grey-900
-                  " @click="viewPassengers(schedule)">
-                  View Passengers
-                </button>
-              </div>
-              <div v-else class="text-red-800 font-semibold">Bus Cancelled</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div v-else>Sorry! No Bus available</div>
-    </div>
-
-    <!-- SEATS SELECTION MODAL -->
-    <vue-final-modal v-model="seatSelectModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center mt-5">
-        <h3 class="text-xl">Book?</h3>
-        <p class="text-center">Booked Seats</p>
-
-        <p v-if="total">Total: Nu {{ total }}</p>
-        <div class="grid grid-cols-4 flex-wrap">
-          <div v-for="bookedSeat in bookedSeats" :key="bookedSeat" class="m-1 p-1 rounded relative">
-            <img src="../../../assets/seatUnavailable.png" width="50" alt="" />
-            <p class="
-                absolute
-                top-1/2
-                left-1/2
-                bg-white bg-opacity-60
-                rounded-sm
-                pl-1
-                pr-1
-                transform
-                -translate-x-1/2 -translate-y-1/2
-              ">
-              {{ bookedSeat.number }}
-            </p>
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3 rounded border">
-            <div v-for="item in seats" :key="item" class="rounded relative" @click="addSeat(item)">
-              <img :src="bindImage(item)" alt="Seat " class="object-contain w-12 z-0 cursor-pointer" rel="preload"
-                v-if="item.type == 'seat' || item.type === 'driver'" />
-              <p class="
-                  absolute
-                  top-1/2
-                  left-1/2
-                  bg-white bg-opacity-60
-                  rounded-sm
-                  pl-1
-                  pr-1
-                  transform
-                  -translate-x-1/2 -translate-y-1/2
-                  cursor-pointer
-                ">
-                {{ item.number ? item.number : "" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="addPassengerDetails()">
-          Add Passenger Details
-        </button>
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="closeSeatSelectModal()">
-          Cancel
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- CONFIRM SEATS MODAL -->
-    <vue-final-modal v-model="confirmSeatModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center mt-5">
-        <h3 class="text-xl">Book?</h3>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="confirmSeat()">
-          confirm
-        </button>
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="cancelSeat()">
-          cancel
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- ADD PASSENGER DETAILS MODAL -->
-    <vue-final-modal v-model="addPassengerDetailsModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center">
-        <div class="flex flex-col">
-          <div class="flex-1 text-center">
-            <p class="text-xl font-semibold text-gray-600">
-              Enter Passenger Details
-            </p>
-            <p class="text-center font-thin text-sm">
-              Please Ensure Phone Numbers are Correct
-            </p>
-            <div class="flex flex-col justify-center items-center">
-              <div class="flex flex-row gap-2 items-center" v-for="(item, index) in bookedSeats" :key="item">
-                <div class="p-1 rounded relative">
-                  <img src="../../../assets/seatUnavailable.png" width="50" alt="" />
-                  <p class="
-                      absolute
-                      top-1/2
-                      left-1/2
-                      bg-white bg-opacity-60
-                      rounded-sm
-                      pl-1
-                      pr-1
-                      transform
-                      -translate-x-1/2 -translate-y-1/2
-                    ">
-                    {{ item.number }}
-                  </p>
-                </div>
-                <div class="flex flex-col mt-4">
-                  <p class="my-1 text-gray-800 font-thin">
-                    Passenger {{ index + 1 }}
-                  </p>
-
-                  <input v-model="passengers[index].name" placeholder="Name" class="
-                      appearance-none
-                      border-b
-                      rounded-sm
-                      w-full
-                      py-2
-                      px-2
-                      text-gray-700
-                      leading-tight
-                      focus:outline-none focus:shadow-outline
-                    " />
-                  <input v-model="passengers[index].contact" type="number" placeholder="Contact" class="
-                      appearance-none
-                      border-b
-                      rounded
-                      w-full
-                      py-2
-                      px-2
-                      text-gray-700
-                      leading-tight
-                      focus:outline-none focus:shadow-outline
-                    " />
-                  <input v-model="passengers[index].cid" placeholder="CID/EID/WorkPermit" class="
-                      appearance-none
-                      border-b
-                      rounded
-                      w-full
-                      py-2
-                      px-2
-                      text-gray-700
-                      leading-tight
-                      focus:outline-none focus:shadow-outline
-                    " />
-                </div>
-              </div>
-            </div>
-
-            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
-
-            <p class="text-xl my-1 font-semibold text-gray-600">
-              Payment Details
-            </p>
-            <div class="
-                font-nunito
-                text-gray-200 text-left
-                bg-gray-600
-                rounded
-                shadow-md
-                p-2
-              ">
-              <p>Billing</p>
-
-              <hr class="border-dashed w-full" />
-              <table class="table-auto">
-                <tr>
-                  <td>Base Fare :</td>
-                  <td>
-                    Nu
-                    {{ fare }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Seats Booked :</td>
-                  <td>{{ bookedSeats.length }}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <hr class="w-full border-dashed" />
-                  </td>
-                  <td></td>
-                </tr>
-                <tr class="text-gray-100 font-bold text-xl">
-                  <td>Total :</td>
-                  <td>
-                    {{ total }}
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="confirmBooking()">
-          Confirm Booking
-        </button>
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="backToSeatSelection()">
-          Back
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- CONFIRM PAYMENT MODAL -->
-    <vue-final-modal v-model="confirmPaymentModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center">
-        <div class="flex flex-col">
-          <div class="flex-1 text-center">
-            <p class="text-xl font-semibold text-gray-600">
-              Confirm Payment & Payment Details
-            </p>
-
-            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
-
-            <p class="text-xl my-1 font-semibold text-gray-600">
-              Payment Details
-            </p>
-            <div class="
-                font-nunito
-                text-gray-200 text-left
-                bg-gray-600
-                rounded
-                shadow-md
-                p-2
-              ">
-              <p>Billing</p>
-
-              <hr class="border-dashed w-full" />
-              <table class="table-auto">
-                <tr>
-                  <td>Base Fare :</td>
-                  <td>
-                    Nu
-                    {{ fare }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Seats Booked :</td>
-                  <td>{{ bookedSeats.length }}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <hr class="w-full border-dashed" />
-                  </td>
-                  <td></td>
-                </tr>
-                <tr class="text-gray-100 font-bold text-xl">
-                  <td>Total :</td>
-                  <td>
-                    {{ total }}
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="mt-4">
-              <p class="text-xl font-semibold text-gray-600">
-                Select Payment Mode
-              </p>
-              <select class="
-                  w-full
-                  h-10
-                  px-3
-                  text-base
-                  placeholder-gray-600
-                  border
-                  rounded-lg
-                  focus:shadow-outline
-                " v-model="modality">
-                <option value="MBOB" class="bg-white">MBoB</option>
-                <option value="CASH" class="bg-white">Cash</option>
-              </select>
-
-              <div v-if="paymentMode" class="flex flex-col items-center justify-center">
-                <p class="text-xl font-semibold text-gray-600">Select Bank</p>
-                <select class="
-                    w-full
-                    block
-                    h-10
-                    px-3
-                    text-base
-                    placeholder-gray-600
-                    border
-                    rounded-lg
-                    focus:shadow-outline
-                  " v-model="journalDetails.bankName">
-                  <option v-for="bank in banks" :key="bank" :value="bank" class="bg-white">
-                    {{ bank }}
-                  </option>
-                </select>
-
-                <input v-model="journalDetails.journalNumber" type="number" placeholder="Journal Number" class="
-                    block
-                    w-full
-                    appearance-none
-                    border-b
-                    rounded-sm
-                    py-2
-                    px-2
-                    text-gray-700
-                    leading-tight
-                    focus:outline-none focus:shadow-outline
-                  " />
-                <input v-model="journalDetails.contactNumber" type="number" placeholder="Phone Number" class="
-                    block
-                    w-full
-                    appearance-none
-                    border-b
-                    rounded-sm
-                    py-2
-                    px-2
-                    text-gray-700
-                    leading-tight
-                    focus:outline-none focus:shadow-outline
-                  " />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="confirmPayment()">
-          Confirm Payment
-        </button>
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="deleteBooking()">
-          Cancel Booking
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- DUPLICATE SEATS MODAL -->
-    <vue-final-modal v-model="duplicateSeatsModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center">
-        <div class="flex flex-col">
-          <div class="flex-1 text-center">
-            <p class="text-xl font-bold text-red-600">
-              Duplicate Seat Number!!
-            </p>
-
-            <hr class="w-full border-dotted border-1 border-gray-500 my-2" />
-
-            <p class="text-xl my-1 text-md font-semibold text-gray-500">
-              The Following Seat Number has been Booked!
-            </p>
-
-            <div>
-              <p v-for="seat in duplicateSeats" :key="seat" class="text-2xl font-bold text-gray-800">
-                {{ seat.seatNumber }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="backToSeatSelection()">
-          Back to Seat Selection
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- REVERT SEATS MODAL -->
-    <vue-final-modal v-model="reverSeatModal" classes="modal-container" content-class="modal-content"
-      class="w-max-screen" :click-to-close="false">
-      <div class="modal__content text-center mt-5">
-        <h3 class="text-xl">Cancel Seat Booking?</h3>
-      </div>
-      <div class="modal__action">
-        <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="confirmRevert()">
-          Remove Seats from booking
-        </button>
-        <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="cancelRevert()">
-          cancel
-        </button>
-      </div>
-    </vue-final-modal>
-
-    <!-- SOCKET ERROR MODAL -->
-    <vue-final-modal v-model="errorModal" classes="modal-container" content-class="modal-content" class="w-max-screen"
-      :click-to-close="false">
-      <div class="text-center mt-5">
-        <h3 class="text-xl font-nunito font-thin">Connecting to Services</h3>
-      </div>
-    </vue-final-modal>
-
-    <!-- PASSENGER DETAILS MODAL -->
-    <vue-final-modal v-model="passengerDetailsModal" classes="modal-container" content-class="modal-content2"
-      class="w-max-screen">
-      <div>
+  <div class="min-h-full w-full p-4">
+    
+      <div class="w-full">
         <div class="
-            font-nunito
-            text-gray-200
-            bg-gray-600
-            rounded-t
-            shadow-md
-            p-6
-            text-center
-          ">
-          <p>
-            <span class="font-bold">{{ originSelected.name }}</span> to
-            <span class=" font-bold">{{
-                destinationSelected.name
-            }}</span>
-          </p>
-          <p>On</p>
-          <p>{{ parseDepartureDate(departureDate) }} at</p>
-          <p>{{ selectedSchedule.departureTime }}</p>
-          <div>
-            Fare: Nu.{{ selectedSchedule.fare }} <br />
-            <p>Seats Remaining: {{ seatsAvailable.length }}</p>
-            <div class="flex gap-2 justify-center">
-              <p v-for="seat in seatsAvailable" :key="seat">
-                {{ seat }}
-              </p>
+                  flex
+                  text-sm
+                  md:text-xl
+                  mt-4
+                  md:mt-0
+                  flex-col
+                  gap-2
+                  md:gap-0 md:flex-row
+                  p-2
+                  md:p-6
+                  place-content-stretch
+                  text-metoPrimary-900
+                ">
+          <div class="
+                    w-full
+                    md:w-1/4
+                    flex flex-col
+                    rounded-lg
+                    md:rounded-none md:rounded-l-lg
+                    items-start
+                    justify-center
+                    p-2
+                  ">
+            <p class="text-sm text-gray-500 mb-2">Origin</p>
+            <select class="w-full bg-gray-100 rounded-sm p-2 border text-sm" v-model="originSelected"
+              @change="onOriginSelect($event)">
+              <option v-for="origin in origins" :value="origin" :key="origin" class="bg-metoPrimary-400 w-full">
+                {{ origin.name }}
+              </option>
+            </select>
+          </div>
+          <div class="
+                    w-full
+                    md:w-1/4
+                    flex flex-col
+                    rounded-lg
+                    md:rounded-none
+                    items-start
+                    justify-center
+                    p-2
+                  ">
+            <p class="text-sm text-gray-500 mb-2">Destination</p>
+            <select class="w-full bg-gray-100 rounded-sm p-2 border text-sm" v-model="destinationSelected"
+              @change="onDestinationChange">
+              <option v-for="destination in destinations" :value="destination" :key="destination"
+                class="bg-blue-400 w-full">
+                {{ destination.name }}
+              </option>
+            </select>
+          </div>
+          <div class="
+                    w-full
+                    md:w-1/4
+                    flex flex-col
+                    items-start
+                    justify-center
+                    p-2
+                    rounded-lg
+                    md:rounded-none md:rounded-r-lg
+                  ">
+            <p class="text-sm text-gray-500 mb-2">Departure Date</p>
+            <div class="
+                      cursor-pointer
+                      w-full
+                      p-2
+                      flex
+                      items-center
+                      text-red-400
+                      animate-pulse
+                      bg-gray-100
+                      border
+                      text-sm
+                    " @click="checkAvailableDates()" v-if="!dateSelected">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd" />
+              </svg>
+              Select Departure Date
             </div>
+            <div class="w-full bg-gray-100 rounded-sm p-2 border text-sm" v-else @click="checkAvailableDates()">
+              {{ dateSelected }}
+            </div>
+          </div>
 
-            <p v-if="!passengersInSchedule.length" class="m-4 text-2xl text-gray-100">
-              No Bookings
+          <div class="
+                    w-full
+                    md:w-1/4
+                    flex flex-col
+                    rounded-lg
+                    md:rounded-none md:rounded-l-lg
+                    items-start
+                    justify-center
+                    p-2
+                  ">
+            <p class="text-sm text-gray-500 mb-2">Number of Passengers</p>
+            <input v-model="numberOfPassengers" class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
+              placeholder="Number of Passengers" type="number" min="1" max="19" step="1" />
+          </div>
+        </div>
+
+        <div class="flex p-6 text-sm md:text-xl justify-end">
+          <button class="
+                    py-1
+                    w-full
+                    md:w-max md:py-2
+                    rounded
+                    text-white
+                    bg-red-500
+                    px-2
+                    md:px-6
+                    flex
+                    gap-2
+                    md:gap-4
+                    h-10
+                    md:h-14
+                    items-center
+                  " @click="searchBuses">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px"
+              y="0px" class="h-6 w-auto fill-current" viewBox="0 0 31.93 31.93"
+              style="enable-background: new 0 0 31.93 31.93" xml:space="preserve">
+              <g>
+                <g>
+                  <path
+                    d="M29.797,6.968c-0.361,0-0.654,0.293-0.654,0.655v3.916c0,0.361,0.293,0.655,0.654,0.655h1.477    c0.361,0,0.656-0.293,0.656-0.655V7.551c0-0.322-0.262-0.584-0.584-0.584V6.921l-0.021-1.014c0.006-0.048,0.025-1.192-0.782-2.115    c-0.575-0.654-1.05-1.025-2.675-1.096c0-0.463-0.375-0.838-0.84-0.838H5.141c-0.467,0-0.846,0.379-0.846,0.846    c0,0,0.02,0,0.016,0.001C2.795,2.793,2.389,3.156,1.834,3.789C1.031,4.704,0.928,5.831,0.928,5.831v1.136h-0.05    C0.393,6.968,0,7.361,0,7.846v3.469c0,0.485,0.393,0.878,0.878,0.878h0.914c0.485,0,0.878-0.393,0.878-0.878V7.622    c0-0.361-0.293-0.655-0.655-0.655L2.05,5.795C2.049,5.789,2.111,5.057,2.601,4.498C2.929,4.125,3.558,3.882,4.34,3.79    L4.296,13.933H3.94c-0.573,0-1.038,0.464-1.038,1.037v10.931c0,0.572,0.465,1.037,1.038,1.037h1.052v-0.062v2.158    c0,0.573,0.465,1.037,1.038,1.037h2.22c0.573,0,1.038-0.464,1.038-1.037v-2.158v0.062h13.353v-0.062v2.158    c0,0.573,0.465,1.037,1.039,1.037h2.104c0.573,0,1.038-0.464,1.038-1.037v-2.158v0.062h1.4c0.57,0,1.035-0.465,1.035-1.037V14.97    c0-0.573-0.465-1.037-1.035-1.037h-0.356V3.769c0.813,0.082,1.442,0.319,1.788,0.705c0.498,0.557,0.535,1.285,0.535,1.358v1.136    H29.797z M8.299,13.933c-0.608,0-1.101-0.493-1.101-1.101V8.065c0-0.607,0.491-1.099,1.097-1.101l15.678-0.05    c0.293-0.001,0.574,0.115,0.781,0.32c0.207,0.207,0.324,0.488,0.324,0.78v4.817c0,0.608-0.493,1.101-1.102,1.101L8.299,13.933    L8.299,13.933z M23.105,20.437H9.288v-1.51h13.817V20.437L23.105,20.437z M23.105,17.998H9.288v-1.51h13.817V17.998L23.105,17.998    z M4.992,22.898c0-0.462,0.374-0.837,0.836-0.837h1.231c0.461,0,0.836,0.375,0.836,0.837v0.069c0,0.463-0.374,0.836-0.836,0.836    H5.828c-0.461,0-0.836-0.373-0.836-0.836V22.898z M7.895,19.948c0,0.462-0.374,0.836-0.836,0.836h-1.23    c-0.461,0-0.836-0.374-0.836-0.836v-2.624c0-0.462,0.374-0.836,0.836-0.836h1.23c0.461,0,0.836,0.374,0.836,0.836V19.948z     M8.708,3.965c0-0.329,0.267-0.596,0.597-0.596h13.552c0.33,0,0.598,0.267,0.598,0.596v0.897c0,0.329-0.268,0.596-0.598,0.596    H9.304c-0.33,0-0.597-0.267-0.597-0.596L8.708,3.965L8.708,3.965z M9.288,22.873v-1.507h13.817v1.507H9.288z M27.285,22.968    c0,0.463-0.374,0.836-0.836,0.836h-1.232c-0.461,0-0.836-0.373-0.836-0.836V22.9c0-0.464,0.374-0.839,0.836-0.839h1.232    c0.461,0,0.836,0.375,0.836,0.839V22.968z M27.285,19.948c0,0.462-0.374,0.836-0.836,0.836h-1.232    c-0.461,0-0.836-0.374-0.836-0.836v-2.624c0-0.462,0.374-0.836,0.836-0.836h1.232c0.461,0,0.836,0.374,0.836,0.836V19.948z" />
+                </g>
+              </g>
+            </svg>
+            Search Buses
+          </button>
+        </div>
+      </div>
+  </div>
+    <vue-final-modal
+      v-model="availableDatesModal"
+      classes="flex justify-center items-center"
+      content-class="modal-content rounded-lg"
+      class="w-max-screen"
+    >
+      <div
+        class="
+          modal__content
+          text-center
+          mt-1
+          flex flex-col
+          text-metoPrimary-700
+        "
+      >
+        <div class="flex flex-col justify-center items-center text-xl">
+          <p>
+            {{ originSelected.name }}
+          </p>
+          <table class="w-full">
+            <tr>
+              <td class="w-1/3">
+                <hr class="w-full border-dashed" />
+              </td>
+              <td class="w-1/3 text-sm">to</td>
+              <td class="w-1/3">
+                <hr class="w-full border-dashed" />
+              </td>
+            </tr>
+          </table>
+
+          <p>
+            {{ destinationSelected.name }}
+          </p>
+        </div>
+
+        <div
+          v-if="errorMessage"
+          class="
+            flex
+            gap-2
+            items-center
+            justify-center
+            border
+            px-2
+            text-red-500
+            mt-3
+            animate-bounce
+            rounded
+            text-sm
+            
+          "
+        >
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div>
+            <p>
+              {{ errorMessage }}
             </p>
           </div>
         </div>
-        <div v-if="passengersInSchedule.length">
-          <h3 class="text-center p-2 font-thin">Bookings</h3>
-
-          <div class="overflow-y-scroll p-4 text-xs" style="height: 50vh">
-            <table class="
-              divide-y divide-gray-200
-              text-gray-900
-              font-thin
-              text-sm
-              bg-white
-            ">
-              <thead>
-                <tr>
-
-                  <td class=" bg-gray-100 px-2 py-2 whitespace-nowrap">
-                    Booking Details
-                  </td>
-                  <td class=" bg-gray-100 py-2 whitespace-nowrap">
-                    Passengers
-                  </td>
-
-                </tr>
-              </thead>
-              <tbody class="overflow-y-scroll p-2 divide-y text-xs">
-                <tr v-for="booking in passengersInSchedule" :key="booking">
-                  <td class="px-2 py-2 whitespace-nowrap flex items-start">
-                    <div>
-
-                      <p v-if="booking.modality === 'ONLINE'" class="font-semibold">
-                        Online Booking
-                      </p>
-                      <p v-else class="font-semibold">
-                        Counter Booking <br>
-                        {{ booking.user.name }}
-                      </p>
-
-                      <hr class="w-full">
-                      <p>BookingID: {{ booking.id }}</p>
-
-                      <p>Amount: Nu.{{ booking.amount }}</p>
-                      <p v-if="booking.subroute" class="font-semibold">
-                        Till {{ booking.subroute?.routepath?.destination.name }}
-                      </p>
-                      <p v-else>
-                        Till {{ booking.route?.routepath?.destination.name }}
-                      </p>
-                    </div>
-                  </td>
-                  <td class=" py-4 whitespace-nowrap">
-                    <table class="table-auto divide-y text-xs">
-                      <tr>
-                        <td class="px-2 border-b-2 border-gray-800">Seat</td>
-                        <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
-                      </tr>
-                      <tr v-for="passenger in booking.passengers" :key="passenger" class="text-xs">
-                        <td class="px-2">
-                          {{ passenger.seatNumber }}
-                        </td>
-                        <td class="px-2 text-sm">
-                          Name :{{ passenger.name }} <br />
-                          Contact: {{ passenger.contact }}
-                          <br />
-                          CID: {{ passenger.cid }}
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-
-                </tr>
-              </tbody>
-            </table>
+        <p class="text-metoPrimary-800 text-xs" v-if="instructionMessage">
+          {{ instructionMessage }}
+        </p>
+        <div class="flex flex-col gap-2 justify-center items-center">
+          <div class="flex flex-col px-2 py-1">
+            <div class="flex flex-col justify-center mt-2">
+              <h2 class="flex gap-2 text-sm font-light items-center">
+                <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
+                Bus available
+              </h2>
+            </div>
+            <DatePicker
+              v-model="date"
+              :min-date="new Date()"
+              @dayclick="onDayClick($event)"
+              :attributes="attributes"
+            />
           </div>
         </div>
       </div>
     </vue-final-modal>
-  </div>
 </template>
-
 
 <style scoped>
 ::v-deep .modal-container {
@@ -645,42 +238,26 @@
   justify-content: center;
   align-items: center;
 }
-
 ::v-deep .modal-content {
   position: relative;
   display: flex;
   flex-direction: column;
   max-height: 90%;
+  width: auto;
   margin: 0 1rem;
   padding: 1rem;
   border: 1px solid #e2e8f0;
-  border-radius: 0.25rem;
   background: #fff;
 }
-
-::v-deep .modal-content2 {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  max-height: 90%;
-  min-width: max-content;
-  margin: 0;
-  padding: 0;
-  border-radius: 0.25rem;
-  background: #fff;
-}
-
 .modal__title {
   margin: 0 2rem 0 0;
   font-size: 1.5rem;
   font-weight: 700;
 }
-
 .modal__content {
   flex-grow: 1;
   overflow-y: auto;
 }
-
 .modal__action {
   display: flex;
   justify-content: space-around;
@@ -688,11 +265,41 @@
   flex-shrink: 0;
   padding: 1rem 0 0;
 }
-
 .modal__close {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+.marquee {
+  height: 35px;
+  width: 300%;
+  position: relative;
+  padding: 8px 0 4px 0;
+  border: none;
+}
+
+.marq {
+  background-color: #e9e5fb;
+}
+
+.marquee span {
+  float: left;
+  width: 300px;
+}
+
+@keyframes marquee {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -150%;
+  }
 }
 </style>
 
@@ -705,590 +312,164 @@
 
 
 <script>
-import VueJwtDecode from "vue-jwt-decode";
+import { getRoutesByOriginDestination } from '../../../services/routeServices';
 
-import { Calendar, DatePicker } from "v-calendar";
-import { getAllStops } from "../../../services/stopServices";
-import crypto from "crypto";
-import {
-  getRouteDetailsByID,
-  getRoutesByOriginDestination,
-} from "../../../services/routeServices";
-import {
-  addNewCounterBooking,
-  counterConfirmPayment,
-  deleteBookingwithPassengers,
-  getBookingsByRouteAndScheduleDate,
-} from "../../../services/bookingServices";
-import {
-  getCancelledROutesbyRouteDate,
-  getCancelledRoutesBySubRouteDate,
-} from "../../../services/cancelledRouteDateService";
-import { getSeatsStatusadmin } from '../../../services/seatSelectionServices';
+import { getActiveDestinationByOrigin, getActiveStops, getAllStops } from "../../../services/stopServices";
+
 
 export default {
   data() {
     return {
-      stops: [],
-      banks: ["BOB", "BNB", "PNBL", "BDBL", "TBank"],
-      originSelected: {},
-      passengers: [],
-      destinationSelected: {},
-      passengerDetailsModal: false,
-      date: "",
-      schedules: [],
-      seatSelectModal: false,
-      seats: [
-        { id: 1, number: 1, type: "seat", status: "available" },
-        { id: 2, number: 0, type: "notSeat", status: "available" },
-        { id: 3, number: 0, type: "notSeat", status: "available" },
-        { id: 4, number: 0, type: "notseat", status: "available" },
-        { id: 5, number: 2, type: "seat", status: "available" },
-        { id: 6, number: 0, type: "notSeat", status: "available" },
-        { id: 7, number: 3, type: "seat", status: "available" },
-        { id: 8, number: 4, type: "seat", status: "available" },
-        { id: 9, number: 0, type: "notSeat", status: "available" },
-        { id: 10, number: 0, type: "notSeat", status: "available" },
-        { id: 11, number: 5, type: "seat", status: "available" },
-        { id: 12, number: 6, type: "seat", status: "available" },
-        { id: 13, number: 7, type: "seat", status: "available" },
-        { id: 14, number: 0, type: "notSeat", status: "available" },
-        { id: 15, number: 8, type: "seat", status: "available" },
-        { id: 16, number: 9, type: "seat", status: "available" },
-        { id: 17, number: 10, type: "seat", status: "available" },
-        { id: 18, number: 0, type: "notSeat", status: "available" },
-        { id: 19, number: 11, type: "seat", status: "available" },
-        { id: 20, number: 12, type: "seat", status: "available" },
-        { id: 21, number: 13, type: "seat", status: "available" },
-        { id: 22, number: 0, type: "notseat", status: "available" },
-        { id: 23, number: 14, type: "seat", status: "available" },
-        { id: 24, number: 15, type: "seat", status: "available" },
-        { id: 25, number: 16, type: "seat", status: "available" },
-        { id: 26, number: 17, type: "seat", status: "available" },
-        { id: 27, number: 18, type: "seat", status: "available" },
-        { id: 28, number: 19, type: "seat", status: "available" },
-      ],
-      bookedSeats: [],
-      disabledDates: [],
-      seatSelected: {},
-      confirmSeatModal: false,
-      addPassengerDetailsModal: false,
-      total: 0,
-      fare: 0,
-      reverSeatModal: false,
-      connectionAttempt: 0,
-      errorModal: false,
-      attributes: [],
-      days: [],
-      routes: [],
-      subroutes: [],
-      selectedSchedule: {},
-      modality: "CASH",
-      weekDay: null,
-      passengersInSchedule: [],
-      seatsAvailable: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      ],
-      busAvailable: false,
-      roomID: null,
-      routeId: 0,
-      departureDate: "",
-      journalDetails: {
-        bankName: null,
-        journalNumber: null,
-        contactNumber: null,
-      },
-      confirmPaymentModal: false,
-      newBookingId: null,
-      duplicateSeatsModal: false,
-      duplicateSeats: [],
-      newBooking: {},
+     dateSelected:null,
+     errorMessage:null,
+     instructionMessage:null,
+
+     origins:[],
+     originSelected:{},
+     destinations:[],
+     destinationSelected:{},
+
+
+     routes:[],
+     subroutes:[],
+     attributes:[],
+     days:[],
+     matchedRoutes:[],
+    
+      //modals
+      availableDatesModal:false
     };
   },
-  computed: {
-    paymentMode() {
-      if (this.modality === "MBOB") {
-        return true;
-      } else {
-        false;
-      }
-    },
-  },
-  created() {
-    getAllStops()
-      .then((res) => {
-        this.stops = res.data;
-      })
-      .catch((err) => console.log(err));
-  },
-  components: {
-    Calendar,
-    DatePicker,
-  },
-  methods: {
-    resetState() {
-      this.schedules = [];
-      this.attributes = [];
-      this.date = "";
-      this.seatSelected = {};
-      this.bookedSeats = [];
-    },
-    onDayClick(e) {
-      if (
-        e.popovers[0] &&
-        e.popovers[0].label === "Bus Availble" &&
-        !e.isDisabled
-      ) {
-        this.schedules = [];
-        this.weekDay = e.weekday;
-        this.departureDate = e.id;
-        this.busAvailable = true;
-        this.viewSch();
-      } else {
-        this.busAvailable = false;
-        this.schedules = [];
+ 
 
-        if (e.isDisabled) {
-          this.$toast.show(`No Bus`, {
-            position: "top",
-            type: "info",
-          });
-        } else {
-          this.$toast.show(`No Bus Availble`, {
-            position: "top",
-            type: "error",
-          });
-        }
-      }
-    },
-    next() {
-      this.$router.push("/staff/seats");
-    },
-    commitSchedule(e) {
-      this.selectedSchedule = e;
-      this.$store.commit("commitSchedule", e);
-    },
-    changeSeatStatus() {
-      this.lockedSeats.forEach((seatNum) => {
-        let matchedSeat = this.getSeats(seatNum);
-        if (matchedSeat.status !== "booked") {
-          matchedSeat.status = "locked";
-        }
+  created() {
+     getActiveStops().then((res) => {
+      this.origins = res.data;
+    });
+  },
+ 
+  methods: {
+    
+    onOriginSelect(e) {
+      this.dateSelected = null;
+      this.errorMessage = null;
+      getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
+        this.destinations = res.data;
+        this.destinationSelected = res.data[0];
       });
     },
-    searchBus() {
+    onDestinationChange() {
+      this.dateSelected = null;
+    },
+
+    checkAvailableDates() {
+      this.routes = [];
+      this.subroutes = [];
+      this.dateSelected = null;
+      this.attributes = [];
       this.days = [];
+      this.matchedRoutes = [];
+
       getRoutesByOriginDestination(
         this.originSelected.id,
         this.destinationSelected.id
       )
         .then((res) => {
-          if (res.data && res.status === 200) {
-            console.log("ROUTES Search", res.data);
-            if (res.data.routes) {
-              this.routes = res.data.routes;
-              res.data.routes.forEach((route) => {
-                if (this.days.indexOf(route.day) === -1) {
-                  this.days.push(route.day);
-                }
-              });
-            }
-
-            if (res.data.subroutes) {
-              this.subroutes = res.data.subroutes;
-              this.subroutes.forEach((subroute) => {
-                if (this.days.indexOf(subroute.day) === -1) {
-                  this.days.push(subroute.day);
-                }
-              });
-            }
-
-            this.attributes = [
-              {
-                dot: "green",
-                dates: { weekdays: this.days },
-                popover: {
-                  label: "Bus Availble",
-                },
-              },
-            ];
-          } else {
-            this.$toast.show(`No Bus Availble`, {
-              position: "top",
-              type: "error",
+          if (res.data.routes) {
+            this.routes = res.data.routes;
+            console.log("PARENT ROUTES", res.data.routes);
+            this.routes.forEach((route) => {
+              this.days.push(route.day);
             });
           }
+          if (res.data.subroutes) {
+            this.subroutes = res.data.subroutes;
+            this.subroutes.forEach((subroute) => {
+              this.days.push(subroute.day);
+            });
+          }
+          this.attributes = [
+            {
+              dot: "green",
+              dates: { weekdays: this.days },
+              popover: {
+                label: "Bus Availble",
+              },
+              excludeDates: this.disabledDates,
+            },
+          ];
         })
         .catch((err) => console.log(err));
+
+      this.availableDatesModal = true;
     },
 
+    onDayClick(e) {
+      this.invalidDateClicked = false;
+      this.dateClicked = true;
+      this.daySelected = e.weekday;
 
-    openSeatSelect(route) {
-      console.log(route, this.departureDate)
-      this.routeId = route.id;
-      let parentRouteId;
+      if (
+        e.popovers[0] &&
+        e.popovers[0].label === "Bus Availble" &&
+        !e.isDisabled
+      ) {
+        let formattedDate = e.id;
+        this.dateSelected = e.ariaLabel;
+        this.matchedRoutes = [];
+        this.$store.commit("commitSelectedDate", formattedDate);
+        this.$store.commit("commitFormattedDepartureDate", e.ariaLabel);
 
-      if (route.parentRouteId) {
-        parentRouteId = route.parentRoute.id;
-      } else {
-        parentRouteId = route.id;
-      }
-
-      this.fare = route.fare;
-      this.errorModal = true;
-      this.isLoader = true;
-      var plaintext = `${parentRouteId}|${this.departureDate}`;
-      var hash = crypto.createHash("sha1");
-      hash.update(plaintext);
-      let scheduleHash = hash.digest("hex");
-      this.roomID = scheduleHash
-
-      getSeatsStatusadmin(scheduleHash).then(res => {
-        this.seats = res.data;
-        this.errorModal = false;
-        this.seatSelectModal = true;
-      })
-
-
-    },
-    viewPassengers(schedule) {
-      this.passengersInSchedule = [];
-      this.passengerDetailsModal = true;
-      this.seatsAvailable = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      ];
-
-      getBookingsByRouteAndScheduleDate(schedule.id, this.departureDate).then(
-        (res) => {
-          this.passengersInSchedule = res.data
-
-
-          console.log("PASSENGERS in SCHEDULE", res.data)
-          res.data.forEach((booking) => {
-            booking.passengers.forEach((passenger) => {
-              let searchIndex = this.seatsAvailable.indexOf(
-                passenger.seatNumber
-              );
-              if (searchIndex !== -1) {
-                console.log("Seat Booked", passenger);
-                this.seatsAvailable.splice(searchIndex, 1);
-              }
-            });
-          });
-        }
-      );
-
-    },
-    bindImage(seat) {
-      if (seat.type === "seat" || seat.type === "driver") {
-        switch (seat.status) {
-          case "available":
-            return require("../../../assets/seatAvailable.png");
-            break;
-          case "entrance":
-            return require("../../../assets/entrance.png");
-            break;
-          case "BOOKED":
-            return require("../../../assets/seatUnavailable.png");
-            break;
-          case "driver":
-            return require("../../../assets/steeringwheel.png");
-            break;
-          case "yourSeat":
-            return require("../../../assets/yourseats.png");
-            break;
-          case "INPROGRESS":
-            return require("../../../assets/inprogress.png");
-            break;
-          default:
-            return require("../../../assets/seatAvailable.png");
-            break;
-        }
-      } else {
-        return require("../../../assets/seatAvailable.png");
-      }
-    },
-    addSeat(seat) {
-      if (seat.type === "seat") {
-        this.seatSelected = seat;
-        if (seat.status === "BOOKED") {
-          this.$toast.show("The seat is being booked", {
-            position: "top",
-            type: "error",
-          });
-        } else if (seat.status === "INPROGRESS") {
-          this.$toast.show("Someone is booking this seat!", {
-            position: "top"
-          });
-        }
-        else if (seat.status === "BOOKED") {
-          this.reverSeatModal = true;
-        } else {
-
-          this.confirmSeatModal = true;
-        }
-      }
-    },
-
-    reverSeatStatus(arr) {
-      arr.forEach((element) => {
-        let matchedSeat = this.getSeats(parseInt(element));
-        matchedSeat.status = "available";
-      });
-    },
-
-    getSeats(id) {
-      for (let i = 0; i < this.seats.length; i++) {
-        if (this.seats[i].number === id) {
-          return this.seats[i];
-        }
-      }
-      return null;
-    },
-    confirmRevert() {
-      this.conn.send(
-        JSON.stringify({
-          scheduleHash: this.roomId.toString(),
-          messageType: "LOCK_LEAVE",
-          seatId: this.seatSelected.number.toString(),
-        })
-      );
-      this.seatSelected.status = "available";
-      this.bookedSeats.forEach((seat, index) => {
-        if (this.seatSelected.id === seat.id) {
-          this.bookedSeats.splice(index, 1);
-        }
-      });
-      this.passengers.forEach((seat, index) => {
-        if (this.seatSelected.number === seat.seatNumber) {
-          this.passengers.splice(index, 1);
-        }
-      });
-      this.total -= this.fare;
-      this.seatSelected = {};
-      this.reverSeatModal = false;
-    },
-    cancelRevert() {
-      this.reverSeatModal = false;
-    },
-    confirmSeat() {
-      this.bookedSeats.push(this.seatSelected);
-      this.seatSelected.status = "booked";
-      this.passengers.push({ seatNumber: this.seatSelected.number });
-      this.total += this.fare;
-      this.confirmSeatModal = false;
-    },
-    cancelSeat() {
-      this.conn.send(
-        JSON.stringify({
-          scheduleHash: this.roomId.toString(),
-          messageType: "LOCK_LEAVE",
-          seatId: this.seatSelected.number.toString(),
-        })
-      );
-      this.confirmSeatModal = false;
-    },
-    addPassengerDetails() {
-      if (this.bookedSeats.length) {
-        this.addPassengerDetailsModal = true;
-      } else {
-        this.$toast.show("Please select Seat", {
-          type: "error",
-          position: "top",
+        this.routes.forEach((route) => {
+          if (route.day === e.weekday) {
+            this.matchedRoutes.push(route);
+          }
         });
+        this.subroutes.forEach((subroute) => {
+          if (subroute.day === e.weekday) {
+            this.matchedRoutes.push(subroute);
+          }
+        });
+        this.$store.commit("commitIndexMatchedRoutes", this.matchedRoutes);
+        this.availableDatesModal = false;
+        this.errorMessage = null;
+        this.instructionMessage = null;
+      } else {
+        this.dateSelected = null;
+        this.matchedRoutes = [];
+        this.$store.commit("clearStoreMatchedRoutes");
+        if (e.isDisabled) {
+          this.errorMessage = "Please select a valid Date";
+          this.instructionMessage = null;
+  
+          this.invalidDateClicked = true;
+        } else {
+          this.matchedRoutes = [];
+          this.$store.commit("clearStoreMatchedRoutes");
+          this.errorMessage = `No Bus on ${e.ariaLabel}`;
+          this.instructionMessage =
+            "Buses are available on days marked with green dots below.";
+        }
       }
     },
-
-    confirmBooking() {
-      let detailsFilled = false;
-      this.passengers.forEach((passenger) => {
-        if (passenger.name && passenger.cid && passenger.contact) {
-          detailsFilled = true;
-        } else {
-          detailsFilled = false;
-        }
-      });
-      if (detailsFilled) {
-        console.log("CREATING NEW BOOKING FOR SCHEDULE", this.selectedSchedule);
-        //locking seat
-        console.log("dsf:", this.passengers)
-        this.passengers.forEach((passenger) => {
-          console.log(passenger)
-          this.conn.send(
-            JSON.stringify({
-              scheduleHash: this.roomId.toString(),
-              messageType: "LOCK_CONFIRM",
-              seatId: passenger.seatNumber.toString(),
-            })
-          );
-        })
-
-        if (this.selectedSchedule.parentRouteId) {
-          let newBooking = {
-            booking: {
-              scheduleDate: this.departureDate,
-              scheduleHash: this.roomId,
-              amount: this.total,
-              routeId: this.selectedSchedule.parentRouteId,
-              subRouteId: this.routeId,
-              refundPercentage: 0,
-              paymentStatus: "UNPAID",
-              serviceCharge: 0,
-              operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
-                .id,
-            },
-            passengers: this.passengers,
-          };
-          this.newBooking = newBooking;
-        } else {
-          let newBooking = {
-            booking: {
-              scheduleDate: this.departureDate,
-              scheduleHash: this.roomId,
-              amount: this.total,
-              refundPercentage: 0,
-              routeId: this.routeId,
-              paymentStatus: "UNPAID",
-              serviceCharge: 0,
-              operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
-                .id,
-            },
-            passengers: this.passengers,
-          };
-          this.newBooking = newBooking;
-        }
-
-        addNewCounterBooking(this.newBooking)
-          .then((res) => {
-            if (res.status === 201) {
-              this.newBookingId = res.data.id;
-              this.$toast.show("Please confirm payment", {
-                position: "top",
-                type: "success",
-              });
-              this.confirmPaymentModal = true;
-            } else {
-              this.$toast.show("Newtork Error..try again", {
-                position: "top",
-                type: "error",
-              });
-            }
-          })
-          .catch((err) => {
-            this.duplicateSeats = err.response.data;
-            this.duplicateSeatsModal = true;
-          });
+    searchBuses(){
+      if (
+        this.originSelected &&
+        this.destinationSelected &&
+        this.dateSelected &&
+        this.numberOfPassengers
+      ) {
+        this.$store.commit("addOrigin", this.originSelected);
+        this.$store.commit("addDestination", this.destinationSelected);
+        this.$store.commit("addNumberOfPassengers", this.numberOfPassengers);
+        this.$router.push("/staff/buses");
       } else {
-        this.$toast.show("Please fill in all the details", {
+        this.$toast.show("Please Select departure Date", {
           position: "top",
           type: "error",
         });
       }
-    },
-    deleteBooking() {
-      deleteBookingwithPassengers(this.newBookingId).then((res) => {
-        if (res.status === 200) {
-          this.resetState();
-          this.confirmPaymentModal = false;
-          this.addPassengerDetailsModal = false;
-          this.reverSeatModal = false;
-          this.seatSelectModal = false;
-          this.$toast.show("Booking Cancelled", {
-            position: "top",
-            type: "error",
-          });
-        } else {
-          this.$toast.show("Network Error");
-        }
-      });
-    },
-    confirmPayment() {
-      let updateObject = {
-        modality: this.modality,
-        depositBank: this.journalDetails.bankName,
-        depositJournal: this.journalDetails.journalNumber,
-        depositContact: this.journalDetails.contactNumber,
-        paymentStatus: "PAID",
-      };
-      counterConfirmPayment(this.newBookingId, updateObject).then((res) => {
-        if (res.status === 200) {
-          this.conn.close();
-          this.$toast.show("Booking Successful", {
-            position: "top",
-            type: "success",
-          });
-          this.$router.push(`/staff/ticket/${this.newBookingId}`);
-        }
-      });
-    },
-    backToSeatSelection() {
-      this.duplicateSeatsModal = false;
-      this.addPassengerDetailsModal = false;
-    },
-    closeSeatSelectModal() {
-      this.bookedSeats.forEach((seat) => {
-        this.getSeats(seat.number).status = "available";
-        this.conn.send(
-          JSON.stringify({
-            roomId: this.roomId.toString(),
-            messageType: "LOCK_LEAVE",
-            seatId: seat.number.toString(),
-          })
-        );
-      });
-      this.total = 0;
-      this.seatSelected = {};
-      this.bookedSeats = [];
-      this.seatSelectModal = false;
-    },
-
-    tableRowColor(e) {
-      if (e.id === this.selectedSchedule.id) {
-        return "bg-gray-300 text-black ";
-      }
-      return "bg-white";
-    },
-
-    parseDepartureDate(date) {
-      let d = new Date(date);
-      return d.toDateString();
-    },
-
-    viewSch() {
-      this.schedules = [];
-      this.routes.forEach((route) => {
-        if (route.day === this.weekDay) {
-          route.isCancelled = 0;
-          getCancelledROutesbyRouteDate(route.id, this.departureDate).then(
-            (resp) => {
-              if (resp.data.length) {
-                route.isCancelled = 1;
-              }
-            }
-          );
-          this.schedules.push(route);
-        }
-      });
-      this.subroutes.forEach((subroute) => {
-        if (subroute.day === this.weekDay) {
-          subroute.isCancelled = 0;
-          getCancelledRoutesBySubRouteDate(
-            subroute.id,
-            this.departureDate
-          ).then((resp) => {
-            if (resp.data.length) {
-              subroute.isCancelled = 1;
-            }
-          });
-          getRouteDetailsByID(subroute.parentRouteId).then((resp) => {
-            subroute.parentRoute = resp.data;
-            this.schedules.push(subroute);
-          });
-        }
-      });
-
-      console.log("WITH PARENT ROUTES", this.schedules);
-    },
+    }
   },
 };
 </script>

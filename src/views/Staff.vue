@@ -26,8 +26,6 @@
         </svg>
       </button>
     </div>
-
-    <!-- Side bar--->
     <div
       class="
         side-bar
@@ -167,10 +165,7 @@
         </div>
       </nav>
     </div>
-
-    <!---- COntent -->
-
-    <div class="flex-1 z-0">
+    <div class="flex-1">
       <router-view> </router-view>
     </div>
   </div>
