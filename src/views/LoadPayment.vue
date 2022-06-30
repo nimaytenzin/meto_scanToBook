@@ -1,35 +1,45 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center">
-    <div>
-      <h1 class="text-3xl text-gray-500 text-center">
-        Redirecting to RMA Secured Payment Gateway
-      </h1>
-    </div>
+    
     <div
       class="
         p-6
-        mx-auto
-        bg-white
+        bg-metoPrimary-600
+        text-gray-100
         rounded-xl
         shadow-md
         min-w-6/12
-        mt-7
+       
         text-lg
         items-center
-        space-x-4
+       
+        md:max-w-xs
       "
     >
-      <table>
-        <tr>
-          <td class="pr-2">Booking ID</td>
-          <td>{{ booking.id }}</td>
-        </tr>
+    <div>
+      <h1 class="text-sm text-gray-50 text-center">
+        Redirecting to RMA Secured Payment Gateway
+      </h1>
+    </div>
+      <div class="text-sm my-1">
+        <p>
+        Your Booking ID: {{ booking.id }}
+      </p>
+      <p>
+        Total: Nu. {{booking.amount  }}
+      </p>
+      </div>
 
-        <tr>
-          <td class="pr-2">Amount</td>
-          <td>{{ booking.amount }}</td>
-        </tr>
-      </table>
+        <div class="w-full flex-col pt-2 border-t mt-4">
+            <p class=" text-sm ">
+              Meto Transport Service
+            </p>
+            <p class=" text-sm ">
+              Ensuring Safety, Reliability and Comfort till your Destination
+            </p>
+           
+          </div>
+    
 
       <form
         method="post"
@@ -99,15 +109,11 @@
 import { getChecksum } from "../services/bookingServices";
 export default {
   created() {
-    console.log("REACHED AT LOAD PAYMENT")
-    // if (this.$store.state.origin === "") {
-    //   this.$router.push("/book");
-    // }
-    console.log(this.$store.state.scanBookingId, "SCAN BOOKING ID")
+  
     getChecksum(this.$store.state.scanBookingId).then((res) => {
-      console.log("GENERATING CHECKSUM", res)
+    
       if (res.status === 200) {
-        console.log(res)
+     
         this.booking = res.data.booking;
         this.hiddenFormVal.bfs_msgType = "AR";
         this.hiddenFormVal.bfs_debitAuthCode = "00";

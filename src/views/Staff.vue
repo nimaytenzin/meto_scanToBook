@@ -26,12 +26,10 @@
         </svg>
       </button>
     </div>
-
-    <!-- Side bar--->
     <div
       class="
         side-bar
-        bg-indigo-900
+        bg-metoPrimary-900
         text-blue-100
         w-64
         space-y-6
@@ -113,9 +111,11 @@
               hover:bg-indigo-700 hover:text-white
             "
           >
-            Daily Closings
+           Bookings Today
           </p>
         </router-link>
+
+       
 
         <div>
           <p
@@ -151,10 +151,7 @@
         </div>
       </nav>
     </div>
-
-    <!---- COntent -->
-
-    <div class="flex-1 z-0">
+    <div class="flex-1">
       <router-view> </router-view>
     </div>
   </div>

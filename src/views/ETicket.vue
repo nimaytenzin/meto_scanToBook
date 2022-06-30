@@ -128,6 +128,9 @@
                   </h1>
                 </div>
               </div>
+              <p class="text-center text-gray-700 mb-4" v-if="bookingData.subroute">
+                Via {{ bookingData.route?.routepath?.origin?.name  }} - {{ bookingData.route?.routepath?.destination?.name   }}  Bus
+              </p>
 
               <h2 class="text-center text-xl text-gray-700 my-1">
                 Departure Date:
@@ -355,7 +358,6 @@
 import domtoimage from "dom-to-image";
 import { useRoute } from "vue-router";
 import { getBookingDetail } from "../services/bookingServices";
-import { getBusByBookingId } from "../services/routeServices";
 
 export default {
   created() {
@@ -364,12 +366,8 @@ export default {
 
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
-        console.log("BOOKING DATA", res.data);
+      
         this.originContact = res.data.route?.routepath?.origin?.user.contact;
-        getBusByBookingId(res.data.id).then((resp) => {
-          this.busDetails = resp.data.bus;
-        });
-
         if (res.data.subroute) {
           this.origin = res.data.subroute.routepath.origin.name;
           this.destination = res.data.subroute.routepath.destination.name;
@@ -382,10 +380,9 @@ export default {
           this.departureTime = res.data.route.departureTime;
         }
         this.departureDate = res.data.scheduleDate;
-        
-
+    
         this.bookingData = res.data;
-        console.log(this.bookingData);
+        
       } else {
         this.$router.push("/service-down");
       }

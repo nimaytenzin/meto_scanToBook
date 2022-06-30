@@ -1,13 +1,10 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full space-y-8">
-      <div class="flex flex-col items-center">
-        <img src="../assets/meto.png" alt="Meto Transport" width="100" />
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+  <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    
+      <div class="w-10/12 md:w-2/12 mt-8 space-y-6">
+         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Sign in
         </h2>
-      </div>
-      <div class="mt-8 space-y-6">
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
@@ -79,12 +76,12 @@
               font-medium
               rounded-md
               text-white
-              bg-indigo-600
-              hover:bg-indigo-700
+              bg-metoPrimary-600
+              hover:bg-metoPrimary-700
               focus:outline-none
               focus:ring-2
               focus:ring-offset-2
-              focus:ring-indigo-500
+              focus:ring-metoPrimary-500
             "
             @click="login()"
           >
@@ -92,7 +89,6 @@
           </button>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

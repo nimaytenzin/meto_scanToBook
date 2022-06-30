@@ -1761,8 +1761,7 @@ export default {
       )
         .then((res) => {
           if (res.data.routes) {
-            this.routes = res.data.routes;
-            console.log("PARENT ROUTES", res.data.routes);
+            this.routes = res.data.routes; 
             this.routes.forEach((route) => {
               this.days.push(route.day);
             });

@@ -17,15 +17,14 @@
     <p class="font-normal text-center text-gray-500 my-1" v-if="selectedDate">
       Showing Schedules for
       <span class="text-gray-800 text-3xl font-semibold">{{
-        parseDepartureDate(selectedDate)
+          parseDepartureDate(selectedDate)
       }}</span>
     </p>
     <hr class="w-full my-2" />
     <table class="border-l border-r divide-y divide-gray-200 table-auto">
       <thead class="">
         <tr>
-          <td
-            class="
+          <td class="
               px-6
               py-3
               text-left text-xs
@@ -33,12 +32,10 @@
               text-gray-500
               uppercase
               tracking-wider
-            "
-          >
+            ">
             Route Details
           </td>
-          <td
-            class="
+          <td class="
               px-6
               py-3
               text-left text-xs
@@ -46,12 +43,10 @@
               text-gray-500
               uppercase
               tracking-wider
-            "
-          >
+            ">
             Subroute
           </td>
-          <td
-            class="
+          <td class="
               px-6
               py-3
               text-left text-xs
@@ -59,12 +54,10 @@
               text-gray-500
               uppercase
               tracking-wider
-            "
-          >
+            ">
             View Passengers
           </td>
-          <td
-            class="
+          <td class="
               px-6
               py-3
               text-left text-xs
@@ -72,13 +65,11 @@
               text-gray-500
               uppercase
               tracking-wider
-            "
-          >
+            ">
             Assign Bus
           </td>
 
-          <td
-            class="
+          <td class="
               px-6
               py-3
               text-left text-xs
@@ -86,27 +77,20 @@
               text-gray-500
               uppercase
               tracking-wider
-            "
-          >
+            ">
             Cancel Route
           </td>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr
-          v-for="schedule in schedules"
-          :key="schedule"
-          :class="
-            schedule.isActive ? 'hover:bg-gray-200' : 'bg-red-100 line-through'
-          "
-        >
-          <td
-            :class="
-              schedule.isCancelled
-                ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
-                : 'px-6 py-3 whitespace-nowrap font-light text-sm'
-            "
-          >
+        <tr v-for="schedule in schedules" :key="schedule" :class="
+          schedule.isActive ? 'hover:bg-gray-200' : 'bg-red-100 line-through'
+        ">
+          <td :class="
+            schedule.isCancelled
+              ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
+              : 'px-6 py-3 whitespace-nowrap font-light text-sm'
+          ">
             <div v-if="schedule.isCancelled" class="font-bold">Cancelled</div>
             <div v-if="!schedule.isActive" class="font-bold">
               Route Suspended
@@ -119,22 +103,14 @@
             <br />
             Fare: Nu.{{ schedule.fare }}
           </td>
-          <td
-            :class="
-              schedule.isCancelled
-                ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
-                : 'px-6 py-3 whitespace-nowrap font-light text-sm'
-            "
-          >
-            <div
-              class="flex flex-col w-full gap-2"
-              v-if="schedule.subroutes.length"
-            >
+          <td :class="
+            schedule.isCancelled
+              ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
+              : 'px-6 py-3 whitespace-nowrap font-light text-sm'
+          ">
+            <div class="flex flex-col w-full gap-2" v-if="schedule.subroutes.length">
               Subroutes
-              <div
-                v-for="(subroute, index) in schedule.subroutes"
-                :key="subroute"
-              >
+              <div v-for="(subroute, index) in schedule.subroutes" :key="subroute">
                 <p>
                   {{ index + 1 }}.{{ subroute.routepath?.origin.name }} -
                   {{ subroute.routepath.destination?.name }}
@@ -147,10 +123,7 @@
 
           <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
             <div v-if="schedule.isActive">
-              <button
-                class="bg-gray-500 text-gray-50 p-1 rounded hover:bg-green-600"
-                @click="viewPassengers(schedule)"
-              >
+              <button class="bg-gray-500 text-gray-50 p-1 rounded hover:bg-green-600" @click="viewPassengers(schedule)">
                 View Passengers
               </button>
             </div>
@@ -164,25 +137,19 @@
                   <p class="text-md font-semibold">
                     {{ schedule.bus.vechileNumber }}
                   </p>
-                  <p
-                    class="underline text-blue-700 cursor-pointer"
-                    @click="reassignBus(schedule)"
-                  >
+                  <p class="underline text-blue-700 cursor-pointer" @click="reassignBus(schedule)">
                     reassign
                   </p>
                 </div>
               </div>
               <div v-else>
-                <button
-                  class="
+                <button class="
                     bg-gray-500
                     p-1
                     text-gray-50
                     rounded
                     hover:bg-green-600
-                  "
-                  @click="openAssignBusModal(schedule)"
-                >
+                  " @click="openAssignBusModal(schedule)">
                   Assign Bus
                 </button>
               </div>
@@ -192,30 +159,22 @@
           <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
             <div>
               <div v-if="schedule.isActive">
-                <button
-                  class="
+                <button class="
                     bg-gray-500
                     text-gray-50
                     p-1
                     rounded
                     hover:bg-green-600
-                  "
-                  @click="cancelSpecificRoute(schedule)"
-                  v-if="!schedule.isCancelled"
-                >
+                  " @click="cancelSpecificRoute(schedule)" v-if="!schedule.isCancelled">
                   Cancel Bus
                 </button>
-                <button
-                  class="
+                <button class="
                     bg-gray-500
                     text-gray-50
                     p-1
                     rounded
                     hover:bg-green-600
-                  "
-                  v-else
-                  @click="reopenSchedule(schedule)"
-                >
+                  " v-else @click="reopenSchedule(schedule)">
                   Reopen Bus
                 </button>
               </div>
@@ -227,15 +186,10 @@
     </table>
   </div>
 
-  <vue-final-modal
-    v-model="assignBusModal"
-    classes="modal-container"
-    content-class="modal-content"
-    class="w-max-screen"
-  >
+  <vue-final-modal v-model="assignBusModal" classes="modal-container" content-class="modal-content"
+    class="w-max-screen">
     <div class="modal__content text-center flex flex-col">
-      <div
-        class="
+      <div class="
           font-nunito
           text-gray-200
           bg-gray-600
@@ -243,15 +197,13 @@
           shadow-md
           p-6
           text-center
-        "
-      >
-      <p>
-        Assign Bus
-      </p>
+        ">
+        <p>
+          Assign Bus
+        </p>
         <p>
           <span class="text-2xl font-bold">
-            {{ selectedSchedule.routepath?.origin.name }}</span
-          >
+            {{ selectedSchedule.routepath?.origin.name }}</span>
           to
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.destination.name }}
@@ -262,46 +214,28 @@
         <p>{{ selectedSchedule.departureTime }}</p>
       </div>
       <div class="px-6 flex flex-col">
-        <label class="text-sm text-left text-gray-400 italic"
-        >Select Bus to assign</label
-      >
-      <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
-        <option
-          v-for="bus in buses"
-          :value="bus.id"
-          :key="bus"
-          class="bg-white"
-        >
-          {{ bus.vechileNumber }}
-        </option>
-      </select>
+        <label class="text-sm text-left text-gray-400 italic">Select Bus to assign</label>
+        <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
+          <option v-for="bus in buses" :value="bus.id" :key="bus" class="bg-white">
+            {{ bus.vechileNumber }}
+          </option>
+        </select>
       </div>
     </div>
     <div class="flex justify-center px-6 pb-2">
-      <button
-        class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-        @click="assignBus()"
-      >
+      <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="assignBus()">
         Assign Bus
       </button>
-      <button
-        class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-        @click="assignBusModal = false"
-      >
+      <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="assignBusModal = false">
         cancel
       </button>
     </div>
   </vue-final-modal>
 
-  <vue-final-modal
-    v-model="reassignBusModal"
-    classes="modal-container"
-    content-class="modal-content"
-    class="w-max-screen"
-  >
+  <vue-final-modal v-model="reassignBusModal" classes="modal-container" content-class="modal-content"
+    class="w-max-screen">
     <div class="modal__content text-center flex flex-col">
-       <div
-        class="
+      <div class="
           font-nunito
           text-gray-200
           bg-gray-600
@@ -309,15 +243,13 @@
           shadow-md
           p-6
           text-center
-        "
-      >
-      <p>
-        Reassign Bus
-      </p>
+        ">
+        <p>
+          Reassign Bus
+        </p>
         <p>
           <span class="text-2xl font-bold">
-            {{ selectedSchedule.routepath?.origin.name }}</span
-          >
+            {{ selectedSchedule.routepath?.origin.name }}</span>
           to
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.destination.name }}
@@ -334,48 +266,30 @@
         </span>
       </p>
 
-    <div class="px-6 flex flex-col">
-        <label class="text-sm mt-2 text-left text-gray-400"
-        >Select a new Bus to reassign</label
-      >
-      <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
-        <option
-          v-for="bus in buses"
-          :value="bus.id"
-          :key="bus"
-          class="bg-white"
-        >
-          {{ bus.vechileNumber }}
-        </option>
-      </select>
-    </div>
+      <div class="px-6 flex flex-col">
+        <label class="text-sm mt-2 text-left text-gray-400">Select a new Bus to reassign</label>
+        <select v-model="busSelected" class="text-2xl p-2 bg-white text-gray-900">
+          <option v-for="bus in buses" :value="bus.id" :key="bus" class="bg-white">
+            {{ bus.vechileNumber }}
+          </option>
+        </select>
+      </div>
     </div>
     <div class="px-6 flex justify-center pb-2">
-      <button
-        class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded"
-        @click="confirmReassignBus()"
-      >
+      <button class="bg-gray-600 text-white mt-4 mr-5 p-2 rounded" @click="confirmReassignBus()">
         Assign New Bus
       </button>
-      <button
-        class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded"
-        @click="reassignBusModal = false"
-      >
+      <button class="bg-gray-600 text-white mt-4 ml-5 p-2 rounded" @click="reassignBusModal = false">
         cancel
       </button>
     </div>
   </vue-final-modal>
 
   <!-- View passengers Modal -->
-  <vue-final-modal
-    v-model="passengerDetailsModal"
-    classes="modal-container"
-    content-class="modal-content2"
-    class="w-max-screen"
-  >
+  <vue-final-modal v-model="passengerDetailsModal" classes="modal-container" content-class="modal-content2"
+    class="w-max-screen">
     <div>
-      <div
-        class="
+      <div class="
           font-nunito
           text-gray-200
           bg-gray-600
@@ -383,12 +297,10 @@
           shadow-md
           p-6
           text-center
-        "
-      >
+        ">
         <p>
           <span class="text-2xl font-bold">
-            {{ selectedSchedule.routepath?.origin.name }}</span
-          >
+            {{ selectedSchedule.routepath?.origin.name }}</span>
           to
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.destination.name }}
@@ -403,10 +315,7 @@
               {{ seat }}
             </p>
           </div>
-          <p
-            v-if="!routeDateBookings.length"
-            class="m-4 text-2xl text-gray-100"
-          >
+          <p v-if="!routeDateBookings.length" class="m-4 text-2xl text-gray-100">
             No Bookings
           </p>
         </div>
@@ -416,30 +325,22 @@
         <h3 class="text-xl p-2 font-thin">Bookings</h3>
 
         <div class="overflow-y-scroll p-2" style="height: 50vh">
-          <table
-            class="
+          <table class="
               min-w-full
               divide-y divide-gray-200
               text-gray-900
               font-thin
               bg-white
-            "
-          >
+            ">
             <thead>
               <tr>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Booking Details
                 </td>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Passengers
                 </td>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Cancel Booking
                 </td>
               </tr>
@@ -449,12 +350,12 @@
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <div>
                     <p>BookingID: {{ booking.id }}</p>
-                      <p v-if="booking.modality !=='ONLINE'">
-                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
-                      </p>
-                      <p v-else>
-                        Online Booking
-                      </p>
+                    <p v-if="booking.modality !== 'ONLINE'">
+                      Booked by: {{ booking.user?.name }}/ {{ booking.user?.email }}
+                    </p>
+                    <p v-else>
+                      Online Booking
+                    </p>
                     <p>Amount: Nu.{{ booking.amount }}</p>
                     <p v-if="booking.subroute" class="font-semibold">
                       Till {{ booking.subroute?.routepath?.destination.name }}
@@ -470,10 +371,7 @@
                       <td class="px-2 border-b-2 border-gray-800">Seat</td>
                       <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
                     </tr>
-                    <tr
-                      v-for="passenger in booking.passengers"
-                      :key="passenger"
-                    >
+                    <tr v-for="passenger in booking.passengers" :key="passenger">
                       <td class="px-2">
                         {{ passenger.seatNumber }}
                       </td>
@@ -487,10 +385,8 @@
                   </table>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
-                  <button
-                    class="bg-gray-600 text-gray-300 p-1 rounded"
-                    @click="cancelBookingThreeFourthRefund(booking)"
-                  >
+                  <button class="bg-gray-600 text-gray-300 p-1 rounded"
+                    @click="cancelBookingThreeFourthRefund(booking)">
                     Cancel Booking
                   </button>
                 </td>
@@ -503,15 +399,10 @@
   </vue-final-modal>
 
   <!-- cancelBus booking conflict??? -->
-  <vue-final-modal
-    v-model="conflictingBookingsModal"
-    classes="modal-container"
-    content-class="modal-content"
-    class="w-max-screen text-gray-700"
-  >
+  <vue-final-modal v-model="conflictingBookingsModal" classes="modal-container" content-class="modal-content"
+    class="w-max-screen text-gray-700">
     <div>
-      <div
-        class="
+      <div class="
           font-nunito
           text-gray-200
           bg-gray-600
@@ -519,12 +410,10 @@
           shadow-md
           p-6
           text-center
-        "
-      >
+        ">
         <p>
           <span class="text-2xl font-bold">
-            {{ selectedSchedule.routepath?.origin.name }}</span
-          >
+            {{ selectedSchedule.routepath?.origin.name }}</span>
           to
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.destination.name }}
@@ -549,30 +438,22 @@
         </h3>
 
         <div class="overflow-y-scroll p-2" style="height: 50vh">
-          <table
-            class="
+          <table class="
               min-w-full
               divide-y divide-gray-200
               text-gray-900
               font-thin
               bg-white
-            "
-          >
+            ">
             <thead>
               <tr>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Booking Details
                 </td>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Passengers
                 </td>
-                <td
-                  class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap"
-                >
+                <td class="sticky bg-gray-100 top-0 px-2 py-2 whitespace-nowrap">
                   Cancel Booking
                 </td>
               </tr>
@@ -580,14 +461,14 @@
             <tbody class="overflow-y-scroll p-2 divide-y">
               <tr v-for="booking in conflictingBookings" :key="booking">
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
-                 <div>
+                  <div>
                     <p>BookingID: {{ booking.id }}</p>
-                      <p v-if="booking.modality !=='ONLINE'">
-                        Booked by: {{booking.user?.name  }}/ {{booking.user?.email  }}
-                      </p>
-                      <p v-else>
-                        Online Booking
-                      </p>
+                    <p v-if="booking.modality !== 'ONLINE'">
+                      Booked by: {{ booking.user?.name }}/ {{ booking.user?.email }}
+                    </p>
+                    <p v-else>
+                      Online Booking
+                    </p>
                     <p>Amount: Nu.{{ booking.amount }}</p>
                     <p v-if="booking.subroute" class="font-semibold">
                       Till {{ booking.subroute?.routepath?.destination.name }}
@@ -603,10 +484,7 @@
                       <td class="px-2 border-b-2 border-gray-800">Seat</td>
                       <td class="px-2 border-b-2 border-gray-800">Pasenger</td>
                     </tr>
-                    <tr
-                      v-for="passenger in booking.passengers"
-                      :key="passenger"
-                    >
+                    <tr v-for="passenger in booking.passengers" :key="passenger">
                       <td class="px-2">
                         {{ passenger.seatNumber }}
                       </td>
@@ -621,10 +499,7 @@
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap flex items-start">
                   <div>
-                    <button
-                      class="bg-gray-600 text-gray-300 p-1 rounded"
-                      @click="cancelBookingFullRefund(booking)"
-                    >
+                    <button class="bg-gray-600 text-gray-300 p-1 rounded" @click="cancelBookingFullRefund(booking)">
                       Cancel Booking
                     </button>
                     <p class="text-xs font-semibold break-words p-1">
@@ -704,15 +579,10 @@
   </vue-final-modal>
 
   <!-- COnfirm Cancel Booking by date -->
-  <vue-final-modal
-    v-model="confirmCancelBusModal"
-    classes="modal-container"
-    content-class="modal-content"
-    class="w-max-screen text-gray-700"
-  >
+  <vue-final-modal v-model="confirmCancelBusModal" classes="modal-container" content-class="modal-content"
+    class="w-max-screen text-gray-700">
     <div>
-      <div
-        class="
+      <div class="
           font-nunito
           text-gray-200
           bg-gray-600
@@ -720,12 +590,10 @@
           shadow-md
           p-6
           text-center
-        "
-      >
+        ">
         <p>
           <span class="text-2xl font-bold">
-            {{ selectedSchedule.routepath?.origin.name }}</span
-          >
+            {{ selectedSchedule.routepath?.origin.name }}</span>
           to
           <span class="text-2xl font-bold">
             {{ selectedSchedule.routepath?.destination.name }}
@@ -750,10 +618,7 @@
           The above schedule will be disabled on customer bookings page
         </p>
 
-        <button
-          class="bg-gray-600 px-2 text-gray-200 rounded my-3"
-          @click="confirmCancelBus()"
-        >
+        <button class="bg-gray-600 px-2 text-gray-200 rounded my-3" @click="confirmCancelBus()">
           Cancel Bus
         </button>
       </div>
@@ -768,6 +633,7 @@
   justify-content: center;
   align-items: center;
 }
+
 ::v-deep .modal-content {
   position: relative;
   display: flex;
@@ -777,6 +643,7 @@
   border-radius: 0.25rem;
   background: #fff;
 }
+
 ::v-deep .modal-content2 {
   position: relative;
   display: flex;
@@ -788,15 +655,18 @@
   border-radius: 0.25rem;
   background: #fff;
 }
+
 .modal__title {
   margin: 0 2rem 0 0;
   font-size: 1.5rem;
   font-weight: 700;
 }
+
 .modal__content {
   flex-grow: 1;
   overflow-y: auto;
 }
+
 .modal__action {
   display: flex;
   justify-content: space-around;
@@ -804,6 +674,7 @@
   flex-shrink: 0;
   padding: 1rem 0 0;
 }
+
 .modal__close {
   position: absolute;
   top: 0.5rem;
@@ -1154,6 +1025,8 @@ export default {
         }
       );
     },
+    
+
   },
 };
 </script>

@@ -1,157 +1,21 @@
 <template>
-  <main>
-    <div
-      class="relative z-1 flex justify-center items-center"
-      id="heroSection2"
-    >
-      <div
-        class="absolute top-0 w-full h-full bg-center bg-cover z-0"
-        :style="{
-          'background-image': 'url(' + require('../assets/bg.jpeg') + ')',
-        }"
-      >
-        <span
-          id="blackOverlay"
-          class="
-            w-full
-            h-full
-            absolute
-            bg-gradient-to-r
-            from-black
-            via-metoPrimary-900
-            to-transparent
-            opacity-80
-          "
-        ></span>
-      </div>
-
-      <div
-        class="
-          w-11/12
-          lg:w-10/12
-          xl:w-8/12
-          2xl:w-1/2
-          z-50
-          flex
-          justify-start
-          overflow-scroll
-          text-gray-200
-        "
-      >
-        <div class="w-full md:w-1/2 flex-col">
-          <h1 class="font-semibold text-xl md:text-5xl">
-            Meto Transport Service
-          </h1>
-          <div class="flex flex-col text-sm mt-4">
-            <div class="flex text-sm md:text-xl gap-2 items-center">
-              Ensuring Safety, Reliability and Comfort till your Destination
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      id="journeyDetailsDesktop"
-      class="hidden w-full md:flex justify-center overflow-scroll text-gray-200"
-    >
-      <div class="w-11/12 lg:w-10/12 xl:w-8/12 2xl:w-1/2 flex-col">
-        <div class="flex p-6 place-content-stretch text-metoPrimary-900">
-          <div
-            class="
-              w-1/4
-              flex flex-col
-              text-xl
-              border
-              rounded-l-lg
-              items-start
-              justify-center
-              px-2
-              py-1
-              bg-metoPrimary-800 
-              text-gray-100
-            "
-          >
-            <p class="text-sm">origin</p>
-            <p class="px-2 py-1 bg-transparent w-full">
-              {{ originSelected?.name }}
-            </p>
-          </div>
-          <div
-            class="
-              w-1/4
-              flex flex-col
-              text-xl
-              border
-              items-start
-              justify-center
-              px-2
-              py-1
-            "
-          >
-            <p class="text-sm">Destination</p>
-            <p class="px-2 py-1 bg-transparent w-full">
-              {{ destinationSelected?.name }}
-            </p>
-          </div>
-          <div
-            class="
-              w-1/4
-              flex flex-col
-              text-xl
-              border
-              items-start
-              justify-center
-              px-2
-              py-1
-            "
-          >
-            <p class="text-sm">Passengers</p>
-
-            <p class="px-2 py-1 bg-transparent w-full">
-              {{ numberOfPassengers }}
-            </p>
-          </div>
-          <div
-            class="
-              w-1/4
-              flex flex-col
-              text-xl
-              border
-              rounded-r-lg
-              items-start
-              justify-center
-              px-2
-              py-1
-            "
-          >
-            <p class="text-sm">Departure</p>
-            <p class="px-2 py-1 bg-transparent w-full">
-              {{ formattedDepartureDate }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="w-full flex justify-center">
+
+  
       <div
         class="
           flex flex-col
-          px-6
           md:p-6
           h-screen
           items-center
           w-11/12
-          lg:w-10/12
-          xl:w-8/12
-          2xl:w-1/2
-          z-50
+          
         "
       >
         <div
           id="journeyDetailsMobile"
           class="
-            md:hidden
+           
             text-metoPrimary-900
             my-2
             bg-gray-200
@@ -188,7 +52,7 @@
 
         <div id="BusList" class="w-full">
           <p class="text-xl md:text-2xl font-thin mt-4 text-metoPrimary-800">
-            Select your departure Bus
+            Select Bus
           </p>
           <div class="flex flex-col gap-4 w-full">
             <div
@@ -310,7 +174,7 @@
                         justify-center
                         items-center
                       "
-                      @click="proceedToSeatSelection(route)"
+                      @click="addPassengerDetails(route)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -353,24 +217,33 @@
         </div>
       </div>
     </div>
-  </main>
-</template>
-<style>
-#heroSection2 {
-  height: 20vh;
-}
-</style>
+   
+
+
+ </template>  
+
 
 <script>
-import { getCancelledROutesbyRouteDate } from "../services/cancelledRouteDateService";
-import { getPassengersByScheduleHash } from "../services/scheduleServices";
+import { getCancelledROutesbyRouteDate } from '../../../services/cancelledRouteDateService';
+import { getRouteDetailsByID } from '../../../services/routeServices';
 import crypto from "crypto";
-import { getRouteDetailsByID } from "../services/routeServices";
+import { getPassengersByScheduleHash } from '../../../services/scheduleServices';
 export default {
+  data() {
+    return {
+     matchedRoutes: [],
+      originSelected: {},
+      destinationSelected: {},
+      dateSelected: "",
+      formattedDepartureDate: "",
+      numberOfPassengers: 0,
+    };
+  },
+ 
   created() {
     this.matchedRoutes = this.$store.state.indexMatchedRoutes;
     if (this.matchedRoutes.length === 0) {
-      this.$router.push("/");
+      this.$router.push("/staff");
       // this.$store.commit("resetStoreState")
     }
     this.originSelected = this.$store.state.origin;
@@ -382,8 +255,19 @@ export default {
       route.isCancelled = 0;
       route.passengers = 0;
       var plaintext = `${route.id}|${this.dateSelected}`;
+
+      console.log(this.dateSelected);
+
+      let ok = "279|2022-07-01";
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
+
+      let ok2 = crypto.createHash("sha1");
+      ok2.update(ok);
+
+      let ok3 = ok2.digest("hex");
+
+      console.log("NEW SCHEDULE HASH", ok3);
       var scheduleHash = hash.digest("hex");
       route.scheduleHash = scheduleHash;
       if (route.parentRouteId) {
@@ -412,29 +296,19 @@ export default {
       }
     });
   },
-  data() {
-    return {
-      matchedRoutes: [],
-      originSelected: {},
-      destinationSelected: {},
-      dateSelected: "",
-      formattedDepartureDate: "",
-      numberOfPassengers: 0,
-    };
-  },
-  computed: {
-    departureDate() {},
-  },
+  
   methods: {
-    proceedToSeatSelection(route) {
-      if (this.numberOfPassengers <= 19 - route.passengers) {
+   addPassengerDetails(route){
+     if (this.numberOfPassengers <= 19 - route.passengers) {
         this.$store.commit("addSelectedSchedule", route);
         if (route.parentRouteId) {
+          console.log("SUB ROUTE HASH-Parent Route", route.parentRoute);
           this.$store.commit(
             "commitSelectedScheduleHash",
             route.parentRoute.scheduleHash
           );
         } else {
+          console.log("COMMITTIN  ROUTE HASH", route);
           this.$store.commit("commitSelectedScheduleHash", route.scheduleHash);
         }
         this.$router.push("/passengerDetails");
@@ -446,7 +320,8 @@ export default {
           }
         );
       }
-    },
+    this.$router.push("/staff/passengerDetails")
+   }
   },
 };
 </script>

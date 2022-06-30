@@ -37,3 +37,6 @@ export async function getCancelledRoutesBySubRouteDate(subRouteId,date){
 export async function getCancelledROutesbyRouteDate(routeId,date){
     return await axios.get(`${devUrl}/cancelled-route-date/route-dateId/${routeId}/${date}`) 
 }
+
+
+
