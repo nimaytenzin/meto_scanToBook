@@ -370,7 +370,17 @@
       <p  class="text-center">
           Booking ID:{{ selectedSeatDetails.booking?.id }}
         </p>
-      <div id="passengerDetails" class="text-sm my-2">
+      <p class="font-semibold text-center" v-if="selectedSeatDetails.booking?.subRouteId">
+        * 
+        {{ selectedSeatDetails.booking?.subroute?.routepath?.origin?.name  }} -  {{ selectedSeatDetails.booking?.subroute?.routepath?.destination?.name  }}
+      </p>
+      <p class="font-semibold text-center" v-else>
+        {{ selectedSeatDetails.booking?.route?.routepath?.origin?.name  }} -  {{ selectedSeatDetails.booking?.route?.routepath?.destination?.name  }}
+      </p>
+
+      <hr class="my-1">
+      
+      <div id="passengerDetails" class="text-sm">
         <p>
           Name:{{ selectedSeatDetails.name }}
         </p>
@@ -382,7 +392,9 @@
         </p>
       </div>
 
-      <div id="bookingDetails" class="text-sm my-1">
+     
+
+      <div id="bookingDetails" class="text-sm my-2">
         
         <p>
           Seat Book Date {{ selectedSeatDetails.booking?.bookingDate }}
@@ -760,8 +772,13 @@ export default {
 
     viewBookings() {
 
-      
-      var plaintext = `${this.selectedDepartureTime.id}|${this.dateSelected}`;
+      let routeID;
+      if(this.selectedDepartureTime.parentRouteId){
+        routeID = this.selectedDepartureTime.parentRouteId
+      }else{
+         routeID = this.selectedDepartureTime.id
+      } 
+      var plaintext = `${routeID}|${this.dateSelected}`;
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
       var scheduleHash = hash.digest("hex");
