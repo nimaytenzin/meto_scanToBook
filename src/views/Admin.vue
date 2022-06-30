@@ -86,7 +86,7 @@
             Dashboard
           </p>
         </router-link>
-        <router-link to="/admin/manage-buses">
+        <!-- <router-link to="/admin/manage-buses">
           <p
             class="
               block
@@ -101,7 +101,7 @@
           >
             Manage Buses
           </p>
-        </router-link>
+        </router-link> -->
 
         <router-link to="/admin/manage-routes">
           <p
@@ -132,7 +132,23 @@
               hover:text-white
             "
           >
-            Bus Schedule
+            Bookings & Seats
+          </p>
+        </router-link>
+         <router-link to="/admin/cancelled-bus">
+          <p
+            class="
+              block
+              py-2.5
+              px-4
+              rounded
+              transistion
+              duration-200
+              hover:bg-metoPrimary-700
+              hover:text-white
+            "
+          >
+            Cancelled Bus
           </p>
         </router-link>
         <router-link to="/admin/bookings">

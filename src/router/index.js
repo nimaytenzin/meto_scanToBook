@@ -136,6 +136,9 @@ const routes = [
         path: 'challan', component: () => import('../components/Admin/Challan.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
+        path: 'cancelled-bus', component: () => import('../components/Admin/CancelledBus.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+      },
+      {
         path: 'ticket-cancellations', component: () => import('../components/Admin/Cancellations.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       // {

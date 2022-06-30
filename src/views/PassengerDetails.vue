@@ -203,7 +203,7 @@
           <div class="flex flex-row gap-4 items-center w-full" v-for="(passenger, index) in passengers"
             :key="passenger">
             <div class="w-full flex flex-col mt-4 border rounded-sm ">
-              <p class=" bg-metoPrimary-600 text-gray-100 py-1 px-2 rounded-t-sm">
+              <p class=" bg-metoPrimary-600 text-gray-100 py-2 px-2 rounded-t-sm">
                 Passenger {{ index + 1 }}
               </p>
               <div class="p-2 flex flex-col">

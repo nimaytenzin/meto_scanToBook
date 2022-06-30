@@ -617,7 +617,7 @@
 </style>
 <script>
 import { getServiceCharge } from "../services/paymentServices";
-import { confirmSeatUsingBookingId, getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../services/seatSelectionServices"
+import { getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../services/seatSelectionServices"
 export default {
   beforeCreate() {
     this.seatsLoadingModal = false;
@@ -763,7 +763,7 @@ export default {
       this.$router.push("/book/buses");
     },
 
-   
+
 
     reverSeatStatus(arr) {
       arr.forEach((element) => {
@@ -819,38 +819,38 @@ export default {
       this.total += this.fare;
     },
     cancelSeat() {
-
       leaveSeat({
         seatNumber: this.selectedSeat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
-        getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
-          if (resp.status === 200) {
-            this.seats = resp.data;
-          }
-        })
-        // this.changeSeatStatus(res.data);
-        this.showModal = false;
+        if (res.status === 200 || res.status === 201) {
+          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+            if (resp.status === 200) {
+              this.seats = resp.data;
+            }
+          })
+          this.showModal = false;
+        }
       })
 
     },
     confirmRevert() {
       this.$store.commit("removeSeat", this.selectedSeat);
       this.total -= this.fare;
-
       leaveSeat({
         seatNumber: this.selectedSeat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
-        getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
-          if (resp.status === 200) {
-            this.seats = resp.data;
-          }
-        })
-
-        this.reverSeatModal = false;
+        if (res.status === 200 || res.status === 201) {
+          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+            if (resp.status === 200) {
+              this.seats = resp.data;
+            }
+          })
+          this.reverSeatModal = false;
+        }
       })
 
     },
@@ -877,13 +877,14 @@ export default {
             bookingId: Number(sessionStorage.getItem("bookingId")),
             scheduleHash: this.$store.state.selectedScheduleHash
           }).then(res => {
-            getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
-              if (resp.status === 200) {
-                this.seats = resp.data;
-              }
-            })
-            // this.changeSeatStatus(res.data);
-            this.showModal = true;
+            if (res.status === 200 || res.status === 201) {
+              getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+                if (resp.status === 200) {
+                  this.seats = resp.data;
+                }
+              })
+              this.showModal = true;
+            }
           }).catch(error => {
 
             if (this.selectedSeat.status === "BOOKED") {
@@ -907,26 +908,26 @@ export default {
     },
 
     reselectSeats(seat) {
-
       this.total -= this.fare;
       leaveSeat({
         seatNumber: seat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
-        getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
-          if (resp.status === 200) {
-            this.seats = resp.data;
-          }
-        })
-        this.$store.commit("removeSeat", seat);
+        if (res.status === 200 || res.status === 201) {
+          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+            if (resp.status === 200) {
+              this.seats = resp.data;
+            }
+          })
+          this.$store.commit("removeSeat", seat);
+        }
       })
     },
 
     goToPaymentPage() {
       updateSeatToInPaymentUsingBookingId(Number(sessionStorage.getItem("bookingId"))).then(res => {
-
-        if (res.status === 200 || res.status ===201) {
+        if (res.status === 200 || res.status === 201) {
           clearTimeout(this.inactiveTimeOut);
           this.$router.push(`/loadPayment`);
         }
