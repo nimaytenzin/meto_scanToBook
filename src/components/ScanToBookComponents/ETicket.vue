@@ -128,6 +128,7 @@
                   </h1>
                 </div>
               </div>
+              
              
               <h2 class="text-center text-xl text-gray-700 my-1">
                Departure Date: <span class="font-bold">

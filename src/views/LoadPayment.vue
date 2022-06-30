@@ -109,15 +109,11 @@
 import { getChecksum } from "../services/bookingServices";
 export default {
   created() {
-    console.log("REACHED AT LOAD PAYMENT")
-    // if (this.$store.state.origin === "") {
-    //   this.$router.push("/book");
-    // }
-    console.log(this.$store.state.scanBookingId, "SCAN BOOKING ID")
+  
     getChecksum(this.$store.state.scanBookingId).then((res) => {
-      console.log("GENERATING CHECKSUM", res)
+    
       if (res.status === 200) {
-        console.log(res)
+     
         this.booking = res.data.booking;
         this.hiddenFormVal.bfs_msgType = "AR";
         this.hiddenFormVal.bfs_debitAuthCode = "00";

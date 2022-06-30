@@ -29,7 +29,7 @@
     <div
       class="
         side-bar
-        bg-indigo-900
+        bg-metoPrimary-900
         text-blue-100
         w-64
         space-y-6
@@ -111,25 +111,11 @@
               hover:bg-indigo-700 hover:text-white
             "
           >
-            Daily Closings
+           Bookings Today
           </p>
         </router-link>
 
-         <router-link to="/staff/cancelled-buses">
-          <p
-            class="
-              block
-              py-2.5
-              px-4
-              rounded
-              transistion
-              duration-200
-              hover:bg-indigo-700 hover:text-white
-            "
-          >
-            Cancelled Buses
-          </p>
-        </router-link>
+       
 
         <div>
           <p

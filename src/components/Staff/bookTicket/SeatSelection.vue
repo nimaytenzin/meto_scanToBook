@@ -230,10 +230,7 @@
                   <td>Base Fare :</td>
                   <td>Nu {{ fare }}</td>
                 </tr>
-                <tr>
-                  <td>Service Charge :</td>
-                  <td>Nu {{ serviceCharge }}</td>
-                </tr>
+               
                 <tr>
                   <td>Seats Booked :</td>
                   <td>{{ bookedSeats.length }}</td>
@@ -513,7 +510,7 @@ export default {
       tempStatus: null,
       numberOfPassengers: 0,
       seatsLoadingModal: false,
-      bookedSeats: [],
+     
       inProgressSeats: [],
       yourSeats: [],
       inactiveTimeout:null

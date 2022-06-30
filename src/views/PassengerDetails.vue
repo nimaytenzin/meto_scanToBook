@@ -338,9 +338,9 @@
           rounded
           h-full
         ">
-      
+
         <div class="p-1 md:p-4 text-xs md:text-sm">
-           <p class="text-xl px-2">Terms & Condition</p>
+          <p class="text-xl px-2">Terms & Condition</p>
           <p class="px-2 pt-2">
             The Passenger Details are collected solely for the purpose of
             ensuring that the SMS Ticket confirmation is received by the
@@ -505,7 +505,7 @@ export default {
       });
 
       this.total = this.$store.state.selectedSeats.length * (+ this.$store.state.selectedSchedule.fare)
-     
+
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });
       });
@@ -569,19 +569,39 @@ export default {
           }
         );
       } else {
-        let booking = {
-          booking: {
-            routeId: this.$store.state.selectedSchedule.id,
-            modality: "Online",
-            amount: this.total,
-            scheduleHash: this.$store.state.selectedScheduleHash,
-            scheduleDate: this.$store.state.departureDate,
-            operatorId: null,
-            serviceCharge: this.serviceCharge * this.passengers.length,
-            refundPercentage: 0
-          },
-          passengers: this.passengers,
-        };
+
+        var booking={}
+        if (this.$store.state.selectedSchedule.parentRouteId) {
+         booking = {
+            booking: {
+              routeId: this.$store.state.selectedSchedule.parentRouteId,
+              subRouteId:this.$store.state.selectedSchedule.id,
+              modality: "Online",
+              amount: this.total,
+              scheduleHash: this.$store.state.selectedScheduleHash,
+              scheduleDate: this.$store.state.departureDate,
+              operatorId: null,
+              serviceCharge: this.serviceCharge * this.passengers.length,
+              refundPercentage: 0
+            },
+            passengers: this.passengers,
+          };
+        }else{
+           booking = {
+            booking: {
+              routeId: this.$store.state.selectedSchedule.id,
+              modality: "Online",
+              amount: this.total,
+              scheduleHash: this.$store.state.selectedScheduleHash,
+              scheduleDate: this.$store.state.departureDate,
+              operatorId: null,
+              serviceCharge: this.serviceCharge * this.passengers.length,
+              refundPercentage: 0
+            },
+            passengers: this.passengers,
+          };
+        }
+
         addNewBooking(booking)
           .then((res) => {
             if (res.status === 201) {

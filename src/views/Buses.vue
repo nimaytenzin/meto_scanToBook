@@ -382,19 +382,8 @@ export default {
       route.isCancelled = 0;
       route.passengers = 0;
       var plaintext = `${route.id}|${this.dateSelected}`;
-
-      console.log(this.dateSelected);
-
-      let ok = "279|2022-07-01";
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
-
-      let ok2 = crypto.createHash("sha1");
-      ok2.update(ok);
-
-      let ok3 = ok2.digest("hex");
-
-      console.log("NEW SCHEDULE HASH", ok3);
       var scheduleHash = hash.digest("hex");
       route.scheduleHash = scheduleHash;
       if (route.parentRouteId) {
@@ -441,13 +430,11 @@ export default {
       if (this.numberOfPassengers <= 19 - route.passengers) {
         this.$store.commit("addSelectedSchedule", route);
         if (route.parentRouteId) {
-          console.log("SUB ROUTE HASH-Parent Route", route.parentRoute);
           this.$store.commit(
             "commitSelectedScheduleHash",
             route.parentRoute.scheduleHash
           );
         } else {
-          console.log("COMMITTIN  ROUTE HASH", route);
           this.$store.commit("commitSelectedScheduleHash", route.scheduleHash);
         }
         this.$router.push("/passengerDetails");

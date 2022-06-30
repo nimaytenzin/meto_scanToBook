@@ -49,15 +49,10 @@
             Passenger Details
           </p>
           <p v-for="(passenger, index) in bookingDetails.passengers" :key="passenger">
-            {{ index + 1 }}. {{ passenger.name }} ({{ passenger.contact  }})
+            {{ index + 1 }}. {{ passenger.name }} ({{ passenger.contact }}) <span>Seat No:{{ passenger.seatNumber  }} </span>
           </p>
         </div>
       </div>
-
-
-
-
-
     </div>
     <div class="
             font-nunito
@@ -109,14 +104,10 @@
           <p class="text-xs break-words">
             Base Fare x Booked Seats
           </p>
-
-          <p class="my-2">
-            Amount Paid
-          </p>
         </div>
       </div>
     </div>
-    <div class="mt-4 w-11/12
+    <div class="mt-6 w-11/12
         lg:w-10/12
         xl:w-8/12
         2xl:w-1/2" v-if="!paymentConfirmed">
@@ -137,8 +128,8 @@
         <option value="CASH" class="bg-white">Cash</option>
       </select>
 
-      <div v-if="modality === 'MBOB'" class="flex flex-col items-center justify-center">
-        <p class="text-xl font-semibold text-gray-600">Select Bank</p>
+      <div v-if="modality === 'MBOB'" class="flex flex-col items-center justify-center my-2">
+        <p class="text-sm text-left w-full text-gray-600">Select Bank</p>
         <select class="
                     w-full
                     block
@@ -159,10 +150,11 @@
                     block
                     w-full
                     appearance-none
-                    border-b
-                    rounded-sm
+                    border
+                    rounded-lg
                     py-2
                     px-2
+                    my-1
                     text-gray-700
                     leading-tight
                     focus:outline-none focus:shadow-outline
@@ -171,33 +163,35 @@
                     block
                     w-full
                     appearance-none
-                    border-b
-                    rounded-sm
+                    border
+                    rounded-lg
                     py-2
                     px-2
+                    my-1
                     text-gray-700
                     leading-tight
                     focus:outline-none focus:shadow-outline
                   " />
       </div>
 
-      <div class="flex justify-center gap-1  my-4">
-        <button class="bg-metoContrast w-1/2 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="confirmPayment">
+      <div class="flex justify-center gap-1  my-6">
+        <button class="bg-green-900 py-2 w-1/2 bg-opacity-70 text-gray-100 px-4 rounded-sm" @click="confirmPayment">
           Confirm Payment
         </button>
 
-        <button class="bg-metoContrast w-1/2 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="confirmPayment">
+        <!-- <button class="bg-metoContrast py-2 w-1/2 bg-opacity-70 text-red-50 px-4  rounded-sm" @click="cancelBooking">
           Cancel Booking
-        </button>
+        </button> -->
 
-      
+
       </div>
     </div>
 
-      <button class="my-2 bg-metoPrimary-700 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="this.$router.push('/staff')">
-          Book again
-        </button>
-     
+    <button class="my-2 bg-metoPrimary-700 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm"
+      @click="bookAgain()">
+      Book again
+    </button>
+
   </div>
 
 
@@ -206,7 +200,8 @@
 
 
 <script>
-import { getBookingDetail, updateBooking } from '../../../services/bookingServices';
+import { deleteBookingwithPassengers, getBookingDetail, updateBooking } from '../../../services/bookingServices';
+import { confirmSeat } from '../../../services/seatSelectionServices';
 export default {
   data() {
     return {
@@ -224,13 +219,18 @@ export default {
   },
 
   created() {
-    getBookingDetail(this.bookingId).then(res => {
+    if(Number(sessionStorage.getItem('bookingId'))){
+      getBookingDetail(this.bookingId).then(res => {
       this.bookingDetails = res.data
       console.log(res.data)
       if (res.data.modality) {
         this.paymentConfirmed = true
       }
     })
+    }else{
+      this.$router.push("/staff")
+    }
+    
 
 
   },
@@ -239,27 +239,63 @@ export default {
     goToSeatSelection() {
       this.$router.push("/staff/seatSelection")
     },
+     bookAgain(){
+     sessionStorage.removeItem("bookingId");
+          this.$router.push("/staff")
+
+  },
     confirmPayment() {
-      let data;
+        if(this.modality){
+             let data;
       if (this.modality === "MBOB") {
         data = {
           modality: this.modality,
           depositBank: this.journalDetails.bankName,
           depositJournal: this.journalDetails.journalNumber,
-          depositContact: this.journalDetails.contactNumber
+          depositContact: this.journalDetails.contactNumber,
+          paymentStatus:"PAID"
         }
       } else {
         data = {
           modality: this.modality,
+          paymentStatus:"PAID"
         }
       }
+      let success =false;
       updateBooking(this.bookingId, data).then(res => {
         if (res.status === 200) {
-          this.paymentConfirmed = true
+          success = true;
+          this.bookingDetails.passengers.forEach(passenger => {
+              confirmSeat(passenger.id).then(res=>{
+                console.log("CHANGIN SEAT STATUS TO PAID", passenger)
+                if(res.status ===200){
+                  success = true
+                }else{
+                  success = false;
+                }
+              })
+          });
+         if(success){
+           this.paymentConfirmed = true
+         }
+        }
+      })
+        }else{
+          this.$toast.show("SELECT payment Mode")
+        }
+    },
+    cancelBooking(){
+      deleteBookingwithPassengers(this.bookingId).then(res=>{
+        console.log(res)
+        if(res.status === 200){
+          sessionStorage.removeItem("bookingId");
+          this.$router.push("/staff")
         }
       })
     }
 
+
   },
+ 
 };
 </script>

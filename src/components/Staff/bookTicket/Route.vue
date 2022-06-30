@@ -337,7 +337,9 @@ export default {
      matchedRoutes:[],
     
       //modals
-      availableDatesModal:false
+      availableDatesModal:false,
+      numberOfPassengers:1,
+      date:new Date()
     };
   },
  
@@ -346,6 +348,9 @@ export default {
      getActiveStops().then((res) => {
       this.origins = res.data;
     });
+
+    this.$store.commit("resetStoreState")
+
   },
  
   methods: {

@@ -255,20 +255,37 @@ export default {
   },
   methods: {
     proceedToSeatSelection() {
-    
-        let booking = {
-          booking: {
-            routeId: this.$store.state.selectedSchedule.id,
-            amount: this.total,
-            scheduleHash: this.$store.state.selectedScheduleHash,
-            scheduleDate: this.$store.state.departureDate,
-            operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
+        var booking={}
+        if (this.$store.state.selectedSchedule.parentRouteId) {
+         booking = {
+            booking: {
+              routeId: this.$store.state.selectedSchedule.parentRouteId,
+              subRouteId:this.$store.state.selectedSchedule.id,
+              amount: this.total,
+              scheduleHash: this.$store.state.selectedScheduleHash,
+              scheduleDate: this.$store.state.departureDate,
+             operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
                 .id,
-            serviceCharge: this.serviceCharge * this.passengers.length,
-            refundPercentage: 0
-          },
-          passengers: this.passengers,
-        };
+              serviceCharge:0 ,
+              refundPercentage: 0
+            },
+            passengers: this.passengers,
+          };
+        }else{
+           booking = {
+            booking: {
+              routeId: this.$store.state.selectedSchedule.id,
+              amount: this.total,
+              scheduleHash: this.$store.state.selectedScheduleHash,
+              scheduleDate: this.$store.state.departureDate,
+              operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
+                .id,
+              serviceCharge: 0,
+              refundPercentage: 0
+            },
+            passengers: this.passengers,
+          };
+        }
         addNewBooking(booking)
           .then((res) => {
             console.log("ok",res)

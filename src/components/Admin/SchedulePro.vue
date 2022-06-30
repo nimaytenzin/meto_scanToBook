@@ -201,7 +201,7 @@
         </div>
 
 
-        <div >
+        <div>
           <div class="overflow-y-scroll ">
             <table class="
               min-w-full
@@ -239,6 +239,7 @@
 
                     <div>
                       <div v-if="booking.modality !== 'ONLINE'">
+                    
                         Booked by: {{ booking.user?.name }}/ {{ booking.user?.email }}
                       </div>
                       <div v-else>
@@ -295,8 +296,18 @@
                   items-center
                   m-2
                 ">
-            <img src="../../assets/seatAvailable.png" width="25" alt="" />
-            <p class="text-sm text-gray-600">Available</p>
+            <img src="../../assets/inprogress.png" width="25" alt="" />
+            <p class="text-sm text-gray-600">In Process</p>
+          </div>
+          <div class="
+                  text-center
+                  flex flex-col
+                  justify-center
+                  items-center
+                  m-2
+                ">
+            <img src="../../assets/yourseats.png" width="25" alt="" />
+            <p class="text-sm text-gray-600">In Payment</p>
           </div>
           <div class="
                   text-center
@@ -309,16 +320,6 @@
             <p class="text-sm text-gray-600">Booked</p>
           </div>
 
-          <div class="
-                  text-center
-                  flex flex-col
-                  justify-center
-                  items-center
-                  m-2
-                ">
-            <img src="../../assets/inprogress.png" width="25" alt="" />
-            <p class="text-sm text-gray-600">In Process</p>
-          </div>
         </div>
 
         <div class="
@@ -366,6 +367,9 @@
       <p class="text-center">
         Details for Seat {{ selectedSeat.number }}
       </p>
+      <p  class="text-center">
+          Booking ID:{{ selectedSeatDetails.booking?.id }}
+        </p>
       <div id="passengerDetails" class="text-sm my-2">
         <p>
           Name:{{ selectedSeatDetails.name }}
@@ -379,26 +383,20 @@
       </div>
 
       <div id="bookingDetails" class="text-sm my-1">
+        
         <p>
-          Booking ID:{{ selectedSeatDetails.booking?.id }}
+          Seat Book Date {{ selectedSeatDetails.booking?.bookingDate }}
         </p>
         <p>
-          Seat Booked on {{ selectedSeatDetails.booking?.bookingDate }}
+          Seat Book Time {{  getLocalTime(selectedSeatDetails.updatedAt)  }}
         </p>
-        <p>
-          Payment Status: <span class="lowercase"> {{ selectedSeatDetails.booking?.paymentStatus }}</span>
+        <p class="my-2">
+           Seat Status: <span class="lowercase"> {{ selectedSeatDetails.status==='BOOKED'?'Paid & Booked':selectedSeatDetails.status }}</span>
         </p>
       </div>
 
       <div id="Seat Satus and actions" class="flex flex-col">
-        <div class="text-sm my-2">
-          <p>
-            Seat Status: {{ selectedSeatDetails.status }}
-          </p>
-          <p>
-            Last Updated:{{ selectedSeatDetails.updatedAt }}
-          </p>
-        </div>
+       
 
         <button v-if="!reconfirmUnblockSeat" class="border border-red-300 rounded my-2"
           @click="reconfirmUnblockSeat = true">
@@ -574,6 +572,7 @@ export default {
       //used
       origins: [],
       originSelected: {},
+      destinations:[],
       destinationSelected: {},
       routes: [],
       subroutes: [],
@@ -625,7 +624,7 @@ export default {
       selectedSeatDetails: {},
       reconfirmUnblockSeat: false,
       isBusCancelled: false,
-      bookingsSearched:false
+      bookingsSearched: false
 
     };
   },
@@ -661,7 +660,7 @@ export default {
           case "driver":
             return require("../../assets/steeringwheel.png");
             break;
-          case "yourSeat":
+          case "INPAYMENT":
             return require("../../assets/yourseats.png");
             break;
           case "INPROGRESS":
@@ -680,7 +679,7 @@ export default {
       this.dateSelected = null;
       this.matchedRoutes = []
       this.routeDateBookings = []
-       this.bookingsSearched = false
+      this.bookingsSearched = false
       getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
         this.destinations = res.data;
         this.destinationSelected = res.data[0];
@@ -727,7 +726,7 @@ export default {
     },
 
     onDayClick(e) {
-       this.bookingsSearched = false
+      this.bookingsSearched = false
       this.daySelected = e.weekday;
       if (
         e.popovers[0] &&
@@ -760,17 +759,17 @@ export default {
     },
 
     viewBookings() {
+
+      
       var plaintext = `${this.selectedDepartureTime.id}|${this.dateSelected}`;
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
       var scheduleHash = hash.digest("hex");
       this.selectedScheduleHash = scheduleHash;
-
-      console.log("PLAIN TEXT",plaintext)
       getCancelledROutesbyRouteDate(this.selectedDepartureTime.id, this.dateSelected).then(res => {
         if (res.data.id) {
           this.isBusCancelled = true;
-        }else{
+        } else {
           this.isBusCancelled = false;
         }
       })
@@ -789,30 +788,12 @@ export default {
       getAllBookingsByScheduleHash(
         this.selectedScheduleHash
       ).then((res) => {
-        console.log("ALL Bookings", res.data);
+       
         this.routeDateBookings = res.data;
         getSeatsStatusadmin(this.selectedScheduleHash).then(res => {
           this.seats = res.data
         })
-        res.data.forEach((booking) => {
-          this.grandTotal += booking.amount;
-          if (booking.modality === "CASH") {
-            this.cashTotal += booking.amount;
-          }
-          if (booking.modality === "MBOB") {
-            this.epaymentTotal += booking.amount;
-          }
-          if (booking.modality === "ONLINE") {
-            this.onlineTotal += booking.amount;
-          }
-          booking.passengers.forEach((passenger) => {
-            let searchIndex = this.seatsAvailable.indexOf(passenger.seatNumber);
-            if (searchIndex !== -1) {
-              console.log("Seat Booked", passenger);
-              this.seatsAvailable.splice(searchIndex, 1);
-            }
-          });
-        });
+       
       });
     },
     viewSeatDetails(seat) {
@@ -873,47 +854,15 @@ export default {
     },
 
 
-
-
-    confirmCancelBooking(booking) {
-      let cancelBookingObject = {
-        bookingId: booking.id,
-        scheduleHash: booking.scheduleHash,
-        seats: [],
-      };
-      booking.passengers.forEach((passenger) => {
-        cancelBookingObject.seats.push(passenger.seatNumber);
-      });
-      if (confirm("Are you sure you want to cancel?") == true) {
-        cancelBooking(booking.id, cancelBookingObject).then((res) => {
-          if (res.status === 200) {
-            getBookingsByRouteAndScheduleDate(
-              this.selectedSchedule.id,
-              this.selectedDate
-            ).then((res) => {
-              console.log(res);
-              if (res.data) {
-                this.conflictingBookings = res.data;
-              }
-            });
-          } else {
-            this.$toast.show("Network Error Try again");
-          }
-        });
-      }
-    },
-
     confirmCancelBus() {
-      console.log({
-        "ROUTE ID": this.selectedDepartureTime,
-        "DATE": this.dateSelected
-      })
+     
       addNewCancelledRouteDate({
         routeId: this.selectedDepartureTime.id,
         date: this.dateSelected,
       }).then((res) => {
         if (res.status === 201) {
-
+          this.confirmCancelBusModal = false;
+          this.viewBookings()
         }
       });
     },
@@ -923,10 +872,12 @@ export default {
         routeId: this.selectedDepartureTime.id,
         date: this.dateSelected,
       }).then((res) => {
-        if (res.status === 200) {
+        if (res.status === 201 || res.status === 200) {
+           this.viewBookings()
           getCancelledROutesbyRouteDate(this.selectedDepartureTime.id, this.dateSelected).then(res => {
             if (res.data.id) {
               this.isBusCancelled = true;
+             
             } else {
               this.isBusCancelled = false;
             }
@@ -934,6 +885,18 @@ export default {
         }
       });
     },
+    formatTimeElapsed(time) {
+      let now = new Date()
+      let elapsed = new Date(time) - now
+     
+
+    return new Date(time).toLocaleTimeString()
+
+
+    },
+    getLocalTime(time){
+      return new Date(time).toLocaleTimeString() 
+    }
 
   },
 };

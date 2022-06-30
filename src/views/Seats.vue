@@ -306,7 +306,7 @@
 
         <div class="flex flex-col items-center justify-start sm:ml2 sm:mr2 w-full">
           <div v-if="Number(numberOfPassengers) !== Number(bookedSeats.length)">
-            
+
             <div class="flex mt-5 justify-evenly">
               <div class="
                   text-center
@@ -352,8 +352,8 @@
                 space-x-4
               ">
               <p class="text-xs text-metoPrimary-700">
-              Click on any available seat to book
-            </p>
+                Click on any available seat to book
+              </p>
               <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3" style="z-index: 99999">
                 <div v-for="item in seats" :key="item" class="rounded relative" @click="addSeat(item)">
                   <img :src="bindImage(item)" alt="Seat " class="object-contain w-14 z-0 cursor-pointer"
@@ -563,7 +563,7 @@
   max-height: 90%;
   min-width: max-content;
   margin: 0 1rem;
-   border-radius: 0.2rem;
+  border-radius: 0.2rem;
   padding: 1rem;
   background: #fff;
 }
@@ -617,18 +617,18 @@
 </style>
 <script>
 import { getServiceCharge } from "../services/paymentServices";
-import { getSeatsStatus, leaveSeat, lockSeat } from "../services/seatSelectionServices"
+import { confirmSeatUsingBookingId, getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../services/seatSelectionServices"
 export default {
   beforeCreate() {
     this.seatsLoadingModal = false;
   },
   created() {
-     if (
+    if (
 
       this.$store.state.selectedSchedule &&
       this.$store.state.origin &&
       this.$store.state.destination &&
-     this.$store.state.formattedDepartureDate &&
+      this.$store.state.formattedDepartureDate &&
       this.$store.state.selectedSchedule
     ) {
       this.seatsLoadingModal = true;
@@ -641,7 +641,7 @@ export default {
     this.roomId = this.$store.state.selectedScheduleHash;
     this.numberOfPassengers = this.$store.state.numberOfPassengers;
 
-    this.inactiveTimeout = setTimeout(()=>{
+    this.inactiveTimeout = setTimeout(() => {
       window.location.reload()
     }, 170000);
 
@@ -656,13 +656,13 @@ export default {
         setTimeout(() => {
           this.seatsLoadingModal = false;
         }, 1000);
-      }else{
+      } else {
         this.seatsLoadingModal = true;
-        this.$toast.show("Network error") 
+        this.$toast.show("Network error")
       }
     })
 
-   
+
   },
 
   data() {
@@ -670,14 +670,13 @@ export default {
       fare: 0,
       total: 0,
       message: "Connecting to Meto Web Services...",
-
       destinationSelected: this.$store.state.destination,
       originSelected: this.$store.state.origin,
       formattedDepartureDate: this.$store.state.formattedDepartureDate,
       origin: this.$store.state.origin?.name,
       destination: this.$store.state.destination?.name,
       selectedSchedule: this.$store.state.selectedSchedule,
-      serviceCharge: 35,
+      serviceCharge: null,
       departureTime: this.$store.state.selectedSchedule?.departureTime,
       isConnected: false,
       errorModal: true,
@@ -730,7 +729,7 @@ export default {
       bookedSeats: [],
       inProgressSeats: [],
       yourSeats: [],
-      inactiveTimeout:null
+      inactiveTimeout: null
     };
   },
   computed: {
@@ -743,59 +742,6 @@ export default {
     },
   },
   methods: {
-    // connectWs() {
-    //   this.conn = new WebSocket(`${process.env.VUE_APP_WSS}/${this.roomId}`);
-    //   this.conn.onopen = (event) => {
-    //     this.isConnected = true;
-    //     this.connectionAttempt = 0;
-    //     // this.errorModal = false;
-    //     console.log("CONNETCTED TO METO WEB SERVICEs");
-    //     this.message = "Connecting to Meto Webservices ";
-    //     this.errorModal = false;
-    //     this.socketConnected = true;
-    //   };
-    //   this.conn.onclose = (evt) => {
-    //     this.errorModal = true;
-    //     this.connectionAttempt++;
-    //     this.isConnected = false;
-    //     if (!this.isConnected) {
-    //       setTimeout(() => {
-    //         if (this.connectionAttempt === 10) {
-    //           this.errorModal = false;
-    //           this.$router.push("/service-down");
-    //         } else {
-    //           this.connectWs();
-    //         }
-    //       }, 2000);
-    //     }
-    //   };
-    //   this.conn.onmessage = (evt) => {
-    //     let messageJson = JSON.parse(evt.data);
-    //     if (messageJson.messageType === "LOCK") {
-    //       console.log("locked Seats RECIEVED");
-    //       this.lockedSeats = messageJson.lockedList;
-    //       this.changeSeatStatus();
-    //     } else if (messageJson.messageType === "LOCK_LEAVE") {
-    //       console.log("LOCK LEAVE RECIEVED", messageJson.leaveList);
-    //       this.reverSeatStatus(messageJson.leaveList);
-    //     } else if (messageJson.messageType === "LOCK_ACK") {
-    //       console.log("Lock Acknowledged by the server");
-    //       this.selectedSeat.status = "locked";
-    //       this.showModal = true;
-    //     } else if (messageJson.messageType === "LOCK_FAIL") {
-    //       console.log("Lock Acknowledge Failed");
-    //       this.showModal = false;
-    //       this.$toast.show(
-    //         "Some one else is booking the seat! please select another seat",
-    //         {
-    //           position: "top",
-    //           type: "error",
-    //         }
-    //       );
-    //     }
-    //   };
-    // },
-
     getSeats(id) {
       for (let i = 0; i < this.seats.length; i++) {
         if (this.seats[i].number === id) {
@@ -817,23 +763,7 @@ export default {
       this.$router.push("/book/buses");
     },
 
-    changeSeatStatus(seatStatusData) {
-      console.log("CHANGING SEAT STATUS")
-      seatStatusData.bookedSeats.forEach((seat) => {
-        let matchedSeat = this.getSeats(seat.seatNumber);
-        matchedSeat.status = "booked";
-      });
-      seatStatusData.inProgressSeats.forEach((seat) => {
-        let matchedSeat = this.getSeats(seat.seatNumber);
-        matchedSeat.status = "inProgress";
-      });
-      seatStatusData.yourSeats.forEach((seat) => {
-        if (seat.seatNumber) {
-          let matchedSeat = this.getSeats(seat.seatNumber);
-          matchedSeat.status = "inProgress";
-        }
-      });
-    },
+   
 
     reverSeatStatus(arr) {
       arr.forEach((element) => {
@@ -889,7 +819,7 @@ export default {
       this.total += this.fare;
     },
     cancelSeat() {
-      console.log(this.selectedSeat, Number(sessionStorage.getItem("bookingId")))
+
       leaveSeat({
         seatNumber: this.selectedSeat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
@@ -906,10 +836,9 @@ export default {
 
     },
     confirmRevert() {
-      console.log(this.selectedSeat, Number(sessionStorage.getItem("bookingId")))
       this.$store.commit("removeSeat", this.selectedSeat);
       this.total -= this.fare;
-     
+
       leaveSeat({
         seatNumber: this.selectedSeat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
@@ -920,10 +849,10 @@ export default {
             this.seats = resp.data;
           }
         })
-       
+
         this.reverSeatModal = false;
       })
-     
+
     },
     cancelRevert() {
       this.reverSeatModal = false;
@@ -956,7 +885,7 @@ export default {
             // this.changeSeatStatus(res.data);
             this.showModal = true;
           }).catch(error => {
-            console.log(error.message)
+
             if (this.selectedSeat.status === "BOOKED") {
               this.$toast.show("Sorry Seat already booked", {
                 position: "top"
@@ -978,9 +907,8 @@ export default {
     },
 
     reselectSeats(seat) {
-      console.log("RESELECT SEAT", seat.number);
-      this.total -= this.fare;
 
+      this.total -= this.fare;
       leaveSeat({
         seatNumber: seat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
@@ -993,37 +921,18 @@ export default {
         })
         this.$store.commit("removeSeat", seat);
       })
-
     },
 
     goToPaymentPage() {
+      updateSeatToInPaymentUsingBookingId(Number(sessionStorage.getItem("bookingId"))).then(res => {
 
-      clearTimeout(this.inactiveTimeOut);
-      this.$router.push(`/loadPayment`);
-
+        if (res.status === 200 || res.status ===201) {
+          clearTimeout(this.inactiveTimeOut);
+          this.$router.push(`/loadPayment`);
+        }
+      })
     },
 
-    goToPassengerDetailsPage() {
-      if (this.$store.state.selectedSeats) {
-        this.$store.state.selectedSeats.forEach((seat) => {
-          this.conn.send(
-            JSON.stringify({
-              scheduleHash: this.roomId.toString(),
-              messageType: "LOCK_CONFIRM",
-              seatId: seat.number.toString(),
-            })
-          );
-        });
-
-        clearTimeout(this.inactiveTimeOut);
-        this.$router.push("/passengerDetails");
-      } else {
-        this.$toast.show("Please select a seat", {
-          position: "top",
-          type: "error",
-        });
-      }
-    },
   },
 };
 </script>

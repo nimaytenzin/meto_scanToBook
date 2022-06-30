@@ -21,6 +21,17 @@ export async function leaveSeat(data) {
     return  await axios.post(`${devUrl}/passenger/leaveseat`,data)
 }
 
+
+export async function confirmSeat(id) {
+    return  await axios.post(`${devUrl}/passenger/confirmSeat/${id}`)
+}
+export async function confirmSeatUsingBookingId(id){
+    return  await axios.post(`${devUrl}/passenger/confirmSeat/bookingId/${id}`) 
+}
+export async function updateSeatToInPaymentUsingBookingId(id){
+    return  await axios.post(`${devUrl}/passenger/inpayment/bookingId/${id}`) 
+}
+
 export async function getSeatDetailsadmin(seatNumber,scheduleHash){
     return await axios.get(`${devUrl}/passenger/getSeatDetails/${scheduleHash}/${seatNumber}`,{headers:authHeader()})
 }
