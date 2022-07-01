@@ -42,19 +42,20 @@
         <div v-for="booking in bookings" :key="booking" class="border p-2 text-sm bg-metoPrimary-500 bg-opacity-20 text-gray-800">
           <div class="flex gap-2 w-full">
             <div class="w-1/2">
-                Booking ID: {{booking.id  }}
-            </div>
-            <div class="w-1/2">
-                <p>
+                <p :class="booking.modality==='ONLINE'?'text-green-500 font-semibold':'font-semibold'">
                   Mode: {{ booking.modality==='ONLINE'?'Online':'CounterBooking'  }}
                 </p>
                 <p class="break-all" v-if="booking.modality !== 'ONLINE'">
                   Booked by {{ booking.user?.name  }}
                 </p>
             </div>
+            <div class="w-1/2">
+                Booking ID: {{booking.id  }}
+            </div>
+            
           </div>
-          <div class="flex flex-col mt-4">
-            <p class="my-1">
+          <div class="flex flex-col mt-1">
+            <p class="my-1 text-xs">
               Seats Booked
             </p>
             <table class="table-auto w-full">
