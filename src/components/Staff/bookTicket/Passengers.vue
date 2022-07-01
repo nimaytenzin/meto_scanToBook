@@ -48,7 +48,7 @@
                 <p>
                   Mode: {{ booking.modality==='ONLINE'?'Online':'CounterBooking'  }}
                 </p>
-                <p class="break-all">
+                <p class="break-all" v-if="booking.modality !== 'ONLINE'">
                   Booked by {{ booking.user?.name  }}
                 </p>
             </div>
