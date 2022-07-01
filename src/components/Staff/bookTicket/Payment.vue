@@ -241,6 +241,7 @@ export default {
     },
     bookAgain() {
       sessionStorage.removeItem("bookingId");
+      this.$store.commit("resetStoreState");
       this.$router.push("/staff")
 
     },

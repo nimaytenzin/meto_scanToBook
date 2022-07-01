@@ -405,7 +405,7 @@
 }
 </style>
 <script>
-import { getSeatsStatus, leaveSeat, lockSeat } from "../../../services/seatSelectionServices"
+import { getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../../../services/seatSelectionServices"
 export default {
   beforeCreate() {
     this.seatsLoadingModal = false;
@@ -724,10 +724,12 @@ export default {
     },
 
     goToPaymentPage() {
-
       clearTimeout(this.inactiveTimeOut);
-      this.$router.push(`/staff/payment`);
-
+      updateSeatToInPaymentUsingBookingId( Number(sessionStorage.getItem('bookingId'))).then(res=>{
+        if(res.status === 200 || res.status === 201){
+            this.$router.push(`/staff/payment`);
+        }
+      })
     },
   },
 };
