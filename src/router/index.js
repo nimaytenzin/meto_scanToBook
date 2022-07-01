@@ -237,6 +237,7 @@ const routes = [
           { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'daily-closings', component: () => import('../components/Staff/DailyClosings.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'cancelled-buses', component: () => import('../components/Staff/CancelledBus.vue'), meta: { requiresAuth: true, staff: true } },
+          { path: 'viewPassengers', component: () => import('../components/Staff/bookTicket/Passengers.vue'), meta: { requiresAuth: true, staff: true } },
         ]
       },
       // {

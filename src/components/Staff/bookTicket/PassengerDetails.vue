@@ -7,7 +7,7 @@
         xl:w-8/12
         2xl:w-1/2
         flex-col
-        z-50
+    
         bg-white
         rounded-lg
         items-center

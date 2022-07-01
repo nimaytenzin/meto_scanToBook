@@ -49,7 +49,8 @@
             Passenger Details
           </p>
           <p v-for="(passenger, index) in bookingDetails.passengers" :key="passenger">
-            {{ index + 1 }}. {{ passenger.name }} ({{ passenger.contact }}) <span>Seat No:{{ passenger.seatNumber  }} </span>
+            {{ index + 1 }}. {{ passenger.name }} ({{ passenger.contact }}) <span>Seat No:{{ passenger.seatNumber }}
+            </span>
           </p>
         </div>
       </div>
@@ -187,8 +188,7 @@
       </div>
     </div>
 
-    <button class="my-2 bg-metoPrimary-700 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm"
-      @click="bookAgain()">
+    <button class="my-2 bg-metoPrimary-700 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="bookAgain()">
       Book again
     </button>
 
@@ -205,7 +205,7 @@ import { confirmSeat } from '../../../services/seatSelectionServices';
 export default {
   data() {
     return {
-      modality: '',
+      modality: 'CASH',
       journalDetails: {
         bankName: "",
         journalNumber: "",
@@ -219,18 +219,18 @@ export default {
   },
 
   created() {
-    if(Number(sessionStorage.getItem('bookingId'))){
+    if (Number(sessionStorage.getItem('bookingId'))) {
       getBookingDetail(this.bookingId).then(res => {
-      this.bookingDetails = res.data
-      console.log(res.data)
-      if (res.data.modality) {
-        this.paymentConfirmed = true
-      }
-    })
-    }else{
+        this.bookingDetails = res.data
+        console.log(res.data)
+        if (res.data.modality) {
+          this.paymentConfirmed = true
+        }
+      })
+    } else {
       this.$router.push("/staff")
     }
-    
+
 
 
   },
@@ -239,55 +239,55 @@ export default {
     goToSeatSelection() {
       this.$router.push("/staff/seatSelection")
     },
-     bookAgain(){
-     sessionStorage.removeItem("bookingId");
-          this.$router.push("/staff")
+    bookAgain() {
+      sessionStorage.removeItem("bookingId");
+      this.$router.push("/staff")
 
-  },
+    },
     confirmPayment() {
-        if(this.modality){
-             let data;
-      if (this.modality === "MBOB") {
-        data = {
-          modality: this.modality,
-          depositBank: this.journalDetails.bankName,
-          depositJournal: this.journalDetails.journalNumber,
-          depositContact: this.journalDetails.contactNumber,
-          paymentStatus:"PAID"
+      if (this.modality) {
+        let data;
+        if (this.modality === "MBOB") {
+          data = {
+            modality: this.modality,
+            depositBank: this.journalDetails.bankName,
+            depositJournal: this.journalDetails.journalNumber,
+            depositContact: this.journalDetails.contactNumber,
+            paymentStatus: "PAID"
+          }
+        } else {
+          data = {
+            modality: this.modality,
+            paymentStatus: "PAID"
+          }
         }
-      } else {
-        data = {
-          modality: this.modality,
-          paymentStatus:"PAID"
-        }
-      }
-      let success =false;
-      updateBooking(this.bookingId, data).then(res => {
-        if (res.status === 200) {
-          success = true;
-          this.bookingDetails.passengers.forEach(passenger => {
-              confirmSeat(passenger.id).then(res=>{
+        let success = false;
+        updateBooking(this.bookingId, data).then(res => {
+          if (res.status === 200) {
+            success = true;
+            this.bookingDetails.passengers.forEach(passenger => {
+              confirmSeat(passenger.id).then(res => {
                 console.log("CHANGIN SEAT STATUS TO PAID", passenger)
-                if(res.status ===200){
+                if (res.status === 200) {
                   success = true
-                }else{
+                } else {
                   success = false;
                 }
               })
-          });
-         if(success){
-           this.paymentConfirmed = true
-         }
-        }
-      })
-        }else{
-          this.$toast.show("SELECT payment Mode")
-        }
+            });
+            if (success) {
+              this.paymentConfirmed = true
+            }
+          }
+        })
+      } else {
+        this.$toast.show("SELECT payment Mode")
+      }
     },
-    cancelBooking(){
-      deleteBookingwithPassengers(this.bookingId).then(res=>{
+    cancelBooking() {
+      deleteBookingwithPassengers(this.bookingId).then(res => {
         console.log(res)
-        if(res.status === 200){
+        if (res.status === 200) {
           sessionStorage.removeItem("bookingId");
           this.$router.push("/staff")
         }
@@ -296,6 +296,6 @@ export default {
 
 
   },
- 
+
 };
 </script>
