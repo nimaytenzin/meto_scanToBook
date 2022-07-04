@@ -10,6 +10,7 @@ export default createStore({
     formattedDepartureDate:"",
     selectedSchedule:null,
     selectedScheduleHash:null,
+    counterCreateBookingId:null,
 
     // unused
     scanBookingId:null,
@@ -37,7 +38,8 @@ export default createStore({
       }
     },
     tokenVerified:false,
-    numberOfPassengers:null
+    numberOfPassengers:null,
+
   },
   mutations: {
 
@@ -76,6 +78,14 @@ export default createStore({
       console.log("STORE STATE HARD RESET")
     },
 
+    //reset when going back from the seat selection
+    resetStorePartially(state){
+      state.selectedSchedule=null,
+      state.selectedScheduleHash =null
+      state.selectedSeats=[]
+      console.log("STORE STATE Partial RESET")
+    },
+
     addSelectedSchedule(state,data){
       state.selectedSchedule = data
     },
@@ -83,7 +93,10 @@ export default createStore({
       state.selectedScheduleHash = data
     },
 
-
+    addCounterCreateBookingID(state, id){
+      state.counterCreateBookingId = id
+      sessionStorage.setItem("bookingId",id)
+    },
 
     addScanBookingId(state, id){
       state.scanBookingId = id

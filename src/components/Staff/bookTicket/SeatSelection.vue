@@ -1,8 +1,8 @@
 
 <template>
-  
 
-  
+
+
   <div class="w-full flex justify-center">
     <div id="journeyDetailsMobile" class="
         w-11/12
@@ -94,11 +94,27 @@
             <p class="text-red-400 animate-pulse">No Seats Selected</p>
             <p>Please click on any available seat to book.</p>
           </div>
+          <button v-if="Number(numberOfPassengers) === Number(bookedSeats.length)" class="
+            l
+            px-1
+            py-2
+            my-4
+            md:px-2 md:py-3
+            rounded
+            text-white
+            bg-metoContrast
+            bg-opacity-90
+            font-semibold
+            text-md
+            md:text-xl
+          " @click="goToPaymentPage">
+            Go To Payment
+          </button>
         </div>
 
         <div class="flex flex-col items-center justify-start sm:ml2 sm:mr2 w-full">
-          <div v-if="Number(numberOfPassengers) !== Number(bookedSeats.length)">
-            
+          <div>
+
             <div class="flex mt-5 justify-evenly">
               <div class="
                   text-center
@@ -144,8 +160,8 @@
                 space-x-4
               ">
               <p class="text-xs text-metoPrimary-700">
-              Click on any available seat to book
-            </p>
+                Click on any available seat to book
+              </p>
               <div class="bg-white grid grid-cols-4 gap-2 p-3 m-3" style="z-index: 99999">
                 <div v-for="item in seats" :key="item" class="rounded relative" @click="addSeat(item)">
                   <img :src="bindImage(item)" alt="Seat " class="object-contain w-14 z-0 cursor-pointer"
@@ -168,7 +184,7 @@
               </div>
             </div>
           </div>
-          <div v-else class="text-metoPrimary-800 hidden md:flex max-w-xl">
+          <div class="text-metoPrimary-800 hidden md:flex max-w-xl">
             <div class="hidden md:flex flex-col gap-2 px-6 py-3 shadow-lg rounded-lg">
               <p class="text-xl mb-2 text-metoPrimary-900">Your Seats</p>
 
@@ -230,7 +246,7 @@
                   <td>Base Fare :</td>
                   <td>Nu {{ fare }}</td>
                 </tr>
-               
+
                 <tr>
                   <td>Seats Booked :</td>
                   <td>{{ bookedSeats.length }}</td>
@@ -250,7 +266,7 @@
                   <td>Total :</td>
                   <td>
                     <p class="text-xl font-semibold">
-                      Nu. {{ fare  * bookedSeats.length }}
+                      Nu. {{ fare * bookedSeats.length }}
                     </p>
                   </td>
                 </tr>
@@ -275,7 +291,7 @@
             text-md
             md:text-xl
           " @click="goToPaymentPage">
-            Payment
+          Payment
         </button>
       </div>
     </div>
@@ -352,7 +368,7 @@
   max-height: 90%;
   min-width: max-content;
   margin: 0 1rem;
-   border-radius: 0.2rem;
+  border-radius: 0.2rem;
   padding: 1rem;
   background: #fff;
 }
@@ -405,18 +421,19 @@
 }
 </style>
 <script>
+import { deleteBookingwithPassengers } from '../../../services/bookingServices';
 import { getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../../../services/seatSelectionServices"
 export default {
   beforeCreate() {
     this.seatsLoadingModal = false;
   },
   created() {
-     if (
+    if (
 
       this.$store.state.selectedSchedule &&
       this.$store.state.origin &&
       this.$store.state.destination &&
-     this.$store.state.formattedDepartureDate &&
+      this.$store.state.formattedDepartureDate &&
       this.$store.state.selectedSchedule
     ) {
       this.seatsLoadingModal = true;
@@ -428,12 +445,10 @@ export default {
     this.fare = this.$store.state.selectedSchedule?.fare;
     this.roomId = this.$store.state.selectedScheduleHash;
     this.numberOfPassengers = this.$store.state.numberOfPassengers;
-
-    this.inactiveTimeout = setTimeout(()=>{
+    sessionStorage.setItem("scheduleHash", this.$store.state.selectedScheduleHash)
+    this.inactiveTimeout = setTimeout(() => {
       window.location.reload()
-    }, 170000);
-
-  
+    }, 220000);
 
     getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(res => {
       if (res.status === 200) {
@@ -441,13 +456,13 @@ export default {
         setTimeout(() => {
           this.seatsLoadingModal = false;
         }, 1000);
-      }else{
+      } else {
         this.seatsLoadingModal = true;
-        this.$toast.show("Network error") 
+        this.$toast.show("Network error")
       }
     })
 
-   
+
   },
 
   data() {
@@ -510,10 +525,10 @@ export default {
       tempStatus: null,
       numberOfPassengers: 0,
       seatsLoadingModal: false,
-     
+
       inProgressSeats: [],
       yourSeats: [],
-      inactiveTimeout:null
+      inactiveTimeout: null
     };
   },
   computed: {
@@ -636,7 +651,7 @@ export default {
       console.log(this.selectedSeat, Number(sessionStorage.getItem("bookingId")))
       this.$store.commit("removeSeat", this.selectedSeat);
       this.total -= this.fare;
-     
+
       leaveSeat({
         seatNumber: this.selectedSeat.number,
         bookingId: Number(sessionStorage.getItem("bookingId")),
@@ -647,10 +662,10 @@ export default {
             this.seats = resp.data;
           }
         })
-       
+
         this.reverSeatModal = false;
       })
-     
+
     },
     cancelRevert() {
       this.reverSeatModal = false;
@@ -725,12 +740,31 @@ export default {
 
     goToPaymentPage() {
       clearTimeout(this.inactiveTimeOut);
-      updateSeatToInPaymentUsingBookingId( Number(sessionStorage.getItem('bookingId'))).then(res=>{
-        if(res.status === 200 || res.status === 201){
-            this.$router.push(`/staff/payment`);
+      updateSeatToInPaymentUsingBookingId(Number(sessionStorage.getItem('bookingId'))).then(res => {
+        if (res.status === 200 || res.status === 201) {
+          this.$router.push(`/staff/payment`);
         }
       })
     },
+    goBackToBusSelection() {
+      clearTimeout(this.inactiveTimeOut);
+      this.$store.commit("resetStorePartially");
+    }
+
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === '/staff/buses') {
+      deleteBookingwithPassengers(Number(sessionStorage.getItem('bookingId'))).then(res => {
+        if (res.status === 200 || res.status === 201) {
+          this.goBackToBusSelection()
+          next()
+        }
+      })
+    } else {
+      next()
+    }
+  },
+
+
 };
 </script>

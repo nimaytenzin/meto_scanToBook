@@ -342,18 +342,16 @@ export default {
 
         //create Pasengers
 
-        console.log("CreateNewBooking",bookingCreateData)
+        console.log("CreateNewBooking", bookingCreateData)
 
         //create Booking
 
 
-       addNewBooking(bookingCreateData)
+        addNewBooking(bookingCreateData)
           .then((res) => {
-           
             if (res.status === 201) {
-              this.$store.commit("addScanBookingId", res.data.id);
+              this.$store.commit("addCounterCreateBookingID", res.data.id);
               sessionStorage.setItem("bookingId", res.data.id)
-              console.log(res)
               this.$router.push("/staff/seatSelection");
             } else {
               this.$toast.show("Newtork Error..try again", {

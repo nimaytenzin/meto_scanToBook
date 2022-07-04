@@ -35,3 +35,7 @@ export async function updateSeatToInPaymentUsingBookingId(id){
 export async function getSeatDetailsadmin(seatNumber,scheduleHash){
     return await axios.get(`${devUrl}/passenger/getSeatDetails/${scheduleHash}/${seatNumber}`,{headers:authHeader()})
 }
+
+export async function counterDeleteBookingWithPassenger(bookingId){
+    return await axios.delete(`${devUrl}/passenger/deletebooking/${bookingId}`,{headers:authHeader()})
+}

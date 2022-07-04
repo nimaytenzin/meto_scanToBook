@@ -180,17 +180,23 @@
           Confirm Payment
         </button>
 
-        <!-- <button class="bg-metoContrast py-2 w-1/2 bg-opacity-70 text-red-50 px-4  rounded-sm" @click="cancelBooking">
-          Cancel Booking
-        </button> -->
 
+        <button class=" bg-metoContrast bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="cancelBooking()">
+          Cancel Booking
+        </button>
 
       </div>
+
+
+
+    </div>
+    <div v-else>
+      <button class=" bg-metoPrimary-700 my-2 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="bookAgain()">
+        Book Again
+      </button>
+
     </div>
 
-    <button class="my-2 bg-metoPrimary-700 bg-opacity-90 text-red-50 px-4 py-1 rounded-sm" @click="bookAgain()">
-      Book again
-    </button>
 
   </div>
 
@@ -293,6 +299,17 @@ export default {
     }
 
 
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if(to.path === '/staff/seatSelection'){
+        this.$toast.show("Cannot go back. Confirm or Cancel booking",{
+          position:"top",
+          type:"error"
+        })
+    }else{
+       next()
+    }
   },
 
 };
