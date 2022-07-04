@@ -67,6 +67,9 @@
                   Name
                 </td>
                 <td class="px-1 bg-gray-300">
+                  CID
+                </td>
+                <td class="px-1 bg-gray-300">
                   Contact Number
                 </td>
               </tr>
@@ -76,6 +79,9 @@
                 </td>
                 <td class="px-1">
                   {{ passenger.name }}
+                </td>
+                <td class="px-1">
+                  {{ passenger.cid }}
                 </td>
                 <td class="px-1">
                   {{ passenger.contact }}
