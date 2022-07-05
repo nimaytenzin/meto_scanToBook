@@ -504,8 +504,6 @@ export default {
         this.$store.commit("addServiceCharge", res.data.serviceCharge);
       });
 
-      this.total = this.$store.state.selectedSeats.length * (+ this.$store.state.selectedSchedule.fare)
-
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });
       });
@@ -577,7 +575,7 @@ export default {
               routeId: this.$store.state.selectedSchedule.parentRouteId,
               subRouteId:this.$store.state.selectedSchedule.id,
               modality: "Online",
-              amount: this.total,
+              amount: this.numberOfPassengers * (this.serviceCharge + this.selectedSchedule.fare),
               scheduleHash: this.$store.state.selectedScheduleHash,
               scheduleDate: this.$store.state.departureDate,
               operatorId: null,
@@ -591,7 +589,7 @@ export default {
             booking: {
               routeId: this.$store.state.selectedSchedule.id,
               modality: "Online",
-              amount: this.total,
+              amount:this.numberOfPassengers * (this.serviceCharge + this.selectedSchedule.fare),
               scheduleHash: this.$store.state.selectedScheduleHash,
               scheduleDate: this.$store.state.departureDate,
               operatorId: null,
