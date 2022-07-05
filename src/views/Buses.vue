@@ -251,7 +251,7 @@
                         md:px-2 md:py-3
                         rounded
                         text-white
-                        bg-metoContrast
+                        bg-gray-500
                         text-md
                         md:text-xl
                         flex
@@ -263,7 +263,7 @@
 
                       Bus Full
                     </button>
-                    <button class="
+                    <button v-else class="
                         w-full
                         px-2
                         py-2
