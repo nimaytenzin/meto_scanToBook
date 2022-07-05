@@ -251,7 +251,7 @@
                         md:px-2 md:py-3
                         rounded
                         text-white
-                        bg-gray-500
+                        bg-gray-300
                         text-md
                         md:text-xl
                         flex
