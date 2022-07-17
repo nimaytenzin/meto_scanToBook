@@ -9,6 +9,11 @@ export async function addNewBooking(booking){
 
 }
 
+export async function addNewBookingCounter(booking){
+    return await axios.post(`${devUrl}/bookings/counter-create`,booking)
+
+}
+
 export async function getChecksum(bookingId){
     return await axios.get(`${devUrl}/bookings/checksum/${bookingId}`)
 }

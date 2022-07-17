@@ -218,7 +218,7 @@ import { getRouteDetailsByID } from '../../../services/routeServices';
 import crypto from "crypto";
 import { getPassengersByScheduleHash } from '../../../services/scheduleServices';
 import VueJwtDecode from "vue-jwt-decode";
-import { addNewBooking } from '../../../services/bookingServices';
+import { addNewBookingCounter } from '../../../services/bookingServices';
 export default {
   data() {
     return {
@@ -291,8 +291,7 @@ export default {
 
   methods: {
     addPassengerDetails(route) {
-      if (this.numberOfPassengers <= 19 - route.passengers) {
-        this.$store.commit("addSelectedSchedule", route);
+       this.$store.commit("addSelectedSchedule", route);
 
         for (let i = 1; i <= this.numberOfPassengers; i++) {
           this.passengers.push(
@@ -310,7 +309,6 @@ export default {
             route.parentRoute.scheduleHash
           );
           bookingCreateData = {
-            booking: {
               routeId: route.parentRouteId,
               subRouteId: route.id,
               amount: this.numberOfPassengers * route.fare,
@@ -319,35 +317,27 @@ export default {
               operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
                 .id,
               serviceCharge: 0,
-              refundPercentage: 0
-            },
-            passengers: this.passengers,
+              refundPercentage: 0,
+              bfsTxnTime:"Counter"
           };
         } else {
           this.$store.commit("commitSelectedScheduleHash", route.scheduleHash);
           bookingCreateData = {
-            booking: {
               routeId: route.id,
-              amount: this.numberOfPassengers * route.fare,
+              amount:0 ,
               scheduleHash: route.scheduleHash,
               scheduleDate: this.$store.state.departureDate,
               operatorId: VueJwtDecode.decode(sessionStorage.getItem("token"))
                 .id,
               serviceCharge: 0,
-              refundPercentage: 0
-            },
-            passengers: this.passengers,
+              refundPercentage: 0,
+            bfsTxnTime:"Counter" 
           };
         }
 
-        //create Pasengers
+       
 
-        console.log("CreateNewBooking", bookingCreateData)
-
-        //create Booking
-
-
-        addNewBooking(bookingCreateData)
+        addNewBookingCounter(bookingCreateData)
           .then((res) => {
             if (res.status === 201) {
               this.$store.commit("addCounterCreateBookingID", res.data.id);
@@ -362,16 +352,6 @@ export default {
           })
 
 
-
-        // this.$router.push("/staff/passengerDetails");
-      } else {
-        this.$toast.show(
-          `Sorry! Only ${19 - route.passengers} Seats available`,
-          {
-            position: "top",
-          }
-        );
-      }
 
     },
     checkInformationValid() {

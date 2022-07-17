@@ -88,7 +88,7 @@
             </div>
           </div>
 
-          <div class="
+          <!-- <div class="
                     w-full
                     md:w-1/4
                     flex flex-col
@@ -101,7 +101,7 @@
             <p class="text-sm text-gray-500 mb-2">Number of Passengers</p>
             <input v-model="numberOfPassengers" class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
               placeholder="Number of Passengers" type="number" min="1" max="19" step="1" />
-          </div>
+          </div> -->
         </div>
 
         <div class="flex p-6 text-sm md:text-xl justify-end">
@@ -461,12 +461,11 @@ export default {
       if (
         this.originSelected &&
         this.destinationSelected &&
-        this.dateSelected &&
-        this.numberOfPassengers
+        this.dateSelected
+        // this.numberOfPassengers
       ) {
         this.$store.commit("addOrigin", this.originSelected);
         this.$store.commit("addDestination", this.destinationSelected);
-        this.$store.commit("addNumberOfPassengers", this.numberOfPassengers);
         this.$router.push("/staff/buses");
       } else {
         this.$toast.show("Please Select departure Date", {

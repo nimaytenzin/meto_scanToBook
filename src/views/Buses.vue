@@ -260,7 +260,6 @@
                         justify-center
                         items-center
                       ">
-
                       Bus Full
                     </button>
                     <button v-else class="

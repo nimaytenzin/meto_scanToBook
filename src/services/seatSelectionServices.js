@@ -17,8 +17,16 @@ export async function lockSeat(data) {
     return  await axios.post(`${devUrl}/passenger/lockseat`,data)
 }
 
+export async function counterLockSeat(data) {
+    return  await axios.post(`${devUrl}/passenger/lockseat-counter`,data)
+}
+
 export async function leaveSeat(data) {
     return  await axios.post(`${devUrl}/passenger/leaveseat`,data)
+}
+
+export async function counterLeaveSeat(data) {
+    return  await axios.post(`${devUrl}/passenger/leaveseat-counter`,data)
 }
 
 
