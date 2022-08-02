@@ -346,49 +346,11 @@
             ensuring that the SMS Ticket confirmation is received by the
             passenger.
           </p>
-          <p class="px-2">
-            Ticket can be cancelled at any time but the refund percentage will
-            be based on the regulations laid out by RSTA as follows:
+          <p class="px-2 text-2xl text-red-500  animate-pulse font-semibold text-justify my-2">
+           Tickets once purchased is not refundable! 
           </p>
 
-          <table class="table-auto">
-            <tr>
-              <td class="px-2 py-1 border-b font-semibold">Period</td>
-              <td class="px-2 py-1 border-b font-semibold">Refund %</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">
-                24 Hours or Earlier before Departure
-              </td>
-              <td class="px-2 py-1 border-b">100% Refund</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">12- 24 hrs before Departure</td>
-              <td class="px-2 py-1 border-b">95% Refund</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">5-12 Hrs before Departure</td>
-              <td class="px-2 py-1 border-b">90% refund</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">1-5 Hrs before Departure</td>
-              <td class="px-2 py-1 border-b">80% refund</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">
-                1 hr - 30 mins before Departure
-              </td>
-              <td class="px-2 py-1 border-b">75% refund</td>
-            </tr>
-            <tr>
-              <td class="px-2 py-1 border-b">Within 30 mins of Departure</td>
-              <td class="px-2 py-1 border-b">No Refund</td>
-            </tr>
-          </table>
-          <p class="px-2 pt-2 italic">(RSTA, RGOB)</p>
-          <p class="px-2 pt-2">
-            The refund may take two to three working days.
-          </p>
+         
         </div>
       </div>
 
