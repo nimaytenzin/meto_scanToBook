@@ -454,6 +454,9 @@ export default {
       this.$router.push("/");
     } else {
       this.numberOfPassengers = this.$store.state.numberOfPassengers;
+      this.passengers = []
+
+      console.log(this.numberOfPassengers, this.passengers)
       for (let i = 1; i <= this.numberOfPassengers; i++) {
         this.passengers.push(
           {
@@ -465,6 +468,8 @@ export default {
         this.serviceCharge = res.data.serviceCharge;
         this.$store.commit("addServiceCharge", res.data.serviceCharge);
       });
+
+      this.$store.commit("resetSelectedSeats")
 
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });

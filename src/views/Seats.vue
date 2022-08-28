@@ -616,6 +616,7 @@
 }
 </style>
 <script>
+import {  deleteBookingwithPassengersPublic } from '../services/bookingServices';
 import { getServiceCharge } from "../services/paymentServices";
 import { getSeatsStatus, leaveSeat, lockSeat, updateSeatToInPaymentUsingBookingId } from "../services/seatSelectionServices"
 export default {
@@ -934,6 +935,20 @@ export default {
       })
     },
 
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/passengerDetails") {
+       deleteBookingwithPassengersPublic(
+        Number(sessionStorage.getItem("bookingId"))
+      ).then((res) => {
+        if (res.status === 200 || res.status === 201) {   
+          this.$store.commit("resetSelectedSeats")
+          next();
+        }
+      });
+    } else {
+      next();
+    }
   },
 };
 </script>

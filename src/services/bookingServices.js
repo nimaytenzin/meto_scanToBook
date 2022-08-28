@@ -100,6 +100,10 @@ export async function deleteBookingwithPassengers(bookingID){
     return await axios.delete(`${devUrl}/bookings/${bookingID}`, {headers:authHeader()})
 }
 
+export async function deleteBookingwithPassengersPublic(bookingID){
+    return await axios.delete(`${devUrl}/bookings/public/${bookingID}`)
+}
+
 //counterbooking routes
 export async function addNewCounterBooking(booking){
     return await axios.post(`${devUrl}/bookings/counter`,booking,{headers:authHeader()})

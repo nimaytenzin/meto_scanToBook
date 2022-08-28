@@ -77,6 +77,9 @@ export default createStore({
       state.selectedSeats = []
       console.log("STORE STATE HARD RESET")
     },
+    resetSelectedSeats(state){
+      state.selectedSeats = [];
+    },
 
     //reset when going back from the seat selection
     resetStorePartially(state){
