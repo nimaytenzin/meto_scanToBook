@@ -75,7 +75,6 @@ export default createStore({
       state.selectedSchedule = null
       state.selectedScheduleHash = null
       state.selectedSeats = []
-      console.log("STORE STATE HARD RESET")
     },
     resetSelectedSeats(state){
       state.selectedSeats = [];

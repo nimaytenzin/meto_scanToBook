@@ -50,6 +50,7 @@
             flex
             justify-start
             overflow-scroll
+            scrollbar-hide
             text-gray-200
           "
         >

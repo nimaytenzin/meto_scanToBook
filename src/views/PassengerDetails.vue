@@ -249,23 +249,7 @@
       </div>
 
       <div id="billing" class="w-full md:w-1/2 flex flex-col md:pt-9">
-        <div class="flex gap-2">
-          <button v-if="detailsFilled" class="
-              px-1
-              py-2
-              md:my-4
-              md:px-2 md:py-3
-              rounded
-              text-gray-50
-              bg-metoContrast
-              bg-opacity-90
-              text-md
-              w-full
-              md:text-xl
-            " @click="showTermsAndConditionModal()">
-            Proceed to SeatSelection
-          </button>
-        </div>
+      
         <div class="
             font-nunito
             text-gray-200 text-sm text-left
@@ -323,6 +307,23 @@
           </div>
         </div>
 
+  <div class="flex gap-2">
+          <button v-if="detailsFilled" class="
+              px-1
+              py-2
+              md:my-4
+              md:px-2 md:py-3
+              rounded
+              text-gray-50
+              bg-metoContrast
+              bg-opacity-90
+              text-md
+              w-full
+              md:text-xl
+            " @click="showTermsAndConditionModal()">
+            Proceed to SeatSelection
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -469,7 +470,7 @@ export default {
         this.$store.commit("addServiceCharge", res.data.serviceCharge);
       });
 
-      this.$store.commit("resetSelectedSeats")
+      
 
       this.$store.state.selectedSeats.forEach((seat) => {
         this.passengers.push({ seatNumber: seat.number });
