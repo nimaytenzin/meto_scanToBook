@@ -72,11 +72,17 @@
       <div>
         <div class="p-2">
           <p class="text-xl mb-2">Billing</p>
+         
+          Ticket Purchase 
+          route: {{bookingDetails.route?.routepath?.origin.name  }} - 
+          {{ bookingDetails.subroute? bookingDetails?.subroute?.routepath?.destination.name : bookingDetails?.route?.routepath?.destination.name  }}
           <table class="table-auto  font-thin">
             <tr>
               <td>Fare :</td>
-              <td>Nu. {{ bookingDetails.route?.fare }}</td>
+              <td>Nu. {{ bookingDetails.fare }}</td>
             </tr>
+
+
             <tr>
               <td>Seats :</td>
               <td>{{ bookingDetails.passengers?.length }} </td>

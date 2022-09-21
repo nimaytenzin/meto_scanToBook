@@ -389,6 +389,7 @@ export default {
           }
           if (res.data.subroutes) {
             this.subroutes = res.data.subroutes;
+            console.log("SUB ROUTES", res.data.subroutes);
             this.subroutes.forEach((subroute) => {
               this.days.push(subroute.day);
             });
@@ -439,6 +440,7 @@ export default {
         this.availableDatesModal = false;
         this.errorMessage = null;
         this.instructionMessage = null;
+        console.log("MATCHED ROUTE WITH DAY SELECTED", this.matchedRoutes)
       } else {
         this.dateSelected = null;
         this.matchedRoutes = [];

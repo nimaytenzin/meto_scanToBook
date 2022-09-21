@@ -27,6 +27,11 @@ export async function getAllBookings(){
     return await axios.get(`${devUrl}/bookings`,{headers:authHeader()})
 }
 
+
+export async function getSuccessfulbookingByscheduleHash(hash){
+    return await axios.get(`${devUrl}/bookings/all/scheduleHash/${hash}`,{headers:authHeader()})
+}
+
 export async function getBookingDetail(id){
     return await axios.get(`${devUrl}/bookings/${id}`,{headers:authHeader()})
 }

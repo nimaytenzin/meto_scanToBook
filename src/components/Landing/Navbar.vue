@@ -30,6 +30,9 @@
           <img src="../../assets/meto.png" alt="" class="w-12 bg-white rounded-full">
         </div>
           <div class="text-white">
+            <p class="text-xs md:text-sm font-bold">
+            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
+          </p>
           <a
             class="
               text-xs
@@ -45,9 +48,7 @@
             href="/"
             >Meto Transport</a
           >
-          <p class="text-xs md:text-sm font-bold">
-            ༅༅ ། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།
-          </p>
+          
         </div>
       </div>
        

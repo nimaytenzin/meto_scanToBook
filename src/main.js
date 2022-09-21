@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import * as Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -14,7 +14,8 @@ import 'chartkick/chart.js'
 import VueExcelXlsx from "vue-excel-xlsx";
 import VueLoading from 'vue-loading-overlay';
 
-createApp(App)
+
+Vue.createApp(App)
     .use(store)
     .use(router)
     .use(Toaster)

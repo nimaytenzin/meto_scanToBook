@@ -336,6 +336,9 @@ import {
   getBookingDetail,
 } from "../../services/bookingServices";
 
+import { jsontoexcel } from "vue-table-to-excel";
+
+
 export default {
   created() {
     let date = new Date();
@@ -351,6 +354,7 @@ export default {
     getBookingsByBookingDate(this.date).then((res) => {
       this.bookings = res.data;
       console.log(res.data);
+       this.download()
     });
   },
   data() {
@@ -364,12 +368,15 @@ export default {
         passengers: [],
         subroute: {},
       },
+              head: ["name", "phone", "email"],
+
     };
   },
   methods: {
     fetchTranscationDetailsByDate() {
       getBookingsByBookingDate(this.date).then((res) => {
         this.bookings = res.data;
+       
       });
     },
     searchByBookingId() {
@@ -394,6 +401,12 @@ export default {
         });
       }
     },
+
+    download(){
+    
+      jsontoexcel.getXlsx(this.bookings, this.head, "fileName.xlsx");
+    
+    }
   },
 };
 </script>

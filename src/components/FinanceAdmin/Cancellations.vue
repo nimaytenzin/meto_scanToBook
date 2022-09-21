@@ -2,7 +2,7 @@
   <div class="min-h-screen flex flex-col items-center">
     <div class="flex flex-col justify-center items-center w-full">
       <h1 class="text-3xl text-center text-gray-500 font-nunito mx-4 my-6">
-        Cancellations
+        Cancellationss
       </h1>
 
 
@@ -391,6 +391,10 @@ import {
   getCancelledBooking,
   updateBooking,
 } from "../../services/bookingServices";
+import VueHtml2pdf from 'vue-html2pdf'
+
+import { jsontoexcel } from "vue-table-to-excel";
+
 
 export default {
   created() {
@@ -411,6 +415,7 @@ export default {
       getCancelledBooking().then((res) => {
         this.cancelledBookings = res.data;
         console.log("cancel booking", this.cancelledBookings);
+              jsontoexcel.getXlsx(this.cancelledBookings, this.banks, "fileName.csv");
       });
     },
 

@@ -332,6 +332,7 @@ export default {
     this.dateSelected = this.$store.state.departureDate;
     this.formattedDepartureDate = this.$store.state.formattedDepartureDate;
     this.numberOfPassengers = this.$store.state.numberOfPassengers;
+    console.log(this.matchedRoutes)
     this.matchedRoutes.forEach((route) => {
       route.isCancelled = 0;
       route.passengers = 0;
@@ -340,6 +341,7 @@ export default {
       hash.update(plaintext);
       var scheduleHash = hash.digest("hex");
       route.scheduleHash = scheduleHash;
+      
       if (route.parentRouteId) {
         getRouteDetailsByID(route.parentRouteId).then((res) => {
           var plaintextParent = `${res.data.id}|${this.dateSelected}`;

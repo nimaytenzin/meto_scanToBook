@@ -343,15 +343,15 @@
                   "
                 >
                   <p class="text-sm text-gray-500 mb-2">Number of Passengers</p>
-                  <input
+                  <select
                     v-model="numberOfPassengers"
                     class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
-                    placeholder="Number of Passengers"
-                    type="number"
-                    min="1"
-                    max="19"
-                    step="1"
-                  />
+
+                  >
+                    <option v-for="option in passengerSelectOptions" :key="option" :value="option">
+                      {{ option  }}
+                    </option>
+                  </select>
                 </div>
               </div>
 
@@ -401,7 +401,7 @@
 
             <div v-if="regenerateTicketTabSelected" class="w-full">
 
-              <p v-if="!searchBookingsFound" class="text-red-500 animate-pulse px-6 mt-2">
+              <p v-if="!searchBookingsFound && validSearch" class="text-red-500 animate-pulse px-6 mt-2">
                 No Bookings found with the entered CID and Contact.
               </p>
               <div
@@ -1710,6 +1710,10 @@ export default {
       errorMessage: null,
       instructionMessage: null,
       numberOfPassengers: null,
+
+      passengerSelectOptions:[
+        1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19
+      ]
     };
   },
 

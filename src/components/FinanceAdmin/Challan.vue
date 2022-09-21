@@ -1,471 +1,916 @@
 <template>
-  <div class="min-h-screen flex flex-col p-4 justify-start items-center">
-    <h2 class="text-xl m-2">Please Fill out the form below to load Challan</h2>
+  <section
+    class="
+      flex flex-col
+      justify-start
+      antialiased
+      bg-gray-100
+      text-gray-600
+      min-h-screen
+      p-6
+    "
+  >
+    <div class="my-4 flex gap-1 text-sm mt-2">
+      <button
+        class="hover:bg-gray-200 px-1"
+        v-if="challanStatus.status !== 'VERIFIED'"
+        @click="openMarkVerifiedModal"
+      >
+        Mark as Verified
+      </button>
+      <button class="hover:bg-gray-200 px-1">Download PDF</button>
+      <button class="hover:bg-gray-200 px-1" @click="downloadExcel">
+        Download excel
+      </button>
 
-    <hr class="w-full my-2" />
-
-    <div class="flex flex-wrap w-full text-metoPrimary-900">
-      <div
-        class="
-          w-full
-          md:w-1/6
-          flex flex-col
-          rounded-lg
-          md:rounded-none md:rounded-l-lg
-          items-start
-          justify-center
-          p-2
-        "
+      <button
+        class="hover:bg-gray-200 px-1"
+        v-if="challanStatus.status === 'CREATED'"
+        @click="refreshChallanData"
       >
-        <p class="text-sm text-gray-500 mb-2">Origin</p>
-        <select
-          class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
-          v-model="originSelected"
-          @change="onOriginSelect($event)"
-        >
-          <option
-            v-for="origin in origins"
-            :value="origin"
-            :key="origin"
-            class="bg-metoPrimary-400 w-full"
-          >
-            {{ origin.name }}
-          </option>
-        </select>
-      </div>
-      <div
-        class="
-          w-full
-          md:w-1/6
-          flex flex-col
-          rounded-lg
-          md:rounded-none
-          items-start
-          justify-center
-          p-2
-        "
-      >
-        <p class="text-sm text-gray-500 mb-2">Destination</p>
-        <select
-          class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
-          v-model="destinationSelected"
-          @change="onDestinationChange"
-        >
-          <option
-            v-for="destination in destinations"
-            :value="destination"
-            :key="destination"
-            class="bg-blue-400 w-full"
-          >
-            {{ destination.name }}
-          </option>
-        </select>
-      </div>
-      <div
-        class="
-          w-full
-          md:w-2/6
-          flex flex-col
-          items-start
-          justify-center
-          p-2
-          rounded-lg
-          md:rounded-none md:rounded-r-lg
-        "
-      >
-        <p class="text-sm text-gray-500 mb-2">Date</p>
-        <div
-          class="
-            cursor-pointer
-            w-full
-            p-2
-            flex
-            items-center
-            text-red-400
-            animate-pulse
-            bg-gray-100
-            border
-            text-sm
-          "
-          @click="checkAvailableDates()"
-          v-if="!dateSelected"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Select Date
-        </div>
-        <div
-          class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
-          v-else
-          @click="checkAvailableDates()"
-        >
-          {{ dateSelected }}
-        </div>
-      </div>
-
-      <div
-        class="
-          w-full
-          md:w-1/6
-          flex flex-col
-          rounded-lg
-          md:rounded-none md:rounded-l-lg
-          items-start
-          justify-center
-          p-2
-        "
-      >
-        <p class="text-sm text-gray-500 mb-2">Select Departure Time</p>
-        <select
-          class="w-full bg-gray-100 rounded-sm p-2 border text-sm"
-          v-model="selectedDepartureTime"
-            @change="onDepartureTimeChange()"
-        >
-          <option
-            v-for="route in matchedRoutes"
-            :value="route"
-            :key="route"
-            class="bg-blue-400 w-full"
-          >
-            {{ route.departureTime }}
-          </option>
-        </select>
-      </div>
-      <div
-        class="
-          w-full
-          md:w-1/6
-          flex flex-col
-          rounded-lg
-          md:rounded-none md:rounded-l-lg
-          items-center
-          justify-end
-          p-2
-        "
-      >
-        <p class="text-sm text-gray-500 mb-2">Click to load Challan</p>
-        <button
-          class="
-            py-1
-            md:w-max
-            rounded
-            text-white
-            bg-red-500
-            px-2
-            md:px-6
-            flex
-            gap-2
-            md:gap-4
-            items-center
-          "
-          @click="loadChallan"
-        >
-          Load Challan
-        </button>
-      </div>
-    </div>
-
-    <div class="flex w-full justify-end" v-if="routeDateBookings.length">
-      <button @click="saveImage" class="p-1 bg-gray-400 text-gray-100 rounded">
-        Download Challan
+        Refresh Data
       </button>
     </div>
-    <div
-      id="challanDetails"
-      class="w-full flex flex-col items-center mt-10 bg-white p-4"
-      v-if="routeDateBookings.length"
-    >
-      <div class="w-2/3">
-        <div
-          class="
-            font-nunito
-            text-gray-200
-            bg-gray-600
-            rounded-t
-            shadow-md
-            p-6
-            text-center
-          "
-        >
-          <p class="text-gray-300">Challan for</p>
-          <p>
-            <span class="text-2xl font-bold"> {{ originSelected?.name }}</span>
-            to
-            <span class="text-2xl font-bold">
-              {{ destinationSelected?.name }}
-            </span>
-          </p>
-          <p>Date: {{ formattedDate }}</p>
-          <p>Time: {{ selectedDepartureTime.departureTime }}</p>
-          <div class="text-xl mt-2">
-            <p>Seats Remaining: {{ seatsAvailable.length }}</p>
-            <div class="flex gap-2 justify-center">
-              <p v-for="seat in seatsAvailable" :key="seat">
-                {{ seat }}
+    <div class="w-full mx-auto bg-white shadow-lg rounded-md overflow-x-scroll">
+      <div id="header" class="px-8 py-6 bg-metoPrimary-800 text-gray-100">
+        <div class="flex justify-start items-end">
+          <div class="flex gap-4 items-center">
+            <div class="bg-gray-100 w-16 h-16 rounded-full">
+              <img src="/meto.png" class="w-20" alt="" />
+            </div>
+            <div>
+              <h1 class="text-lg">༅༅། མེ ཏོག སྐྱེལ འདྲེན ཞབས ཏོག།</h1>
+              <h1 class="text-lg">Meto Transport Service</h1>
+              <p class="text-xs">
+                Ensuring Safety, Reliability and Comfort till your Destination
               </p>
             </div>
-            <p
-              v-if="!routeDateBookings.length"
-              class="m-4 text-2xl text-gray-100"
-            >
-              No Bookings
-            </p>
           </div>
         </div>
 
-        <div class="">
-          <div>
-            <table class="w-full table-auto divide-y">
-              <thead>
-                <tr class="bg-gray-100 text-gray-700">
-                  <td class="px-2">Booking ID</td>
-                  <td class="px-2">Mode</td>
-                  <td class="px-2">Seat Number</td>
-                  <td class="px-2">Fare (per seat)</td>
-                  <td class="px-2">Service Charge (per seat)</td>
-                  <td class="px-2">Amount</td>
-                </tr>
-              </thead>
-              <tbody class="divide-y">
-                <tr v-for="booking in routeDateBookings" :key="booking">
-                  <td class="px-4 flex items-start">
-                    {{ booking.id }}
-                  </td>
-                  <td class="px-2">
-                    <div
-                      v-if="booking.modality === 'ONLINE'"
-                      class="font-semibold"
-                    >
-                      Online Booking
-                    </div>
-                    <div v-else class="text-sm">
-                      <p class="font-semibold">Counter Booking</p>
-                      <p>Booked by {{ booking.user?.name }}</p>
-                      <p class="font-semibold">
-                        Payment:
-                        {{ booking.modality === "CASH" ? "Cash" : "Epayment" }}
-                      </p>
-                      <div v-if="booking.modality === 'MBOB'" class="pl-6">
-                        Journal Details
-                        <br />
-                        Bank: {{ booking.depositBank }}
-                        <br />
-                        Jrl No: {{ booking.depositJournal }}
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-2 w-1/6">
-                    <div class="flex flex-wrap items-start">
-                      <div
-                        v-for="(passenger, index) in booking.passengers"
-                        :key="passenger"
-                      >
-                        <p v-if="index + 1 !== booking.passengers.length">
-                          {{ passenger.seatNumber }}  ,
-                        </p>
-                        <p v-else>
-                          {{ passenger.seatNumber }}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-2">Nu.{{ selectedDepartureTime.fare }}</td>
-                  <td class="px-2">
-                    <p v-if="booking.modality === 'ONLINE'">Nu.35</p>
-                    <p v-else>Nu.0</p>
-                  </td>
-                  <td class="px-2">Nu. {{ booking.amount }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="flex justify-between items-end mt-4">
+          <h2 @click="selectDateModal = true">
+            Accounts for {{ new Date(date).toDateString() }}
+          </h2>
 
-          <div class="flex justify-end mt-10 p-4 mb-6">
-            <table class="text-md">
-              <tr class="font-bold">
-                <td>Total:</td>
-                <td>Nu. {{ grandTotal }}</td>
-              </tr>
+          <div>
+            <p>www.metotransport.com</p>
+            <p>Date: {{ new Date().toDateString() }}</p>
+          </div>
+        </div>
+        <div class="-mt-10">
+          <h1 class="text-center text-3xl font-bold">MTS e-Accounts</h1>
+         
+        </div>
+      </div>
+
+      <div id="table" class="overflow-x-scroll">
+        <div>
+          <table class="table-auto w-full" id="example">
+            <thead class="text-xs text-gray-100 bg-metoPrimary-500">
               <tr>
-                <td class="col-span-2"><hr class="w-full" /></td>
+                <th class="whitespace-nowrap"></th>
+                <th class="whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-left">Bus</div>
+                </th>
+
+                <th class="whitespace-nowrap" style="min-width: 120px">
+                  <div class="font-semibold text-left">From</div>
+                </th>
+
+                <th>
+                  <table class="w-full" id="example">
+                    <thead
+                      class="text-xs text-gray-100 bg-metoPrimary-500"
+                      style="width: 600px"
+                    >
+                      <th class="whitespace-nowrap" style="min-width: 120px">
+                        <div class="font-semibold text-left">To</div>
+                      </th>
+                      <th class="whitespace-nowrap">
+                        <div class="font-semibold text-left">Departure</div>
+                      </th>
+                      <th class="whitespace-nowrap" style="min-width: 60px">
+                        <div class="font-semibold text-left">Fare</div>
+                      </th>
+
+                      <th class="whitespace-nowrap" style="min-width: 60px">
+                        <div class="font-semibold text-left">Counter</div>
+                      </th>
+                      <th class="whitespace-nowrap" style="min-width: 60px">
+                        <div class="font-semibold text-left">Online</div>
+                      </th>
+                      <th class="whitespace-nowrap" style="min-width: 60px">
+                        <div class="font-semibold text-left">Total</div>
+                      </th>
+                      <th class="whitespace-nowrap" style="min-width: 70px">
+                        <div class="font-semibold text-left">
+                          Ticket <br />
+                          Sale
+                        </div>
+                      </th>
+                      <th class="whitespace-nowrap" style="min-width: 70px">
+                        <div class="font-semibold text-center">
+                          Service <br />
+                          Charge
+                        </div>
+                      </th>
+                    </thead>
+                  </table>
+                </th>
+
+                <th class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-center">Goods</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-center">Local</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 60px">
+                  <div class="font-semibold text-center">HSD <br />L</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 60px">
+                  <div class="font-semibold text-center">HSD <br />Rate</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-center">HSD <br />Amount</div>
+                </th>
+                <th class="p whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-center">Expenses</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 70px">
+                  <div class="font-semibold text-left">Net</div>
+                </th>
+                <th class="whitespace-nowrap" style="min-width: 120px">
+                  <div class="font-semibold text-left">Remarks</div>
+                </th>
               </tr>
-              <tr>
-                <td class="pl-6">Cash:</td>
-                <td>Nu. {{ cashTotal }}</td>
+            </thead>
+
+            <tbody
+              class="text-sm divide-y space-y-2 divide-gray-100"
+              v-if="challans.length"
+            >
+              <tr v-for="challan in challans" :key="challan">
+                <td class="p-2 whitespace-nowrap">
+                  <div class="flex flex-col gap-2 item-center justify-center">
+                    <div
+                      class="
+                        w-4
+                        mr-2
+                        transform
+                        cursor-pointer
+                        hover:text-purple-500 hover:scale-110
+                      "
+                      @click="openViewDetailsModal(challan)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="
+                        w-4
+                        mr-2
+                        transform
+                        cursor-pointer
+                        hover:text-purple-500 hover:scale-110
+                      "
+                      @click="openEditChallanModal(challan)"
+                      v-if="challanStatus.status ==='CREATED'"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="flex justify-start items-start">
+                    <div class="break-all text-gray-800" v-if="challan.busId">
+                      {{ challan.bus.vechileNumber }}
+                    </div>
+                    <div v-else>NA</div>
+                  </div>
+                </td>
+
+                <td class="p-2" style="min-width: 120px">
+                  <div class="text-left flex justify-start items-start">
+                    {{ challan.from }}
+                  </div>
+                </td>
+
+                <td style="width: 720px" class="">
+                  <table class="w-full" id="example">
+                    <tbody class="text-sm divide-y divide-gray-100">
+                      <tr
+                        v-for="item in challan.challanItems"
+                        :key="item"
+                        style="width: 600px"
+                      >
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 120px"
+                        >
+                          <div class="text-left">
+                            {{ item.to }}
+                          </div>
+                        </td>
+                        <td class="p-2">
+                          <div class="text-left">
+                            {{ challan.departureTime }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 60px"
+                        >
+                          <div class="text-left">
+                            {{ item.fare }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 60px"
+                        >
+                          <div class="text-left">
+                            {{ item.passengers }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 60px"
+                        >
+                          <div class="text-left">
+                            {{ item.onlinePassengers }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 60px"
+                        >
+                          <div class="text-left">
+                            {{ item.counterPassengers }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 70px"
+                        >
+                          <div class="text-left">
+                            {{ item.ticketSale.toLocaleString("en-us") }}
+                          </div>
+                        </td>
+                        <td
+                          class="p-2 whitespace-nowrap"
+                          style="min-width: 70px"
+                        >
+                          <div class="text-center">
+                            {{ item.serviceCharge.toLocaleString("en-us") }}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-center">
+                    {{ challan.goods.toLocaleString("en-us") }}
+                  </div>
+                </td>
+
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-center">
+                    {{ challan.local.toLocaleString("en-us") }}
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-center">
+                    {{ challan.hsdLitre }}
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 60px">
+                  <div class="text-center">
+                    {{ challan.hsdRate }}
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-center">
+                    {{ challan.hsdAmount.toLocaleString("en-us") }}
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-center">
+                    {{ challan.expenses.toLocaleString("en-us") }}
+                  </div>
+                </td>
+                <td class="p-2 whitespace-nowrap" style="min-width: 70px">
+                  <div class="text-md text-gray-800 font-semibold text-left">
+                    {{ challan.netTotal.toLocaleString("en-us") }}
+                  </div>
+                </td>
+                <td class="p-2" style="min-width: 120px">
+                  <div class="text-xs text-left break-words">
+                    {{ challan.remarks }}
+                  </div>
+                </td>
               </tr>
-              <tr>
-                <td class="pl-6">Online/Mbob:</td>
-                <td>Nu. {{ epaymentTotal + onlineTotal }}</td>
-              </tr>
-            </table>
+            </tbody>
+          </table>
+
+          <div v-if="!challans.length" class="flex w-full justify-center">
+            <div class="flex flex-col items-center p-4 my-6">
+              <img class="w-32" src="../../assets/emptystate.png" alt="" />
+              <p class="text-center">
+                No Bookings for <br />
+                {{ new Date(dateSelected).toDateString() }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- <table class="border-l border-r divide-y divide-gray-200 table-auto">
-      <thead class="">
-        <tr>
-          <td
-            class="
-              px-6
-              py-3
-              text-left text-xs
-              font-medium
-              text-gray-500
-              uppercase
-              tracking-wider
-            "
-          >
-            Route Details
-          </td>
-          <td
-            class="
-              px-6
-              py-3
-              text-left text-xs
-              font-medium
-              text-gray-500
-              uppercase
-              tracking-wider
-            "
-          >
-            Subroute
-          </td>
-          <td
-            class="
-              px-6
-              py-3
-              text-left text-xs
-              font-medium
-              text-gray-500
-              uppercase
-              tracking-wider
-            "
-          >
-            View Challan
-          </td>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr
-          v-for="schedule in schedules"
-          :key="schedule"
-          :class="
-            schedule.isActive ? 'hover:bg-gray-200' : 'bg-red-100 line-through'
-          "
+      <div class="flex justify-between mt-4">
+        <div
+          v-if="challans.length && challanStatus.status === 'VERIFIED'"
+          class="p-12"
         >
-          <td
-            :class="
-              schedule.isCancelled
-                ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
-                : 'px-6 py-3 whitespace-nowrap font-light text-sm'
-            "
-          >
-            <div v-if="schedule.isCancelled" class="font-bold">Cancelled</div>
-            <div v-if="!schedule.isActive" class="font-bold">
-              Route Suspended
-            </div>
-            {{ schedule.routepath?.origin.name }} -
-            {{ schedule.routepath?.destination.name }}
-
-            <br />
-            Departure Time: {{ schedule.departureTime }}
-            <br />
-            Fare: Nu.{{ schedule.fare }}
-          </td>
-          <td
-            :class="
-              schedule.isCancelled
-                ? 'px-6 py-3 bg-red-300 whitespace-nowrap font-light text-sm'
-                : 'px-6 py-3 whitespace-nowrap font-light text-sm'
-            "
-          >
-            <div
-              class="flex flex-col w-full gap-2"
-              v-if="schedule.subroutes.length"
+          <p class="flex gap-2 font-bold">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2.2"
+              stroke="currentColor"
+              class="w-6 h-6 text-green-500"
             >
-              Subroutes
-              <div
-                v-for="(subroute, index) in schedule.subroutes"
-                :key="subroute"
-              >
-                <p>
-                  {{ index + 1 }}.{{ subroute.routepath?.origin.name }} -
-                  {{ subroute.routepath.destination?.name }}
-                </p>
-                Fare: Nu.{{ subroute.fare }}
-              </div>
-            </div>
-            <div v-else>No Subroutes</div>
-          </td>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+              />
+            </svg>
 
-          <td class="px-6 py-3 whitespace-nowrap font-light text-sm">
-            <div v-if="schedule.isActive">
-              <button
-                class="bg-gray-500 text-gray-50 p-1 rounded hover:bg-green-600"
-                @click="viewPassengers(schedule)"
-              >
-                View Challan
-              </button>
-            </div>
-            <div v-else>Suspended</div>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
-  </div>
+            Accounts Verified
+          </p>
 
-  <!-- View passengers Modal -->
+          <img src="/signature.png" class="w-40" alt="" />
+          <p>Tshering Lhaden</p>
+          <p class="text-xs">Finance</p>
+          <p class="text-xs">20/09/2022</p>
+
+          <p class="mt-1 text-xs" v-if="challanStatus.remarks">
+            Remarks: {{ challanStatus.remarks  }}
+          </p>
+        </div>
+        <div v-else></div>
+
+        <div v-if="challans.length" class="p-12">
+          <p class="text-lg">
+            Net Income:
+            <span class="font-bold"
+              >Nu.{{ cumulativeStats.netTotal.toLocaleString("en-us") }}</span
+            >
+          </p>
+          <p>
+            Total Service Charge: Nu.{{
+              cumulativeStats.totalServiceCharge.toLocaleString("en-us")
+            }}
+          </p>
+          <p>
+            Total Passengers:
+            {{ cumulativeStats.totalPassengers.toLocaleString("en-us") }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
   <vue-final-modal
-    v-model="passengerDetailsModal"
+    v-model="editChallanModal"
     classes="modal-container"
-    content-class="modal-content2"
+    content-class="modal-content"
     class="w-max-screen"
   >
-    <div></div>
+    <div class="max-w-3xl">
+      <p class="text-lg text-center font-semibold mb-2 text-metoPrimary-700">
+        Challan for {{ selectedChallan.from }} -
+        {{
+          selectedChallan.challanItems ? selectedChallan.challanItems[0].to : ""
+        }}
+        {{ new Date(selectedChallan.date).toDateString() }}
+        {{ selectedChallan.departureTime }} Bus
+      </p>
+
+      <div>
+        <div class="space-y-4">
+          <!-- Card Number -->
+          <div class="flex w-full text-metoPrimary-600">
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+            <div class="w-1/3 text-center">Income</div>
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-800" for="card-nr"
+              >TicketSale <small>(Nu)</small></label
+            >
+            <div
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+                cursor-not-allowed
+              "
+            >
+              {{ selectedChallan.totalTicketSale }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-800" for="card-nr"
+              >Local <small>(Nu)</small></label
+            >
+            <input
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              min="0"
+              type="number"
+              v-model="selectedChallan.local"
+            />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-800" for="card-nr"
+              >Goods <small>(Nu)</small></label
+            >
+            <input
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              min="0"
+              type="number"
+              v-model="selectedChallan.goods"
+            />
+          </div>
+
+          <div class="flex w-full mt-2 text-metoPrimary-600">
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+            <div class="w-1/3 text-center">Expenses</div>
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <div class="w-1/3">
+              <label class="block text-sm" for="card-nr"
+                >HSD Litre <small>(L)</small></label
+              >
+              <input
+                id="card-nr"
+                class="
+                  text-sm text-gray-800
+                  bg-white
+                  border
+                  rounded
+                  leading-5
+                  p-2
+                  px-3
+                  border-gray-200
+                  hover:border-gray-300
+                  focus:border-indigo-300
+                  shadow-sm
+                  placeholder-gray-400
+                  focus:ring-0
+                  w-full
+                "
+                type="number"
+                v-model="selectedChallan.hsdLitre"
+              />
+            </div>
+            <div class="w-1/3">
+              <label class="block text-sm text-gray-800" for="card-nr"
+                >HSD Rate <small>(Nu)</small></label
+              >
+              <input
+                id="card-nr"
+                class="
+                  text-sm text-gray-800
+                  bg-white
+                  border
+                  rounded
+                  leading-5
+                  p-2
+                  px-3
+                  border-gray-200
+                  hover:border-gray-300
+                  focus:border-indigo-300
+                  shadow-sm
+                  placeholder-gray-400
+                  focus:ring-0
+                  w-full
+                "
+                type="number"
+                v-model="selectedChallan.hsdRate"
+              />
+            </div>
+            <div class="w-1/3">
+              <label class="block text-sm text-gray-800" for="card-nr"
+                >HSD Amount<small>(Nu)</small></label
+              >
+              <div
+                id="card-nr"
+                class="
+                  text-sm text-gray-800
+                  bg-white
+                  border
+                  rounded
+                  leading-5
+                  p-2
+                  px-3
+                  border-gray-200
+                  hover:border-gray-300
+                  focus:border-indigo-300
+                  shadow-sm
+                  placeholder-gray-400
+                  focus:ring-0
+                  w-full
+                  cursor-not-allowed
+                "
+              >
+                {{ selectedChallan.hsdLitre * selectedChallan.hsdRate }}
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-800 mb-1" for="card-nr"
+              >Misc Expenses <small>(Nu)</small></label
+            >
+            <input
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              type="number"
+              v-model="selectedChallan.expenses"
+            />
+          </div>
+
+          <!-- //challand Ref and Bus -->
+          <div class="flex w-full mt-2 text-metoPrimary-600">
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+            <div class="w-1/3 text-center">Other Details</div>
+            <div class="w-1/3 flex items-center">
+              <hr class="w-full" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-800" for="card-nr"
+              >Challan Ref#</label
+            >
+            <input
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              type="number"
+              v-model="selectedChallan.challanNo"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-800" for="card-email"
+              >Bus No</label
+            >
+            <select
+              id="card-email"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              v-model="selectedChallan.busId"
+            >
+              <option v-for="bus in buses" :key="bus" :value="bus.id">
+                {{ bus.vechileNumber }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-800" for="card-nr"
+              >Remarks</label
+            >
+            <textarea
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              type="number"
+              v-model="selectedChallan.remarks"
+            ></textarea>
+          </div>
+
+          <div class="flex justify-end pt-2 text-metoPrimary-800">
+            <div>
+              <label class="block text-md font-medium" for="card-email"
+                >Net Income</label
+              >
+
+              <p class="text-xl font-extrabold">
+                Nu.
+                {{
+                  selectedChallan.totalTicketSale +
+                  selectedChallan.local +
+                  selectedChallan.goods -
+                  selectedChallan.hsdLitre * selectedChallan.hsdRate -
+                  selectedChallan.expenses
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Form footer -->
+        <div class="flex justify-center mt-8">
+          <button
+            class="
+              font-medium
+              text-sm
+              rounded-sm
+              px-3
+              p-2
+              w-1/2
+              bg-metoPrimary-700
+              text-white
+              focus:outline-none
+              focus-visible:ring-2
+            "
+            @click="updateChallan"
+          >
+            UPDATE
+          </button>
+        </div>
+      </div>
+    </div>
   </vue-final-modal>
 
   <vue-final-modal
-    v-model="availableDatesModal"
-    classes="flex justify-center items-center"
-    content-class="modal-content rounded-lg"
+    v-model="selectDateModal"
+    classes="modal-container"
     class="w-max-screen"
   >
-    <div
-      class="modal__content text-center mt-1 flex flex-col text-metoPrimary-700"
-    >
-      <div class="flex flex-col gap-2 justify-center items-center">
-        <div class="flex flex-col px-2 py-1">
-          <div class="flex flex-col justify-center mt-2">
-            <h2 class="flex gap-2 text-sm font-light items-center">
-              <span class="block rounded-full h-2 w-2 bg-green-700"> </span>
-              Bus available
-            </h2>
+    <div class="max-w-3xl">
+      <DatePicker
+        v-model="date"
+        @dayclick="onDayClick($event)"
+        :attributes="attributes"
+      />
+    </div>
+  </vue-final-modal>
+
+  <vue-final-modal
+    v-model="markVerifiedModal"
+    classes="modal-container"
+    content-class=""
+    class=""
+  >
+    <div class="max-w-3xl bg-metoPrimary-700 p-6 text-gray-100 text-md">
+     
+      <p class="text-center">
+         Are you sure? <br>
+         It will be digital signed using your credential
+      </p>
+      
+          <div class="my-6">
+            <label class="block text-sm " 
+              >Remarks</label>
+            <textarea
+              id="card-nr"
+              class="
+                text-sm text-gray-800
+                bg-white
+                border
+                rounded
+                leading-5
+                p-2
+                px-3
+                border-gray-200
+                hover:border-gray-300
+                focus:border-indigo-300
+                shadow-sm
+                placeholder-gray-400
+                focus:ring-0
+                w-full
+              "
+              min="0"
+              type="number"
+              v-model="challanVerificationRemarks"
+            ></textarea>
           </div>
-          <DatePicker
-            v-model="date"
-            @dayclick="onDayClick($event)"
-            :attributes="attributes"
-          />
+      
+      <div class="flex justify-center">
+        <button @click="markChallanAsVerified" class="bg-green-400 px-4 py-2 rounded">Mark as verified</button>
+      </div>
+
+    </div>
+  </vue-final-modal>
+
+  <vue-final-modal
+    v-model="viewDetailsModal"
+    classes="modal-container"
+    content-class="modal-content"
+    class="w-max-screen"
+  >
+    <div>
+      <p class="text-lg text-center font-semibold mb-2 text-metoPrimary-700">
+        ChallanDetails for {{ selectedChallan.from }} -
+        {{
+          selectedChallan.challanItems ? selectedChallan.challanItems[0].to : ""
+        }}
+        <br />
+        {{ new Date(selectedChallan.date).toDateString() }}
+        {{ selectedChallan.departureTime }} Bus
+      </p>
+
+      <table class="w-full table-auto divide-y">
+        <thead>
+          <tr class="text-xs text-gray-400 bg-gray-50">
+            <td class="px-2">Booking ID</td>
+            <td class="px-2">Mode</td>
+            <td class="px-2">Seats</td>
+            <td class="px-2">Fare (per seat)</td>
+            <td class="px-2">Service Charge (per seat)</td>
+            <td class="px-2">Amount</td>
+          </tr>
+        </thead>
+        <tbody class="divide-y text-sm font-normal text-gray-700">
+          <tr v-for="booking in bookings" :key="booking">
+            <td class="px-4 flex items-start">
+              {{ booking.id }}
+            </td>
+            <td class="px-2">
+              <div v-if="booking.modality === 'ONLINE'">Online Booking</div>
+              <div v-else class="text-sm">
+                Counter Booking by {{ booking.user?.name }}
+              </div>
+            </td>
+            <td class="px-2 w-1/6">
+              <div class="flex flex-wrap items-start">
+                {{ booking.passengers.length }}
+              </div>
+            </td>
+            <td class="px-2">Nu.{{ booking.fare }}</td>
+            <td class="px-2">
+              <p v-if="booking.modality === 'ONLINE'">Nu.35</p>
+              <p v-else>Nu.0</p>
+            </td>
+            <td class="px-2">Nu. {{ booking.amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flex justify-end text-metoPrimary-800 mt-6">
+        <div>
+          <label class="block text-md font-medium" for="card-email"
+            >Net Income</label
+          >
+
+          <p class="text-xl font-extrabold">
+            Nu.
+            {{ selectedChallan.netTotal }}
+          </p>
         </div>
       </div>
     </div>
   </vue-final-modal>
 </template>
 
-
 <style scoped>
+.challan-header-container {
+  background: #1f65a5;
+}
 ::v-deep .modal-container {
   display: flex;
   justify-content: center;
@@ -475,24 +920,17 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  max-height: 90%;
-  border-radius: 0.25rem;
-  background: #fff;
-}
-::v-deep .modal-content2 {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  max-height: 90%;
-  margin: 0;
-  padding: 0;
-  border-radius: 0.25rem;
+  max-height: 100vh;
+  overflow-y: scroll;
+  min-width: 40vw;
+  margin: 0 0rem;
+  padding: 1rem 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.15rem;
   background: #fff;
 }
 .modal__title {
   margin: 0 2rem 0 0;
-  font-size: 1.5rem;
-  font-weight: 700;
 }
 .modal__content {
   flex-grow: 1;
@@ -518,293 +956,205 @@
   background-color: #1a202c;
 }
 </style>
-
+<style>
+/* @import "../node_modules/@syncfusion/ej2-vue-grids/styles/material.css"; */
+</style>
 
 <script>
-import { getBookingsByRouteAndScheduleDate } from "../../services/bookingServices";
+import { Calendar, DatePicker } from "v-calendar";
 import { getAllBuses } from "../../services/busServices";
-import domtoimage from "dom-to-image";
-import { getRoutesByOriginDestination } from "../../services/routeServices";
-
+import { jsontoexcel } from "vue-table-to-excel";
 import {
-  getActiveDestinationByOrigin,
-  getActiveStops,
-} from "../../services/stopServices";
+  createConsolidatedChallanByDate,
+  getChallanStatusByDate,
+  getConsolidatedChallanByDate,
+  markChallanAsVerified,
+  updateChallanData,
+  updateConsolidateChallanByDate,
+} from "../../services/challanServices";
+import {
+  getAllBookingsByScheduleHash,
+  getSuccessfulbookingByscheduleHash,
+} from "../../services/bookingServices";
+import VueJwtDecode from "vue-jwt-decode";
+
 
 export default {
   data() {
     return {
-      date: new Date(),
-      passengersInSchedule: [],
-      seatsAvailable: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      ],
+      //Modal toggle
 
-      routeDateBookings: [],
-
-      grandTotal: 0,
-      cashTotal: 0,
-      epaymentTotal: 0,
-      onlineTotal: 0,
-
-      //newChallanLoader
-      origins: [],
-      originSelected: {},
-      destinationSelected: {},
-      routes: [],
-      subroutes: [],
+      challans: [],
+      selectedChallan: {},
+      editChallanModal: false,
+      selectDateModal: false,
+      viewDetailsModal: false,
+      markVerifiedModal: false,
+      buses: [],
       dateSelected: null,
       attributes: [],
-      days: [],
-      matchedRoutes: [],
-      availableDatesModal: false,
-      daySelected: 0,
-      selectedDepartureTime: {},
-      formattedDate: {},
+      date: "2022-09-18",
+      createDateString: "",
+      bookings: [],
+      challanStatus: {},
+      challanVerificationRemarks: "",
     };
   },
-  computed: {},
   created() {
+    getConsolidatedChallanByDate(this.date).then((res) => {
+      console.log(res.data);
+      this.challans = res.data;
+    });
+    getChallanStatusByDate(this.date).then((res) => {
+      if (res.data) {
+        this.challanStatus = res.data;
+      }
+    });
     getAllBuses().then((res) => {
       this.buses = res.data;
     });
-    getActiveStops().then((res) => {
-      this.origins = res.data;
-      // this.originSelected = res.data[0];
-      // getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
-      //   this.destinations = res.data;
-      //   this.destinationSelected = res.data[0];
-      // });
-    });
   },
-
+  components: {
+    Calendar,
+    DatePicker,
+  },
+  computed: {
+    cumulativeStats() {
+      let total = 0;
+      let serviceCharge = 0;
+      let passengers = 0;
+      this.challans.forEach((challan) => {
+        total = Number(challan.netTotal) + total;
+        serviceCharge = serviceCharge + challan.totalServiceCharge;
+        passengers = passengers + challan.totalPassengers;
+      });
+      return {
+        netTotal: total,
+        totalServiceCharge: serviceCharge,
+        totalPassengers: passengers,
+      };
+    },
+    getUserDetails() {
+      let token = sessionStorage.getItem("token");
+      return VueJwtDecode.decode(token);
+    },
+  },
   methods: {
-    saveImage() {
-      const scale = 3;
-      const node = document.getElementById("challanDetails");
-      const style = {
-        transform: "scale(" + scale + ")",
-        transformOrigin: "top left",
-        width: node.offsetWidth + "px",
-        height: node.offsetHeight + "px",
-      };
-
-      const param = {
-        height: node.offsetHeight * scale,
-        width: node.offsetWidth * scale,
-        quality: 1,
-        style,
-      };
-
-      var filename = new Date().toString().split(" ").join("");
-
-      domtoimage.toPng(node, param).then(function (dataUrl) {
-        var link = document.createElement("a");
-        link.download = `report_${filename}.png`;
-        link.href = dataUrl;
-        link.click();
-      });
-    },
-    onOriginSelect(e) {
-      this.dateSelected = null;
-      this.matchedRoutes= [] 
-      this.routeDateBookings = []
-      getActiveDestinationByOrigin(this.originSelected.id).then((res) => {
-        this.destinations = res.data;
-        this.destinationSelected = res.data[0];
-      });
-    },
-    checkAvailableDates() {
-      this.routes = [];
-      this.subroutes = [];
-      this.dateSelected = null;
-      this.attributes = [];
-      this.days = [];
-      this.matchedRoutes = [];
-      this.routeDateBookings = []
-      getRoutesByOriginDestination(
-        this.originSelected.id,
-        this.destinationSelected.id
-      )
-        .then((res) => {
-          if (res.data.routes) {
-            this.routes = res.data.routes;
-            this.routes.forEach((route) => {
-              this.days.push(route.day);
-            });
-          }
-          if (res.data.subroutes) {
-            this.subroutes = res.data.subroutes;
-            this.subroutes.forEach((subroute) => {
-              this.days.push(subroute.day);
-            });
-          }
-          this.attributes = [
-            {
-              dot: "green",
-              dates: { weekdays: this.days },
-              popover: {
-                label: "Bus Availble",
-              },
-            },
-          ];
-        })
-        .catch((err) => console.log(err));
-
-      this.availableDatesModal = true;
-    },
-
-    onDayClick(e) {
-      console.log(e);
-      this.daySelected = e.weekday;
-
-      if (
-        e.popovers[0] &&
-        e.popovers[0].label === "Bus Availble" &&
-        !e.isDisabled
-      ) {
-        this.dateSelected = e.id;
-        this.formattedDate = e.ariaLabel;
-        this.matchedRoutes = [];
-        this.routes.forEach((route) => {
-          if (route.day === e.weekday) {
-            this.matchedRoutes.push(route);
-          }
-        });
-        this.subroutes.forEach((subroute) => {
-          if (subroute.day === e.weekday) {
-            this.matchedRoutes.push(subroute);
-          }
-        });
-        console.log("MATCHED ROUTES", this.matchedRoutes);
-        this.availableDatesModal = false;
-      } else {
-        this.dateSelected = null;
-        this.matchedRoutes = [];
-      }
-    },
-    loadChallan() {
-      console.log("Load Challan");
-      console.log(this.formattedDate, this.dateSelected);
-     
-      this.routeDateBookings = []
-      this.seatsAvailable = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      ];
-      this.grandTotal = 0;
-      this.epaymentTotal = 0;
-      this.cashTotal = 0;
-      this.onlineTotal = 0;
-      getBookingsByRouteAndScheduleDate(
-        this.selectedDepartureTime.id,
-        this.dateSelected
-      ).then((res) => {
-        console.log("PAID Bookings", res.data);
-        this.routeDateBookings = res.data;
-
-        res.data.forEach((booking) => {
-          this.grandTotal += booking.amount;
-          if (booking.modality === "CASH") {
-            this.cashTotal += booking.amount;
-          }
-          if (booking.modality === "MBOB") {
-            this.epaymentTotal += booking.amount;
-          }
-          if (booking.modality === "ONLINE") {
-            this.onlineTotal += booking.amount;
-          }
-          booking.passengers.forEach((passenger) => {
-            let searchIndex = this.seatsAvailable.indexOf(passenger.seatNumber);
-            if (searchIndex !== -1) {
-              console.log("Seat Booked", passenger);
-              this.seatsAvailable.splice(searchIndex, 1);
-            }
+    fetchRouteData() {
+      getAllRoutePaths().then((res) => {
+        this.routepaths = res.data;
+        this.routepaths.forEach((routepath) => {
+          routepath.routes.forEach((route) => {
+            this.routes.push(route);
           });
         });
       });
     },
-    onDepartureTimeChange(){
-      this.routeDateBookings =[];
-    },
 
-    parseDepartureDate(date) {
-      let d = new Date(date);
-      return d.toDateString();
+    openEditChallanModal(challan) {
+      this.selectedChallan = challan;
+      this.editChallanModal = true;
     },
-
-    // onDayClick(e) {
-    //   this.selectedDate = e.id;
-    //   this.selectedWeekdate = e.weekday;
-    //   this.schedules = [];
-    //   this.storedDateClickEvent = e;
-    //   getRoutesByWeekday(e.weekday).then((res) => {
-    //     console.log("ROUTE WITH SUBROTES", res.data);
-    //     res.data.forEach((route) => {
-    //       let data = route;
-    //       data.isCancelled = 0;
-    //       getBusbyRouteAndDate(this.selectedDate, route.id).then((res) => {
-    //         if (res.data) {
-    //           data.bus = res.data.bus;
-    //           data.busRosterId = res.data.id;
-    //         }
-    //         getCancelledRoutesByDate(this.selectedDate).then((res) => {
-    //           res.data.forEach((item) => {
-    //             if (item.routeId === route.id) {
-    //               console.log("A ROUTE HAS BEEN CANCELLED", item, route);
-    //               data.isCancelled = 1;
-    //             }
-    //           });
-    //           this.schedules.push(data);
-    //         });
-    //       });
-    //     });
-    //     console.log(this.schedules);
-    //   });
-    //   this.$toast.show(`Showing Schedule for ${this.selectedDate}`, {
-    //     type: "info",
-    //     position: "top",
-    //   });
-    // },
-    viewPassengers() {
-      this.passengersInSchedule = [];
-      this.passengerDetailsModal = true;
-      this.seatsAvailable = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      ];
-      this.grandTotal = 0;
-      this.epaymentTotal = 0;
-      this.cashTotal = 0;
-      this.onlineTotal = 0;
-      console.log(
-        "LOAD BOOKINGS FOR",
-        this.selectedDepartureTime,
-        this.dateSelected
+    createChallan() {
+      console.log(this.createDateString);
+      createConsolidatedChallanByDate({ date: this.createDateString }).then(
+        (res) => {
+          console.log(res);
+        }
       );
-      getBookingsByRouteAndScheduleDate(
-        this.selectedDepartureTime.id,
-        this.dateSelected
-      ).then((res) => {
-        console.log("PAID Bookings", res.data);
-        this.routeDateBookings = res.data;
+    },
+    updateChallan() {
+      this.selectedChallan.netTotal = this.getChallanNetTotal(
+        this.selectedChallan
+      );
+      this.selectedChallan.hsdAmount = this.getHsdAmonut(this.selectedChallan);
 
-        res.data.forEach((booking) => {
-          this.grandTotal += booking.amount;
-          if (booking.modality === "CASH") {
-            this.cashTotal += booking.amount;
+      updateChallanData(this.selectedChallan.id, this.selectedChallan).then(
+        (res) => {
+          console.log(res);
+        }
+      );
+    },
+    getChallanNetTotal(challan) {
+      return (
+        challan.totalTicketSale +
+        challan.local +
+        challan.goods -
+        challan.hsdLitre * challan.hsdRate -
+        challan.expenses
+      );
+    },
+    getHsdAmonut(challan) {
+      return challan.hsdLitre * challan.hsdRate;
+    },
+    onDayClick(event) {
+      console.log(event.id);
+      this.dateSelected = event.id;
+      this.date = event.id;
+      getConsolidatedChallanByDate(event.id).then((res) => {
+        this.challans = res.data;
+        this.$toast.show("Loaded challan for " + event.id, {
+          position: "top",
+        });
+        getChallanStatusByDate(event.id).then((resp) => {
+          if (resp.data) {
+            this.challanStatus = resp.data;
           }
-          if (booking.modality === "MBOB") {
-            this.epaymentTotal += booking.amount;
+        });
+        this.selectDateModal = false;
+      });
+    },
+
+    downloadExcel() {
+      console.log(this.challans);
+      jsontoexcel.getXlsx(this.challans, "filename.csv");
+    },
+    openViewDetailsModal(challan) {
+      this.selectedChallan = challan;
+      getSuccessfulbookingByscheduleHash(
+        this.selectedChallan.scheduleHash
+      ).then((res) => {
+        this.bookings = res.data;
+        console.log(res.data);
+        this.viewDetailsModal = true;
+      });
+    },
+    openMarkVerifiedModal() {
+      this.markVerifiedModal = true;
+    },
+    refreshChallanData() {
+      console.log("REFRESHING FOR DATE", this.date);
+      updateConsolidateChallanByDate({ date: this.date }).then((res) => {
+          this.getChallanByDate(this.date);
+      });
+    },
+    getChallanByDate(date){
+       getConsolidatedChallanByDate(date).then((res) => {
+        this.challans = res.data;
+        this.$toast.show("Loaded challan for " + date, {
+          position: "top",
+        });
+        getChallanStatusByDate(date).then((resp) => {
+          if (resp.data) {
+            this.challanStatus = resp.data;
           }
-          if (booking.modality === "ONLINE") {
-            this.onlineTotal += booking.amount;
+        });
+      });
+    },
+    markChallanAsVerified() {
+      let data = {
+        date: this.date,
+        id: this.challanStatus.id,
+        verifiedBy: this.getUserDetails.id,
+        remarks: this.challanVerificationRemarks,
+      };
+      console.log(data);
+      markChallanAsVerified(data).then((res) => {
+        getChallanStatusByDate(this.date).then((resp) => {
+          if (resp.data) {
+            this.challanStatus = resp.data;
+            this.markVerifiedModal = false;
           }
-          booking.passengers.forEach((passenger) => {
-            let searchIndex = this.seatsAvailable.indexOf(passenger.seatNumber);
-            if (searchIndex !== -1) {
-              console.log("Seat Booked", passenger);
-              this.seatsAvailable.splice(searchIndex, 1);
-            }
-          });
         });
       });
     },

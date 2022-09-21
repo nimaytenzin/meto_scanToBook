@@ -731,7 +731,7 @@
                 <option value="08">8</option>
                 <option value="09">9</option>
                 <option value="10">10</option>
-                <option value="11">10</option>
+                <option value="11">11</option>
                 <option value="12">12</option>
               </select>
               <span class="text-xl mr-3">:</span>
@@ -1286,9 +1286,11 @@ import { getStaffs } from "../../services/authServices";
 import {
   getPendingBookingsByRouteId,
   cancelBooking,
-  getPendingBookingsByScheduleHash,
 } from "../../services/bookingServices";
 
+import{
+    convert12hrsTo24hrsNumeric 
+} from "../../services/sharedFunctions"
 import {
   addNewSubRoute,
   editSubRoute,
@@ -1360,6 +1362,10 @@ export default {
     getStaffs().then((res) => {
       this.staffs = res.data;
     });
+    console.log("\n converting 7 am to 24 hrs")
+    console.log(convert12hrsTo24hrsNumeric("07:00:AM"))
+     console.log("\n converting 5:30 pm to 24 hrs")
+     console.log(convert12hrsTo24hrsNumeric("05:30:PM"))
   },
 
   methods: {
@@ -1554,6 +1560,7 @@ export default {
         ":" +
         this.newDepartureTimeArr[2];
 
+      this.newRoute.departure_time = convert12hrsTo24hrsNumeric(this.newRoute.departureTime);
       addNewRoute(this.newRoute).then((res) => {
         if (res.status === 201) {
           this.fetchRouteData();
@@ -1666,6 +1673,7 @@ export default {
         ":" +
         this.newSubRouteDepartureTime[2];
 
+      this.newSubRoute.departure_time = convert12hrsTo24hrsNumeric(this.newSubRoute.departureTime)
       addNewSubRoute(this.newSubRoute).then((res) => {
         if (res.status === 201) {
           this.loadSchedules(this.selectedRoutepath);

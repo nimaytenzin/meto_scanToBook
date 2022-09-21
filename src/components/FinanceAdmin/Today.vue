@@ -1,17 +1,8 @@
 <template>
   <div class="min-h-screen flex flex-col p-4 bg-white">
-    <div>
-      <button
-        @click="saveImage"
-        class="float-right p-1 bg-gray-400 text-gray-100 rounded"
-      >
-        Download Report
-      </button>
-    </div>
+   
     <div id="report" class="bg-white">
-      <h1 class="text-2xl font-semibold text-center my-3 text-gray-700">
-        Kuzu Zangpo ! Here's your Statistics for today | {{ today }}
-      </h1>
+     
 
       <div
         class="
@@ -127,8 +118,43 @@
           </div>
         </div>
       </div>
+ 
+  <div class="w-full gap-4 py-2 flex justify-between">
+    <div class="w-1/2 bg-gray-50 p-4 rounded">
+        <h1
+        class="text-xl font-semibold text-center my-4 text-gray-700"
+      >
+        Revenue Chart
+      </h1>
+       <line-chart
+        :prefix="Nu"
+        :discrete="false"
+        loading="Fetching Data..."
+        :data="data2"
+        legend="bottom"
+        :colors="['#302E80', '#C9F2C7', '#F5E3E0']"
+      ></line-chart>
 
-      <div class="grid grid-cols-1 md:grid-cols-2">
+    </div>
+    <div class="w-1/2 bg-gray-50 p-4 rounded">
+        <h1
+        class="text-xl font-semibold text-center my-4 text-gray-700"
+      >
+        Tickets Sold Chart
+      </h1>
+    
+
+       <line-chart
+        :discrete="false"
+        loading="Fetching Data..."
+        :data="data"
+        legend="bottom"
+         :colors="['#302E80', '#C9F2C7', '#F5E3E0', '#66CED6']"
+      ></line-chart>
+    </div>
+    </div>
+
+      <!-- <div class="grid grid-cols-1 md:grid-cols-2">
         <div class="m-2" id="staffwise data">
           <div class="my-2">
             <h1 class="text-xl font-bold text-gray-700">
@@ -337,7 +363,7 @@
             </table>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -347,6 +373,8 @@ import {
   getStaffStatsToday,
   getRouteStatsToday,
   getStatsByModalityToday,
+  getLatestTicketsStats,
+  getLatestRevenueStats,
 } from "../../services/bookingStatsService";
 
 import domtoimage from "dom-to-image";
@@ -357,9 +385,18 @@ export default {
       staffStats: [],
       routeStats: [],
       statsToday: {},
+      data:[],
+      data2:[]
     };
   },
   created() {
+    getLatestTicketsStats().then((res) => {
+      this.data = res.data;
+    });
+    getLatestRevenueStats().then((res) => {
+      this.data2 = res.data;
+      console.log(res.data)
+    });
     getStaffStatsToday().then((res) => {
       console.log("STAFF STATS", res.data);
       this.staffStats = res.data;
