@@ -391,9 +391,7 @@ import {
   getCancelledBooking,
   updateBooking,
 } from "../../services/bookingServices";
-import VueHtml2pdf from 'vue-html2pdf'
 
-import { jsontoexcel } from "vue-table-to-excel";
 
 
 export default {

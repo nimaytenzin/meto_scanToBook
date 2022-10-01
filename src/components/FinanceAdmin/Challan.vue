@@ -1,37 +1,34 @@
 <template>
-  <section
-    class="
-      flex flex-col
-      justify-start
-      antialiased
-      bg-gray-100
-      text-gray-600
-      min-h-screen
-      p-6
-    "
-  >
-    <div class="my-4 flex gap-1 text-sm mt-2">
-      <button
-        class="hover:bg-gray-200 px-1"
-        v-if="challanStatus.status !== 'VERIFIED'"
-        @click="openMarkVerifiedModal"
-      >
-        Mark as Verified
-      </button>
-      <button class="hover:bg-gray-200 px-1">Download PDF</button>
-      <button class="hover:bg-gray-200 px-1" @click="downloadExcel">
-        Download excel
-      </button>
+  <div class="flex flex-col w-full">
+    <div class="my-1  flex gap-1 text-sm mt-2">
+      <div>
+        <router-link
+          to="/finance/"
+          class="hover:bg-gray-200 px-2"
+        >
+          Home
+        </router-link>
+        <button
+          class="hover:bg-gray-200 px-2"
+          v-if="challanStatus.status !== 'VERIFIED'"
+          @click="openMarkVerifiedModal"
+        >
+          Mark as Verified
+        </button>
+        <button class="hover:bg-gray-200 px-2" @click="downloadExcel">
+          Download excel
+        </button>
 
-      <button
-        class="hover:bg-gray-200 px-1"
-        v-if="challanStatus.status === 'CREATED'"
-        @click="refreshChallanData"
-      >
-        Refresh Data
-      </button>
+        <button
+          class="hover:bg-gray-200 px-2"
+          v-if="challanStatus.status === 'CREATED'"
+          @click="refreshChallanData"
+        >
+          Refresh Data
+        </button>
+      </div>
     </div>
-    <div class="w-full mx-auto bg-white shadow-lg rounded-md overflow-x-scroll">
+    <div class="w-full mx-auto bg-white overflow-x-scroll">
       <div id="header" class="px-8 py-6 bg-metoPrimary-800 text-gray-100">
         <div class="flex justify-start items-end">
           <div class="flex gap-4 items-center">
@@ -60,7 +57,6 @@
         </div>
         <div class="-mt-10">
           <h1 class="text-center text-3xl font-bold">MTS e-Accounts</h1>
-         
         </div>
       </div>
 
@@ -192,7 +188,7 @@
                         hover:text-purple-500 hover:scale-110
                       "
                       @click="openEditChallanModal(challan)"
-                      v-if="challanStatus.status ==='CREATED'"
+                      v-if="challanStatus.status === 'CREATED'"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -255,12 +251,13 @@
                             {{ item.fare }}
                           </div>
                         </td>
+
                         <td
                           class="p-2 whitespace-nowrap"
                           style="min-width: 60px"
                         >
                           <div class="text-left">
-                            {{ item.passengers }}
+                            {{ item.counterPassengers }}
                           </div>
                         </td>
                         <td
@@ -271,12 +268,13 @@
                             {{ item.onlinePassengers }}
                           </div>
                         </td>
+
                         <td
                           class="p-2 whitespace-nowrap"
                           style="min-width: 60px"
                         >
                           <div class="text-left">
-                            {{ item.counterPassengers }}
+                            {{ item.passengers }}
                           </div>
                         </td>
                         <td
@@ -387,7 +385,7 @@
           <p class="text-xs">20/09/2022</p>
 
           <p class="mt-1 text-xs" v-if="challanStatus.remarks">
-            Remarks: {{ challanStatus.remarks  }}
+            Remarks: {{ challanStatus.remarks }}
           </p>
         </div>
         <div v-else></div>
@@ -411,7 +409,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
   <vue-final-modal
     v-model="editChallanModal"
     classes="modal-container"
@@ -797,43 +795,45 @@
     class=""
   >
     <div class="max-w-3xl bg-metoPrimary-700 p-6 text-gray-100 text-md">
-     
       <p class="text-center">
-         Are you sure? <br>
-         It will be digital signed using your credential
+        Are you sure? <br />
+        It will be digital signed using your credential
       </p>
-      
-          <div class="my-6">
-            <label class="block text-sm " 
-              >Remarks</label>
-            <textarea
-              id="card-nr"
-              class="
-                text-sm text-gray-800
-                bg-white
-                border
-                rounded
-                leading-5
-                p-2
-                px-3
-                border-gray-200
-                hover:border-gray-300
-                focus:border-indigo-300
-                shadow-sm
-                placeholder-gray-400
-                focus:ring-0
-                w-full
-              "
-              min="0"
-              type="number"
-              v-model="challanVerificationRemarks"
-            ></textarea>
-          </div>
-      
-      <div class="flex justify-center">
-        <button @click="markChallanAsVerified" class="bg-green-400 px-4 py-2 rounded">Mark as verified</button>
+
+      <div class="my-6">
+        <label class="block text-sm">Remarks</label>
+        <textarea
+          id="card-nr"
+          class="
+            text-sm text-gray-800
+            bg-white
+            border
+            rounded
+            leading-5
+            p-2
+            px-3
+            border-gray-200
+            hover:border-gray-300
+            focus:border-indigo-300
+            shadow-sm
+            placeholder-gray-400
+            focus:ring-0
+            w-full
+          "
+          min="0"
+          type="number"
+          v-model="challanVerificationRemarks"
+        ></textarea>
       </div>
 
+      <div class="flex justify-center">
+        <button
+          @click="markChallanAsVerified"
+          class="bg-green-400 px-4 py-2 rounded"
+        >
+          Mark as verified
+        </button>
+      </div>
     </div>
   </vue-final-modal>
 
@@ -956,14 +956,11 @@
   background-color: #1a202c;
 }
 </style>
-<style>
-/* @import "../node_modules/@syncfusion/ej2-vue-grids/styles/material.css"; */
-</style>
+
 
 <script>
 import { Calendar, DatePicker } from "v-calendar";
 import { getAllBuses } from "../../services/busServices";
-import { jsontoexcel } from "vue-table-to-excel";
 import {
   createConsolidatedChallanByDate,
   getChallanStatusByDate,
@@ -977,7 +974,6 @@ import {
   getSuccessfulbookingByscheduleHash,
 } from "../../services/bookingServices";
 import VueJwtDecode from "vue-jwt-decode";
-
 
 export default {
   data() {
@@ -1000,6 +996,7 @@ export default {
       challanVerificationRemarks: "",
     };
   },
+
   created() {
     getConsolidatedChallanByDate(this.date).then((res) => {
       console.log(res.data);
@@ -1125,11 +1122,11 @@ export default {
     refreshChallanData() {
       console.log("REFRESHING FOR DATE", this.date);
       updateConsolidateChallanByDate({ date: this.date }).then((res) => {
-          this.getChallanByDate(this.date);
+        this.getChallanByDate(this.date);
       });
     },
-    getChallanByDate(date){
-       getConsolidatedChallanByDate(date).then((res) => {
+    getChallanByDate(date) {
+      getConsolidatedChallanByDate(date).then((res) => {
         this.challans = res.data;
         this.$toast.show("Loaded challan for " + date, {
           position: "top",

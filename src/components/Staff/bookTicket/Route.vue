@@ -382,14 +382,12 @@ export default {
         .then((res) => {
           if (res.data.routes) {
             this.routes = res.data.routes;
-            console.log("PARENT ROUTES", res.data.routes);
             this.routes.forEach((route) => {
               this.days.push(route.day);
             });
           }
           if (res.data.subroutes) {
             this.subroutes = res.data.subroutes;
-            console.log("SUB ROUTES", res.data.subroutes);
             this.subroutes.forEach((subroute) => {
               this.days.push(subroute.day);
             });
@@ -401,7 +399,6 @@ export default {
               popover: {
                 label: "Bus Availble",
               },
-              excludeDates: this.disabledDates,
             },
           ];
         })
@@ -440,7 +437,6 @@ export default {
         this.availableDatesModal = false;
         this.errorMessage = null;
         this.instructionMessage = null;
-        console.log("MATCHED ROUTE WITH DAY SELECTED", this.matchedRoutes)
       } else {
         this.dateSelected = null;
         this.matchedRoutes = [];

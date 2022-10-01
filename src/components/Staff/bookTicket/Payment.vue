@@ -72,7 +72,6 @@
       <div>
         <div class="p-2">
           <p class="text-xl mb-2">Billing</p>
-         
           Ticket Purchase 
           route: {{bookingDetails.route?.routepath?.origin.name  }} - 
           {{ bookingDetails.subroute? bookingDetails?.subroute?.routepath?.destination.name : bookingDetails?.route?.routepath?.destination.name  }}

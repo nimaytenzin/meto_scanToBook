@@ -336,7 +336,6 @@ import {
   getBookingDetail,
 } from "../../services/bookingServices";
 
-import { jsontoexcel } from "vue-table-to-excel";
 
 
 export default {
@@ -402,11 +401,7 @@ export default {
       }
     },
 
-    download(){
     
-      jsontoexcel.getXlsx(this.bookings, this.head, "fileName.xlsx");
-    
-    }
   },
 };
 </script>

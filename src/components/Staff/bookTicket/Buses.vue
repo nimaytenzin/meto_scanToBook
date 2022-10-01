@@ -294,9 +294,6 @@ export default {
       var hash = crypto.createHash("sha1");
       hash.update(plaintext);
       var scheduleHash = hash.digest("hex");
-       console.log("\nTYpe", route.parentRouteId?'SUBROUTE':"ROUTE");
-        console.log("NEW SCHEDULE HASH", scheduleHash);
-        console.log("\n")
       route.scheduleHash = scheduleHash;
       if (route.parentRouteId) {
         getRouteDetailsByID(route.parentRouteId).then((res) => {

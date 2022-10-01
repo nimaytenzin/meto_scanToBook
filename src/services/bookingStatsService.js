@@ -43,5 +43,13 @@ export async function updateBookingStatUsingBookingId(bookingId, data){
 
 
 
+export async function getStatsByMonth(data){
+     return await axios.post(`${devUrl}/stats/stats-month`,data)
+}
+
+export async function getLatestTenBooking(){
+    return await axios.get(`${devUrl}/bookings/latest/10`)
+}
+
 
 

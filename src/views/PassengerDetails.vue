@@ -422,7 +422,7 @@
           <p class="mt-2 font-semibold">3. SMS Alerts</p>
           <p class="px-2 leading-relaxed tracking-wide">
             SMS confirmation will be sent to the number provided in the
-            Passenger Details.Please ensure the phone number is correct.
+            Passenger Details.
           </p>
         </div>
       </div>

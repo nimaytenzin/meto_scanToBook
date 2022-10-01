@@ -8,3 +8,5 @@ export async function getDailyStatistics() {
      return await axios.get(`${devUrl}/daily-statistics`,{headers:authHeader()})
 }
 
+
+

@@ -74,19 +74,6 @@ const routes = [
     name: 'Book',
     component: () => import('../views/Index.vue'),
     children: [
-      
-      // {
-      //   path: 'destination', component: () => import('../components/ScanToBookComponents/Destination.vue')
-      // },
-      // {
-      //   path: 'date', component: () => import('../components/ScanToBookComponents/Date.vue')
-      // },
-      // {
-      //   path: 'buses', component: () => import('../components/ScanToBookComponents/Buses.vue')
-      // },
-      // {
-      //   path: 'seats', component: () => import('../components/ScanToBookComponents/Seats.vue')
-      // },
       {
         path: 'bookings', component: () => import('../components/ScanToBookComponents/Bookings.vue')
       },
@@ -96,14 +83,12 @@ const routes = [
       {
         path: 'eticket/:bookingId', component: () => import('../components/ScanToBookComponents/ETicket.vue')
       },
-      {
-        // path: 'eticket/cancel/:bookingId', component: () => import('../components/ScanToBookComponents/ETicket.vue')
-        path: 'eticket/cancel/:bookingId', component: () => import('../components/ScanToBookComponents/CancelTicket.vue')
-      },
-      {
-        // path: 'eticket/cancel/:bookingId', component: () => import('../components/ScanToBookComponents/ETicket.vue')
-        path: 'eticket/detail/:bookingId', component: () => import('../components/ScanToBookComponents/CancelDetail.vue')
-      },
+      // {
+      //   path: 'eticket/cancel/:bookingId', component: () => import('../components/ScanToBookComponents/CancelTicket.vue')
+      // },
+      // {
+      //   path: 'eticket/detail/:bookingId', component: () => import('../components/ScanToBookComponents/CancelDetail.vue')
+      // },
       {
         path: 'failticket/:bookingId', component: () => import('../components/ScanToBookComponents/FailTicket.vue')
       },
@@ -118,7 +103,7 @@ const routes = [
     component: () => import('../views/Admin.vue'),
     children: [
       {
-        path: '', component: () => import('../components/Admin/Today.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
+        path: '', component: () => import('../components/Admin/Challan.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
       },
       {
         path: 'manage-buses', component: () => import('../components/Admin/ManageBuses.vue'), meta: { requiresAuth: true, scheduleAdmin: true }
@@ -236,7 +221,6 @@ const routes = [
           { path: 'payment', component: () => import('../components/Staff/bookTicket/Payment.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'ticket/:bookingId', component: () => import('../components/Staff/bookTicket/ETicket.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'daily-closings', component: () => import('../components/Staff/DailyClosings.vue'), meta: { requiresAuth: true, staff: true } },
-          { path: 'cancelled-buses', component: () => import('../components/Staff/CancelledBus.vue'), meta: { requiresAuth: true, staff: true } },
           { path: 'viewPassengers', component: () => import('../components/Staff/bookTicket/Passengers.vue'), meta: { requiresAuth: true, staff: true } },
         ]
       },
