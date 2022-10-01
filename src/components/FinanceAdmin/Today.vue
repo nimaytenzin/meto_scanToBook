@@ -112,9 +112,49 @@
             </defs>
           </svg>
           <div>
-            <h5 class="text-xl text-gray-600 text-center">
-              {{ parseDateAsYearMonth(monthlyCumulativeStatistics.date) }}
-            </h5>
+            <p class="text-sm text-gray-500 mb-1">Showing Summary for</p>
+            <div
+              class="
+                flex
+                justify-between
+                items-center
+                text-gray-600 text-center
+              "
+            >
+              <div @click="selectStartDateModal = true">
+                {{ new Date(dateRange.startDate).toDateString()   }}
+              </div>
+              <div>to</div>
+              <div @click="selectEndDateModal = true">
+                {{ new Date(dateRange.endDate).toDateString() }}
+              </div>
+              <div class="flex justify-center items-center" @click="reloadData">
+                <div
+                  class="
+                    cursor-pointer
+                    bg-gray-200
+                    p-2
+                    rounded
+                    hover:text-gray-500
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
           <table class="w-full text-gray-600">
             <tbody>
@@ -130,7 +170,6 @@
                     )
                   }}
                 </td>
-              
               </tr>
               <tr>
                 <td class="py-2">Tickets Sold</td>
@@ -143,7 +182,6 @@
                     )
                   }}
                 </td>
-              
               </tr>
             </tbody>
           </table>
@@ -184,10 +222,10 @@
                   }}
                 </td>
                 <td>
-                 {{
+                  {{
                     thousandSeperator(
                       monthlyCumulativeStatistics.onlineTickets
-                        ? monthlyCumulativeStatistics.onlineTickets 
+                        ? monthlyCumulativeStatistics.onlineTickets
                         : 0
                     )
                   }}
@@ -206,15 +244,13 @@
                   }}
                 </td>
                 <td>
-                 
-                 {{
+                  {{
                     thousandSeperator(
                       monthlyCumulativeStatistics.counterTickets
                         ? monthlyCumulativeStatistics.counterTickets
                         : 0
                     )
                   }}
-                 
                 </td>
               </tr>
             </tbody>
@@ -275,6 +311,12 @@
                       monthlyCumulativeStatistics.ticketsSold) *
                       100
                   )
+                    ? Math.floor(
+                        (monthlyCumulativeStatistics.onlineTickets /
+                          monthlyCumulativeStatistics.ticketsSold) *
+                          100
+                      )
+                    : 0
                 }}
                 %
               </text>
@@ -295,7 +337,9 @@
             </defs>
           </svg>
           <div class="mt-6">
-            <h5 class="text-xl text-gray-700 text-center">Market Share</h5>
+            <h5 class="text-xl text-gray-700 text-center">
+              Online <small>Market Share</small>
+            </h5>
             <div class="mt-2 flex flex-col items-center gap-4">
               <h3 class="text-3xl font-bold text-gray-700">
                 {{
@@ -304,6 +348,12 @@
                       monthlyCumulativeStatistics.ticketsSold) *
                       100
                   )
+                    ? Math.floor(
+                        (monthlyCumulativeStatistics.onlineTickets /
+                          monthlyCumulativeStatistics.ticketsSold) *
+                          100
+                      )
+                    : 0
                 }}
                 % <span class="text-sm"> of total Tickets Sold </span>
               </h3>
@@ -314,6 +364,12 @@
                       monthlyCumulativeStatistics.grossRevenue) *
                       100
                   )
+                    ? Math.floor(
+                        (monthlyCumulativeStatistics.onlineRevenue /
+                          monthlyCumulativeStatistics.grossRevenue) *
+                          100
+                      )
+                    : 0
                 }}
                 % <span class="text-sm"> of Gross Revenue </span>
               </h3>
@@ -389,7 +445,7 @@
 
             <div class="flex flex-col items-start gap-4 w-full font-bold">
               <router-link to="/finance/challan" class="w-full">
-                <button class="button-67">Daily Accounts Closing </button>
+                <button class="button-67">Daily Accounts Closing</button>
               </router-link>
               <!-- <button class="button-67" @click="underConstructionMsg">
                 Bus Expenditures
@@ -400,6 +456,42 @@
       </div>
     </div>
   </div>
+
+  <vue-final-modal
+    v-model="selectStartDateModal"
+    classes="modal-container"
+    class="w-max-screen"
+  >
+    <div class="max-w-3xl">
+      <p class="bg-white rounded mb-2 text-center text-gray-600 py-1">
+        Select StartDate
+      </p>
+      <DatePicker
+        :rows="2"
+        class="rounded-none"
+        :columns="2"
+        v-model="dateRange.startDate"
+        @dayclick="selectStartDate($event)"
+      />
+    </div>
+  </vue-final-modal>
+  <vue-final-modal
+    v-model="selectEndDateModal"
+    classes="modal-container"
+    class="w-max-screen"
+  >
+    <div class="max-w-3xl">
+      <p class="bg-white rounded mb-2 text-center text-gray-600 py-1">
+        Select EndDate
+      </p>
+      <DatePicker
+        :rows="2"
+        class="rounded-none"
+        :columns="2"
+        @dayclick="selectEndDate($event)"
+      />
+    </div>
+  </vue-final-modal>
 </template>
 
 <style>
@@ -585,48 +677,70 @@ figure {
   background-color: #f7f5f2;
 }
 </style>
+<style scoped>
+.challan-header-container {
+  background: #1f65a5;
+}
+::v-deep .modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+::v-deep .modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  overflow-y: scroll;
+  min-width: 40vw;
+  margin: 0 0rem;
+  padding: 1rem 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.15rem;
+  background: #fff;
+}
+.modal__title {
+  margin: 0 2rem 0 0;
+}
+.modal__content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.modal__action {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 1rem 0 0;
+}
+.modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+</style>
+
+<style scoped>
+.dark-mode div::v-deep .modal-content {
+  border-color: #2d3748;
+  background-color: #1a202c;
+}
+</style>
+
 <script>
 import {
-  getStaffStatsToday,
-  getRouteStatsToday,
-  getStatsByModalityToday,
-  getLatestTicketsStats,
   getLatestRevenueStats,
   getStatsByMonth,
   getLatestTenBooking,
 } from "../../services/bookingStatsService";
 
-const lib = {
-  map(value, inMin, inMax, outMin, outMax) {
-    return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  },
-  range(start, end, tick) {
-    const s = Math.round(start / tick) * tick;
-    return Array.from(
-      {
-        length: Math.floor((end - start) / tick),
-      },
-      (v, k) => {
-        return k * tick + s;
-      }
-    );
-  },
-};
-
-// const options = {
-//   xMin: -53,
-//   xMax: 198,
-//   yMin: -32,
-//   yMax: 128,
-//   line: {
-//     smoothing: 0.15,
-//     flattening: 0.5,
-//   },
-// };
-
 export default {
   data() {
     return {
+      dateRange: {
+        startDate: null,
+        endDate: null
+      },
       staffStats: [],
       routeStats: [],
       statsToday: {},
@@ -637,61 +751,41 @@ export default {
       data: [],
 
       data2: [],
+      selectStartDateModal: false,
+      selectEndDateModal: false,
     };
   },
   created() {
-    getStatsByMonth({
-      startDate: "2022-04-01",
-      endDate: "2022-04-30",
-    }).then((res) => {
-      this.monthlyCumulativeStatistics = res.data;
-      console.log(res.data);
-    });
+    
 
-    console.log("GENERRATIN SVG PATH");
-    // this.svgPath()
     getLatestTenBooking().then((res) => {
-      console.log(res);
       this.latestBookings = res.data;
-    });
-    getLatestTicketsStats().then((res) => {
-      console.log(res);
-      this.data = res.data;
     });
     getLatestRevenueStats().then((res) => {
       this.data2 = res.data;
-      console.log(res);
-      console.log("REVENUE STATS");
-      console.log(res.data);
     });
-    // getStaffStatsToday().then((res) => {
-    //   console.log("STAFF STATS", res.data);
-    //   this.staffStats = res.data;
-    // });
-    // getRouteStatsToday().then((res) => {
-    //   this.routeStats = res.data;
-    //   console.log("Route STats", this.routeStats);
-    // });
-    // getStatsByModalityToday().then((res) => {
-    //   let ticketsSold = 0;
-    //   let amount = 0;
-    //   res.data.forEach((data) => {
-    //     console.log(data);
-    //     ticketsSold += Number(data.ticketsSold);
-    //     amount += Number(data.amount);
-    //     this.statsToday[data.modality] = data;
-    //   });
-    //   console.log(ticketsSold, amount);
-    //   this.statsToday["TOTAL"] = { ticketsSold: ticketsSold, amount: amount };
-    //   console.log("STATS TODAY", this.statsToday);
-    // });
+
+
+    function getDateXDaysAgo(numOfDays, date = new Date()) {
+      const daysAgo = new Date(date.getTime());
+      daysAgo.setDate(date.getDate() - numOfDays);
+      return new Date(daysAgo).toISOString().split('T')[0]
+    }
+    this.dateRange.endDate =  new Date().toISOString().split('T')[0]
+    this.dateRange.startDate = getDateXDaysAgo(30, new Date(this.dateRange.endDate));
+    getStatsByMonth({
+      startDate: this.dateRange.startDate,
+      endDate: this.dateRange.endDate,
+    }).then((res) => {
+      this.monthlyCumulativeStatistics = res.data;
+    });
+
   },
   computed: {
     today() {
       let d = new Date();
       return d.toDateString();
     },
-
     computeDonutPercentage() {
       console.log(this.monthlyCumulativeStatistics);
       let online = Math.floor(
@@ -701,9 +795,6 @@ export default {
       );
       console.log(`${online} ${100 - online}`);
       return `${online} ${100 - online}`;
-    },
-    viewBoxCompute() {
-      return `0 0 ${this.svg.w} ${this.svg.h}`;
     },
   },
   methods: {
@@ -720,88 +811,22 @@ export default {
     underConstructionMsg() {
       this.$toast.show("Under Construction");
     },
-
-    resize() {
-      console.log("CHARS CONTAINTER");
-      console.log(this.$refs.chartContainer.offsetWidth);
-      this.svg.w = this.$refs.chartContainer.offsetWidth;
-      this.svg.h = this.$refs.chartContainer.offsetHeight;
+    selectStartDate(event) {
+      this.dateRange.startDate = event.id;
+      this.selectStartDateModal = false;
     },
-
-    //svg methods
-    svgPath() {
-      let points = [
-        [0, 90],
-        [10, 89],
-        [20, 66],
-        [30, 57],
-        [40, 40],
-        [50, 10],
-        [60, 30],
-      ];
-
-      let ok = points.reduce(
-        (acc, e, i, a) =>
-          i === 0
-            ? `M ${a[a.length - 1][0]},${this.svg.h}
-              L ${e[0]},${this.svg.h} L ${e[0]},${e[1]}`
-            : `${acc} ${this.bezierCommand(e, i, a)}`,
-        ""
-      );
-      return `${ok}`;
+    selectEndDate(event) {
+      this.dateRange.endDate = event.id;
+      this.selectEndDateModal = false;
     },
-
-    line(pointA, pointB) {
-      const lengthX = pointB[0] - pointA[0];
-      const lengthY = pointB[1] - pointA[1];
-      return {
-        length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
-        angle: Math.atan2(lengthY, lengthX),
-      };
-    },
-    controlPoint(current, previous, next, reverse) {
-      const p = previous || current;
-      const n = next || current;
-      const o = this.line(p, n);
-      // work in progress…
-      const flat = lib.map(Math.cos(o.angle) * 0.5, 0, 1, 1, 0);
-      const angle = o.angle * flat + (reverse ? Math.PI : 0);
-      const length = o.length * 0.15;
-      const x = current[0] + Math.cos(angle) * length;
-      const y = current[1] + Math.sin(angle) * length;
-      return [x, y];
-    },
-    bezierCommand(point, i, a) {
-      const cps = this.controlPoint(a[i - 1], a[i - 2], point);
-      const cpe = this.controlPoint(point, a[i - 1], a[i + 1], true);
-      const close = i === a.length - 1 ? " z" : "";
-      return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}${close}`;
-    },
-
-    saveImage() {
-      const scale = 3;
-      const node = document.getElementById("report");
-      const style = {
-        transform: "scale(" + scale + ")",
-        transformOrigin: "top left",
-        width: node.offsetWidth + "px",
-        height: node.offsetHeight + "px",
-      };
-
-      const param = {
-        height: node.offsetHeight * scale,
-        width: node.offsetWidth * scale,
-        quality: 1,
-        style,
-      };
-
-      var filename = this.today.split(" ").join("");
-
-      domtoimage.toPng(node, param).then(function (dataUrl) {
-        var link = document.createElement("a");
-        link.download = `report_${filename}.png`;
-        link.href = dataUrl;
-        link.click();
+    reloadData() {
+      console.log(this.dateRange);
+      getStatsByMonth({
+        startDate: this.dateRange.startDate,
+        endDate: this.dateRange.endDate,
+      }).then((res) => {
+        this.monthlyCumulativeStatistics = res.data;
+        console.log(res.data);
       });
     },
   },

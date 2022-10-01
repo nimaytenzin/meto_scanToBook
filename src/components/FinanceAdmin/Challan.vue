@@ -46,8 +46,10 @@
         </div>
 
         <div class="flex justify-between items-end mt-4">
-          <h2 @click="selectDateModal = true">
-            Accounts for {{ new Date(date).toDateString() }}
+          <h2 @click="selectDateModal = true" class="">
+            Accounts for <span class="px-2 py-1 cursor-pointer hover:text-black hover:underline rounded-sm bg-gray-200 text-metoPrimary-800">
+              {{ new Date(date).toDateString() }}
+            </span>
           </h2>
 
           <div>
