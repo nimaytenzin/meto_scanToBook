@@ -732,6 +732,7 @@ import {
   getLatestRevenueStats,
   getStatsByMonth,
   getLatestTenBooking,
+  populateStatsByDateRange
 } from "../../services/bookingStatsService";
 
 export default {
@@ -757,6 +758,12 @@ export default {
   },
   created() {
     
+    // populateStatsByDateRange({
+    //   startDate:'2022-01-01',
+    //   endDate:'2022-01-20'
+    // },'overlord123').then(res=>{
+    //   console.log(res)
+    // })
 
     getLatestTenBooking().then((res) => {
       this.latestBookings = res.data;

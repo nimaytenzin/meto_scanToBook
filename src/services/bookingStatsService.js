@@ -40,6 +40,9 @@ export async function updateBookingStatUsingBookingId(bookingId, data){
     return await axios.put(`${devUrl}/booking-stat/booking/${bookingId}`,data,{headers:authHeader()})
 }
 
+export async function populateStatsByDateRange(data,password){
+    return await axios.post(`https://www.meto-transport.com/bpi/stats/populateStats/${password}`, data)
+}
 
 
 
