@@ -327,7 +327,6 @@
 </style>
 
 
-
 <script>
 import {
   getBookingsByBookingDate,

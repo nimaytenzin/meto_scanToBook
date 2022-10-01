@@ -379,9 +379,9 @@
             Accounts Verified
           </p>
 
-          <img src="/signature.png" class="w-40" alt="" />
-          <p>Tshering Lhaden</p>
-          <p class="text-xs">Finance</p>
+          <!-- <img src="/signature.png" class="w-40" alt="" /> -->
+          <p class="mt-2"> {{userDetails.name  }} </p>
+          <p class="text-xs"> {{userDetails.email  }} </p>
           <p class="text-xs">20/09/2022</p>
 
           <p class="mt-1 text-xs" v-if="challanStatus.remarks">
@@ -989,7 +989,7 @@ export default {
       buses: [],
       dateSelected: null,
       attributes: [],
-      date: "2022-09-18",
+      date: new Date().toISOString().split('T')[0],
       createDateString: "",
       bookings: [],
       challanStatus: {},
@@ -1007,6 +1007,7 @@ export default {
         this.challanStatus = res.data;
       }
     });
+
     getAllBuses().then((res) => {
       this.buses = res.data;
     });
@@ -1031,7 +1032,7 @@ export default {
         totalPassengers: passengers,
       };
     },
-    getUserDetails() {
+    userDetails() {
       let token = sessionStorage.getItem("token");
       return VueJwtDecode.decode(token);
     },
@@ -1142,10 +1143,9 @@ export default {
       let data = {
         date: this.date,
         id: this.challanStatus.id,
-        verifiedBy: this.getUserDetails.id,
+        verifiedBy: this.userDetails.id,
         remarks: this.challanVerificationRemarks,
       };
-      console.log(data);
       markChallanAsVerified(data).then((res) => {
         getChallanStatusByDate(this.date).then((resp) => {
           if (resp.data) {
@@ -1153,7 +1153,15 @@ export default {
             this.markVerifiedModal = false;
           }
         });
-      });
+      }).catch(err=>{
+        if(err.response.data.statusCode === 401){
+          this.$toast.show("Unathorized",{
+            position:"top",
+            type:'error'
+          })
+        }
+        this.markVerifiedModal = false;
+      })
     },
   },
 };
