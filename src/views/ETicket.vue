@@ -214,8 +214,7 @@
           <hr class="mt-4 mb-4" />
 
           <h2 class="text-sm text-center mt-2">
-            Contact
-            {{ originContact }} for assistance/query.
+            Call Meto Hotline 2233 for any assistance/query.
           </h2>
 
           <hr class="border-dashed" />
