@@ -51,14 +51,16 @@ const routes = [
   },
 
   {
+    path: '/eticket/:bookingId', name: 'etickets', component: () => import('../views/ETicket.vue')
+  },
+
+  {
     path: '/404', name: 'NotFound', component: () => import('../views/404.vue')
   },
   {
     path: '/:catchAll(.*)', redirect: '404'
   },
-  {
-    path: '/eticket/:bookingId', component: () => import('../views/ETicket.vue')
-  },
+
   {
     path: '/unathorized',
     name: 'unathorized',
@@ -201,7 +203,7 @@ const routes = [
       },
       {
         path: 'manage-users', component: () => import('../components/SuperAdmin/ManageUsers.vue'), meta: { requiresAuth: true, superAdmin: true },
-        
+
       },
     ]
   },
@@ -271,7 +273,6 @@ router.beforeEach(async (to, from, next) => {
           next({ path: '/unathorized' })
         }
       }
-
       else {
         next();
       }

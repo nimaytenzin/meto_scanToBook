@@ -128,8 +128,12 @@
                   </h1>
                 </div>
               </div>
-              <p class="text-center text-gray-700 mb-4" v-if="bookingData.subroute">
-                Via {{ bookingData.route?.routepath?.origin?.name  }} - {{ bookingData.route?.routepath?.destination?.name   }}  Bus
+              <p
+                class="text-center text-gray-700 mb-4"
+                v-if="bookingData.subroute"
+              >
+                Via {{ bookingData.route?.routepath?.origin?.name }} -
+                {{ bookingData.route?.routepath?.destination?.name }} Bus
               </p>
 
               <h2 class="text-center text-xl text-gray-700 my-1">
@@ -355,17 +359,14 @@
 
 <script>
 import domtoimage from "dom-to-image";
-import { useRoute } from "vue-router";
 import { getBookingDetail } from "../services/bookingServices";
 
 export default {
   created() {
-    const route = useRoute();
-    const bookingId = route.params.bookingId;
-
+    this.$store.commit("resetStoreState");
+    const bookingId = this.$route.params.bookingId;
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
-      
         this.originContact = res.data.route?.routepath?.origin?.user.contact;
         if (res.data.subroute) {
           this.origin = res.data.subroute.routepath.origin.name;
@@ -379,16 +380,10 @@ export default {
           this.departureTime = res.data.route.departureTime;
         }
         this.departureDate = res.data.scheduleDate;
-    
         this.bookingData = res.data;
-        
       } else {
         this.$router.push("/service-down");
       }
-    });
-    this.cancelTicketRouteData = this.$router.resolve({
-      name: "cancelTicket",
-      params: { bookingId: bookingId },
     });
   },
   data() {
@@ -429,9 +424,6 @@ export default {
   },
 
   methods: {
-    qrLoad() {
-      alert("QR CODE LOADED");
-    },
     parseDepartureDate(dd) {
       let d = new Date(dd);
       return d.toDateString();
@@ -476,16 +468,16 @@ export default {
         return `${hrs}:${min} ${ampm}`;
       }
     },
-    openBusDetails() {
-      window.open(this.checkBusRouteData.href, "_blank");
-    },
-    cancelTicket() {
-      window.open(this.cancelTicketRouteData.href, "_blank");
-    },
     bookAgain() {
       this.$store.commit("resetStoreState");
       this.$router.push("/");
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (from.path === "/etickets/384") {
+      console.log("ok");
+      next();
+    }
   },
 };
 </script>

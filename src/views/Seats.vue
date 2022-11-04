@@ -625,7 +625,6 @@ export default {
   },
   created() {
     if (
-
       this.$store.state.selectedSchedule &&
       this.$store.state.origin &&
       this.$store.state.destination &&
@@ -936,7 +935,7 @@ export default {
     },
 
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to, from, next) { 
     if (to.path === "/passengerDetails") {
        deleteBookingwithPassengersPublic(
         Number(sessionStorage.getItem("bookingId"))

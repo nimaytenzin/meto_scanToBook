@@ -109,6 +109,9 @@
 import { getChecksum } from "../services/bookingServices";
 export default {
   created() {
+    if(!this.$store.state.origin){
+      this.$router.push("/")
+    }
   
     getChecksum(this.$store.state.scanBookingId).then((res) => {
     
