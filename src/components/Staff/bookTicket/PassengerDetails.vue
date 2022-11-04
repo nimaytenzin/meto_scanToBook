@@ -291,7 +291,8 @@ export default {
             console.log("ok",res)
             if (res.status === 201) {
               this.$store.commit("addScanBookingId", res.data.id);
-              sessionStorage.setItem("bookingId", res.data.id)
+              //sessionStorage.setItem("bookingId", res.data.id)
+              localStorage.setItem('bookingId',res.data.id);
               this.$router.push("/staff/seatSelection");
             } else {
               this.$toast.show("Newtork Error..try again", {

@@ -1726,6 +1726,9 @@ export default {
     //   this.routesCount = Number(res.data.routes);
     // });
 
+    if(localStorage.getItem('bookingId')){
+      localStorage.removeItem('bookingId')
+    }
     getActiveStops().then((res) => {
       this.origins = res.data;
       // this.originSelected = res.data[0];

@@ -640,7 +640,10 @@ export default {
     this.fare = this.$store.state.selectedSchedule?.fare;
     this.roomId = this.$store.state.selectedScheduleHash;
     this.numberOfPassengers = this.$store.state.numberOfPassengers;
-
+    this.bookingId = Number(localStorage.getItem('bookingId'));
+    if(!this.bookingId){
+      this.$router.push("/")
+    }
     this.inactiveTimeout = setTimeout(() => {
       window.location.reload()
     }, 170000);
@@ -650,7 +653,7 @@ export default {
       this.$store.commit("addServiceCharge", res.data.serviceCharge);
     });
 
-    getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(res => {
+    getSeatsStatus(this.$store.state.selectedScheduleHash, this.bookingId).then(res => {
       if (res.status === 200) {
         this.seats = res.data;
         setTimeout(() => {
@@ -668,6 +671,7 @@ export default {
   data() {
     return {
       fare: 0,
+      bookingId:null,
       total: 0,
       message: "Connecting to Meto Web Services...",
       destinationSelected: this.$store.state.destination,
@@ -821,11 +825,11 @@ export default {
     cancelSeat() {
       leaveSeat({
         seatNumber: this.selectedSeat.number,
-        bookingId: Number(sessionStorage.getItem("bookingId")),
+        bookingId: this.bookingId,
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
         if (res.status === 200 || res.status === 201) {
-          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+          getSeatsStatus(this.$store.state.selectedScheduleHash, this.bookingId).then(resp => {
             if (resp.status === 200) {
               this.seats = resp.data;
             }
@@ -840,11 +844,11 @@ export default {
       this.total -= this.fare;
       leaveSeat({
         seatNumber: this.selectedSeat.number,
-        bookingId: Number(sessionStorage.getItem("bookingId")),
+        bookingId: this.bookingId,
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
         if (res.status === 200 || res.status === 201) {
-          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+          getSeatsStatus(this.$store.state.selectedScheduleHash, this.bookingId).then(resp => {
             if (resp.status === 200) {
               this.seats = resp.data;
             }
@@ -874,11 +878,11 @@ export default {
         else {
           lockSeat({
             seatNumber: this.selectedSeat.number,
-            bookingId: Number(sessionStorage.getItem("bookingId")),
+            bookingId: this.bookingId,
             scheduleHash: this.$store.state.selectedScheduleHash
           }).then(res => {
             if (res.status === 200 || res.status === 201) {
-              getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+              getSeatsStatus(this.$store.state.selectedScheduleHash,this.bookingId).then(resp => {
                 if (resp.status === 200) {
                   this.seats = resp.data;
                 }
@@ -896,7 +900,7 @@ export default {
                 position: "top"
               })
             }
-            getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+            getSeatsStatus(this.$store.state.selectedScheduleHash,this.bookingId).then(resp => {
               if (resp.status === 200) {
                 this.seats = resp.data;
               }
@@ -911,11 +915,11 @@ export default {
       this.total -= this.fare;
       leaveSeat({
         seatNumber: seat.number,
-        bookingId: Number(sessionStorage.getItem("bookingId")),
+        bookingId: this.bookingId,
         scheduleHash: this.$store.state.selectedScheduleHash
       }).then(res => {
         if (res.status === 200 || res.status === 201) {
-          getSeatsStatus(this.$store.state.selectedScheduleHash, Number(sessionStorage.getItem('bookingId'))).then(resp => {
+          getSeatsStatus(this.$store.state.selectedScheduleHash,this.bookingId).then(resp => {
             if (resp.status === 200) {
               this.seats = resp.data;
             }
@@ -926,7 +930,7 @@ export default {
     },
 
     goToPaymentPage() {
-      updateSeatToInPaymentUsingBookingId(Number(sessionStorage.getItem("bookingId"))).then(res => {
+      updateSeatToInPaymentUsingBookingId(this.bookingId).then(res => {
         if (res.status === 200 || res.status === 201) {
           clearTimeout(this.inactiveTimeOut);
           this.$router.push(`/loadPayment`);
@@ -937,9 +941,11 @@ export default {
   },
   beforeRouteLeave(to, from, next) { 
     if (to.path === "/passengerDetails") {
-      if(Number(sessionStorage.getItem('bookingId'))){
+      var bookingId = Number(localStorage.getItem('bookingId'));
+      if(bookingId){
+      // if(this.bookingId){
         deleteBookingwithPassengersPublic(
-        Number(sessionStorage.getItem("bookingId"))
+       bookingId
       ).then((res) => {
         if (res.status === 200 || res.status === 201) {   
           this.$store.commit("resetSelectedSeats")
