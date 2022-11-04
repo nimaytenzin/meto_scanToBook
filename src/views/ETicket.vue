@@ -362,8 +362,9 @@ import domtoimage from "dom-to-image";
 import { getBookingDetail } from "../services/bookingServices";
 
 export default {
+
   created() {
-    
+   
     this.$store.commit("resetStoreState");
     sessionStorage.removeItem('bookingId')
     localStorage.removeItem('bookingId')
