@@ -937,7 +937,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) { 
     if (to.path === "/passengerDetails") {
-       deleteBookingwithPassengersPublic(
+      if(Number(sessionStorage.getItem('bookingId'))){
+        deleteBookingwithPassengersPublic(
         Number(sessionStorage.getItem("bookingId"))
       ).then((res) => {
         if (res.status === 200 || res.status === 201) {   
@@ -945,6 +946,8 @@ export default {
           next();
         }
       });
+      }
+       
     } else {
       next();
     }

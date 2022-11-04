@@ -364,6 +364,7 @@ import { getBookingDetail } from "../services/bookingServices";
 export default {
   created() {
     this.$store.commit("resetStoreState");
+    sessionStorage.removeItem('bookingId')
     const bookingId = this.$route.params.bookingId;
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
