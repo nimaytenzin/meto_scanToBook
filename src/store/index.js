@@ -66,6 +66,7 @@ export default createStore({
       console.log(state.indexMatchedRoutes)
     },
     resetStoreState(state){
+      console.log("STore REsET - Proceed for newBooking Meto-webService")
       state.indexMatchedRoutes =[]
       state.origin = ""
       state.destination= ""
