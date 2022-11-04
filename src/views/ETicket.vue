@@ -365,6 +365,7 @@ export default {
   created() {
     this.$store.commit("resetStoreState");
     sessionStorage.removeItem('bookingId')
+    window.location.reload()
     const bookingId = this.$route.params.bookingId;
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
@@ -408,7 +409,6 @@ export default {
       originContact: null,
     };
   },
-
   mounted: function () {
     setTimeout(function () {
       this.document.getElementById("spinner").remove();
