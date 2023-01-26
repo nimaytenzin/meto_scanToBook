@@ -1,5 +1,5 @@
 <template >
-  <div id="spinner">
+  <!-- <div id="spinner">
     <div
       class="
         flex flex-col
@@ -18,7 +18,7 @@
       />
       <p class="text-center">{{ message }}</p>
     </div>
-  </div>
+  </div> -->
   <div
     class="
       min-h-screen
@@ -362,8 +362,12 @@ import domtoimage from "dom-to-image";
 import { getBookingDetail } from "../services/bookingServices";
 
 export default {
+
   created() {
+   
     this.$store.commit("resetStoreState");
+    sessionStorage.removeItem('bookingId')
+    localStorage.removeItem('bookingId')
     const bookingId = this.$route.params.bookingId;
     getBookingDetail(bookingId).then((res) => {
       if (res.status === 200) {
@@ -407,12 +411,11 @@ export default {
       originContact: null,
     };
   },
-
-  mounted: function () {
-    setTimeout(function () {
-      this.document.getElementById("spinner").remove();
-    }, 1000);
-  },
+  // mounted: function () {
+  //   setTimeout(function () {
+  //     this.document.getElementById("spinner").remove();
+  //   }, 1000);
+  // },
   computed: {
     loadingClass() {
       if (this.dataLoaded) {
