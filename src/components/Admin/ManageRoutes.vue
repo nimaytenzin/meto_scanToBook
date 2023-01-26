@@ -181,6 +181,20 @@
                   <p v-else class="text-green-800 text-md font-semibold">
                     Route Active
                   </p>
+
+                  
+                  <!-- Regular/Premium -->
+                  <div class="mt-2">
+                    <span
+                      v-if="schedule.isPremium"
+                      class="text-white text-md font-semibold  rounded-xl px-2 py-1 bg-blue-400"
+                    >
+                      Premium
+                    </span>
+                    <span v-else class="text-blue-800 text-md font-semibold">
+                      Regular bus
+                    </span>
+                  </div>
                 </td>
                 <td class="px-12 py-2 text-left text-gray-500">
                   <div class="flex flex-col gap-2 justify-around">
@@ -532,7 +546,7 @@
           >
           <select
             v-model="newRoute.routepathId"
-            class="text-xl bg-white text-blue-900 p-2"
+            class="text-xl bg-white text-blue-900 p-2 border-2"
           >
             <option
               v-for="routepath in routepaths"
@@ -558,7 +572,7 @@
             >Departure time</label
           >
 
-          <div class="flex justify-center">
+          <div class="flex justify-center border-2">
             <div class="flex">
               <select
                 name="hours"
@@ -599,6 +613,17 @@
               </select>
             </div>
           </div>
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Regular or Premium?</label
+          >
+              <select
+                name="isPremium"
+                v-model="newRoute.isPremium"
+                class="text-xl bg-white text-blue-900 p-2 border-2"
+              >
+                <option value="0" selected>Regular</option>
+                <option value="1">Premium</option>
+              </select>
 
           <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
             >Fare</label
@@ -711,10 +736,22 @@
             />
           </div>
 
+          <label class="text-sm text-left text-gray-400 italic mt-3 mb-1"
+            >Regular or Premium?</label
+          >
+          <select
+            name="isPremium"
+            v-model="selectedRoute.isPremium"
+            class="text-xl bg-white text-blue-900 p-2 border-2"
+          >
+            <option value="0">Regular</option>
+            <option value="1">Premium</option>
+          </select>
+
           <label class="text-sm text-left text-gray-400 italic mb-1 mt-3"
             >Departure time</label
           >
-          <div class="flex justify-center">
+          <div class="flex justify-center border-2">
             <div class="flex">
               <select
                 name="hours"
@@ -1663,6 +1700,7 @@ export default {
       this.newSubRoute.day = selectedRoute.day;
       this.newSubRoute.parentRouteId = selectedRoute.id;
       this.newSubRoute.isActive = true;
+      this.newSubRoute.isPremium = selectedRoute.isPremium;
       this.addSubRoutesModal = true;
     },
     addSubRoute() {

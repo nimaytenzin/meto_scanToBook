@@ -222,6 +222,12 @@
                     <p class="text-metoPrimary-800 text-xs md:text-sm">
                       (Departure from {{ originSelected?.name }})
                     </p>
+
+                    <p class = "mt-2" v-if="route.isPremium"  >
+                      <span class="text-white text-md font-semibold  rounded-xl px-2 py-1 bg-blue-400" >
+                        Premium
+                      </span>
+                    </p>
                   </div>
                 </div>
                 <div class="w-full md:w-1/3 flex flex-col justify-between">
@@ -240,6 +246,7 @@
                     </p>
                     <p class="text-metoPrimary-800 text-sm">(Fare)</p>
                   </div>
+
                 </div>
 
                 <div class="flex flex-col gap-4 w-full md:w-1/3 justify-between">

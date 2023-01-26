@@ -78,6 +78,11 @@
             <td :class="route.isCancelled ? 'px-2 line-through' : 'px-2'">
               Nu. {{ route.fare }}
             </td>
+            <td v-if="route.isPremium"  >
+              <span class="text-white text-md font-semibold  rounded-xl px-2 py-1 bg-blue-400" >
+                Premium
+              </span>
+            </td>
             <td class="px-2 whitespace-nowrap">
               <div v-if="!route.isCancelled">
                 <button
