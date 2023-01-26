@@ -1628,6 +1628,7 @@ export default {
         this.selectedDepartureTimeArr[1] +
         ":" +
         this.selectedDepartureTimeArr[2];
+      this.selectedRoute.departure_time = convert12hrsTo24hrsNumeric(this.selectedDepartureTimeArr);
       getPendingBookingsByRouteId(this.selectedRoute.id).then((res) => {
         if (res.data.length === 0) {
           editRoute(this.selectedRoute.id, this.selectedRoute).then(
