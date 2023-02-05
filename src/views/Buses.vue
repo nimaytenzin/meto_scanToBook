@@ -225,7 +225,7 @@
 
                     <p class = "mt-2" v-if="route.isPremium"  >
                       <span class="text-white text-md font-semibold  rounded-xl px-2 py-1 bg-blue-400" >
-                        Premium
+                        Premium Bus
                       </span>
                     </p>
                   </div>
