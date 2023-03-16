@@ -306,6 +306,13 @@ export default {
           getPassengersByScheduleHash(parentScheduleHash).then((res) => {
             route.passengers = res.data.length;
           });
+          getCancelledROutesbyRouteDate(route.parentRouteId, this.dateSelected).then(
+            (res) => {
+              if (res.data.length !== 0) {
+                route.isCancelled = 1;
+              }
+            }
+          );
         });
       } else {
         getPassengersByScheduleHash(scheduleHash).then((res) => {
